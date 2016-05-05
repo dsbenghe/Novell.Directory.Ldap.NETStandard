@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{387A1A81-0957-4E15-A47C-6B2F0430A0A9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <NoStandardLibraries>false</NoStandardLibraries>
+    <AssemblyName>Novell.Directory.Ldap</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Novell.Directory.Ldap</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Asn1\Asn1Boolean.cs" />
+    <Compile Include="Asn1\Asn1Choice.cs" />
+    <Compile Include="Asn1\Asn1Decoder.cs" />
+    <Compile Include="Asn1\Asn1Encoder.cs" />
+    <Compile Include="Asn1\Asn1Enumerated.cs" />
+    <Compile Include="Asn1\Asn1Identifier.cs" />
+    <Compile Include="Asn1\Asn1Integer.cs" />
+    <Compile Include="Asn1\Asn1Length.cs" />
+    <Compile Include="Asn1\Asn1Null.cs" />
+    <Compile Include="Asn1\Asn1Numeric.cs" />
+    <Compile Include="Asn1\Asn1Object.cs" />
+    <Compile Include="Asn1\Asn1OctetString.cs" />
+    <Compile Include="Asn1\Asn1Sequence.cs" />
+    <Compile Include="Asn1\Asn1SequenceOf.cs" />
+    <Compile Include="Asn1\Asn1Set.cs" />
+    <Compile Include="Asn1\Asn1SetOf.cs" />
+    <Compile Include="Asn1\Asn1Structured.cs" />
+    <Compile Include="Asn1\Asn1Tagged.cs" />
+    <Compile Include="Asn1\LBERDecoder.cs" />
+    <Compile Include="Asn1\LBEREncoder.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Controls\LdapEntryChangeControl.cs" />
+    <Compile Include="Controls\LdapPersistSearchControl.cs" />
+    <Compile Include="Controls\LdapSortControl.cs" />
+    <Compile Include="Controls\LdapSortKey.cs" />
+    <Compile Include="Controls\LdapSortResponse.cs" />
+    <Compile Include="Controls\LdapVirtualListControl.cs" />
+    <Compile Include="Controls\LdapVirtualListResponse.cs" />
+    <Compile Include="Events\BaseEventArgs.cs" />
+    <Compile Include="Events\DirectoryEventArgs.cs" />
+    <Compile Include="Events\DirectoryExceptionEventArgs.cs" />
+    <Compile Include="Events\Edir\EdirEventArgs.cs" />
+    <Compile Include="Events\Edir\EdirEventConstants.cs" />
+    <Compile Include="Events\Edir\EdirEventIntermediateResponse.cs" />
+    <Compile Include="Events\Edir\EdirEventSource.cs" />
+    <Compile Include="Events\Edir\EdirEventSpecifier.cs" />
+    <Compile Include="Events\Edir\EventData\BaseEdirEventData.cs" />
+    <Compile Include="Events\Edir\EventData\BinderyObjectEventData.cs" />
+    <Compile Include="Events\Edir\EventData\ChangeAddressEventData.cs" />
+    <Compile Include="Events\Edir\EventData\ConnectionStateEventData.cs" />
+    <Compile Include="Events\Edir\EventData\DebugEventData.cs" />
+    <Compile Include="Events\Edir\EventData\DebugParameter.cs" />
+    <Compile Include="Events\Edir\EventData\DSETimeStamp.cs" />
+    <Compile Include="Events\Edir\EventData\EntryEventData.cs" />
+    <Compile Include="Events\Edir\EventData\GeneralDSEventData.cs" />
+    <Compile Include="Events\Edir\EventData\ModuleStateEventData.cs" />
+    <Compile Include="Events\Edir\EventData\NetworkAddressEventData.cs" />
+    <Compile Include="Events\Edir\EventData\ReferralAddress.cs" />
+    <Compile Include="Events\Edir\EventData\SecurityEquivalenceEventData.cs" />
+    <Compile Include="Events\Edir\EventData\ValueEventData.cs" />
+    <Compile Include="Events\Edir\MonitorEventRequest.cs" />
+    <Compile Include="Events\Edir\MonitorEventResponse.cs" />
+    <Compile Include="Events\LdapEventArgs.cs" />
+    <Compile Include="Events\LdapEventConstants.cs" />
+    <Compile Include="Events\LdapEventSource.cs" />
+    <Compile Include="Events\PSearchEventSource.cs" />
+    <Compile Include="Events\SearchReferralEventArgs.cs" />
+    <Compile Include="Events\SearchResultEventArgs.cs" />
+    <Compile Include="Extensions\AbortPartitionOperationRequest.cs" />
+    <Compile Include="Extensions\AddReplicaRequest.cs" />
+    <Compile Include="Extensions\BackupRestoreConstants.cs" />
+    <Compile Include="Extensions\ChangeReplicaTypeRequest.cs" />
+    <Compile Include="Extensions\GetBindDNRequest.cs" />
+    <Compile Include="Extensions\GetBindDNResponse.cs" />
+    <Compile Include="Extensions\GetEffectivePrivilegesListRequest.cs" />
+    <Compile Include="Extensions\GetEffectivePrivilegesListResponse.cs" />
+    <Compile Include="Extensions\GetEffectivePrivilegesRequest.cs" />
+    <Compile Include="Extensions\GetEffectivePrivilegesResponse.cs" />
+    <Compile Include="Extensions\GetReplicaInfoRequest.cs" />
+    <Compile Include="Extensions\GetReplicaInfoResponse.cs" />
+    <Compile Include="Extensions\GetReplicationFilterRequest.cs" />
+    <Compile Include="Extensions\GetReplicationFilterResponse.cs" />
+    <Compile Include="Extensions\LdapBackupRequest.cs" />
+    <Compile Include="Extensions\LdapBackupResponse.cs" />
+    <Compile Include="Extensions\LdapRestoreRequest.cs" />
+    <Compile Include="Extensions\ListReplicasRequest.cs" />
+    <Compile Include="Extensions\ListReplicasResponse.cs" />
+    <Compile Include="Extensions\MergePartitionsRequest.cs" />
+    <Compile Include="Extensions\NamingContextConstants.cs" />
+    <Compile Include="Extensions\PartitionEntryCountRequest.cs" />
+    <Compile Include="Extensions\PartitionEntryCountResponse.cs" />
+    <Compile Include="Extensions\PartitionSyncRequest.cs" />
+    <Compile Include="Extensions\ReceiveAllUpdatesRequest.cs" />
+    <Compile Include="Extensions\RefreshLdapServerRequest.cs" />
+    <Compile Include="Extensions\RemoveOrphanPartitionRequest.cs" />
+    <Compile Include="Extensions\RemoveReplicaRequest.cs" />
+    <Compile Include="Extensions\ReplicationConstants.cs" />
+    <Compile Include="Extensions\SchemaSyncRequest.cs" />
+    <Compile Include="Extensions\SendAllUpdatesRequest.cs" />
+    <Compile Include="Extensions\SetReplicationFilterRequest.cs" />
+    <Compile Include="Extensions\SplitOrphanPartitionRequest.cs" />
+    <Compile Include="Extensions\SplitPartitionRequest.cs" />
+    <Compile Include="Extensions\TriggerBackgroundProcessRequest.cs" />
+    <Compile Include="InterThreadException.cs" />
+    <Compile Include="LdapAbandonRequest.cs" />
+    <Compile Include="LdapAddRequest.cs" />
+    <Compile Include="LdapAttribute.cs" />
+    <Compile Include="LdapAttributeSchema.cs" />
+    <Compile Include="LdapAttributeSet.cs" />
+    <Compile Include="LdapAuthHandler.cs" />
+    <Compile Include="LdapAuthProvider.cs" />
+    <Compile Include="LdapBindHandler.cs" />
+    <Compile Include="LdapBindRequest.cs" />
+    <Compile Include="LdapCompareAttrNames.cs" />
+    <Compile Include="LdapCompareRequest.cs" />
+    <Compile Include="LdapConnection.cs" />
+    <Compile Include="LdapConstraints.cs" />
+    <Compile Include="LdapControl.cs" />
+    <Compile Include="LdapDeleteRequest.cs" />
+    <Compile Include="LdapDITContentRuleSchema.cs" />
+    <Compile Include="LdapDITStructureRuleSchema.cs" />
+    <Compile Include="LdapDN.cs" />
+    <Compile Include="LdapDSConstants.cs" />
+    <Compile Include="LdapEntry.cs" />
+    <Compile Include="LdapException.cs" />
+    <Compile Include="LdapExtendedOperation.cs" />
+    <Compile Include="LdapExtendedRequest.cs" />
+    <Compile Include="LdapExtendedResponse.cs" />
+    <Compile Include="LdapIntermediateResponse.cs" />
+    <Compile Include="LdapLocalException.cs" />
+    <Compile Include="LdapMatchingRuleSchema.cs" />
+    <Compile Include="LdapMatchingRuleUseSchema.cs" />
+    <Compile Include="LdapMessage.cs" />
+    <Compile Include="LdapMessageQueue.cs" />
+    <Compile Include="LdapModification.cs" />
+    <Compile Include="LdapModifyDNRequest.cs" />
+    <Compile Include="LdapModifyRequest.cs" />
+    <Compile Include="LdapNameFormSchema.cs" />
+    <Compile Include="LdapObjectClassSchema.cs" />
+    <Compile Include="LdapReferralException.cs" />
+    <Compile Include="LdapReferralHandler.cs" />
+    <Compile Include="LdapResponse.cs" />
+    <Compile Include="LdapResponseQueue.cs" />
+    <Compile Include="LdapSchema.cs" />
+    <Compile Include="LdapSchemaElement.cs" />
+    <Compile Include="LdapSearchConstraints.cs" />
+    <Compile Include="LdapSearchQueue.cs" />
+    <Compile Include="LdapSearchRequest.cs" />
+    <Compile Include="LdapSearchResult.cs" />
+    <Compile Include="LdapSearchResultReference.cs" />
+    <Compile Include="LdapSearchResults.cs" />
+    <Compile Include="LdapSyntaxSchema.cs" />
+    <Compile Include="LdapUnbindRequest.cs" />
+    <Compile Include="LdapUnsolicitedNotificationListener.cs" />
+    <Compile Include="LdapUrl.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageAgent.cs" />
+    <Compile Include="MessageVector.cs" />
+    <Compile Include="Rfc2251\RfcAbandonRequest.cs" />
+    <Compile Include="Rfc2251\RfcAddRequest.cs" />
+    <Compile Include="Rfc2251\RfcAddResponse.cs" />
+    <Compile Include="Rfc2251\RfcAssertionValue.cs" />
+    <Compile Include="Rfc2251\RfcAttributeDescription.cs" />
+    <Compile Include="Rfc2251\RfcAttributeDescriptionList.cs" />
+    <Compile Include="Rfc2251\RfcAttributeList.cs" />
+    <Compile Include="Rfc2251\RfcAttributeTypeAndValues.cs" />
+    <Compile Include="Rfc2251\RfcAttributeValue.cs" />
+    <Compile Include="Rfc2251\RfcAttributeValueAssertion.cs" />
+    <Compile Include="Rfc2251\RfcAuthenticationChoice.cs" />
+    <Compile Include="Rfc2251\RfcBindRequest.cs" />
+    <Compile Include="Rfc2251\RfcBindResponse.cs" />
+    <Compile Include="Rfc2251\RfcCompareRequest.cs" />
+    <Compile Include="Rfc2251\RfcCompareResponse.cs" />
+    <Compile Include="Rfc2251\RfcControl.cs" />
+    <Compile Include="Rfc2251\RfcControls.cs" />
+    <Compile Include="Rfc2251\RfcDelRequest.cs" />
+    <Compile Include="Rfc2251\RfcDelResponse.cs" />
+    <Compile Include="Rfc2251\RfcExtendedRequest.cs" />
+    <Compile Include="Rfc2251\RfcExtendedResponse.cs" />
+    <Compile Include="Rfc2251\RfcFilter.cs" />
+    <Compile Include="Rfc2251\RfcIntermediateResponse.cs" />
+    <Compile Include="Rfc2251\RfcLdapDN.cs" />
+    <Compile Include="Rfc2251\RfcLdapMessage.cs" />
+    <Compile Include="Rfc2251\RfcLdapOID.cs" />
+    <Compile Include="Rfc2251\RfcLdapResult.cs" />
+    <Compile Include="Rfc2251\RfcLdapString.cs" />
+    <Compile Include="Rfc2251\RfcLdapURL.cs" />
+    <Compile Include="Rfc2251\RfcMatchingRuleAssertion.cs" />
+    <Compile Include="Rfc2251\RfcMatchingRuleId.cs" />
+    <Compile Include="Rfc2251\RfcMessageID.cs" />
+    <Compile Include="Rfc2251\RfcModifyDNRequest.cs" />
+    <Compile Include="Rfc2251\RfcModifyDNResponse.cs" />
+    <Compile Include="Rfc2251\RfcModifyRequest.cs" />
+    <Compile Include="Rfc2251\RfcModifyResponse.cs" />
+    <Compile Include="Rfc2251\RfcReferral.cs" />
+    <Compile Include="Rfc2251\RfcRelativeLdapDN.cs" />
+    <Compile Include="Rfc2251\RfcRequest.cs" />
+    <Compile Include="Rfc2251\RfcResponse.cs" />
+    <Compile Include="Rfc2251\RfcSaslCredentials.cs" />
+    <Compile Include="Rfc2251\RfcSearchRequest.cs" />
+    <Compile Include="Rfc2251\RfcSearchResultDone.cs" />
+    <Compile Include="Rfc2251\RfcSearchResultEntry.cs" />
+    <Compile Include="Rfc2251\RfcSearchResultReference.cs" />
+    <Compile Include="Rfc2251\RfcSubstringFilter.cs" />
+    <Compile Include="Rfc2251\RfcUnbindRequest.cs" />
+    <Compile Include="SupportClass.cs" />
+    <Compile Include="Utilclass\ArrayEnumeration.cs" />
+    <Compile Include="Utilclass\AttributeQualifier.cs" />
+    <Compile Include="Utilclass\Base64.cs" />
+    <Compile Include="Utilclass\BindProperties.cs" />
+    <Compile Include="Utilclass\CharacterTypes.cs" />
+    <Compile Include="Utilclass\DN.cs" />
+    <Compile Include="Utilclass\EnumeratedIterator.cs" />
+    <Compile Include="Utilclass\ExceptionMessages.cs" />
+    <Compile Include="Utilclass\ExtResponseFactory.cs" />
+    <Compile Include="Utilclass\IntermediateResponseFactory.cs" />
+    <Compile Include="Utilclass\RDN.cs" />
+    <Compile Include="Utilclass\ReferralInfo.cs" />
+    <Compile Include="Utilclass\ResourcesHandler.cs" />
+    <Compile Include="Utilclass\RespControlVector.cs" />
+    <Compile Include="Utilclass\RespExtensionSet.cs" />
+    <Compile Include="Utilclass\ResultCodeMessages.cs" />
+    <Compile Include="Utilclass\SchemaParser.cs" />
+    <Compile Include="Utilclass\SchemaTokenCreator.cs" />
+    <Compile Include="Utilclass\TokenTypes.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Utilclass\ExceptionMessages.txt" />
+    <Content Include="Utilclass\ResultCodeMessages.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />
+  <ProjectExtensions>
+    <VisualStudio AllowExistingFolder="true" />
+  </ProjectExtensions>
+</Project>
