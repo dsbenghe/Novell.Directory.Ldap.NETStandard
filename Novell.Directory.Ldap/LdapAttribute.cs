@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
 	/// <seealso cref="LdapModification">
 	/// </seealso>
 	
-	public class LdapAttribute : System.ICloneable, System.IComparable
+	public class LdapAttribute : System.IComparable
 	{
 		class URLData
 		{
@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap
 					catch (System.IO.IOException uee)
 					{
 						// Exception should NEVER get thrown but just in case it does ...
-						throw new System.SystemException(uee.ToString());
+						throw new System.Exception(uee.ToString());
 					}
 				}
 				return sva;
@@ -207,7 +207,7 @@ namespace Novell.Directory.Ldap
 					}
 					catch (System.IO.IOException use)
 					{
-						throw new System.SystemException(use.ToString());
+						throw new System.Exception(use.ToString());
 					}
 				}
 				return rval;
@@ -297,7 +297,7 @@ namespace Novell.Directory.Ldap
 				}
 				catch (System.IO.IOException ue)
 				{
-					throw new System.SystemException(ue.ToString());
+					throw new System.Exception(ue.ToString());
 				}
 				return ;
 			}
@@ -408,7 +408,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.IO.IOException e)
 			{
-				throw new System.SystemException(e.ToString());
+				throw new System.Exception(e.ToString());
 			}
 			return ;
 		}
@@ -445,7 +445,7 @@ namespace Novell.Directory.Ldap
 				}
 				catch (System.IO.IOException e)
 				{
-					throw new System.SystemException(e.ToString());
+					throw new System.Exception(e.ToString());
 				}
 			}
 			return ;
@@ -469,7 +469,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 		}
 		
@@ -496,7 +496,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.IO.IOException ue)
 			{
-				throw new System.SystemException(ue.ToString());
+				throw new System.Exception(ue.ToString());
 			}
 			return ;
 		}
@@ -654,7 +654,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.IO.IOException ue)
 			{
-				throw new System.SystemException(ue.ToString());
+				throw new System.Exception(ue.ToString());
 			}
 			return ;
 		}
@@ -849,7 +849,7 @@ gotSubType: ;
 			catch (System.IO.IOException uee)
 			{
 				// This should NEVER happen but just in case ...
-				throw new System.SystemException(uee.ToString());
+				throw new System.Exception(uee.ToString());
 			}
 			return ;
 		}
@@ -1060,7 +1060,7 @@ gotSubType: ;
 			}
 			catch (System.Exception e)
 			{
-				throw new System.SystemException(e.ToString());
+				throw new System.Exception(e.ToString());
 			}
 			return result.ToString();
 		}

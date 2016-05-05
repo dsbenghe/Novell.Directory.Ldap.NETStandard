@@ -235,7 +235,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			else if (input != null)
 				return input.ReadByte();
 			else
-				throw new System.SystemException();
+				throw new System.Exception();
 		}
 
 		public int nextToken()

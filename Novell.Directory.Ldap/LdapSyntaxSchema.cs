@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.IO.IOException e)
 			{
-				throw new System.SystemException(e.ToString());
+				throw new System.Exception(e.ToString());
 			}
 			return ;
 		}

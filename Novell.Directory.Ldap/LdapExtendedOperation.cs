@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
 	/// </summary>
 	/// <seealso cref="LdapConnection.ExtendedOperation">
 	/// </seealso>
-	public class LdapExtendedOperation : System.ICloneable
+	public class LdapExtendedOperation
 	{
 		
 		private System.String oid;
@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 		}
 		

@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap.Asn1
 			{
 				// Should never happen - the current Asn1Object does not have
 				// a encode method. 
-				throw new System.SystemException("IOException while encoding to byte array: " + e.ToString());
+				throw new System.Exception("IOException while encoding to byte array: " + e.ToString());
 			}
 			return SupportClass.ToSByteArray(out_Renamed.ToArray());
 		}

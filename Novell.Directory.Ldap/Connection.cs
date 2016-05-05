@@ -516,11 +516,11 @@ namespace Novell.Directory.Ldap
 			{
 				if (writeSemaphoreOwner == 0)
 				{
-					throw new System.SystemException("Connection.freeWriteSemaphore(" + msgId + "): semaphore not owned by any thread");
+					throw new System.Exception("Connection.freeWriteSemaphore(" + msgId + "): semaphore not owned by any thread");
 				}
 				else if (writeSemaphoreOwner != msgId)
 				{
-					throw new System.SystemException("Connection.freeWriteSemaphore(" + msgId + "): thread does not own the semaphore, owned by " + writeSemaphoreOwner);
+					throw new System.Exception("Connection.freeWriteSemaphore(" + msgId + "): thread does not own the semaphore, owned by " + writeSemaphoreOwner);
 				}
 				// if all instances of this semaphore for this thread are released,
 				// wake up all threads waiting.
@@ -1120,7 +1120,7 @@ namespace Novell.Directory.Ldap
 					sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
 					out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
 					out_Renamed.Flush();
-					out_Renamed.Close();
+					out_Renamed.Dispose();
 				}
 				catch (System.Exception ex)
 				{
@@ -1139,12 +1139,12 @@ namespace Novell.Directory.Ldap
 					if(Ssl)
 					{
 						sock.Shutdown(SocketShutdown.Both);
-						sock.Close();
+						sock.Dispose();
 					}
 					else
 					{
 						if(in_Renamed != null)
-							in_Renamed.Close();						
+							in_Renamed.Dispose();						
 						socket.Close();
 					}
 				}
@@ -1207,7 +1207,7 @@ namespace Novell.Directory.Ldap
 						sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
 						out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
 						out_Renamed.Flush();
-						out_Renamed.Close();
+						out_Renamed.Dispose();
 					}
 					catch (System.Exception ex)
 					{
@@ -1226,16 +1226,16 @@ namespace Novell.Directory.Ldap
 						if(Ssl)
 						{
 							if(in_Renamed != null)
-								in_Renamed.Close();
+								in_Renamed.Dispose();
 							if(out_Renamed != null)
-								out_Renamed.Close();
+								out_Renamed.Dispose();
 							//sock.Shutdown(SocketShutdown.Both);
-							sock.Close();
+							sock.Dispose();
 						}
 						else
 						{
 							if(in_Renamed != null)
-								in_Renamed.Close();						
+								in_Renamed.Dispose();						
 							socket.Close();
 						}
 					}
@@ -1443,8 +1443,8 @@ namespace Novell.Directory.Ldap
 			try
 			{
 				this.stopReaderMessageID = Connection.STOP_READING;
-				this.out_Renamed.Close();
-				this.in_Renamed.Close();
+				this.out_Renamed.Dispose();
+				this.in_Renamed.Dispose();
 				//				this.sock.Shutdown(SocketShutdown.Both);
 				//				this.sock.Close();
 				waitForReader(null);

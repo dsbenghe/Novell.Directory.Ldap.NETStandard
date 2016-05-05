@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Asn1
 	/// </pre>
 	/// </summary>
 	[CLSCompliantAttribute(true)]
-	public class Asn1Identifier:System.Object, System.ICloneable
+	public class Asn1Identifier:System.Object
 	{
 		/// <summary> Returns the CLASS of this Asn1Identifier as an int value.
 		/// 
@@ -320,7 +320,7 @@ namespace Novell.Directory.Ldap.Asn1
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 		}
 	}

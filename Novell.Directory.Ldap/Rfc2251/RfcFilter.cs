@@ -495,7 +495,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 					}
 					catch (System.IO.IOException ue)
 					{
-						throw new System.SystemException("UTF-8 String encoding not supported by JVM");
+						throw new System.Exception("UTF-8 String encoding not supported by JVM");
 					}
 				}
 			}
@@ -944,7 +944,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 				}
 				catch (System.IO.IOException e)
 				{
-					throw new System.SystemException("Default JVM does not support UTF-8 encoding" + e);
+					throw new System.Exception("Default JVM does not support UTF-8 encoding" + e);
 				}
 			}
 			else

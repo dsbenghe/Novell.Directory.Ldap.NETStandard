@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			}
 			catch (System.IO.IOException ue)
 			{
-				throw new System.SystemException("US-ASCII String encoding not supported by JVM");
+				throw new System.Exception("US-ASCII String encoding not supported by JVM");
 			}
 		}
 		
@@ -260,7 +260,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			// the number of encoded bytes should be multiple of 4
 			if ((ecLen % 4) != 0)
 			{
-				throw new System.SystemException("Novell.Directory.Ldap.ldif_dsml." + "Base64Decoder: decode: mal-formatted encode value");
+				throw new System.Exception("Novell.Directory.Ldap.ldif_dsml." + "Base64Decoder: decode: mal-formatted encode value");
 			}
 			
 			// every four-bytes in encodedString, except the last one if it in the
@@ -369,7 +369,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			// the number of encoded bytes should be multiple of number 4
 			if ((esbLen % 4) != 0)
 			{
-				throw new System.SystemException("Novell.Directory.Ldap.ldif_dsml." + "Base64Decoder: decode error: mal-formatted encode value");
+				throw new System.Exception("Novell.Directory.Ldap.ldif_dsml." + "Base64Decoder: decode error: mal-formatted encode value");
 			}
 			
 			// every four-bytes in ebs, except the last one if it in the form of
@@ -552,7 +552,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			}
 			catch (System.IO.IOException ue)
 			{
-				throw new System.SystemException("UTF-8 String encoding not supported by JVM");
+				throw new System.Exception("UTF-8 String encoding not supported by JVM");
 			}
 		}
 		

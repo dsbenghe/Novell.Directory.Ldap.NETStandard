@@ -437,7 +437,7 @@ namespace Novell.Directory.Ldap
 					break;
 				
 				default: 
-					throw new System.SystemException("Type " + type + " Not Supported");
+					throw new System.Exception("Type " + type + " Not Supported");
 				
 			}
 			return ret;

@@ -297,7 +297,7 @@ namespace Novell.Directory.Ldap
 						break;
 					
 					default: 
-						throw new System.SystemException("LdapMessage: Unknown Type " + Type);
+						throw new System.Exception("LdapMessage: Unknown Type " + Type);
 					
 				}
 				return name;

@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
 	/// </seealso>
 	/// <seealso cref="LdapEntry">
 	/// </seealso>
-	public class LdapAttributeSet:SupportClass.AbstractSetSupport, System.ICloneable//, SupportClass.SetSupport
+	public class LdapAttributeSet:SupportClass.AbstractSetSupport//, SupportClass.SetSupport
 	{
 		/// <summary> Returns the number of attributes in this set.
 		/// 
@@ -103,7 +103,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 		}
 		

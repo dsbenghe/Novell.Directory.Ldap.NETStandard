@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
 	/// 
 	/// 
 	/// </summary>
-	public class LdapConnection : System.ICloneable
+	public class LdapConnection
 	{
 		private void  InitBlock()
 		{
@@ -655,7 +655,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 			newClone.conn = conn; // same underlying connection
 			
@@ -1323,7 +1323,7 @@ namespace Novell.Directory.Ldap
 				catch (System.IO.IOException ex)
 				{
 					passwd = null; // Keep no reference to String object
-					throw new System.SystemException(ex.ToString());
+					throw new System.Exception(ex.ToString());
 				}
 			}
 			Bind(version, dn, pw, cons);
@@ -3210,7 +3210,7 @@ namespace Novell.Directory.Ldap
 			
 			if (!request.Request)
 			{
-				throw new System.SystemException("Object is not a request message");
+				throw new System.Exception("Object is not a request message");
 			}
 			
 			if (cons == null)

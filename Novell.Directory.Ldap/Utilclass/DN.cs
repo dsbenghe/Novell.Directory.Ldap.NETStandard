@@ -203,7 +203,7 @@ namespace Novell.Directory.Ldap.Utilclass
 							--currIndex;
 							state = OID_ATTR_TYPE;
 						}
-						else if (!(System.Char.GetUnicodeCategory(currChar) == System.Globalization.UnicodeCategory.SpaceSeparator))
+						else if (!(System.Globalization.CharUnicodeInfo.GetUnicodeCategory(currChar) == System.Globalization.UnicodeCategory.SpaceSeparator))
 							throw new System.ArgumentException(dnString);
 						break;
 					

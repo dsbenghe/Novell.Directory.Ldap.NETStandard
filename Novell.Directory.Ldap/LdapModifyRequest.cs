@@ -89,7 +89,7 @@ namespace Novell.Directory.Ldap
 					Asn1Sequence opSeq = (Asn1Sequence) mods[m];
 					if (opSeq.size() != 2)
 					{
-						throw new System.SystemException("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.size());
+						throw new System.Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.size());
 					}
 					// Contains operation and sequence for the attribute
 					Asn1Object[] opArray = opSeq.toArray();

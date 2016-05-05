@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap
 	/// </seealso>
 	/// <seealso cref="LdapConstraints.setControls">
 	/// </seealso>
-	public class LdapControl : System.ICloneable
+	public class LdapControl
 	{
 		/// <summary> Returns the identifier of the control.
 		/// 
@@ -163,7 +163,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 			sbyte[] vals = this.getValue();
 			sbyte[] twin = null;

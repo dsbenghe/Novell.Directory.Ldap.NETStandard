@@ -94,7 +94,7 @@ namespace Novell.Directory.Ldap.Asn1
 			}
 			catch (System.IO.IOException uee)
 			{
-				throw new System.SystemException(uee.ToString());
+				throw new System.Exception(uee.ToString());
 			}
 			return ;
 		}
@@ -165,7 +165,7 @@ namespace Novell.Directory.Ldap.Asn1
 			}
 			catch (System.IO.IOException uee)
 			{
-				throw new System.SystemException(uee.ToString());
+				throw new System.Exception(uee.ToString());
 			}
 			
 			return s;

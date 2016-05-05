@@ -282,7 +282,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 					break;
 				
 				default: 
-					throw new System.SystemException("RfcLdapMessage: Invalid tag: " + protocolOpId.Tag);
+					throw new System.Exception("RfcLdapMessage: Invalid tag: " + protocolOpId.Tag);
 				
 			}
 			

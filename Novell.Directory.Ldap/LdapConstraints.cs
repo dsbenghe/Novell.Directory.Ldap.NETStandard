@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
 	/// </summary>
 	/// <seealso cref="LdapConnection.Constraints">
 	/// </seealso>
-	public class LdapConstraints : System.ICloneable
+	public class LdapConstraints
 	{
 		/// <summary> Returns the maximum number of referrals to follow during automatic
 		/// referral following.  The operation will be abandoned and terminated by
@@ -450,7 +450,7 @@ namespace Novell.Directory.Ldap
 			}
 			catch (System.Exception ce)
 			{
-				throw new System.SystemException("Internal error, cannot create clone");
+				throw new System.Exception("Internal error, cannot create clone");
 			}
 		}
 		static LdapConstraints()
