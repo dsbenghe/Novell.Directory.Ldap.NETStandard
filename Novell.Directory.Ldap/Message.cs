@@ -535,7 +535,7 @@ namespace Novell.Directory.Ldap
 			// If timer thread started, stop it
 			if (timer != null)
 			{
-				timer.Interrupt();
+				timer.Stop();
 			}
 			return ;
 		}
@@ -556,7 +556,7 @@ namespace Novell.Directory.Ldap
 		/// <summary> Timer class to provide timing for messages.  Only called
 		/// if time to wait is non zero.
 		/// </summary>
-		private sealed class Timeout:SupportClass.ThreadClass
+		private sealed class Timeout : SupportClass.ThreadClass
 		{
 			private void  InitBlock(Message enclosingInstance)
 			{
@@ -582,24 +582,27 @@ namespace Novell.Directory.Ldap
 				message = msg;
 				return ;
 			}
-			
-			/// <summary> The timeout thread.  If it wakes from the sleep, future input
-			/// is stopped and the request is timed out.
-			/// </summary>
-			override public void  Run()
+
+            /// <summary> The timeout thread.  If it wakes from the sleep, future input
+            /// is stopped and the request is timed out.
+            /// </summary>
+            public override void  Run()
 			{
-				try
+				for (int i = 0; i < 10000; i++)
 				{
-					System.Threading.Thread.Sleep(new System.TimeSpan(10000 * timeToWait));
-					message.acceptReplies = false;
-					// Note: Abandon clears the bind semaphore after failed bind.
-					message.Abandon(null, new InterThreadException("Client request timed out", null, LdapException.Ldap_TIMEOUT, null, message));
+				    if (!IsStopping)
+				    {
+				        System.Threading.Thread.Sleep(new System.TimeSpan(timeToWait));
+				        message.acceptReplies = false;
+				        // Note: Abandon clears the bind semaphore after failed bind.
+				        message.Abandon(null,
+				            new InterThreadException("Client request timed out", null, LdapException.Ldap_TIMEOUT, null, message));
+				    }
+				    else
+				    {
+				        break;
+				    }
 				}
-				catch (System.Threading.ThreadInterruptedException ie)
-				{
-					// the timer was stopped, do nothing
-				}
-				return ;
 			}
 		}
 

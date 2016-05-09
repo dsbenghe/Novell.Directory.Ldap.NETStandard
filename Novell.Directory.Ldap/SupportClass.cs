@@ -571,6 +571,8 @@ public interface IThreadRunnable
 			/// The instance of System.Threading.Thread
 			/// </summary>
 			private System.Threading.Thread threadField;
+
+		    private bool isStopping;
 	      
 			/// <summary>
 			/// Initializes a new instance of the ThreadClass class
@@ -625,13 +627,19 @@ public interface IThreadRunnable
 				threadField.Start();
 			}
 	      
-			/// <summary>
-			/// Interrupts a thread that is in the WaitSleepJoin thread state
-			/// </summary>
-			public virtual void Interrupt()
-			{
-				threadField.Interrupt();
-			}
+			///// <summary>
+			///// Interrupts a thread that is in the WaitSleepJoin thread state
+			///// </summary>
+			//public virtual void Interrupt()
+			//{
+			//	threadField.Interrupt();
+			//}
+
+
+		    public virtual void Stop()
+		    {
+		        isStopping = true;
+		    }
 	      
 			/// <summary>
 			/// Gets the current thread instance
@@ -689,8 +697,13 @@ public interface IThreadRunnable
 					threadField.IsBackground = value;
 				}
 			}
-	      
-			/// <summary>
+
+		    public bool IsStopping
+		    {
+		        get { return isStopping; }
+		    }
+
+		    /// <summary>
 			/// Blocks the calling thread until a thread terminates
 			/// </summary>
 			public void Join()
