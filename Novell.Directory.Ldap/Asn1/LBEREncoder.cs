@@ -73,9 +73,6 @@ namespace Novell.Directory.Ldap.Asn1
 		
 		/* Encoders for ASN.1 simple type Contents
 		*/
-		public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-		{
-		}
 		/// <summary> BER Encode an Asn1Boolean directly into the specified output stream.</summary>
 		public virtual void  encode(Asn1Boolean b, System.IO.Stream out_Renamed)
 		{

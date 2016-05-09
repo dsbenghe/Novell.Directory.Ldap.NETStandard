@@ -37,7 +37,6 @@ namespace Novell.Directory.Ldap.Utilclass
 	/// <summary>
 	/// Specifies the types of Tokens.
 	/// </summary>
-	[Serializable]
 	public enum TokenTypes
 	{
 		EOL = '\n',

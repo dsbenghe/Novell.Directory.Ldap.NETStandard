@@ -74,9 +74,6 @@ namespace Novell.Directory.Ldap.Asn1
 		{
 			InitBlock();
 		}
-		public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-		{
-		}
 
 		private void  InitBlock()
 		{

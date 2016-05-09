@@ -36,8 +36,7 @@ namespace Novell.Directory.Ldap.Asn1
 	
 	/// <summary> This is the base class for all other Asn1 types.</summary>
 	[CLSCompliantAttribute(true)]
-	[Serializable]
-	public abstract class Asn1Object : System.Runtime.Serialization.ISerializable
+	public abstract class Asn1Object
 	{
 		
 		private Asn1Identifier id;
@@ -48,11 +47,7 @@ namespace Novell.Directory.Ldap.Asn1
 			return ;
 		}
 		
-		public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-		{
-		}
-		
-		/// <summary> Abstract method that must be implemented by each child
+	    /// <summary> Abstract method that must be implemented by each child
 		/// class to encode itself ( an Asn1Object) directly intto 
 		/// a output stream.
 		/// 

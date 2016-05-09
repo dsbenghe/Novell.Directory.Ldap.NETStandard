@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Asn1
 	/// building Ldap packets.
 	/// </summary>
 	[CLSCompliantAttribute(true)]
-	public interface Asn1Encoder : System.Runtime.Serialization.ISerializable
+	public interface Asn1Encoder
 		{
 			
 			/* Encoders for ASN.1 simple types */
