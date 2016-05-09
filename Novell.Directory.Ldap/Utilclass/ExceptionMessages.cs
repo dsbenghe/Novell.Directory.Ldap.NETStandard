@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Utilclass
 	/// Two entries are made for each message, a String identifier, and the
 	/// actual error string.  Parameters are identified as {0}, {1}, etc.
 	/// </summary>
-	public class ExceptionMessages:System.Resources.ResourceManager
+	public class ExceptionMessages : System.Resources.ResourceManager
 	{
 		public System.Object[][] getContents()
 		{

@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap.Utilclass
 		{
 			if (defaultMessages == null)
 			{
-				defaultMessages = new ResourceManager("Ldap2._1._2.ExceptionMessages", Assembly.GetExecutingAssembly());
+				defaultMessages = new ResourceManager("Ldap2._1._2.ExceptionMessages", typeof(ResourcesHandler).GetTypeInfo().Assembly);
 			}
 			
 			if (defaultLocale == null)
@@ -181,7 +181,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			{
 /*
 				defaultResultCodes = ResourceManager.CreateFileBasedResourceManager("ResultCodeMessages", "Resources", null);*/
-				defaultResultCodes = new ResourceManager("ResultCodeMessages", Assembly.GetExecutingAssembly());
+				defaultResultCodes = new ResourceManager("ResultCodeMessages", typeof(ResourcesHandler).GetTypeInfo().Assembly);
 			}
 
 			if (defaultLocale == null)

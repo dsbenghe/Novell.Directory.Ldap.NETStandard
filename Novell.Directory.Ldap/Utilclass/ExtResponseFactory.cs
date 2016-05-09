@@ -3,6 +3,7 @@ using System;
 using Novell.Directory.Ldap;
 using Novell.Directory.Ldap.Extensions;
 using Novell.Directory.Ldap.Rfc2251;
+using System.Reflection;
 
 
 namespace Novell.Directory.Ldap.Utilclass

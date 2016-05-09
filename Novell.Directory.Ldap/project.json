@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "Novell.Directory.Ldap Class Library",
   "authors": [ "dsbenghe" ],
@@ -16,16 +16,20 @@
             }
         }
     },
-    "dependencies": {
-        "System.Collections.NonGeneric": "4.0.1-beta-23516",
-        "System.Console": "4.0.0-beta-23516",
-        "System.IO": "4.0.11-beta-23516",
-        "System.IO.FileSystem": "4.0.1-beta-23516",
-        "System.Net.Requests": "4.0.11-beta-23516",
-        "System.Net.Sockets": "4.1.0-rc2-24027",
-        "System.Security.Cryptography.Algorithms": "4.1.0-rc2-24027",
-        "System.Security.Cryptography.X509Certificates": "4.0.0-beta-23516",
-        "System.Text.RegularExpressions": "4.0.11-beta-23516",
-        "System.Threading.Thread": "4.0.0-beta-23516"
-    }
+  "dependencies": {
+    "System.Collections.NonGeneric": "4.0.1-beta-23516",
+    "System.Console": "4.0.0-beta-23516",
+    "System.IO": "4.0.11-beta-23516",
+    "System.IO.FileSystem": "4.0.1-beta-23516",
+    "System.Net.NameResolution": "4.0.0-beta-23516",
+    "System.Net.Requests": "4.0.11-beta-23516",
+    "System.Net.Sockets": "4.1.0-rc2-24027",
+    "System.Reflection": "4.1.0-beta-23516",
+    "System.Reflection.Extensions": "4.0.1-beta-23516",
+    "System.Reflection.Primitives": "4.0.1-beta-23516",
+    "System.Security.Cryptography.Algorithms": "4.1.0-rc2-24027",
+    "System.Security.Cryptography.X509Certificates": "4.0.0-beta-23516",
+    "System.Text.RegularExpressions": "4.0.11-beta-23516",
+    "System.Threading.Thread": "4.0.0-beta-23516"
+  }
 }

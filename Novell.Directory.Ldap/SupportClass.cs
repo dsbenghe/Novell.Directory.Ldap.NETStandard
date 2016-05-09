@@ -37,12 +37,14 @@
 //
 
 using System;
+using System.Collections;
+using System.Reflection;
 
-	/// <summary>
-	/// This interface should be implemented by any class whose instances are intended 
-	/// to be executed by a thread.
-	/// </summary>
-	public interface IThreadRunnable
+/// <summary>
+/// This interface should be implemented by any class whose instances are intended 
+/// to be executed by a thread.
+/// </summary>
+public interface IThreadRunnable
 	{
 		/// <summary>
 		/// This method has to be implemented in order that starting of the thread causes the object's 
@@ -661,22 +663,7 @@ using System;
 						threadField.Name = value; 
 				}
 			}
-	      
-			/// <summary>
-			/// Gets or sets a value indicating the scheduling priority of a thread
-			/// </summary>
-			public System.Threading.ThreadPriority Priority
-			{
-				get
-				{
-					return threadField.Priority;
-				}
-				set
-				{
-					threadField.Priority = value;
-				}
-			}
-	      
+	           
 			/// <summary>
 			/// Gets a value indicating the execution status of the current thread
 			/// </summary>
@@ -715,11 +702,11 @@ using System;
 			/// Blocks the calling thread until a thread terminates or the specified time elapses
 			/// </summary>
 			/// <param name="MiliSeconds">Time of wait in milliseconds</param>
-			public void Join(long MiliSeconds)
+			public void Join(int MiliSeconds)
 			{
 				lock(this)
 				{
-					threadField.Join(new System.TimeSpan(MiliSeconds * 10000));
+					threadField.Join(MiliSeconds * 10000);
 				}
 			}
 	      
@@ -728,11 +715,11 @@ using System;
 			/// </summary>
 			/// <param name="MiliSeconds">Time of wait in milliseconds</param>
 			/// <param name="NanoSeconds">Time of wait in nanoseconds</param>
-			public void Join(long MiliSeconds, int NanoSeconds)
+			public void Join(int MiliSeconds, int NanoSeconds)
 			{
 				lock(this)
 				{
-					threadField.Join(new System.TimeSpan(MiliSeconds * 10000 + NanoSeconds * 100));
+					threadField.Join(MiliSeconds * 10000 + NanoSeconds * 100);
 				}
 			}
 	      
@@ -783,7 +770,7 @@ using System;
 			/// <returns>A String that represents the current Object</returns>
 			public override System.String ToString()
 			{
-				return "Thread[" + Name + "," + Priority.ToString() + "," + "" + "]";
+				return "Thread[" + Name + "]";
 			}
 	     
 			/// <summary>
@@ -1950,87 +1937,89 @@ using System;
 			}
 		}
 
-		/*******************************/
-		/// <summary>
-		/// This class uses a cryptographic Random Number Generator to provide support for
-		/// strong pseudo-random number generation.
-		/// </summary>
-		public class SecureRandomSupport
-		{
-			private System.Security.Cryptography.RNGCryptoServiceProvider generator;
+    // REMOVED Class not used
 
-			/// <summary>
-			/// Initializes a new instance of the random number generator.
-			/// </summary>
-			public SecureRandomSupport()
-			{
-				this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider();
-			}
+    ///*******************************/
+    ///// <summary>
+    ///// This class uses a cryptographic Random Number Generator to provide support for
+    ///// strong pseudo-random number generation.
+    ///// </summary>
+    //public class SecureRandomSupport
+    //{
+    //    private System.Security.Cryptography.RNGCryptoServiceProvider generator;
 
-			/// <summary>
-			/// Initializes a new instance of the random number generator with the given seed.
-			/// </summary>
-			/// <param name="seed">The initial seed for the generator</param>
-			public SecureRandomSupport(byte[] seed)
-			{
-				this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider(seed);
-			}
+    //    /// <summary>
+    //    /// Initializes a new instance of the random number generator.
+    //    /// </summary>
+    //    public SecureRandomSupport()
+    //    {
+    //        this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider();
+    //    }
 
-			/// <summary>
-			/// Returns an array of bytes with a sequence of cryptographically strong random values
-			/// </summary>
-			/// <param name="randomnumbersarray">The array of bytes to fill</param>
-			[CLSCompliantAttribute(false)]
-			public sbyte[] NextBytes(byte[] randomnumbersarray)
-			{			
-				this.generator.GetBytes(randomnumbersarray);
-				return ToSByteArray(randomnumbersarray);
-			}
+    //    /// <summary>
+    //    /// Initializes a new instance of the random number generator with the given seed.
+    //    /// </summary>
+    //    /// <param name="seed">The initial seed for the generator</param>
+    //    public SecureRandomSupport(byte[] seed)
+    //    {
+    //        this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider(seed);
+    //    }
 
-			/// <summary>
-			/// Returns the given number of seed bytes generated for the first running of a new instance 
-			/// of the random number generator
-			/// </summary>
-			/// <param name="numberOfBytes">Number of seed bytes to generate</param>
-			/// <returns>Seed bytes generated</returns>
-			public static byte[] GetSeed(int numberOfBytes)
-			{
-				System.Security.Cryptography.RNGCryptoServiceProvider generatedSeed = new System.Security.Cryptography.RNGCryptoServiceProvider();
-				byte[] seeds = new byte[numberOfBytes];
-				generatedSeed.GetBytes(seeds);
-				return seeds;
-			}
+    //    /// <summary>
+    //    /// Returns an array of bytes with a sequence of cryptographically strong random values
+    //    /// </summary>
+    //    /// <param name="randomnumbersarray">The array of bytes to fill</param>
+    //    [CLSCompliantAttribute(false)]
+    //    public sbyte[] NextBytes(byte[] randomnumbersarray)
+    //    {
+    //        this.generator.GetBytes(randomnumbersarray);
+    //        return ToSByteArray(randomnumbersarray);
+    //    }
 
-			/// <summary>
-			/// Creates a new instance of the random number generator with the seed provided by the user
-			/// </summary>
-			/// <param name="newSeed">Seed to create a new random number generator</param>
-			public void SetSeed(byte[] newSeed)
-			{
-				this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider(newSeed);
-			}
+    //    /// <summary>
+    //    /// Returns the given number of seed bytes generated for the first running of a new instance 
+    //    /// of the random number generator
+    //    /// </summary>
+    //    /// <param name="numberOfBytes">Number of seed bytes to generate</param>
+    //    /// <returns>Seed bytes generated</returns>
+    //    public static byte[] GetSeed(int numberOfBytes)
+    //    {
+    //        System.Security.Cryptography.RNGCryptoServiceProvider generatedSeed = new System.Security.Cryptography.RNGCryptoServiceProvider();
+    //        byte[] seeds = new byte[numberOfBytes];
+    //        generatedSeed.GetBytes(seeds);
+    //        return seeds;
+    //    }
 
-			/// <summary>
-			/// Creates a new instance of the random number generator with the seed provided by the user
-			/// </summary>
-			/// <param name="newSeed">Seed to create a new random number generator</param>
-			public void SetSeed(long newSeed)
-			{
-				byte[] bytes = new byte[8];
-				for (int index= 7; index > 0 ; index--)
-				{
-					bytes[index] = (byte)(newSeed - (long)((newSeed >> 8) << 8));
-					newSeed  = (long)(newSeed >> 8);
-				}			
-				SetSeed(bytes);
-			}
-		}
+    //    /// <summary>
+    //    /// Creates a new instance of the random number generator with the seed provided by the user
+    //    /// </summary>
+    //    /// <param name="newSeed">Seed to create a new random number generator</param>
+    //    public void SetSeed(byte[] newSeed)
+    //    {
+    //        this.generator = new System.Security.Cryptography.RNGCryptoServiceProvider(newSeed);
+    //    }
 
-		/*******************************/
-		/// <summary>
-		/// Interface used by classes which must be single threaded.
-		/// </summary>
-		public interface SingleThreadModel
+    //    /// <summary>
+    //    /// Creates a new instance of the random number generator with the seed provided by the user
+    //    /// </summary>
+    //    /// <param name="newSeed">Seed to create a new random number generator</param>
+    //    public void SetSeed(long newSeed)
+    //    {
+    //        byte[] bytes = new byte[8];
+    //        for (int index = 7; index > 0; index--)
+    //        {
+    //            bytes[index] = (byte)(newSeed - (long)((newSeed >> 8) << 8));
+    //            newSeed = (long)(newSeed >> 8);
+    //        }
+    //        SetSeed(bytes);
+    //    }
+    //}
+
+    /*******************************/
+    /// <summary>
+    /// Interface used by classes which must be single threaded.
+    /// </summary>
+    public interface SingleThreadModel
 		{
 		}
 
