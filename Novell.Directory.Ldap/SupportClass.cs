@@ -723,13 +723,6 @@ public interface IThreadRunnable
 				}
 			}
 	      
-			/// <summary>
-			/// Resumes a thread that has been suspended
-			/// </summary>
-			public void Resume()
-			{
-				threadField.Resume();
-			}
 	      
 			/// <summary>
 			/// Raises a ThreadAbortException in the thread on which it is invoked, 
@@ -756,13 +749,6 @@ public interface IThreadRunnable
 				}
 			}
 	      
-			/// <summary>
-			/// Suspends the thread, if the thread is already suspended it has no effect
-			/// </summary>
-			public void Suspend()
-			{
-				threadField.Suspend();
-			}
 	      
 			/// <summary>
 			/// Obtain a String that represents the current Object
