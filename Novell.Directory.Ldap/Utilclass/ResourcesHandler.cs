@@ -30,6 +30,7 @@
 //
 
 using System;
+using System.Globalization;
 using System.Resources;
 using System.Threading;
 using System.Reflection;
@@ -112,7 +113,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			}
 			
 			if (defaultLocale == null)
-				defaultLocale = Thread.CurrentThread.CurrentUICulture;
+				defaultLocale = CultureInfo.CurrentUICulture;
 
 			if (locale == null)
 				locale = defaultLocale;
@@ -185,7 +186,7 @@ namespace Novell.Directory.Ldap.Utilclass
 			}
 
 			if (defaultLocale == null)
-				defaultLocale = Thread.CurrentThread.CurrentUICulture;
+				defaultLocale = CultureInfo.CurrentUICulture;
 
 			if (locale == null)
 				locale = defaultLocale;
@@ -204,7 +205,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
 		static ResourcesHandler()
 		{
-			defaultLocale = Thread.CurrentThread.CurrentUICulture;
+			defaultLocale = CultureInfo.CurrentUICulture;
 		}
 	} //end class ResourcesHandler
 }
