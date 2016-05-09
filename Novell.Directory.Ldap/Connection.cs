@@ -567,33 +567,26 @@ namespace Novell.Directory.Ldap
 			{
 				// Don't initialize connection while previous reader thread still
 				// active.
-				try
+				/*
+				* The reader thread may start and immediately terminate.
+				* To prevent the waitForReader from waiting forever
+				* for the dead to rise, we leave traces of the deceased.
+				* If the thread is already gone, we throw an exception.
+				*/
+				if (thread == deadReader)
 				{
-					/*
-					* The reader thread may start and immediately terminate.
-					* To prevent the waitForReader from waiting forever
-					* for the dead to rise, we leave traces of the deceased.
-					* If the thread is already gone, we throw an exception.
-					*/
-					if (thread == deadReader)
-					{
-						if (thread == null)
-							/* then we wanted a shutdown */
-							return ;
-						System.IO.IOException lex = deadReaderException;
-						deadReaderException = null;
-						deadReader = null;
-						// Reader thread terminated
-						throw new LdapException(ExceptionMessages.CONNECTION_READER, LdapException.CONNECT_ERROR, null, lex);
-					}
-					lock (this)
-					{
-						System.Threading.Monitor.Wait(this, TimeSpan.FromMilliseconds(5));
-					}
+					if (thread == null)
+						/* then we wanted a shutdown */
+						return ;
+					System.IO.IOException lex = deadReaderException;
+					deadReaderException = null;
+					deadReader = null;
+					// Reader thread terminated
+					throw new LdapException(ExceptionMessages.CONNECTION_READER, LdapException.CONNECT_ERROR, null, lex);
 				}
-				catch (System.Threading.ThreadInterruptedException ex)
+				lock (this)
 				{
-					;
+					System.Threading.Monitor.Wait(this, TimeSpan.FromMilliseconds(5));
 				}
 				if(reader!=null)
 				{

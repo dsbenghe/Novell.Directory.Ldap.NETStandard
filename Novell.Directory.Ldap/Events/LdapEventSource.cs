@@ -325,14 +325,7 @@ namespace Novell.Directory.Ldap.Events
 	    while ((isrunning)
 		   && (!searchqueue.isResponseReceived(messageid))) 
 	    {
-	      try 
-	      {
-		Thread.Sleep(sleep_time);
-	      } 
-	      catch (ThreadInterruptedException e) 
-	      {
-		Console.WriteLine("EventsGenerator::Run Got ThreadInterruptedException e = {0}", e);
-	      }
+		    Thread.Sleep(sleep_time);
 	    }
 	    
 	    if (isrunning) 
