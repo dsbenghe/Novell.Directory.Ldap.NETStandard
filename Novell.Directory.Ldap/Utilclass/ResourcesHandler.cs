@@ -31,9 +31,6 @@
 
 using System;
 using System.Globalization;
-using System.Resources;
-using System.Threading;
-using System.Reflection;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -47,16 +44,8 @@ namespace Novell.Directory.Ldap.Utilclass
 		// Cannot create an instance of this class
 		private ResourcesHandler()
 		{
-			return ;
 		}
-			
-		/// <summary>  Initialized when the first Exception message string is requested</summary>
-		private static System.Resources.ResourceManager defaultMessages = null;
-		
-		
-		/// <summary> Package where resources are found</summary>
-		private static System.String pkg = "Novell.Directory.Ldap.Utilclass.";
-		
+				
 		/// <summary> The default Locale</summary>
 		private static System.Globalization.CultureInfo defaultLocale;
 		
@@ -101,12 +90,7 @@ namespace Novell.Directory.Ldap.Utilclass
 		/// if it there is no message for that key.
 		/// </returns>
 		public static System.String getMessage(System.String messageOrKey, System.Object[] arguments, System.Globalization.CultureInfo locale)
-		{
-			if (defaultMessages == null)
-			{
-				defaultMessages = new ResourceManager("Ldap2._1._2.ExceptionMessages", typeof(ResourcesHandler).GetTypeInfo().Assembly);
-			}
-			
+		{		
 			if (defaultLocale == null)
 				defaultLocale = CultureInfo.CurrentUICulture;
 
@@ -118,15 +102,7 @@ namespace Novell.Directory.Ldap.Utilclass
 				messageOrKey = "";
 			}
 			
-			string pattern;
-			try
-			{
-				pattern = defaultMessages.GetString(messageOrKey, locale);
-			}
-			catch (System.Resources.MissingManifestResourceException mre)
-			{
-				pattern = messageOrKey;
-			}
+			string pattern = ExceptionMessages.GetErrorMessage(messageOrKey);
 			
 			// Format the message if arguments were passed
 			if (arguments != null)

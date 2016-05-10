@@ -924,10 +924,7 @@ namespace Novell.Directory.Ldap
 		/* package */
 		internal void  writeMessage(Message info)
 		{
-			ExceptionMessages em = new ExceptionMessages();
-			System.Object [][]contents = em.getContents();
-			messages.Add(info);
-			
+			messages.Add(info);		
 			// For bind requests, if not connected, attempt to reconnect
 			if (info.BindRequest && (Connected == false) && ((System.Object) host != null))
 			{
@@ -937,15 +934,10 @@ namespace Novell.Directory.Ldap
 			{
 				LdapMessage msg = info.Request;
 				writeMessage(msg);
-				return ;
 			}
 			else
 			{
-				int errorcount=0;
-				for(errorcount=0;errorcount<contents.Length;errorcount++)
-					if(contents[errorcount][0]=="CONNECTION_CLOSED")
-						break;
-				throw new LdapException(ExceptionMessages.CONNECTION_CLOSED, new System.Object[]{host, port}, LdapException.CONNECT_ERROR, (String)contents[errorcount][1]);
+				throw new LdapException(ExceptionMessages.CONNECTION_CLOSED, new System.Object[]{host, port}, LdapException.CONNECT_ERROR, null);
 			}
 		}
 		

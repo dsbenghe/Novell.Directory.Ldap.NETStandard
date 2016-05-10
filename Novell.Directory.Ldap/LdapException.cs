@@ -902,7 +902,7 @@ namespace Novell.Directory.Ldap
 		/// <param name="rootException"> A throwable which is the underlying cause
 		/// of the LdapException.
 		/// </param>
-		public LdapException(System.String messageOrKey, System.Object[] arguments, int resultCode, System.String serverMsg, System.Exception rootException):this(messageOrKey, arguments, resultCode, serverMsg, null, rootException)
+		public LdapException(System.String messageOrKey, System.Object[] arguments, int resultCode, System.String serverMsg, System.Exception rootException) : this(messageOrKey, arguments, resultCode, serverMsg, null, rootException)
 		{
 			return ;
 		}
@@ -1014,8 +1014,7 @@ namespace Novell.Directory.Ldap
 		/// </param>
 		/* package */
 		internal LdapException(System.String messageOrKey, System.Object[] arguments, int resultCode, System.String serverMsg, System.String matchedDN, System.Exception rootException)
-			    //:base(Novell.Directory.Ldap.Utilclass.ResourcesHandler.getMessage(messageOrKey, arguments))
-		//Once resorcehandler starts working properly need to uncomment
+			    : base(Novell.Directory.Ldap.Utilclass.ResourcesHandler.getMessage(messageOrKey, arguments))
 		{
 			this.messageOrKey = messageOrKey;
 			this.arguments = arguments;
