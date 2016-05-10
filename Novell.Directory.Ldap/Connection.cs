@@ -317,8 +317,9 @@ namespace Novell.Directory.Ldap
 		private int ephemeralId = - 1;
 		private BindProperties bindProperties = null;
 		private int bindSemaphoreId = 0; // 0 is never used by to lock a semaphore
-		
-		private Thread reader = null; // New thread that reads data from the server.
+
+	    private ReaderThread readerThreadEnclosure;
+        private Thread reader = null; // New thread that reads data from the server.
 		private Thread deadReader = null; // Identity of last reader thread
 		private System.IO.IOException deadReaderException = null; // Last exception of reader
 		
@@ -1121,7 +1122,7 @@ namespace Novell.Directory.Ldap
 			{
 				// Just before closing the sockets, abort the reader thread
 				if ((reader != null) && (reason != "reader: thread stopping")) 
-					reader.Abort();
+					readerThreadEnclosure.Stop();
 				// Close the socket
 				try
 				{
@@ -1208,7 +1209,7 @@ namespace Novell.Directory.Ldap
 				{
 					// Just before closing the sockets, abort the reader thread
 					if ((reader != null) && (reason != "reader: thread stopping")) 
-						reader.Abort();
+						readerThreadEnclosure.Stop();
 					// Close the socket
 					try
 					{
@@ -1466,6 +1467,7 @@ namespace Novell.Directory.Ldap
 				this.enclosingInstance = enclosingInstance;
 			}
 			private Connection enclosingInstance;
+		    private bool isStopping;
 			public Connection Enclosing_Instance
 			{
 				get
@@ -1479,6 +1481,12 @@ namespace Novell.Directory.Ldap
 				InitBlock(enclosingInstance);
 				return ;
 			}
+
+		    public void Stop()
+		    {
+		        isStopping = true;
+		        this.enclosingInstance.reader.Join();
+		    }
 			
 			/// <summary> This thread decodes and processes RfcLdapMessage's from the server.
 			/// 
@@ -1491,7 +1499,8 @@ namespace Novell.Directory.Ldap
 				InterThreadException notify = null;
 				Message info = null;
 				System.IO.IOException ioex = null;
-				this.enclosingInstance.reader = System.Threading.Thread.CurrentThread;				
+			    this.enclosingInstance.readerThreadEnclosure = this;
+				this.enclosingInstance.reader = System.Threading.Thread.CurrentThread;			
 				//				Enclosing_Instance.reader = SupportClass.ThreadClass.Current();
 				//				Console.WriteLine("Inside run:" + this.enclosingInstance.reader.Name);
 				try
@@ -1584,20 +1593,13 @@ namespace Novell.Directory.Ldap
 								
 							}
 						}
-						if ((this.enclosingInstance.stopReaderMessageID == msgId) || (this.enclosingInstance.stopReaderMessageID == Novell.Directory.Ldap.Connection.STOP_READING))
+						if ((this.enclosingInstance.stopReaderMessageID == msgId) || (this.enclosingInstance.stopReaderMessageID == Novell.Directory.Ldap.Connection.STOP_READING) || isStopping)
 						{
 							// Stop the reader Thread.
 							return ;
 						}
 					}
 				}
-				catch(ThreadAbortException tae)
-				{
-					// Abort has been called on reader
-					// before closing sockets, from shutdown
-					return;
-				}
-
 				catch (System.IO.IOException ioe)
 				{
 					
