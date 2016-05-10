@@ -1768,24 +1768,6 @@ public interface IThreadRunnable
 			}
 
 			/// <summary>
-			/// Creates a message digest using the specified name to set Algorithm property.
-			/// </summary>
-			/// <param name="algorithm">The name of the algorithm to use</param>
-			public MessageDigestSupport(System.String algorithm)
-			{			
-				if (algorithm.Equals("SHA-1"))
-				{
-					this.algorithmName = "SHA";
-				}
-				else 
-				{
-					this.algorithmName = algorithm;
-				}
-				this.Algorithm = (System.Security.Cryptography.HashAlgorithm) System.Security.Cryptography.CryptoConfig.CreateFromName(this.algorithmName);			
-				this.position  = 0;
-			}
-
-			/// <summary>
 			/// Computes the hash value for the internal data digest.
 			/// </summary>
 			/// <returns>The array of signed bytes with the resulting hash value</returns>
@@ -1876,15 +1858,6 @@ public interface IThreadRunnable
 				return this.Algorithm.ToString();
 			}
 
-			/// <summary>
-			/// Generates a new instance of the MessageDigestSupport class using the specified algorithm
-			/// </summary>
-			/// <param name="algorithm">The name of the algorithm to use</param>
-			/// <returns>A new instance of the MessageDigestSupport class</returns>
-			public static MessageDigestSupport GetInstance(System.String algorithm)
-			{
-				return new MessageDigestSupport(algorithm);
-			}
 		
 			/// <summary>
 			/// Compares two arrays of signed bytes evaluating equivalence in digest data
