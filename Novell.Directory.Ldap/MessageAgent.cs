@@ -411,13 +411,7 @@ namespace Novell.Directory.Ldap
 						}
 						
 						// No data, wait for something to come in.
-						try
-						{
-							System.Threading.Monitor.Wait(messages);
-						}
-						catch (System.Threading.ThreadInterruptedException ex)
-						{
-						}
+						System.Threading.Monitor.Wait(messages);
 					} /* end while */
 				} /* end synchronized */
 			}

@@ -484,17 +484,8 @@ namespace Novell.Directory.Ldap
 							// we already own the semahpore
 							break;
 						}
-						try
-						{
-							// Keep trying for the lock
-							System.Threading.Monitor.Wait(writeSemaphore);
-							continue;
-						}
-						catch (System.Threading.ThreadInterruptedException ex)
-						{
-							// Keep trying for the lock
-							continue;
-						}
+						// Keep trying for the lock
+						Monitor.Wait(writeSemaphore);
 					}
 				}
 				writeSemaphoreCount++;

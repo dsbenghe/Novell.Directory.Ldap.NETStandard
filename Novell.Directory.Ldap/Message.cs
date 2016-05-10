@@ -158,14 +158,7 @@ namespace Novell.Directory.Ldap
 				{
 					if ((replies.Count == 0))
 					{
-						try
-						{
-							System.Threading.Monitor.Wait(replies);
-						}
-						catch (System.Threading.ThreadInterruptedException ir)
-						{
-							; // do nothing
-						}
+						System.Threading.Monitor.Wait(replies);
 						if (waitForReply_Renamed_Field)
 						{
 							continue;
