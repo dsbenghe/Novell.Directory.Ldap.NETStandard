@@ -626,7 +626,7 @@ namespace Novell.Directory.Ldap
 			{
 				// Get InputStream from the URL
 			    var webRequest = System.Net.WebRequest.Create(url);
-                System.IO.Stream in_Renamed = webRequest.GetResponseAsync().Result.GetResponseStream();
+                System.IO.Stream in_Renamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
 				// Read the bytes into buffers and store the them in an arraylist
 				System.Collections.ArrayList bufs = new System.Collections.ArrayList();
 				sbyte[] buf = new sbyte[4096];

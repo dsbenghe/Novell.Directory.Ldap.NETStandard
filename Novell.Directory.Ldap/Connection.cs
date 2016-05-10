@@ -776,7 +776,7 @@ namespace Novell.Directory.Ldap
 						else
 						{
 						    socket = new System.Net.Sockets.TcpClient();
-						    socket.ConnectAsync(host, port).Wait();
+						    socket.ConnectAsync(host, port).WaitAndUnwrap();
 							in_Renamed = (System.IO.Stream) socket.GetStream();
 							out_Renamed = (System.IO.Stream) socket.GetStream();
 						}
