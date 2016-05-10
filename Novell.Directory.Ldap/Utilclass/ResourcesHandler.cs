@@ -49,12 +49,7 @@ namespace Novell.Directory.Ldap.Utilclass
 		{
 			return ;
 		}
-		
-		/*
-		*  Initialized when the first result string is requested
-		*/
-		private static System.Resources.ResourceManager defaultResultCodes = null;
-		
+			
 		/// <summary>  Initialized when the first Exception message string is requested</summary>
 		private static System.Resources.ResourceManager defaultMessages = null;
 		
@@ -178,23 +173,10 @@ namespace Novell.Directory.Ldap.Utilclass
 		/// </returns>
 		public static System.String getResultString(int code, System.Globalization.CultureInfo locale)
 		{
-			if (defaultResultCodes == null)
-			{
-/*
-				defaultResultCodes = ResourceManager.CreateFileBasedResourceManager("ResultCodeMessages", "Resources", null);*/
-				defaultResultCodes = new ResourceManager("ResultCodeMessages", typeof(ResourcesHandler).GetTypeInfo().Assembly);
-			}
-
-			if (defaultLocale == null)
-				defaultLocale = CultureInfo.CurrentUICulture;
-
-			if (locale == null)
-				locale = defaultLocale;
-
 			string result;
 			try
 			{
-				result = defaultResultCodes.GetString(Convert.ToString(code), defaultLocale);
+				result = ResultCodeMessages.GetResultCode(Convert.ToString(code));
 			}
 			catch (ArgumentNullException mre)
 			{
