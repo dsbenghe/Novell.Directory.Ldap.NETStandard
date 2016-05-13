@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
 	/// 
 	/// 
 	/// </summary>
-	public class LdapConnection
+    public class LdapConnection : IDisposable
 	{
 		private void  InitBlock()
 		{
@@ -684,21 +684,16 @@ namespace Novell.Directory.Ldap
 			return newObj;
 		}
 		
-		/// <summary> Closes the connection, if open, and releases any other resources held
-		/// by the object.
+        public void Dispose()
 		/// 
-		/// </summary>
-		/// <exception> LdapException A general exception which includes an error
-		/// message and an Ldap error code.
 		/// 
-		/// </exception>
-		/// <seealso cref="Disconnect">
-		/// </seealso>
-		~LdapConnection()
 		{
-			// Disconnect did not come from user API call
-			Disconnect(defSearchCons, false);
-			return ;
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool isDisposing)
+        {
+            Disconnect(defSearchCons, isDisposing);
 		}
 		
 		/// <summary> Returns a property of a connection object.
