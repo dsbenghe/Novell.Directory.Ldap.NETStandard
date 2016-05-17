@@ -8,7 +8,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>87646bb4-7f55-49ef-9fe7-49aee6378453</ProjectGuid>
     <RootNamespace>Novell.Directory.Ldap</RootNamespace>
-    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
