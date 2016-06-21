@@ -577,7 +577,7 @@ namespace Novell.Directory.Ldap
 		private const System.String START_TLS_OID = "1.3.6.1.4.1.1466.20037";
 		
 
-		public event CertificateValidationCallback UserDefinedServerCertValidationDelegate
+		public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
 		{
 			add
 			{
