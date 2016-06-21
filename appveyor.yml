@@ -1,0 +1,20 @@
+version: '2.3.0.{build}'
+configuration:
+- Debug
+- Release
+platform: Any CPU
+init:
+- ps: $Env:LABEL = "rc2-" + $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")
+install:
+- appveyor DownloadFile https://download.microsoft.com/download/4/6/1/46116DFF-29F9-4FF8-94BF-F9BE05BE263B/packages/DotNetCore.1.0.0.RC2-SDK.Preview1-x64.exe
+- DotNetCore.1.0.0.RC2-SDK.Preview1-x64.exe /quiet
+environment:
+  PATH: $(PATH);$(PROGRAMFILES)\dotnet\
+build_script:
+- appveyor-retry dotnet restore -v Minimal
+- dotnet build **\project.json -c %CONFIGURATION%
+- dotnet pack -c %CONFIGURATION% --no-build --version-suffix %LABEL% -o .\artifacts .\Novell.Directory.Ldap\project.json
+artifacts:
+- path: artifacts\**\*.*
+cache:
+- '%USERPROFILE%\.nuget\packages'
