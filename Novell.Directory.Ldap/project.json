@@ -1,5 +1,6 @@
 {
   "version": "2.3.0-*",
+  "name":  "Novell.Directory.Ldap.NETStandard", 
   "description": "Novell.Directory.Ldap Class Library",
   "authors": [ "dsbenghe" ],
   "frameworks": {
