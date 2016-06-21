@@ -1,6 +1,5 @@
 version: '2.3.0.{build}'
 configuration:
-- Debug
 - Release
 platform: Any CPU
 init:
