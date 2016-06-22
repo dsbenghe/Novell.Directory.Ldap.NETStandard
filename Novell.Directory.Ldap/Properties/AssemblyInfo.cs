@@ -30,10 +30,6 @@
 //
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Resources;
-using System.Security;
-using System.Runtime.InteropServices;
 
 //
 // General Information about an assembly is controlled through the following 
@@ -45,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Novell, Inc")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright(" (C) 2003 Novell, Inc")]
+[assembly: AssemblyCopyright(" (C) 2003 Novell, Inc, 2016 dsbenghe")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: CLSCompliant(true)]
@@ -61,7 +57,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.2.1")]
+[assembly: AssemblyVersion("2.3.0")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 
