@@ -1,8 +1,12 @@
 {
   "version": "2.3.0-*",
-  "name":  "Novell.Directory.Ldap.NETStandard", 
+  "name": "Novell.Directory.Ldap.NETStandard",
   "description": "Novell.Directory.Ldap Class Library",
-  "authors": [ "dsbenghe" ],
+  "packOptions": {
+    "projectUrl": "https://github.com/dsbenghe/Novell.Directory.Ldap.NetStandard",
+    "licenseUrl": "https://opensource.org/licenses/MIT"
+  },
+  "authors": [ "Novell", "dsbenghe" ],
   "frameworks": {
     "netstandard1.5": {
       "imports": [ "dnxcore50", "portable-net452+win81" ]
