@@ -1493,7 +1493,7 @@ namespace Novell.Directory.Ldap
 				//				Console.WriteLine("Inside run:" + this.enclosingInstance.reader.Name);
 				try
 				{
-					for (; ; )
+					while (!isStopping)
 					{
 						// -------------------------------------------------------
 						// Decode an RfcLdapMessage directly from the socket.
@@ -1581,7 +1581,7 @@ namespace Novell.Directory.Ldap
 								
 							}
 						}
-						if ((this.enclosingInstance.stopReaderMessageID == msgId) || (this.enclosingInstance.stopReaderMessageID == Novell.Directory.Ldap.Connection.STOP_READING) || isStopping)
+						if ((this.enclosingInstance.stopReaderMessageID == msgId) || (this.enclosingInstance.stopReaderMessageID == Novell.Directory.Ldap.Connection.STOP_READING))
 						{
 							// Stop the reader Thread.
 							return ;

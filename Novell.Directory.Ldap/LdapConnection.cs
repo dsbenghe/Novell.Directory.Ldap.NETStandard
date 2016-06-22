@@ -685,8 +685,6 @@ namespace Novell.Directory.Ldap
 		}
 		
         public void Dispose()
-		/// 
-		/// 
 		{
             Dispose(true);
         }
