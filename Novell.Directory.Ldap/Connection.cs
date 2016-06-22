@@ -1252,53 +1252,9 @@ namespace Novell.Directory.Ldap
 			{
 				waitForReader(null);
 				this.nonTLSBackup = this.socket;
-                /*				this.sock = 	new Socket ( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-								IPAddress hostadd = Dns.Resolve(host).AddressList[0];
-								IPEndPoint ephost = new IPEndPoint(hostadd,port);
-								sock.Connect(ephost);
-				*/
-                //				NetworkStream nstream = new NetworkStream(this.socket,true);
-
-                //// Load Mono.Security.dll
-                //Assembly a = null;
-                //try
-                //{
-                //    a = Assembly.LoadWithPartialName("Mono.Security");
-                //}
-                //catch (System.IO.FileNotFoundException)
-                //{
-                //    throw new LdapException(ExceptionMessages.SSL_PROVIDER_MISSING, LdapException.SSL_PROVIDER_NOT_FOUND, null);
-                //}
-
-                //Type tSslClientStream = a.GetType("Mono.Security.Protocol.Tls.SslClientStream");
-                //BindingFlags flags = (BindingFlags.NonPublic | BindingFlags.Public |
-                //    BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly);
-
-                //object[] consArgs = new object[4];
-                //consArgs[0] = socket.GetStream();
-                //consArgs[1] = host;
-                //consArgs[2] = false;
-                //Type tSecurityProtocolType = a.GetType("Mono.Security.Protocol.Tls.SecurityProtocolType");
-                //Enum objSPType = (Enum)(Activator.CreateInstance(tSecurityProtocolType));
-                //int nSsl3Val = (int)Enum.Parse(tSecurityProtocolType, "Ssl3");
-                //int nTlsVal = (int)Enum.Parse(tSecurityProtocolType, "Tls");
-                //consArgs[3] = Enum.ToObject(tSecurityProtocolType, nSsl3Val | nTlsVal);
-
-                //object objSslClientStream =
-                //    Activator.CreateInstance(tSslClientStream, consArgs);
-
-                //// Register ServerCertValidationDelegate handler
-                //EventInfo ei = tSslClientStream.GetEvent("ServerCertValidationDelegate");
-                //ei.AddEventHandler(objSslClientStream,
-                //    Delegate.CreateDelegate(ei.EventHandlerType, this, "ServerCertificateValidation"));
-
-                //// Get the in and out streams
-                //in_Renamed = (System.IO.Stream)objSslClientStream;
-                //out_Renamed = (System.IO.Stream)objSslClientStream;
-
                 SslStream sslstream = new SslStream(
 									socket.GetStream(),
-									false,
+									true,
                                     RemoteCertificateValidationCallback
                                     );
                 sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap();
