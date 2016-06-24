@@ -9,7 +9,7 @@
   "authors": [ "Novell", "dsbenghe" ],
   "frameworks": {
     "netstandard1.5": {
-      "imports": [ "dnxcore50", "portable-net452+win81" ]
+      "imports": [ "dnxcore50" ]
     }
   },
   "dependencies": {
