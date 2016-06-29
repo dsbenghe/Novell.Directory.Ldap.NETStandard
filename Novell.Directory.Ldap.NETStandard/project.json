@@ -8,16 +8,16 @@
   },
   "authors": [ "Novell", "dsbenghe" ],
   "frameworks": {
-    "netstandard1.5": {
+    "netstandard1.3": {
       "imports": [ "dnxcore50" ]
     }
   },
   "dependencies": {
-    "NETStandard.Library": "1.6.0",
     "System.Collections.NonGeneric": "4.0.1",
     "System.Console": "4.0.0",
     "System.IO": "4.1.0",
     "System.IO.FileSystem": "4.0.1",
+    "System.Linq": "4.1.0",
     "System.Net.NameResolution": "4.0.0",
     "System.Net.Requests": "4.0.11",
     "System.Net.Security": "4.0.0",
@@ -26,9 +26,11 @@
     "System.Reflection.Extensions": "4.0.1",
     "System.Reflection.Primitives": "4.0.1",
     "System.Reflection.TypeExtensions": "4.1.0",
+    "System.Runtime.Extensions": "4.1.0",
     "System.Security.Cryptography.Algorithms": "4.2.0",
     "System.Security.Cryptography.X509Certificates": "4.1.0",
     "System.Text.RegularExpressions": "4.1.0",
+    "System.Threading": "4.0.11",
     "System.Threading.Thread": "4.0.0"
   }
 }
