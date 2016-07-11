@@ -8,6 +8,6 @@ before_install:
   - sudo apt-get install -y dotnet-nightly
 
 script:
-  - cd Novell.Directory.Ldap
+  - cd Novell.Directory.Ldap.NETStandard
   - dotnet restore
   - dotnet build
