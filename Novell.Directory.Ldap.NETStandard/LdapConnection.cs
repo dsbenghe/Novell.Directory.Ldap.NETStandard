@@ -30,17 +30,11 @@
 //
 
 using System;
-using Novell.Directory.Ldap;
-using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
-//using Mono.Security.Protocol.Tls;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Novell.Directory.Ldap
 {
-	
-	/// <summary> The central class that encapsulates the connection
+    /// <summary> The central class that encapsulates the connection
 	/// to a directory server through the Ldap protocol.
 	/// LdapConnection objects are used to perform common Ldap
 	/// operations such as search, modify and add.
@@ -58,8 +52,8 @@ namespace Novell.Directory.Ldap
 	/// 
 	/// 
 	/// </summary>
-    public class LdapConnection : IDisposable
-	{
+    public class LdapConnection : ILdapConnection
+    {
 		private void  InitBlock()
 		{
 			defSearchCons = new LdapSearchConstraints();
@@ -792,7 +786,7 @@ namespace Novell.Directory.Ldap
 		/// 
 		/// </exception>
 
-        public virtual void  startTLS()
+        public virtual void  StartTls()
         {
  
             LdapMessage startTLS = MakeExtendedOperation(new LdapExtendedOperation(LdapConnection.START_TLS_OID, null), null);
@@ -842,7 +836,7 @@ namespace Novell.Directory.Ldap
         /// the application an anonymous connection to the server, as required
         /// by StopTLS</p>
         /// </summary>
-        public virtual void  stopTLS()
+        public virtual void  StopTls()
         {
                                                                                 
             if (!TLS)
@@ -2892,9 +2886,9 @@ namespace Novell.Directory.Ldap
 		/// <exception> LdapException A general exception which includes an error
 		/// message and an Ldap error code.
 		/// </exception>
-		public virtual LdapSearchResults Search(System.String base_Renamed, int scope, System.String filter, System.String[] attrs, bool typesOnly)
+		public virtual LdapSearchResults Search(System.String @base, int scope, System.String filter, System.String[] attrs, bool typesOnly)
 		{
-			return Search(base_Renamed, scope, filter, attrs, typesOnly, defSearchCons);
+			return Search(@base, scope, filter, attrs, typesOnly, defSearchCons);
 		}
 		
 		/// <summary> 
@@ -2941,9 +2935,9 @@ namespace Novell.Directory.Ldap
 		/// <exception> LdapException A general exception which includes an error
 		/// message and an Ldap error code.
 		/// </exception>
-		public virtual LdapSearchResults Search(System.String base_Renamed, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchConstraints cons)
+		public virtual LdapSearchResults Search(System.String @base, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchConstraints cons)
 		{
-			LdapSearchQueue queue = Search(base_Renamed, scope, filter, attrs, typesOnly, null, cons);
+			LdapSearchQueue queue = Search(@base, scope, filter, attrs, typesOnly, null, cons);
 			
 			if (cons == null)
 				cons = defSearchCons;
@@ -2986,9 +2980,9 @@ namespace Novell.Directory.Ldap
 		/// <exception> LdapException A general exception which includes an error
 		/// message and an Ldap error code.
 		/// </exception>
-		public virtual LdapSearchQueue Search(System.String base_Renamed, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchQueue queue)
+		public virtual LdapSearchQueue Search(System.String @base, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchQueue queue)
 		{
-			return Search(base_Renamed, scope, filter, attrs, typesOnly, queue, defSearchCons);
+			return Search(@base, scope, filter, attrs, typesOnly, queue, defSearchCons);
 		}
 		
 		/// <summary> Asynchronously performs the search specified by the parameters,
@@ -3033,7 +3027,7 @@ namespace Novell.Directory.Ldap
 		/// <exception> LdapException A general exception which includes an error
 		/// message and an Ldap error code.
 		/// </exception>
-		public virtual LdapSearchQueue Search(System.String base_Renamed, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchQueue queue, LdapSearchConstraints cons)
+		public virtual LdapSearchQueue Search(System.String @base, int scope, System.String filter, System.String[] attrs, bool typesOnly, LdapSearchQueue queue, LdapSearchConstraints cons)
 		{
 			if ((System.Object) filter == null)
 			{
@@ -3042,7 +3036,7 @@ namespace Novell.Directory.Ldap
 			if (cons == null)
 				cons = defSearchCons;
 			
-			LdapMessage msg = new LdapSearchRequest(base_Renamed, scope, filter, attrs, cons.Dereference, cons.MaxResults, cons.ServerTimeLimit, typesOnly, cons.getControls());
+			LdapMessage msg = new LdapSearchRequest(@base, scope, filter, attrs, cons.Dereference, cons.MaxResults, cons.ServerTimeLimit, typesOnly, cons.getControls());
 			MessageAgent agent;
 			LdapSearchQueue myqueue = queue;
 			if (myqueue == null)
