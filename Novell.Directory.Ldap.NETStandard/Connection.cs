@@ -1386,7 +1386,15 @@ namespace Novell.Directory.Ldap
 							break;
 						}
 
-                        asn1ID = new Asn1Identifier(myIn);
+					    try
+					    {
+					        asn1ID = new Asn1Identifier(myIn);
+					    }
+					    catch (ObjectDisposedException)
+					    {
+                            // It is necessary, because there is possibility for race condition between "!myIn.CanRead" above and Asn1Identifier constructor
+                            break;
+					    }
 
                         int tag = asn1ID.Tag;
 						if (tag != Asn1Sequence.TAG)
