@@ -316,7 +316,7 @@ namespace Novell.Directory.Ldap
 	    private ReaderThread readerThreadEnclosure;
         private Thread reader = null; // New thread that reads data from the server.
 		private Thread deadReader = null; // Identity of last reader thread
-		private System.IO.IOException deadReaderException = null; // Last exception of reader
+		private Exception deadReaderException = null; // Last exception of reader
 		
 		private LBEREncoder encoder;
 		private LBERDecoder decoder;
@@ -565,11 +565,11 @@ namespace Novell.Directory.Ldap
 					if (thread == null)
 						/* then we wanted a shutdown */
 						return ;
-					System.IO.IOException lex = deadReaderException;
+					Exception readerException = deadReaderException;
 					deadReaderException = null;
 					deadReader = null;
 					// Reader thread terminated
-					throw new LdapException(ExceptionMessages.CONNECTION_READER, LdapException.CONNECT_ERROR, null, lex);
+					throw new LdapException(ExceptionMessages.CONNECTION_READER, LdapException.CONNECT_ERROR, null, readerException);
 				}
 				lock (this)
 				{
@@ -1360,12 +1360,12 @@ namespace Novell.Directory.Ldap
 			public virtual void  Run()
 			{
 				
-				System.String reason = "reader: thread stopping";
+				var reason = "reader: thread stopping";
 				InterThreadException notify = null;
 				Message info = null;
-				System.IO.IOException ioex = null;
+				Exception readerException = null;
 			    this.enclosingInstance.readerThreadEnclosure = this;
-				this.enclosingInstance.reader = System.Threading.Thread.CurrentThread;			
+				this.enclosingInstance.reader = Thread.CurrentThread;			
 				//				Enclosing_Instance.reader = SupportClass.ThreadClass.Current();
 				//				Console.WriteLine("Inside run:" + this.enclosingInstance.reader.Name);
 				try
@@ -1465,14 +1465,13 @@ namespace Novell.Directory.Ldap
 						}
 					}
 				}
-				catch (System.IO.IOException ioe)
-				{
-					
-					ioex = ioe;
-					if ((this.enclosingInstance.stopReaderMessageID != Novell.Directory.Ldap.Connection.STOP_READING) && this.enclosingInstance.clientActive)
+				catch (Exception ex)
+                {
+					readerException = ex;
+					if ((this.enclosingInstance.stopReaderMessageID != STOP_READING) && this.enclosingInstance.clientActive)
 					{
 						// Connection lost waiting for results from host:port
-						notify = new InterThreadException(ExceptionMessages.CONNECTION_WAIT, new System.Object[]{this.enclosingInstance.host, this.enclosingInstance.port}, LdapException.CONNECT_ERROR, ioe, info);
+						notify = new InterThreadException(ExceptionMessages.CONNECTION_WAIT, new object[]{this.enclosingInstance.host, this.enclosingInstance.port}, LdapException.CONNECT_ERROR, ex, info);
 					}
 					// The connection is no good, don't use it any more
 					this.enclosingInstance.in_Renamed = null;
@@ -1502,14 +1501,14 @@ namespace Novell.Directory.Ldap
 					if ((!this.enclosingInstance.clientActive) || (notify != null))
 					{
 						//#3 & 4
-						this.enclosingInstance.Dispose(false,reason, 0, notify);
+						this.enclosingInstance.Dispose(false, reason, 0, notify);
 					}
 					else
 					{
-						this.enclosingInstance.stopReaderMessageID = Novell.Directory.Ldap.Connection.CONTINUE_READING;
+						this.enclosingInstance.stopReaderMessageID = CONTINUE_READING;
 					}
 				}
-				this.enclosingInstance.deadReaderException = ioex;
+				this.enclosingInstance.deadReaderException = readerException;
 				this.enclosingInstance.deadReader = this.enclosingInstance.reader;
 				this.enclosingInstance.reader = null;
 				return ;
