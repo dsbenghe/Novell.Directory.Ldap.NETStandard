@@ -982,89 +982,7 @@ namespace Novell.Directory.Ldap
 			Dispose(false,"Finalize", 0, null);
 			return ;
 		}
-		/// <summary> Cleans up resources associated with this connection.
-		/// This method may be called by finalize() for the connection, or it may
-		/// be called by LdapConnection.disconnect().
-		/// Should not have a writeSemaphore lock in place, as deadlock can occur
-		/// while abandoning connections.
-		/// </summary>
-		private void  shutdown(System.String reason, int semaphoreId, InterThreadException notifyUser)
-		{
-			Message info = null;
-			if (!clientActive)
-			{
-				return ;
-			}
-			clientActive = false;
-			while (true)
-			{
-				// remove messages from connection list and send abandon
-				try
-				{
-					System.Object temp_object;
-					temp_object = messages[0];
-					messages.RemoveAt(0);
-					info = (Message) temp_object;
-				}
-				catch (ArgumentOutOfRangeException ex)
-				{
-					// No more messages
-					break;
-				}
-				info.Abandon(null, notifyUser); // also notifies the application
-			}
-			
-			int semId = acquireWriteSemaphore(semaphoreId);
-			// Now send unbind if socket not closed
-			if ((bindProperties != null) && (out_Renamed != null) && (out_Renamed.CanWrite) && (!bindProperties.Anonymous))
-			{
-				try
-				{
-					LdapMessage msg = new LdapUnbindRequest(null);
-					sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
-					out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
-					out_Renamed.Flush();
-					out_Renamed.Dispose();
-				}
-				catch (System.Exception ex)
-				{
-					; // don't worry about error
-				}
-			}
-			bindProperties = null;
-			if (socket != null || sock != null)
-			{
-				// Just before closing the sockets, abort the reader thread
-				if ((reader != null) && (reason != "reader: thread stopping")) 
-					readerThreadEnclosure.Stop();
-				// Close the socket
-				try
-				{
-					if(Ssl)
-					{
-						sock.Shutdown(SocketShutdown.Both);
-						sock.Dispose();
-					}
-					else
-					{
-						if(in_Renamed != null)
-							in_Renamed.Dispose();						
-						socket.Dispose();
-					}
-				}
-				catch (System.IO.IOException ie)
-				{
-					// ignore problem closing socket
-				}
-				socket = null;
-				sock = null;
-				in_Renamed=null;
-				out_Renamed=null;
-
-			}
-			freeWriteSemaphore(semId);
-			return ;
-		}
+		
 		
 		//Adding code here earlier code
 		public void Dispose()
@@ -1213,11 +1131,10 @@ namespace Novell.Directory.Ldap
 		internal void  startReader()
 		{
 			// Start Reader Thread
-			Thread r = new Thread(new ThreadStart(new ReaderThread(this).Run));
+			Thread r = new Thread(new ReaderThread(this).Run);
 			r.IsBackground = true; // If the last thread running, allow exit.
 			r.Start();
 			waitForReader(r);
-			return ;
 		}
 		
 		/// <summary> Indicates if the conenction is using TLS protection
@@ -1327,24 +1244,12 @@ namespace Novell.Directory.Ldap
 
 		public class ReaderThread
 		{
-			private void  InitBlock(Connection enclosingInstance)
-			{
-				this.enclosingInstance = enclosingInstance;
-			}
-			private Connection enclosingInstance;
+			private readonly Connection enclosingInstance;
 		    private bool isStopping;
-			public Connection Enclosing_Instance
-			{
-				get
-				{
-					return enclosingInstance;
-				}
-				
-			}
+
 			public ReaderThread(Connection enclosingInstance)
 			{
-				InitBlock(enclosingInstance);
-				return ;
+                this.enclosingInstance = enclosingInstance;
 			}
 
 		    public void Stop()
