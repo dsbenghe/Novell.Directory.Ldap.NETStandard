@@ -1310,7 +1310,7 @@ namespace Novell.Directory.Ldap
 				catch (System.IO.IOException ex)
 				{
 					passwd = null; // Keep no reference to String object
-					throw new System.Exception(ex.ToString());
+					throw;
 				}
 			}
 			Bind(version, dn, pw, cons);

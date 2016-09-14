@@ -1246,6 +1246,7 @@ namespace Novell.Directory.Ldap
 		{
 			private readonly Connection enclosingInstance;
 		    private bool isStopping;
+		    private Thread enclosedThread;
 
 			public ReaderThread(Connection enclosingInstance)
 			{
@@ -1254,8 +1255,7 @@ namespace Novell.Directory.Ldap
 
 		    public void Stop()
 		    {
-		        isStopping = true;
-		        this.enclosingInstance.reader.Join();
+		        enclosedThread?.Join();
 		    }
 			
 			/// <summary> This thread decodes and processes RfcLdapMessage's from the server.
@@ -1270,9 +1270,7 @@ namespace Novell.Directory.Ldap
 				Message info = null;
 				Exception readerException = null;
 			    this.enclosingInstance.readerThreadEnclosure = this;
-				this.enclosingInstance.reader = Thread.CurrentThread;			
-				//				Enclosing_Instance.reader = SupportClass.ThreadClass.Current();
-				//				Console.WriteLine("Inside run:" + this.enclosingInstance.reader.Name);
+				this.enclosingInstance.reader = enclosedThread = Thread.CurrentThread;			
 				try
 				{
 					while (!isStopping)
@@ -1358,10 +1356,6 @@ namespace Novell.Directory.Ldap
 									return ;
 								}
 							}
-							else
-							{
-								
-							}
 						}
 						if ((this.enclosingInstance.stopReaderMessageID == msgId) || (this.enclosingInstance.stopReaderMessageID == Novell.Directory.Ldap.Connection.STOP_READING))
 						{
@@ -1413,10 +1407,10 @@ namespace Novell.Directory.Ldap
 						this.enclosingInstance.stopReaderMessageID = CONTINUE_READING;
 					}
 				}
-				this.enclosingInstance.deadReaderException = readerException;
-				this.enclosingInstance.deadReader = this.enclosingInstance.reader;
-				this.enclosingInstance.reader = null;
-				return ;
+
+			    this.enclosingInstance.deadReaderException = readerException;
+			    this.enclosingInstance.deadReader = this.enclosingInstance.reader;
+			    this.enclosingInstance.reader = null;
 			}
 		} // End class ReaderThread
 		
