@@ -1284,13 +1284,23 @@ namespace Novell.Directory.Ldap
 						* though the loop, i.e. even during shutdown
 						*/
 						myIn = this.enclosingInstance.in_Renamed;
-						if (myIn == null)
+						if (myIn == null || !myIn.CanRead)
 						{
 							break;
 						}
-						asn1ID = new Asn1Identifier(myIn);
-						int tag = asn1ID.Tag;
-						if (asn1ID.Tag != Asn1Sequence.TAG)
+
+					    try
+					    {
+					        asn1ID = new Asn1Identifier(myIn);
+					    }
+					    catch (ObjectDisposedException)
+					    {
+                            // It is necessary, because there is possibility for race condition between "!myIn.CanRead" above and Asn1Identifier constructor
+                            break;
+					    }
+
+                        int tag = asn1ID.Tag;
+						if (tag != Asn1Sequence.TAG)
 						{
 							continue; // loop looking for an RfcLdapMessage identifier
 						}
