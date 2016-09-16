@@ -1,4 +1,4 @@
-version: '2.3.1.{build}'
+version: '2.3.3.{build}'
 configuration:
 - Release
 platform: Any CPU

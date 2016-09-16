@@ -1,5 +1,5 @@
 {
-  "version": "2.3.1",
+  "version": "2.3.3",
   "name": "Novell.Directory.Ldap.NETStandard",
   "description": "Novell.Directory.Ldap Class Library",
   "packOptions": {
