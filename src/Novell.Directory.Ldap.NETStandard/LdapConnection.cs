@@ -605,15 +605,6 @@ namespace Novell.Directory.Ldap
 			return ;
 		}
 		
-/*		public LdapConnection(X509Certificate cert)
-		{
-			InitBlock();
-			// Get a unique connection name for debug
-			conn = new Connection();
-			conn.Cert = cert;
-			return ;
-		}
-*/
 		/*
 		* The following are methods that affect the operation of
 		* LdapConnection, but are not Ldap requests.
@@ -685,7 +676,10 @@ namespace Novell.Directory.Ldap
 
         protected virtual void Dispose(bool isDisposing)
         {
-            Disconnect(defSearchCons, isDisposing);
+            if (isDisposing)
+            {
+                DisconnectImpl();
+            }
 		}
 		
 		/// <summary> Returns a property of a connection object.
@@ -1767,7 +1761,7 @@ namespace Novell.Directory.Ldap
 					}
 					// This may return a different conn object
 					// Disassociate this clone with the underlying connection.
-					conn = conn.destroyClone(true);
+                    conn = conn.destroyClone();
 					conn.connect(address, specifiedPort);
 					break;
 				}
@@ -1920,43 +1914,24 @@ namespace Novell.Directory.Ldap
 		public virtual void  Disconnect()
 		{
 			// disconnect from API call
-			Disconnect(defSearchCons, true);
+            DisconnectImpl();
 			return ;
 		}
 		
-		/// <summary> Synchronously disconnects from the Ldap server.
-		/// 
-		/// Before the object can perform Ldap operations again, it must
-		/// reconnect to the server by calling connect.
-		/// 
-		/// The disconnect method abandons any outstanding requests, issues an
-		/// unbind request to the server, and then closes the socket.
-		/// 
-		/// </summary>
-		/// <param name="cons">LDPConstraints to be set with the unbind request
-		/// 
-		/// </param>
-		/// <exception> LdapException A general exception which includes an error
-		/// message and an Ldap error code.
-		/// </exception>
-		public virtual void  Disconnect(LdapConstraints cons)
-		{
-			// disconnect from API call
-			Disconnect(cons, true);
-			return ;
-		}
+
+
+
 		
 		/// <summary> Synchronously disconnect from the server
 		/// 
 		/// </summary>
 		/// <param name="how">true if application call disconnect API, false if finalize.
 		/// </param>
-		private void  Disconnect(LdapConstraints cons, bool how)
+        private void DisconnectImpl()
 		{
 			// disconnect doesn't affect other clones
 			// If not a clone, distroys connection
-			conn = conn.destroyClone(how);
-			return ;
+            conn = conn.destroyClone();
 		}
 		
 		//*************************************************************************

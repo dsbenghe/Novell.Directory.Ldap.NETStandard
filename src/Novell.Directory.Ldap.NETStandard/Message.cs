@@ -296,7 +296,6 @@ namespace Novell.Directory.Ldap
 		private bool acceptReplies = true; // false if no longer accepting replies
 		private bool waitForReply_Renamed_Field = true; // true if wait for reply
 		private bool complete = false; // true LdapResult received
-		private System.String name; // String name used for Debug
 		private BindProperties bindprops; // Bind properties if a bind request
 		
 		internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, LdapMessageQueue queue, BindProperties bindprops)
@@ -446,12 +445,6 @@ namespace Novell.Directory.Ldap
 			return ;
 		}
 		
-		~Message()
-		{
-			cleanup();
-			return ;
-		}
-
 
 		internal virtual void  putReply(RfcLdapMessage message)
 		{

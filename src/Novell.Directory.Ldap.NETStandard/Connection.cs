@@ -49,10 +49,6 @@ using System.Net.Security;
 
 namespace Novell.Directory.Ldap
 {
-	//public delegate bool CertificateValidationCallback(
-	//	Syscert.X509Certificate certificate,
-	//	int[] certificateErrors);
-
     public delegate bool RemoteCertificateValidationCallback(
         object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors);
 
@@ -78,7 +74,7 @@ namespace Novell.Directory.Ldap
     /// 
     /// </summary>
     /*package*/
-    sealed class Connection : IDisposable 
+    internal sealed class Connection
 	{
 		public event RemoteCertificateValidationCallback OnCertificateValidation;
 		private SslPolicyErrors handshakePolicyErrors;
@@ -372,8 +368,6 @@ namespace Novell.Directory.Ldap
 		private int cloneCount = 0;
 		// Connection number & name used only for debug
 		private System.String name = "";
-		private static System.Object nameLock; // protect connNum
-		private static int connNum = 0;
 		
 		// These attributes can be retreived using the getProperty
 		// method in LdapConnection.  Future releases might require
@@ -792,7 +786,7 @@ namespace Novell.Directory.Ldap
 		/// <returns> a Connection object or null if finalizing.
 		/// </returns>
 		/* package */
-		internal Connection destroyClone(bool apiCall)
+        internal Connection destroyClone()
 		{
 			lock (this)
 			{
@@ -801,18 +795,10 @@ namespace Novell.Directory.Ldap
 				if (cloneCount > 0)
 				{
 					cloneCount--;
-					// This is a clone, set a new connection object.
-					if (apiCall)
-					{
-						conn = (Connection) this.copy();
-					}
-					else
-					{
-						conn = null;
-					}
-				}
-				else
-				{
+                    conn = (Connection) copy();
+                }
+                else
+                {
 					if (in_Renamed != null)
 					{
 						// Not a clone and connected
@@ -824,9 +810,9 @@ namespace Novell.Directory.Ldap
 						* The boolean flag indicates whether the close came
 						* from an API call or from the object being finalized.
 						*/
-						InterThreadException notify = new InterThreadException((apiCall?ExceptionMessages.CONNECTION_CLOSED:ExceptionMessages.CONNECTION_FINALIZED), null, LdapException.CONNECT_ERROR, null, null);
+						InterThreadException notify = new InterThreadException(ExceptionMessages.CONNECTION_CLOSED, null, LdapException.CONNECT_ERROR, null, null);
 						// Destroy old connection
-						Dispose(false,"destroy clone", 0, notify);
+                        Cleanup("destroy clone", 0, notify);
 					}
 				}
 				return conn;
@@ -971,110 +957,92 @@ namespace Novell.Directory.Ldap
 		/* package */
 		internal void  removeMessage(Message info)
 		{
-			bool done = SupportClass.VectorRemoveElement(messages, info);
+            SupportClass.VectorRemoveElement(messages, info);
 			return ;
-		}
-		
-		/// <summary> Cleans up resources associated with this connection.</summary>
-		~Connection()
-		{
-			//shutdown("Finalize", 0, null); // earlier code
-			Dispose(false,"Finalize", 0, null);
-			return ;
-		}
-		
-		
-		//Adding code here earlier code
-		public void Dispose()
-		{
-			Dispose(true,"Finalize", 0, null);
-			GC.SuppressFinalize(this);
+
 		}
 
-		protected void Dispose(bool disposing,System.String reason, int semaphoreId, InterThreadException notifyUser)
+        private void Cleanup(string reason, int semaphoreId, InterThreadException notifyUser)
 		{
-			if(!disposing)
-			{
-				Message info = null;
-				if (!clientActive)
-				{
-					return ;
-				}
-				clientActive = false;
-				while (true)
-				{
-					// remove messages from connection list and send abandon
-					try
-					{
-						System.Object temp_object;
-						temp_object = messages[0];
-						messages.RemoveAt(0);
-						info = (Message) temp_object;
-					}
-					catch (ArgumentOutOfRangeException ex)
-					{
-						// No more messages
-						break;
-					}
-					info.Abandon(null, notifyUser); // also notifies the application
-				}
-				
-				int semId = acquireWriteSemaphore(semaphoreId);
-				// Now send unbind if socket not closed
-				if ((bindProperties != null) && (out_Renamed != null) && (out_Renamed.CanWrite) && (!bindProperties.Anonymous))
-				{
-					try
-					{
-						LdapMessage msg = new LdapUnbindRequest(null);
-						sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
-						out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
-						out_Renamed.Flush();
-						out_Renamed.Dispose();
-					}
-					catch (System.Exception ex)
-					{
-						; // don't worry about error
-					}
-				}
-				bindProperties = null;
-				if (socket != null || sock != null)
-				{
-					// Just before closing the sockets, abort the reader thread
-					if ((reader != null) && (reason != "reader: thread stopping")) 
-						readerThreadEnclosure.Stop();
-					// Close the socket
-					try
-					{
-						if(Ssl)
-						{
-							if(in_Renamed != null)
-								in_Renamed.Dispose();
-							if(out_Renamed != null)
-								out_Renamed.Dispose();
-							//sock.Shutdown(SocketShutdown.Both);
-							sock.Dispose();
-						}
-						else
-						{
-							if(in_Renamed != null)
-								in_Renamed.Dispose();						
-							socket.Dispose();
-						}
-					}
-					catch (System.IO.IOException ie)
-					{
-						// ignore problem closing socket
-					}
-					socket = null;
-					sock = null;
-					in_Renamed=null;
-					out_Renamed=null;
+            Message info = null;
+            if (!clientActive)
+            {
+                return;
+            }
+            clientActive = false;
+            while (true)
+            {
+                // remove messages from connection list and send abandon
+                try
+                {
+                    System.Object temp_object;
+                    temp_object = messages[0];
+                    messages.RemoveAt(0);
+                    info = (Message)temp_object;
+                }
+                catch (ArgumentOutOfRangeException ex)
+                {
+                    // No more messages
+                    break;
+                }
+                info.Abandon(null, notifyUser); // also notifies the application
+            }
 
-				}
-				freeWriteSemaphore(semId);
-			}
-			return ;
-		}
+            int semId = acquireWriteSemaphore(semaphoreId);
+            // Now send unbind if socket not closed
+            if ((bindProperties != null) && (out_Renamed != null) && (out_Renamed.CanWrite) && (!bindProperties.Anonymous))
+            {
+                try
+                {
+                    LdapMessage msg = new LdapUnbindRequest(null);
+                    sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
+                    out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
+                    out_Renamed.Flush();
+                    out_Renamed.Dispose();
+                }
+                catch (System.Exception ex)
+                {
+                    ; // don't worry about error
+                }
+            }
+            bindProperties = null;
+            if (socket != null || sock != null)
+            {
+                // Just before closing the sockets, abort the reader thread
+                if ((reader != null) && (reason != "reader: thread stopping"))
+                    readerThreadEnclosure.Stop();
+                // Close the socket
+                try
+                {
+                    if (Ssl)
+                    {
+                        if (in_Renamed != null)
+                            in_Renamed.Dispose();
+                        if (out_Renamed != null)
+                            out_Renamed.Dispose();
+                        //sock.Shutdown(SocketShutdown.Both);
+                        sock.Dispose();
+                    }
+                    else
+                    {
+                        if (in_Renamed != null)
+                            in_Renamed.Dispose();
+                        socket.Dispose();
+                    }
+                }
+                catch (System.IO.IOException ie)
+                {
+                    // ignore problem closing socket
+                }
+                socket = null;
+                sock = null;
+                in_Renamed = null;
+                out_Renamed = null;
+
+            }
+            freeWriteSemaphore(semId);
+        }
+
 
 		/// <summary> This tests to see if there are any outstanding messages.  If no messages
 		/// are in the queue it returns true.  Each message will be tested to
@@ -1400,7 +1368,7 @@ namespace Novell.Directory.Ldap
 					if ((!this.enclosingInstance.clientActive) || (notify != null))
 					{
 						//#3 & 4
-						this.enclosingInstance.Dispose(false, reason, 0, notify);
+                        enclosingInstance.Cleanup(reason, 0, notify);
 					}
 					else
 					{
@@ -1520,7 +1488,6 @@ namespace Novell.Directory.Ldap
 		}
 		static Connection()
 		{
-			nameLock = new System.Object();
 			sdk = new System.Text.StringBuilder("2.2.1").ToString();
 			protocol = 3;
 		}
