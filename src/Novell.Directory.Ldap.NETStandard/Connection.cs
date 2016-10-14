@@ -711,7 +711,7 @@ namespace Novell.Directory.Ldap
 						    socket.ConnectAsync(host, port).WaitAndUnwrap();
 							in_Renamed = (System.IO.Stream) socket.GetStream();
 							out_Renamed = (System.IO.Stream) socket.GetStream();
-						}
+						}					    
 					}
 					else
 					{
@@ -812,7 +812,7 @@ namespace Novell.Directory.Ldap
 						*/
 						InterThreadException notify = new InterThreadException(ExceptionMessages.CONNECTION_CLOSED, null, LdapException.CONNECT_ERROR, null, null);
 						// Destroy old connection
-                        Cleanup("destroy clone", 0, notify);
+                        Destroy("destroy clone", 0, notify);
 					}
 				}
 				return conn;
@@ -962,7 +962,7 @@ namespace Novell.Directory.Ldap
 
 		}
 
-        private void Cleanup(string reason, int semaphoreId, InterThreadException notifyUser)
+        private void Destroy(string reason, int semaphoreId, InterThreadException notifyUser)
 		{
             Message info = null;
             if (!clientActive)
@@ -998,7 +998,6 @@ namespace Novell.Directory.Ldap
                     sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
                     out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
                     out_Renamed.Flush();
-                    out_Renamed.Dispose();
                 }
                 catch (System.Exception ex)
                 {
@@ -1223,7 +1222,20 @@ namespace Novell.Directory.Ldap
 
 		    public void Stop()
 		    {
-		        enclosedThread?.Join();
+		        if (enclosedThread == null)
+		            return;
+		        isStopping = true;
+                // This is quite silly as we want to stop the thread gracefully but is not always possible as the Read on socket is blocking
+                // Using ReadAdync will not do any good as the method taking the CancellationToken as parameter is not implemented
+                // Dispose will break forcefully the Read.
+                // We could use a ReadTimeout for socket - but this will only make stopping the thread take longer
+                // And we don't care if we just kill the socket stream as we don't plan to reuse the stream after stop
+                // the stream Dispose used to be called from Connection dispose but only when a Bind is succesful which was causing
+                // the Dispose to hang un unsuccesful bind
+                // So, yeah isStopping flag is pretty much useless as there are very small chances that it will bit hit
+                var socketStream  = enclosingInstance.in_Renamed;
+                socketStream?.Dispose();
+		        enclosedThread.Join();		        
 		    }
 			
 			/// <summary> This thread decodes and processes RfcLdapMessage's from the server.
@@ -1232,14 +1244,13 @@ namespace Novell.Directory.Ldap
 			/// </summary>
 			public virtual void  Run()
 			{
-				
 				var reason = "reader: thread stopping";
 				InterThreadException notify = null;
 				Message info = null;
 				Exception readerException = null;
 			    this.enclosingInstance.readerThreadEnclosure = this;
 				this.enclosingInstance.reader = enclosedThread = Thread.CurrentThread;			
-				try
+                try
 				{
 					while (!isStopping)
 					{
@@ -1332,7 +1343,7 @@ namespace Novell.Directory.Ldap
 						}
 					}
 				}
-				catch (Exception ex)
+                catch (Exception ex)
                 {
 					readerException = ex;
 					if ((this.enclosingInstance.stopReaderMessageID != STOP_READING) && this.enclosingInstance.clientActive)
@@ -1344,9 +1355,9 @@ namespace Novell.Directory.Ldap
 					this.enclosingInstance.in_Renamed = null;
 					this.enclosingInstance.out_Renamed = null;
 				}
-				finally
+                finally
 				{
-					/*
+                    /*
 					* There can be four states that the reader can be in at this point:
 					*  1) We are starting TLS and will be restarting the reader
 					*     after we have negotiated TLS.
@@ -1365,20 +1376,19 @@ namespace Novell.Directory.Ldap
 					*      - Indicated by an IOException AND notify is not NULL
 					*      - call Shutdown.
 					*/
-					if ((!this.enclosingInstance.clientActive) || (notify != null))
-					{
+                    if ((!enclosingInstance.clientActive) || (notify != null))
+                    {
 						//#3 & 4
-                        enclosingInstance.Cleanup(reason, 0, notify);
+                        enclosingInstance.Destroy(reason, 0, notify);
 					}
 					else
 					{
 						this.enclosingInstance.stopReaderMessageID = CONTINUE_READING;
 					}
-				}
-
-			    this.enclosingInstance.deadReaderException = readerException;
-			    this.enclosingInstance.deadReader = this.enclosingInstance.reader;
-			    this.enclosingInstance.reader = null;
+                    enclosingInstance.deadReaderException = readerException;
+                    enclosingInstance.deadReader = enclosingInstance.reader;
+                    enclosingInstance.reader = null;
+                }
 			}
 		} // End class ReaderThread
 		
