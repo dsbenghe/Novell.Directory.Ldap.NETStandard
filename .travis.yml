@@ -25,3 +25,4 @@ before_script:
 script:
   - dotnet restore
   - dotnet build **/project.json
+  - dotnet test test/Novell.Directory.Ldap.NETStandard.FunctionalTests/project.json
