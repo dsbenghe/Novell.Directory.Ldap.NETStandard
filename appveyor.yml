@@ -12,7 +12,8 @@ environment:
 build_script:
 - appveyor-retry dotnet restore -v Minimal
 - dotnet build **\project.json -c %CONFIGURATION%
-- dotnet pack -c %CONFIGURATION% --no-build -o .\artifacts .\Novell.Directory.Ldap.NETStandard\project.json
+- dotnet pack -c %CONFIGURATION% --no-build -o .\artifacts .\src\Novell.Directory.Ldap.NETStandard\project.json
+test: off
 artifacts:
 - path: artifacts\**\*.*
 cache:
