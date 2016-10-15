@@ -1,13 +1,27 @@
 sudo: required
 dist: trusty
 
+addons:
+  apt:
+    packages:
+    - ldap-utils
+    - slapd
+
 before_install:
   - sudo sh -c 'echo "deb [arch=amd64] http://apt-mo.trafficmanager.net/repos/dotnet/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
   - sudo apt-key adv --keyserver apt-mo.trafficmanager.net --recv-keys 417A0893
   - sudo apt-get update
   - sudo apt-get install -y dotnet-dev-1.0.0-preview2-003121
+  
+before_script:
+  - mkdir /tmp/slapd
+  - slapd -f test/conf/slapd.conf -h ldap://localhost:4389 &
+  # give openldap enough time to start
+  - sleep 5
+  # test to see that is running
+  - ldapwhoami -H ldap://localhost:4389 -D "cn=root,dc=example,dc=com" -w password 
+  - ldapadd -h localhost:4389 -D cn=root,dc=example,dc=com -w password -f test/conf/baseDn.ldif
 
 script:
-  - cd Novell.Directory.Ldap.NETStandard
   - dotnet restore
-  - dotnet build
+  - dotnet build **/project.json
