@@ -989,58 +989,59 @@ namespace Novell.Directory.Ldap
             }
 
             int semId = acquireWriteSemaphore(semaphoreId);
-            // Now send unbind if socket not closed
-            if ((bindProperties != null) && (out_Renamed != null) && (out_Renamed.CanWrite) && (!bindProperties.Anonymous))
-            {
-                try
-                {
-                    LdapMessage msg = new LdapUnbindRequest(null);
-                    sbyte[] ber = msg.Asn1Object.getEncoding(encoder);
-                    out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
-                    out_Renamed.Flush();
-                }
-                catch (System.Exception ex)
-                {
-                    ; // don't worry about error
-                }
-            }
-            bindProperties = null;
-            if (socket != null || sock != null)
-            {
-                // Just before closing the sockets, abort the reader thread
-                if ((reader != null) && (reason != "reader: thread stopping"))
-                    readerThreadEnclosure.Stop();
-                // Close the socket
-                try
-                {
-                    if (Ssl)
-                    {
-                        if (in_Renamed != null)
-                            in_Renamed.Dispose();
-                        if (out_Renamed != null)
-                            out_Renamed.Dispose();
-                        //sock.Shutdown(SocketShutdown.Both);
-                        sock.Dispose();
-                    }
-                    else
-                    {
-                        if (in_Renamed != null)
-                            in_Renamed.Dispose();
-                        socket.Dispose();
-                    }
-                }
-                catch (System.IO.IOException ie)
-                {
-                    // ignore problem closing socket
-                }
-                socket = null;
-                sock = null;
-                in_Renamed = null;
-                out_Renamed = null;
+		    try
+		    {
+		        // Now send unbind if socket not closed
+		        if ((bindProperties != null) && (out_Renamed != null) && (out_Renamed.CanWrite) && (!bindProperties.Anonymous))
+		        {
+		            try
+		            {
+		                var msg = new LdapUnbindRequest(null);
+		                var ber = msg.Asn1Object.getEncoding(encoder);
+		                out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
+		                out_Renamed.Flush();
+		            }
+		            catch (Exception)
+		            {
+		                ; // don't worry about error
+		            }
+		        }
+		        bindProperties = null;
+		        if (socket != null || sock != null)
+		        {
+		            // Just before closing the sockets, abort the reader thread
+		            if ((reader != null) && (reason != "reader: thread stopping"))
+		                readerThreadEnclosure.Stop();
+		            // Close the socket
+		            try
+		            {
+		                in_Renamed?.Dispose();
+		                out_Renamed?.Dispose();
+		                if (Ssl)
+	                    {
+		                    sock.Dispose();
+		                }
+		                else
+		                {
+		                    socket.Dispose();
+		                }
+		            }
+		            catch (IOException)
+		            {
+		                // ignore problem closing socket
+		            }
+		            socket = null;
+		            sock = null;
+		            in_Renamed = null;
+		            out_Renamed = null;
 
-            }
-            freeWriteSemaphore(semId);
-        }
+		        }
+		    }
+		    finally
+		    {
+		        freeWriteSemaphore(semId);
+		    }
+		}
 
 
 		/// <summary> This tests to see if there are any outstanding messages.  If no messages
