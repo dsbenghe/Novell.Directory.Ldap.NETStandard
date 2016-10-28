@@ -41,5 +41,22 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var modifiedEntry = LdapOps.GetEntry(existingEntry.DN);
             Assert.Equal(value, modifiedEntry.getAttribute(attrName).StringValue);
         }
+
+        [Fact]
+        public void Modify_OfNotExistingEntry_ShouldThrowNoSuchObject()
+        {
+            var ldapEntry = LdapEntryHelper.NewLdapEntry();
+
+            var ldapException = Assert.Throws<LdapException>(
+                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+                {
+                    var newAttribute = new LdapAttribute("givenName", "blah");
+                    var modification = new LdapModification(LdapModification.REPLACE, newAttribute);
+                    ldapConnection.Modify(ldapEntry.DN, modification);
+                })
+            );
+
+            Assert.Equal(LdapException.NO_SUCH_OBJECT, ldapException.ResultCode);
+        }
     }
 }

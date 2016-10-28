@@ -7,7 +7,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class DeleteEntryTests
     {
         [Fact]
-        public void Delete_ExistingEntry_ShouldWork()
+        public void Delete_OfExistingEntry_ShouldWork()
         {
             var existingEntry = LdapOps.AddEntry();
 
@@ -18,7 +18,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
-        public void Delete_NotExistingEntry_ShouldThrownNoSuchObject()
+        public void Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
         {
             var ldapException = Assert.Throws<LdapException>(
                 () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(TestHelper.BuildDn(Guid.NewGuid().ToString())); })

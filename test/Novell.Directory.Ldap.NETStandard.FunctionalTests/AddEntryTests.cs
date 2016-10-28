@@ -17,7 +17,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
-        public void AddEntry_AlreadyExists_ShouldThrow()
+        public void AddEntry_AlreadyExists_ShouldThrowEntryAlreadyExists()
         {
             var ldapEntry = LdapOps.AddEntry();
 
