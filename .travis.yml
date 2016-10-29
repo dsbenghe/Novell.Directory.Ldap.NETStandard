@@ -1,6 +1,12 @@
 sudo: required
 dist: trusty
 
+env:
+- CONFIGURATION=Release NOTHREADS=20
+- CONFIGURATION=Debug NOTHREADS=20
+- CONFIGURATION=Release NOTHREADS=50
+- CONFIGURATION=Debug NOTHREADS=50
+
 addons:
   apt:
     packages:
@@ -24,5 +30,6 @@ before_script:
 
 script:
   - dotnet restore
-  - dotnet build **/project.json
-  - dotnet test test/Novell.Directory.Ldap.NETStandard.FunctionalTests/project.json
+  - dotnet build --configuration $CONFIGURATION **/project.json
+  - dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/project.json
+  - dotnet run --project test/Novell.Directory.Ldap.NETStandard.StressTests/project.json $NOTHREADS 10
