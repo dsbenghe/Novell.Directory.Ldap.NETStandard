@@ -160,26 +160,9 @@ namespace Novell.Directory.Ldap
 			
 		}
 		/// <summary> gets the writeSemaphore id used for active bind operation</summary>
-		/// <summary> sets the writeSemaphore id used for active bind operation</summary>
-		internal int BindSemId
-		{
-			/* package */
-			
-			get
-			{
-				return bindSemaphoreId;
-			}
-			
-			/* package */
-			
-			set
-			{
-				bindSemaphoreId = value;
-				return ;
-			}
-			
-		}
-		/// <summary> checks if the writeSemaphore id used for active bind operation is clear</summary>
+		internal int BindSemId => bindSemaphoreId;
+
+	    /// <summary> checks if the writeSemaphore id used for active bind operation is clear</summary>
 		internal bool BindSemIdClear
 		{
 			/* package */

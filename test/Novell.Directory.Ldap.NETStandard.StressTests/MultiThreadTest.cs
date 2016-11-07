@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace Novell.Directory.Ldap.NETStandard.StressTests
 {
@@ -13,33 +14,37 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
         private readonly int _noOfThreads;
         private readonly TimeSpan _timeToRun;
-        private readonly TimeSpan _monitoringThreadReportingPeriod = TimeSpan.FromSeconds(30);
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<MultiThreadTest> _logger;
+        private readonly TimeSpan _monitoringThreadReportingPeriod = TimeSpan.FromSeconds(300);
 
         private static readonly List<ExceptionInfo> Exceptions = new List<ExceptionInfo>();
 
-        public MultiThreadTest(int noOfThreads, TimeSpan timeToRun)
+        public MultiThreadTest(int noOfThreads, TimeSpan timeToRun, ILoggerFactory loggerFactory)
         {
             _noOfThreads = noOfThreads;
             _timeToRun = timeToRun;
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<MultiThreadTest>();
         }
 
         public int Run()
         {
             var threads = new Thread[_noOfThreads];
-            var threadDatas = new ThreadData[_noOfThreads];
+            var threadDatas = new ThreadRunner[_noOfThreads];
             for (var i = 0; i < _noOfThreads; i++)
             {
-                threads[i] = new Thread(RunLoop);
-                var param = new ThreadData(threads[i].ManagedThreadId, DefaultTestingThreadReportingPeriod);
-                threadDatas[i] = param;
-                threads[i].Start(param);
+                var threadRunner = new ThreadRunner( DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
+                threads[i] = new Thread(threadRunner.RunLoop);
+                threadDatas[i] = threadRunner;
+                threads[i].Start();
             }
             var monitoringThread = new Thread(MonitoringThread);
             var monitoringThreadData = new MonitoringThreadData(threadDatas);
             monitoringThread.Start(monitoringThreadData);
 
             Thread.Sleep(_timeToRun);
-            Console.WriteLine("Exiting worker threads");
+            _logger.LogInformation("Exiting worker threads");
             foreach (var threadData in threadDatas)
             {
                 threadData.ShouldStop = true;
@@ -49,12 +54,13 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             {
                 thread.Join();
             }
-            Console.WriteLine("Exiting monitoring thread");
+
+            _logger.LogInformation("Exiting monitoring thread");
             monitoringThreadData.WaitHandle.Set();
             monitoringThread.Join();
 
             var noOfRuns = threadDatas.Sum(x => x.Count);
-            Console.WriteLine(string.Format("Number of test runs = {0} on {1} threads, no of exceptions: {2}", noOfRuns,
+            _logger.LogInformation(string.Format("Number of test runs = {0} on {1} threads, no of exceptions: {2}", noOfRuns,
                 _noOfThreads, Exceptions.Count));
             return Exceptions.Count;
         }
@@ -73,73 +79,32 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         {
             var logMessage = new StringBuilder();
             logMessage.Append("Monitoring thread [threadId:noOfRuns:lastUpdateSecondsAgo:possibleHanging]:");
-            foreach (var threadData in monitoringThreadData.ThreadDatas)
+            foreach (var threadRunner in monitoringThreadData.ThreadRunners)
             {
                 int threadId;
                 int count;
                 DateTime lastDate;
-                lock (threadData)
+                lock (threadRunner)
                 {
-                    threadId = threadData.ThreadId;
-                    count = threadData.Count;
-                    lastDate = threadData.LastPingDate;
+                    threadId = threadRunner.ThreadId;
+                    count = threadRunner.Count;
+                    lastDate = threadRunner.LastPingDate;
                 }
                 var lastUpdateSecondsAgo = (int) (DateTime.Now - lastDate).TotalSeconds;
                 var possibleHanging = (lastUpdateSecondsAgo - 2 * DefaultTestingThreadReportingPeriod.TotalSeconds) > 0;
-                logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging);
+                logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
             }
-            Console.WriteLine(logMessage);
+            _logger.LogInformation(logMessage.ToString());
         }
 
-        private static void RunLoop(object param)
+        private class ThreadRunner
         {
-            var threadData = (ThreadData) param;
-            var rnd = new Random();
-            var i = 0;
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            while (!threadData.ShouldStop)
-            {
-                try
-                {
-                    var test = TestsToRun.Tests[rnd.Next() % TestsToRun.Tests.Count];
-                    test();
-                }
-                catch (Exception ex)
-                {
-                    lock (Exceptions)
-                    {
-                        Exceptions.Add(new ExceptionInfo
-                        {
-                            Ex = ex,
-                            ThreadId = Thread.CurrentThread.ManagedThreadId
-                        });
-                    }
-                    Console.WriteLine(Thread.CurrentThread.ManagedThreadId + ":" + ex);
-                }
-                i++;
-                if (stopWatch.Elapsed > threadData.TestingThreadReportingPeriod)
-                {
-                    stopWatch.Stop();
-                    lock (threadData)
-                    {
-                        threadData.Count = i;
-                        threadData.LastPingDate = DateTime.Now;
-                    }
-                    Console.WriteLine("({0}-{1})", Thread.CurrentThread.ManagedThreadId, i);
-                    stopWatch.Restart();
-                }
-            }
-        }
+            public int ThreadId;
 
-        private class ThreadData
-        {
-            public readonly int ThreadId;
-
-            public ThreadData(int threadId, TimeSpan testingThreadReportingPeriod)
+            public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
-                ThreadId = threadId;
                 TestingThreadReportingPeriod = testingThreadReportingPeriod;
+                _logger = logger;
                 Count = 0;
                 ShouldStop = false;
                 LastPingDate = DateTime.Now;
@@ -148,20 +113,61 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public DateTime LastPingDate;
             public int Count;
             public bool ShouldStop;
-            public readonly TimeSpan TestingThreadReportingPeriod;
+            private readonly TimeSpan TestingThreadReportingPeriod;
+            private readonly ILogger<ThreadRunner> _logger;
+
+            public void RunLoop()
+            {
+                ThreadId = Thread.CurrentThread.ManagedThreadId;
+                var rnd = new Random();
+                var i = 0;
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
+                while (!ShouldStop)
+                {
+                    try
+                    {
+                        var test = TestsToRun.Tests[rnd.Next() % TestsToRun.Tests.Count];
+                        test();
+                    }
+                    catch (Exception ex)
+                    {
+                        lock (Exceptions)
+                        {
+                            Exceptions.Add(new ExceptionInfo
+                            {
+                                Ex = ex,
+                                ThreadId = Thread.CurrentThread.ManagedThreadId
+                            });
+                            _logger.LogError("Error in runner thread", ex);
+                        }
+                    }
+                    i++;
+                    if (stopWatch.Elapsed > TestingThreadReportingPeriod)
+                    {
+                        stopWatch.Stop();
+                        lock (this)
+                        {
+                            Count = i;
+                            LastPingDate = DateTime.Now;
+                        }
+                        stopWatch.Restart();
+                    }
+                }
+            }
         }
 
         private class MonitoringThreadData
         {
-            public MonitoringThreadData(ThreadData[] threadDatas)
+            public MonitoringThreadData(ThreadRunner[] threadRunners)
             {
-                ThreadDatas = threadDatas;
+                ThreadRunners = threadRunners;
                 WaitHandle = new AutoResetEvent(false);
             }
 
             public readonly EventWaitHandle WaitHandle;
 
-            public ThreadData[] ThreadDatas { get; }
+            public ThreadRunner[] ThreadRunners { get; }
         }
 
         public class ExceptionInfo

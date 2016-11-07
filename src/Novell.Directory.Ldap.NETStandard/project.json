@@ -11,6 +11,9 @@
     "netstandard1.3": {}
   },
   "dependencies": {
+    "Microsoft.Extensions.Logging": "1.0.0",
+    "Microsoft.Extensions.Logging.Abstractions": "1.0.0",
+    "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "System.Collections.NonGeneric": "4.0.1",
     "System.Console": "4.0.0",
     "System.IO": "4.1.0",

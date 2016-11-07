@@ -1,4 +1,7 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Events;
 
 namespace Novell.Directory.Ldap.NETStandard.StressTests
 {
@@ -9,13 +12,19 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
         public static int Main(string[] args)
         {
-            //var loggerFactory = new LoggerFactory().AddConsole();
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .Enrich.WithThreadId()
+                .WriteTo.LiterateConsole(LogEventLevel.Verbose, "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
+                .CreateLogger();
+            var loggerFactory = new LoggerFactory().AddSerilog();
+            Logger.Factory = loggerFactory;
 
             var testsToBeRun = TestsToRun.GetMethods();
-            Console.WriteLine("----Run stress test using the following tests");
+            Log.Logger.Information("----Run stress test using the following tests");
             foreach (var test in testsToBeRun)
             {
-                Console.WriteLine(test.Name);
+                Log.Logger.Information(test.Name);
             }
 
             var noOfThreads = DefaultNoOfThreads;
@@ -27,8 +36,8 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             if(args.Length >= 2)
                 timeToRun = TimeSpan.FromMinutes(int.Parse(args[1]));
 
-            Console.WriteLine("----Running stress test with {0} threads for {1} minutes", noOfThreads, (int)timeToRun.TotalMinutes);
-            var noOfExceptions = new MultiThreadTest(noOfThreads, timeToRun).Run();
+            Log.Logger.Information("----Running stress test with {0} threads for {1} minutes", noOfThreads, (int)timeToRun.TotalMinutes);
+            var noOfExceptions = new MultiThreadTest(noOfThreads, timeToRun, loggerFactory).Run();
             return noOfExceptions;
         }
     }
