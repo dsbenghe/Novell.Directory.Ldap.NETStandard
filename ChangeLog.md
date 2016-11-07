@@ -1,3 +1,28 @@
+# Changelog
+
+### 2.3.4
+* Added functional tests which are running in CI using OpenLDAP as ldap server
+* Fixed reader thread hanging when disposing ldap connection after an unsuccesful bind (not sure if was happening in the original library as I didnt check it but very likely it did)
+* Code cleanup: delete useless/incorrect finalizers and some general cleanup
+* Free the write semaphore in finally
+
+### 2.3.3 Fix two issues happening also in the original library
+* Fix crashing of reader thread when stopping the thread because of unhandled exception (the reader thread was expecting IOException by not ObjectDisposedException)
+* Fix race condition causing null reference on dispose of ldap connection
+
+### 2.3.1
+* Built against the lowest possible version of .NET Standard: 1.3
+* ILdapConnection introduced
+
+
+### 2.3.0 Initial version built against the release version of .NET Core 1.0. The main changes for porting were around:
+* Thread usage: the library was extensively using Abort, Interrupt, ThreadInterruptedException, ... - which is not recommended and also not supported in .NET Core.
+* Serialization support for a limited number of types was deleted; not supported on .net core
+* S`sl support: the library was using Mono.Security for this. Now is implemented using SslStream from NetStandard
+* Implement IDisposable for LdapConnection to allow usage of "using" construct
+
+## Original changelog before .NET Standard conversion
+
 ### 2009-07-14 Palaniappan N <npalaniappan@novell.com>
 * The fix for the crash while disconnecting has been checked in. The fix is to implement iDisposambe interface and use 'Dispose' method to shut down the connection.
 
