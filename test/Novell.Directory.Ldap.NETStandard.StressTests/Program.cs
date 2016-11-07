@@ -29,8 +29,6 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
             var noOfThreads = DefaultNoOfThreads;
             var timeToRun = DefaultTimeToRun;
-            foreach( var arg in args)
-                Console.WriteLine(arg);
             if (args.Length >= 1)
                 noOfThreads = int.Parse(args[0]);
             if(args.Length >= 2)
