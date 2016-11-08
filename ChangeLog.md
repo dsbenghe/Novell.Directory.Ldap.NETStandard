@@ -1,6 +1,7 @@
 # Changelog
 
 ### 2.3.4
+* Added stress tests which are running the functional tests on multiple threads - running in Travis CI using OpenLDAP in a build matrix with different number of threads
 * Added functional tests which are running in CI using OpenLDAP as ldap server
 * Fixed reader thread hanging when disposing ldap connection after an unsuccesful bind (not sure if was happening in the original library as I didnt check it but very likely it did)
 * Code cleanup: delete useless/incorrect finalizers and some general cleanup
@@ -18,7 +19,7 @@
 ### 2.3.0 Initial version built against the release version of .NET Core 1.0. The main changes for porting were around:
 * Thread usage: the library was extensively using Abort, Interrupt, ThreadInterruptedException, ... - which is not recommended and also not supported in .NET Core.
 * Serialization support for a limited number of types was deleted; not supported on .net core
-* S`sl support: the library was using Mono.Security for this. Now is implemented using SslStream from NetStandard
+* Ssl support: the library was using Mono.Security for this. Now is implemented using SslStream from NetStandard
 * Implement IDisposable for LdapConnection to allow usage of "using" construct
 
 ## Original changelog before .NET Standard conversion
