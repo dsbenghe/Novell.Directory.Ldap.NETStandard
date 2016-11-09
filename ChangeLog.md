@@ -8,8 +8,8 @@
 * Free the write semaphore in finally
 
 ### 2.3.3 Fix two issues happening also in the original library
-* Fix crashing of reader thread when stopping the thread because of unhandled exception (the reader thread was expecting IOException by not ObjectDisposedException)
-* Fix race condition causing null reference on dispose of ldap connection
+* Fix crashing of reader thread when stopping the thread because of unhandled exception (the reader thread was expecting IOException but not ObjectDisposedException)
+* Fix race condition causing null reference on dispose of LdapConnection
 
 ### 2.3.1
 * Built against the lowest possible version of .NET Standard: 1.3
