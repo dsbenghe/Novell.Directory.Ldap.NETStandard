@@ -1,6 +1,6 @@
 # Changelog
 
-### 2.3.4
+### 2.3.5
 * Added stress tests which are running the functional tests on multiple threads - running in Travis CI using OpenLDAP in a build matrix with different number of threads
 * Added functional tests which are running in CI using OpenLDAP as ldap server
 * Fixed reader thread hanging when disposing ldap connection after an unsuccesful bind (not sure if was happening in the original library as I didnt check it but very likely it did)
