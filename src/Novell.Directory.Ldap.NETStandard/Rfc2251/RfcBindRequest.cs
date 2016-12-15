@@ -103,7 +103,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Bind Request copying the original data from
         ///     an existing request.
         /// </summary>
-        /* package */
         internal RfcBindRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base

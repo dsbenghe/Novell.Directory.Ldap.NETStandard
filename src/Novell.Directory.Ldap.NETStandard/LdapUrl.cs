@@ -586,7 +586,6 @@ namespace Novell.Directory.Ldap
 
 
         /// <summary> Sets the base distinguished name encapsulated in the URL.</summary>
-        /* package */
         internal virtual void setDN(string dn)
 
         {

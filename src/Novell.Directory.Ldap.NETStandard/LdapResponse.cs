@@ -180,7 +180,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal virtual LdapException ResultException
         {
-            /* package */
             get
             {
                 LdapException ex = null;
@@ -446,7 +445,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        /* package */
         internal virtual void chkResultCode()
         {
             if (exception != null)

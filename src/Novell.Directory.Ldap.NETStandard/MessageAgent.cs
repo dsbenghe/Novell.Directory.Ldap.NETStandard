@@ -35,8 +35,6 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    /* package */
-
     internal class MessageAgent
     {
         private void InitBlock()
@@ -49,7 +47,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal virtual object[] MessageArray
         {
-            /* package */
             get { return messages.ObjectArray; }
         }
 
@@ -61,7 +58,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual int[] MessageIDs
         {
-            /* package */
             get
             {
                 var size = messages.Count;
@@ -92,7 +88,6 @@ namespace Novell.Directory.Ldap
         /// <summary> Get a count of all messages queued</summary>
         internal virtual int Count
         {
-            /* package */
             get
             {
                 var count = 0;
@@ -112,7 +107,6 @@ namespace Novell.Directory.Ldap
         private static int agentNum = 0; // Debug, agent number
         private string name; // String name for debug
 
-        /* package */
 
         internal MessageAgent()
         {
@@ -126,7 +120,6 @@ namespace Novell.Directory.Ldap
         /// <param name="fromAgent">
         ///     the agent to be merged into this one
         /// </param>
-        /* package */
         internal void merge(MessageAgent fromAgent)
         {
             var msgs = fromAgent.MessageArray;
@@ -152,7 +145,6 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Wakes up any threads waiting for messages in the message agent
         /// </summary>
-        /* package */
         internal void sleepersAwake(bool all)
         {
             lock (messages)
@@ -168,7 +160,6 @@ namespace Novell.Directory.Ldap
         ///     Returns true if any responses are queued for any of the agent's messages
         ///     return false if no responses are queued, otherwise true
         /// </summary>
-        /* package */
         internal bool isResponseReceived()
         {
             var size = messages.Count;
@@ -193,7 +184,6 @@ namespace Novell.Directory.Ldap
         ///     Returns true if any responses are queued for the specified msgId
         ///     return false if no responses are queued, otherwise true
         /// </summary>
-        /* package */
         internal bool isResponseReceived(int msgId)
         {
             try
@@ -216,7 +206,6 @@ namespace Novell.Directory.Ldap
         /// <param name="cons">
         ///     constraints associated with this request
         /// </param>
-        /* package */
         internal void Abandon(int msgId, LdapConstraints cons)
             //, boolean informUser)
         {
@@ -234,7 +223,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Abandon all requests on this MessageAgent</summary>
-        /* package */
         internal void AbandonAll()
         {
             var size = messages.Count;
@@ -255,7 +243,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if a specific operation is complete
         /// </returns>
-        /* package */
         internal bool isComplete(int msgid)
         {
             try
@@ -279,7 +266,6 @@ namespace Novell.Directory.Ldap
         /// <param name="msgid">
         ///     the message ID.
         /// </param>
-        /* package */
         internal Message getMessage(int msgid)
         {
             return messages.findMessageById(msgid);
@@ -304,7 +290,6 @@ namespace Novell.Directory.Ldap
         /// <param name="queue">
         ///     the LdapMessageQueue associated with this request.
         /// </param>
-        /* package */
         internal void sendMessage(Connection conn, LdapMessage msg, int timeOut, LdapMessageQueue queue,
             BindProperties bindProps)
         {
@@ -318,7 +303,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns a response queued, or waits if none queued
         /// </summary>
-        /* package */
+
 //		internal System.Object getLdapMessage(System.Int32 msgId)
         internal object getLdapMessage(int msgId)
         {

@@ -74,7 +74,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Modify Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        /* package */
         internal RfcModifyRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base

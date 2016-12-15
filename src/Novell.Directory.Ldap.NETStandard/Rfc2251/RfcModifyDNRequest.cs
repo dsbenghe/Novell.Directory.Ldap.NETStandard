@@ -73,7 +73,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Delete Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        /* package */
         internal RfcModifyDNRequest(Asn1Object[] origRequest, string base_Renamed)
             : base(origRequest, origRequest.Length)
         {

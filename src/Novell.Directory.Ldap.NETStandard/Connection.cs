@@ -109,7 +109,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal bool Cloned
         {
-            /* package */
             get { return cloneCount > 0; }
         }
 
@@ -123,14 +122,12 @@ namespace Novell.Directory.Ldap
         /// <summary> gets the host used for this connection</summary>
         internal string Host
         {
-            /* package */
             get { return host; }
         }
 
         /// <summary> gets the port used for this connection</summary>
         internal int Port
         {
-            /* package */
             get { return port; }
         }
 
@@ -140,7 +137,6 @@ namespace Novell.Directory.Ldap
         /// <summary> checks if the writeSemaphore id used for active bind operation is clear</summary>
         internal bool BindSemIdClear
         {
-            /* package */
             get
             {
                 if (bindSemaphoreId == 0)
@@ -157,7 +153,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal bool Bound
         {
-            /* package */
             get
             {
                 if (bindProperties != null)
@@ -172,7 +167,6 @@ namespace Novell.Directory.Ldap
         /// <summary> Return whether a connection has been made</summary>
         internal bool Connected
         {
-            /* package */
             get { return in_Renamed != null; }
         }
 
@@ -192,10 +186,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal BindProperties BindProperties
         {
-            /* package */
             get { return bindProperties; }
 
-            /* package */
+
             set { bindProperties = value; }
         }
 
@@ -303,11 +296,11 @@ namespace Novell.Directory.Ldap
         // method in LdapConnection.  Future releases might require
         // these to be local variables that can be modified using
         // the setProperty method.
-        /* package */
+
         internal static string sdk;
-        /* package */
+
         internal static int protocol;
-        /* package */
+
         internal static string security = "simple";
 
         /// <summary>
@@ -316,7 +309,7 @@ namespace Novell.Directory.Ldap
         /// <param name="factory">
         ///     specifies the factory to use to produce SSL sockets.
         /// </param>
-        /* package */
+
         //		internal Connection(LdapSocketFactory factory)
         internal Connection()
         {
@@ -335,7 +328,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a shallow copy of this object
         /// </returns>
-        /* package */
         internal object copy()
         {
             var c = new Connection();
@@ -356,7 +348,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the ephemeral message id that identifies semaphore's owner
         /// </returns>
-        /* package */
         internal int acquireWriteSemaphore()
         {
             return acquireWriteSemaphore(0);
@@ -377,7 +368,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the semaphore value used to acquire the lock
         /// </returns>
-        /* package */
         internal int acquireWriteSemaphore(int msgId)
         {
             var id = msgId;
@@ -417,7 +407,6 @@ namespace Novell.Directory.Ldap
         /// <param name="msgId">
         ///     a value that identifies the owner of this semaphore
         /// </param>
-        /* package */
         internal void freeWriteSemaphore(int msgId)
         {
             lock (writeSemaphore)
@@ -530,7 +519,6 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        /* package */
         internal void connect(string host, int port)
         {
             connect(host, port, 0);
@@ -679,7 +667,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>  Increments the count of cloned connections</summary>
-        /* package */
         internal void incrCloneCount()
         {
             lock (this)
@@ -714,7 +701,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a Connection object or null if finalizing.
         /// </returns>
-        /* package */
         internal Connection destroyClone()
         {
             lock (this)
@@ -749,7 +735,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        /* package */
+
         /// <summary>
         ///     sets the default socket factory
         /// </summary>
@@ -763,7 +749,6 @@ namespace Novell.Directory.Ldap
         ///     the default factory for this connection
         /// </returns>
         /// <summary> clears the writeSemaphore id used for active bind operation</summary>
-        /* package */
         internal void clearBindSemId()
         {
             bindSemaphoreId = 0;
@@ -775,7 +760,6 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        /* package */
         internal void writeMessage(Message info)
         {
             messages.Add(info);
@@ -803,7 +787,6 @@ namespace Novell.Directory.Ldap
         /// <param name="msg">
         ///     the message to write.
         /// </param>
-        /* package */
         internal void writeMessage(LdapMessage msg)
         {
             int id;
@@ -876,7 +859,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Returns the message agent for this msg ID</summary>
-        /* package */
         internal MessageAgent getMessageAgent(int msgId)
         {
             var info = messages.findMessageById(msgId);
@@ -889,7 +871,6 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message class to remove from the list
         /// </param>
-        /* package */
         internal void removeMessage(Message info)
         {
             SupportClass.VectorRemoveElement(messages, info);
@@ -985,7 +966,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if no outstanding messages
         /// </returns>
-        /* package */
         internal bool areMessagesComplete()
         {
             var messages = this.messages.ObjectArray;
@@ -1016,7 +996,6 @@ namespace Novell.Directory.Ldap
         ///     to the messageID passed in to this method.  This is used by
         ///     LdapConnection.StartTLS.
         /// </summary>
-        /* package */
         internal void stopReaderOnReply(int messageID)
         {
             stopReaderMessageID = messageID;
@@ -1028,7 +1007,6 @@ namespace Novell.Directory.Ldap
         ///     set or changed.  In particular after client.Connection.startTLS()
         ///     It assumes the reader thread is not running.
         /// </summary>
-        /* package */
         internal void startReader()
         {
             // Start Reader Thread
@@ -1058,7 +1036,6 @@ namespace Novell.Directory.Ldap
         ///     stop and start the reader thread.  Connection.StopTLS will stop
         ///     and start the reader thread.
         /// </summary>
-        /* package */
         internal void startTLS()
         {
             try
@@ -1108,7 +1085,7 @@ namespace Novell.Directory.Ldap
         * used any more, even though autoclose was false: you get an IOException.
         * IBM's JSSE hangs when you close the JSSE socket.
         */
-        /* package */
+
 
         internal void stopTLS()
         {
@@ -1327,14 +1304,12 @@ namespace Novell.Directory.Ldap
         ///     Add the specific object to the list of listeners that want to be
         ///     notified when an unsolicited notification is received.
         /// </summary>
-        /* package */
         internal void AddUnsolicitedNotificationListener(LdapUnsolicitedNotificationListener listener)
         {
             unsolicitedListeners.Add(listener);
         }
 
         /// <summary>Remove the specific object from current list of listeners</summary>
-        /* package */
         internal void RemoveUnsolicitedNotificationListener(LdapUnsolicitedNotificationListener listener)
         {
             SupportClass.VectorRemoveElement(unsolicitedListeners, listener);
@@ -1367,7 +1342,6 @@ namespace Novell.Directory.Ldap
             private readonly LdapUnsolicitedNotificationListener listenerObj;
             private readonly LdapExtendedResponse unsolicitedMsg;
 
-            /* package */
 
             internal UnsolicitedListenerThread(Connection enclosingInstance, LdapUnsolicitedNotificationListener l,
                 LdapExtendedResponse m)

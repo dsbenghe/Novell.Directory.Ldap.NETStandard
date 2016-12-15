@@ -33,8 +33,6 @@ using System;
 
 namespace Novell.Directory.Ldap
 {
-    /* package */
-
     public class InterThreadException : LdapException
     {
         /// <summary>
@@ -46,7 +44,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual int MessageID
         {
-            /* package */
             get
             {
                 if (request == null)
@@ -67,7 +64,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual int ReplyType
         {
-            /* package */
             get
             {
                 if (request == null)
@@ -136,7 +132,6 @@ namespace Novell.Directory.Ldap
         /// <param name="request">
         ///     The Message class associated with this exception.
         /// </param>
-        /* package */
         internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
             Message request) : base(message, arguments, resultCode, null, rootException)
         {

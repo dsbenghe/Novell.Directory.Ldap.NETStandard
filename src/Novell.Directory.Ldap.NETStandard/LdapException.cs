@@ -1148,7 +1148,6 @@ namespace Novell.Directory.Ldap
         ///     The maximal subset of a specified DN which could
         ///     be matched by the server on a search operation.
         /// </param>
-        /* package */
         internal LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg,
             string matchedDN, Exception rootException)
             : base(ResourcesHandler.getMessage(messageOrKey, arguments))
@@ -1243,7 +1242,6 @@ namespace Novell.Directory.Ldap
         /// <param name="exception">
         ///     The name of the exception class
         /// </param>
-        /* package */
         internal virtual string getExceptionString(string exception)
         {
             string tmsg;

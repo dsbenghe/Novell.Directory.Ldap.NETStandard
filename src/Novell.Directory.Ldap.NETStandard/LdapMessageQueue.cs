@@ -49,7 +49,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual string DebugName
         {
-            /* package */
             get { return name; }
         }
 
@@ -61,7 +60,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual MessageAgent MessageAgent
         {
-            /* package */
             get { return agent; }
         }
 
@@ -81,19 +79,18 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> The message agent object associated with this queue</summary>
-        /* package */
         internal MessageAgent agent;
 
         // Queue name used only for debug
-        /* package */
+
         internal string name = "";
 
         // nameLock used to protect queueNum during increment
-        /* package */
+
         internal static object nameLock;
 
         // Queue number used only for debug
-        /* package */
+
         internal static int queueNum = 0;
 
         /// <summary>
@@ -102,7 +99,6 @@ namespace Novell.Directory.Ldap
         /// <param name="agent">
         ///     The message agent to associate with this conneciton
         /// </param>
-        /* package */
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
             // Get a unique connection name for debug

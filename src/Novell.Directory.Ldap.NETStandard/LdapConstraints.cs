@@ -98,10 +98,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal virtual Hashtable Properties
         {
-            /* package */
             get { return properties; }
 
-            /* package */
+
             set { properties = (Hashtable) value.Clone(); }
         }
 

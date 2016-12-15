@@ -44,7 +44,6 @@ namespace Novell.Directory.Ldap
         /// <param name="agent">
         ///     The message agent to associate with this queue
         /// </param>
-        /* package */
         internal LdapResponseQueue(MessageAgent agent) : base("LdapResponseQueue", agent)
         {
         }

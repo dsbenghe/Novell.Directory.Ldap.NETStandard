@@ -68,7 +68,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Compare Request copying from the data of
         ///     an existing request.
         /// </summary>
-        /* package */
         internal RfcCompareRequest(Asn1Object[] origRequest, string base_Renamed)
             : base(origRequest, origRequest.Length)
         {

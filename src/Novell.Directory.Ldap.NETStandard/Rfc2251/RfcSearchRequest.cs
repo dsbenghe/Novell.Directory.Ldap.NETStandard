@@ -79,7 +79,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs a new Search Request copying from an existing request.</summary>
-        /* package */
         internal RfcSearchRequest(Asn1Object[] origRequest, string base_Renamed, string filter, bool request)
             : base(origRequest, origRequest.Length)
         {

@@ -78,7 +78,6 @@ namespace Novell.Directory.Ldap
 
         internal static RespControlVector RegisteredControls
         {
-            /* package */
             get { return registeredControls; }
         }
 

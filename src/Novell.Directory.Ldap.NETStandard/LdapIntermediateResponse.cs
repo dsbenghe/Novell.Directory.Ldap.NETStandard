@@ -67,7 +67,6 @@ namespace Novell.Directory.Ldap
             registeredResponses.registerResponseExtension(oid, extendedResponseClass);
         }
 
-        /* package */
 
         public static RespExtensionSet getRegisteredResponses()
         {

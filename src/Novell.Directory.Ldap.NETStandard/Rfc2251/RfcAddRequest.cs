@@ -77,7 +77,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="base">
         ///     if not null, replaces the dn of the original request
         /// </param>
-        /* package */
         internal RfcAddRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base

@@ -38,7 +38,6 @@ using Novell.Directory.Ldap.Utilclass;
 namespace Novell.Directory.Ldap
 {
     /// <summary> Encapsulates an Ldap message, its state, and its replies.</summary>
-    /* package */
     internal class Message
     {
         private void InitBlock()
@@ -52,7 +51,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal virtual int Count
         {
-            /* package */
             get
             {
                 var size = replies.Count;
@@ -67,7 +65,6 @@ namespace Novell.Directory.Ldap
         /// <summary> sets the agent for this message</summary>
         internal virtual MessageAgent Agent
         {
-            /* package */
             set { agent = value; }
         }
 
@@ -77,7 +74,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if no replies are queued, otherwise true
         /// </returns>
-        /* package */
         internal virtual bool hasReplies()
         {
             if (replies == null)
@@ -90,7 +86,6 @@ namespace Novell.Directory.Ldap
 
         internal virtual int MessageType
         {
-            /* package */
             get
             {
                 if (msg == null)
@@ -103,7 +98,6 @@ namespace Novell.Directory.Ldap
 
         internal virtual int MessageID
         {
-            /* package */
             get { return msgId; }
         }
 
@@ -116,7 +110,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual bool Complete
         {
-            /* package */
             get { return complete; }
         }
 
@@ -126,7 +119,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the next reply message on the reply queue or null
         /// </returns>
-        /* package */
         internal virtual object waitForReply()
         {
             if (replies == null)
@@ -172,7 +164,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual object Reply
         {
-            /* package */
             get
             {
                 object msg;
@@ -207,7 +198,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if replies are no longer accepted for this request
         /// </returns>
-        /* package */
         internal virtual bool acceptsReplies()
         {
             return acceptReplies;
@@ -228,7 +218,6 @@ namespace Novell.Directory.Ldap
 
         internal virtual bool BindRequest
         {
-            /* package */
             get { return bindprops != null; }
         }
 
@@ -241,7 +230,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual MessageAgent MessageAgent
         {
-            /* package */
             get { return agent; }
         }
 
@@ -475,7 +463,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> stops the timeout timer from running</summary>
-        /* package */
         internal virtual void stopTimer()
         {
             // If timer thread started, stop it
@@ -518,7 +505,6 @@ namespace Novell.Directory.Ldap
             private readonly int timeToWait;
             private readonly Message message;
 
-            /* package */
 
             internal Timeout(Message enclosingInstance, int interval, Message msg)
             {

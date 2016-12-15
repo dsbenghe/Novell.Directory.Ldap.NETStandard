@@ -38,7 +38,6 @@ namespace Novell.Directory.Ldap
     ///     The <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
-    /* package */
     internal class MessageVector : ArrayList
     {
         /// <summary>
@@ -51,7 +50,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual object[] ObjectArray
         {
-            /* package */
             get
             {
                 lock (this)
@@ -68,7 +66,6 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        /* package */
 
         internal MessageVector(int cap, int incr) : base(cap)
         {
@@ -86,7 +83,6 @@ namespace Novell.Directory.Ldap
         ///     @throws NoSuchFieldException when no object with the corresponding
         ///     value for the MsgId field can be found.
         /// </returns>
-        /* package */
         internal Message findMessageById(int msgId)
         {
             lock (this)

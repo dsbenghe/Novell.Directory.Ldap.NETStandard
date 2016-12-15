@@ -141,7 +141,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="origContent">
         ///     the array list to copy
         /// </param>
-        /* package */
         internal RfcLdapMessage(Asn1Object[] origContent, RfcRequest origRequest, string dn, string filter,
             bool reference) : base(origContent, origContent.Length)
         {

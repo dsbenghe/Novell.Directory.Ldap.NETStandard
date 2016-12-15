@@ -44,7 +44,6 @@ namespace Novell.Directory.Ldap
         /// <summary> Returns the LdapMessage request associated with this response</summary>
         internal virtual LdapMessage RequestingMessage
         {
-            /* package */
             get { return message.RequestingMessage; }
         }
 
@@ -183,7 +182,6 @@ namespace Novell.Directory.Ldap
         /// <summary> Returns the RFC 2251 LdapMessage composed in this object.</summary>
         internal virtual RfcLdapMessage Asn1Object
         {
-            /* package */
             get { return message; }
         }
 
@@ -487,7 +485,6 @@ namespace Novell.Directory.Ldap
         private string stringTag;
 
         /// <summary> Dummy constuctor</summary>
-        /* package */
         internal LdapMessage()
         {
         }
@@ -554,7 +551,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the object representing the new message
         /// </returns>
-        /* package */
         internal LdapMessage Clone(string dn, string filter, bool reference)
         {
             return new LdapMessage((RfcLdapMessage) message.dupMessage(dn, filter, reference));

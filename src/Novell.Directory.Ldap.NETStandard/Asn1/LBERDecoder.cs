@@ -175,93 +175,93 @@ namespace Novell.Directory.Ldap.Asn1
                     */
 
 
-                default:
-                    throw new EndOfStreamException("Unknown tag"); // !!! need a better exception
-                    }
-                    }
-                    // APPLICATION or CONTEXT-SPECIFIC tag
-                    return new Asn1Tagged(this, in_Renamed, length, (Asn1Identifier) asn1ID.Clone());
-                    }
+                    default:
+                        throw new EndOfStreamException("Unknown tag"); // !!! need a better exception
+                }
+            }
+            // APPLICATION or CONTEXT-SPECIFIC tag
+            return new Asn1Tagged(this, in_Renamed, length, (Asn1Identifier) asn1ID.Clone());
+        }
 
-                    /* Decoders for ASN.1 simple type Contents
-                    */
+        /* Decoders for ASN.1 simple type Contents
+        */
 
-                    /// <summary> Decode a boolean directly from a stream.</summary>
-                    public object decodeBoolean(Stream in_Renamed, int len)
-                    {
-                        var lber = new sbyte[len];
+        /// <summary> Decode a boolean directly from a stream.</summary>
+        public object decodeBoolean(Stream in_Renamed, int len)
+        {
+            var lber = new sbyte[len];
 
-                        var i = SupportClass.ReadInput(in_Renamed, ref lber, 0, lber.Length);
+            var i = SupportClass.ReadInput(in_Renamed, ref lber, 0, lber.Length);
 
-                        if (i != len)
-                            throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
+            if (i != len)
+                throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
 
-                        return lber[0] == 0x00 ? false : true;
-                    }
+            return lber[0] == 0x00 ? false : true;
+        }
 
         /// <summary>
         ///     Decode a Numeric type directly from a stream. Decodes INTEGER
         ///     and ENUMERATED types.
         /// </summary>
         public object decodeNumeric(Stream in_Renamed, int len)
-                    {
-                        long l = 0;
-                        var r = in_Renamed.ReadByte();
+        {
+            long l = 0;
+            var r = in_Renamed.ReadByte();
 
-                        if (r < 0)
-                            throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
+            if (r < 0)
+                throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
 
-                        if ((r & 0x80) != 0)
-                        {
-                            // check for negative number
-                            l = -1;
-                        }
+            if ((r & 0x80) != 0)
+            {
+                // check for negative number
+                l = -1;
+            }
 
-                        l = (l << 8) | r;
+            l = (l << 8) | r;
 
-                        for (var i = 1; i < len; i++)
-                        {
-                            r = in_Renamed.ReadByte();
-                            if (r < 0)
-                                throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
-                            l = (l << 8) | r;
-                        }
-                        return l;
-                    }
+            for (var i = 1; i < len; i++)
+            {
+                r = in_Renamed.ReadByte();
+                if (r < 0)
+                    throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
+                l = (l << 8) | r;
+            }
+            return l;
+        }
 
-                    /// <summary> Decode an OctetString directly from a stream.</summary>
-                    public object decodeOctetString(Stream in_Renamed, int len)
-                    {
-                        var octets = new sbyte[len];
-                        var totalLen = 0;
+        /// <summary> Decode an OctetString directly from a stream.</summary>
+        public object decodeOctetString(Stream in_Renamed, int len)
+        {
+            var octets = new sbyte[len];
+            var totalLen = 0;
 
-                        while (totalLen < len)
-                        {
-                            // Make sure we have read all the data
-                            var inLen = SupportClass.ReadInput(in_Renamed, ref octets, totalLen, len - totalLen);
-                            totalLen += inLen;
-                        }
+            while (totalLen < len)
+            {
+                // Make sure we have read all the data
+                var inLen = SupportClass.ReadInput(in_Renamed, ref octets, totalLen, len - totalLen);
+                totalLen += inLen;
+            }
 
-                        return octets;
-                    }
+            return octets;
+        }
 
-                    /// <summary> Decode a CharacterString directly from a stream.</summary>
-                    public object decodeCharacterString(Stream in_Renamed, int len)
-                    {
-                        var octets = new sbyte[len];
+        /// <summary> Decode a CharacterString directly from a stream.</summary>
+        public object decodeCharacterString(Stream in_Renamed, int len)
+        {
+            var octets = new sbyte[len];
 
-                        for (var i = 0; i < len; i++)
-                        {
-                            var ret = in_Renamed.ReadByte(); // blocks
-                            if (ret == -1)
-                                throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
-                            octets[i] = (sbyte) ret;
-                        }
-                        var encoder = Encoding.GetEncoding("utf-8");
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray(octets));
-                        var rval = new string(dchar);
+            for (var i = 0; i < len; i++)
+            {
+                var ret = in_Renamed.ReadByte(); // blocks
+                if (ret == -1)
+                    throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
+                octets[i] = (sbyte) ret;
+            }
+            var encoder = Encoding.GetEncoding("utf-8");
+            var dchar = encoder.GetChars(SupportClass.ToByteArray(octets));
+            var rval = new string(dchar);
 
-                        return rval; //new String( "UTF8");
-                    }
-                    }
-                    }
+            return rval; //new String( "UTF8");
+        }
+    }
+}

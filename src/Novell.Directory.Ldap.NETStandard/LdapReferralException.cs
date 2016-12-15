@@ -243,7 +243,6 @@ namespace Novell.Directory.Ldap
         ///     the list of referrals returned by the Ldap server in a
         ///     single response.
         /// </param>
-        /* package */
         internal virtual void setReferrals(string[] urls)
         {
             referrals = urls;

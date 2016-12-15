@@ -217,7 +217,6 @@ namespace Novell.Directory.Ldap
         /// <param name="cons">
         ///     The LdapSearchConstraints associated with this search
         /// </param>
-        /* package */
         internal LdapSearchResults(LdapConnection conn, LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             // setup entry Vector

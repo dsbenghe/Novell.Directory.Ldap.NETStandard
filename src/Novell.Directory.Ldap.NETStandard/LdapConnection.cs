@@ -396,7 +396,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual Connection Connection
         {
-            /* package */
             get { return conn; }
         }
 
@@ -408,7 +407,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual string ConnectionName
         {
-            /* package */
             get { return name; }
         }
 
@@ -3377,7 +3375,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        /* package */
         internal virtual ArrayList chaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
             string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
         {
@@ -3549,7 +3546,7 @@ namespace Novell.Directory.Ldap
         *
         * @param list the list of the connections
         */
-        /* package */
+
 
         internal virtual void releaseReferralConnections(ArrayList list)
         {
