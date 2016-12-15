@@ -30,64 +30,60 @@
 //
 
 using System;
+using System.Collections;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-	
-	/// <summary> Encapsulates a qualifier in a Schema definition.  Definitions that are not
-	/// in rfc2252.  Begins with 'X-'
-	/// </summary>
-	public class AttributeQualifier
-	{
-		virtual public System.String Name
-		{
-			/*
-			public void addValue( String value )
-			{
-			values.add( value );
-			return;
-			}
-			*/
-			
-			get
-			{
-				return name;
-			}
-			
-		}
-		virtual public System.String[] Values
-		{
-			get
-			{
-				System.String[] strValues = null;
-				if (values.Count > 0)
-				{
-					strValues = new System.String[values.Count];
-					for (int i = 0; i < values.Count; i++)
-					{
-						strValues[i] = ((System.String) values[i]);
-					}
-				}
-				return strValues;
-			}
-			
-		}
-		internal System.String name;
-		internal System.Collections.ArrayList values;
-		
-		public AttributeQualifier(System.String name, System.String[] value_Renamed)
-		{
-			if ((System.Object) name == null || value_Renamed == null)
-			{
-				throw new System.ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
-			}
-			this.name = name;
-			values = new System.Collections.ArrayList(5);
-			for (int i = 0; i < value_Renamed.Length; i++)
-			{
-				values.Add(value_Renamed[i]);
-			}
-			return ;
-		}
-	}
+    /// <summary>
+    ///     Encapsulates a qualifier in a Schema definition.  Definitions that are not
+    ///     in rfc2252.  Begins with 'X-'
+    /// </summary>
+    public class AttributeQualifier
+    {
+        public virtual string Name
+        {
+            /*
+            public void addValue( String value )
+            {
+            values.add( value );
+            return;
+            }
+            */
+            get { return name; }
+        }
+
+        public virtual string[] Values
+        {
+            get
+            {
+                string[] strValues = null;
+                if (values.Count > 0)
+                {
+                    strValues = new string[values.Count];
+                    for (var i = 0; i < values.Count; i++)
+                    {
+                        strValues[i] = (string) values[i];
+                    }
+                }
+                return strValues;
+            }
+        }
+
+        internal string name;
+        internal ArrayList values;
+
+        public AttributeQualifier(string name, string[] value_Renamed)
+        {
+            if ((object) name == null || value_Renamed == null)
+            {
+                throw new ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
+            }
+            this.name = name;
+            values = new ArrayList(5);
+            for (var i = 0; i < value_Renamed.Length; i++)
+            {
+                values.Add(value_Renamed[i]);
+            }
+        }
+    }
 }

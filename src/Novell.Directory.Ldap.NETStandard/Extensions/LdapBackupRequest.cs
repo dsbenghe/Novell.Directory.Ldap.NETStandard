@@ -32,8 +32,7 @@
 
 using System;
 using System.IO;
-
-using Novell.Directory.Ldap;
+using System.Text;
 using Novell.Directory.Ldap.Asn1;
 
 /**
@@ -66,127 +65,126 @@ using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Extensions
 {
-	public class LdapBackupRequest: LdapExtendedOperation 
-	{
+    public class LdapBackupRequest : LdapExtendedOperation
+    {
+        static LdapBackupRequest()
+        {
+            /*
+            * Register the extendedresponse class which is returned by the server
+            * in response to a LdapBackupRequest
+            */
+            try
+            {
+                LdapExtendedResponse.register(
+                    BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE,
+                    Type.GetType("Novell.Directory.Ldap.Extensions.LdapBackupResponse"));
+            }
+            catch (TypeLoadException e)
+            {
+                Console.Error.WriteLine("Could not register Extended Response - Class not found");
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(e.StackTrace);
+            }
+        }
 
-		static LdapBackupRequest()
-		{
-			/*
-			* Register the extendedresponse class which is returned by the server
-			* in response to a LdapBackupRequest
-			*/
-			try 
-			{
-				LdapExtendedResponse.register(
-					BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE,
-					Type.GetType("Novell.Directory.Ldap.Extensions.LdapBackupResponse"));
-			} 
-			catch (TypeLoadException e) 
-			{
-				Console.Error.WriteLine("Could not register Extended Response - Class not found");
-			} 
-			catch (Exception e) 
-			{
-				Console.Error.WriteLine(e.StackTrace);
-			}
-		}
+        /**
+        *
+        * Constructs an extended operations object for getting data about any Object.
+        *
+        * @param objectDN 		The DN of the object to be backed up
+        * <br>
+        * @param passwd 		The encrypted password required for the object to
+        * be backed up
+        * <br>
+        * @param stateInfo     The state information of the object to backup. 
+        * This parameter is a String which contains combination of modification 
+        * timestamp and revision number of object being backed up. The format 
+        * of both modification time stamp and revision should pertain to eDirectoty
+        * standard format of taking modification timestamp and revision.
+        * Separator being used between these two is a '+' character.<br> 
+        *
+        *
+        * @exception LdapException A general exception which includes an error
+        *                          message and an LDAP error code.
+        */
 
-		/**
-		*
-		* Constructs an extended operations object for getting data about any Object.
-		*
-		* @param objectDN 		The DN of the object to be backed up
-		* <br>
-		* @param passwd 		The encrypted password required for the object to
-		* be backed up
-		* <br>
-		* @param stateInfo     The state information of the object to backup. 
-		* This parameter is a String which contains combination of modification 
-		* timestamp and revision number of object being backed up. The format 
-		* of both modification time stamp and revision should pertain to eDirectoty
-		* standard format of taking modification timestamp and revision.
-		* Separator being used between these two is a '+' character.<br> 
-		*
-		*
-		* @exception LdapException A general exception which includes an error
-		*                          message and an LDAP error code.
-		*/
-		public LdapBackupRequest(String objectDN, byte[] passwd, String stateInfo): 
-						base(BackupRestoreConstants.NLDAP_LDAP_BACKUP_REQUEST, null)
-		{
-		
-			int mts;		// Modifaction time stamp of the Object
-			int revision;   // Revision number of the Object
-			String mtsStr, revisionStr;
-		
-			try 
-			{
-				if (objectDN == null)
-					throw new ArgumentException("PARAM_ERROR");
-			
-				//If encrypted password has null reference make it null String
-				if(passwd == null)
-					passwd = System.Text.Encoding.UTF8.GetBytes("");
-					
-			
-				if (stateInfo == null) 
-				{
-					// If null reference is passed in stateInfo initialize both
-					// mts and revision
-					mts = 0;
-					revision = 0; 
-				}
-				else 
-				{
-					// Parse the passed stateInfo to obtain mts and revision
-					stateInfo = stateInfo.Trim();
-					int index = stateInfo.IndexOf('+');
-					if(index == -1)
-						throw new ArgumentException("PARAM_ERROR");
-					mtsStr = stateInfo.Substring(0, index);
-					revisionStr = stateInfo.Substring(index + 1);
-					try 
-					{
-						mts = int.Parse(mtsStr);
-					} 
-					catch (FormatException e) 
-					{
-						throw new LdapLocalException("Invalid Modification Timestamp send in the request", LdapException.ENCODING_ERROR);
-					}
-					try 
-					{
-						revision = int.Parse(revisionStr);
-					} 
-					catch (FormatException e) 
-					{
-						throw new LdapLocalException(
-							"Invalid Revision send in the request",
-							LdapException.ENCODING_ERROR);
-					}
-				}
+        public LdapBackupRequest(string objectDN, byte[] passwd, string stateInfo) :
+            base(BackupRestoreConstants.NLDAP_LDAP_BACKUP_REQUEST, null)
+        {
+            int mts; // Modifaction time stamp of the Object
+            int revision; // Revision number of the Object
+            string mtsStr, revisionStr;
 
-				MemoryStream encodedData = new MemoryStream();
-				LBEREncoder encoder = new LBEREncoder();
-				
-				// Encode data of objectDN, mts and revision
-				Asn1OctetString asn1_objectDN = new Asn1OctetString(objectDN);
-				Asn1Integer asn1_mts = new Asn1Integer(mts);
-				Asn1Integer asn1_revision = new Asn1Integer(revision);
-				Asn1OctetString asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+            try
+            {
+                if (objectDN == null)
+                    throw new ArgumentException("PARAM_ERROR");
 
-				asn1_objectDN.encode(encoder, encodedData);
-				asn1_mts.encode(encoder, encodedData);
-				asn1_revision.encode(encoder, encodedData);
-				asn1_passwd.encode(encoder, encodedData);
-			
-				// set the value of operation specific data
-				setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                //If encrypted password has null reference make it null String
+                if (passwd == null)
+                    passwd = Encoding.UTF8.GetBytes("");
 
-			} 
-			catch (IOException ioe) 
-			{
-				throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, (String) null);
-			}
-		}
-	}
+
+                if (stateInfo == null)
+                {
+                    // If null reference is passed in stateInfo initialize both
+                    // mts and revision
+                    mts = 0;
+                    revision = 0;
+                }
+                else
+                {
+                    // Parse the passed stateInfo to obtain mts and revision
+                    stateInfo = stateInfo.Trim();
+                    var index = stateInfo.IndexOf('+');
+                    if (index == -1)
+                        throw new ArgumentException("PARAM_ERROR");
+                    mtsStr = stateInfo.Substring(0, index);
+                    revisionStr = stateInfo.Substring(index + 1);
+                    try
+                    {
+                        mts = int.Parse(mtsStr);
+                    }
+                    catch (FormatException e)
+                    {
+                        throw new LdapLocalException("Invalid Modification Timestamp send in the request",
+                            LdapException.ENCODING_ERROR);
+                    }
+                    try
+                    {
+                        revision = int.Parse(revisionStr);
+                    }
+                    catch (FormatException e)
+                    {
+                        throw new LdapLocalException(
+                            "Invalid Revision send in the request",
+                            LdapException.ENCODING_ERROR);
+                    }
+                }
+
+                var encodedData = new MemoryStream();
+                var encoder = new LBEREncoder();
+
+                // Encode data of objectDN, mts and revision
+                var asn1_objectDN = new Asn1OctetString(objectDN);
+                var asn1_mts = new Asn1Integer(mts);
+                var asn1_revision = new Asn1Integer(revision);
+                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+
+                asn1_objectDN.encode(encoder, encodedData);
+                asn1_mts.encode(encoder, encodedData);
+                asn1_revision.encode(encoder, encodedData);
+                asn1_passwd.encode(encoder, encodedData);
+
+                // set the value of operation specific data
+                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+            }
+            catch (IOException ioe)
+            {
+                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null);
+            }
+        }
+    }
 }

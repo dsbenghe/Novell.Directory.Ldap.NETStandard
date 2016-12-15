@@ -30,30 +30,29 @@
 //
 
 using System;
+using System.IO;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
-	
-	/// <summary> Represnts an Ldap String.</summary>
-	public class RfcLdapString:Asn1OctetString
-	{
-		
-		/// <summary> </summary>
-		public RfcLdapString(System.String s):base(s)
-		{
-		}
-		
-		/// <summary> </summary>
-		[CLSCompliantAttribute(false)]
-		public RfcLdapString(sbyte[] ba):base(ba)
-		{
-		}
-		
-		/// <summary> </summary>
-		[CLSCompliantAttribute(false)]
-		public RfcLdapString(Asn1Decoder dec, System.IO.Stream in_Renamed, int len):base(dec, in_Renamed, len)
-		{
-		}
-	}
+    /// <summary> Represnts an Ldap String.</summary>
+    public class RfcLdapString : Asn1OctetString
+    {
+        /// <summary> </summary>
+        public RfcLdapString(string s) : base(s)
+        {
+        }
+
+        /// <summary> </summary>
+        [CLSCompliant(false)]
+        public RfcLdapString(sbyte[] ba) : base(ba)
+        {
+        }
+
+        /// <summary> </summary>
+        [CLSCompliant(false)]
+        public RfcLdapString(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        {
+        }
+    }
 }

@@ -30,54 +30,46 @@
 //
 
 
-using System;
 using System.Text;
-
-using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.Events
 {
-  /// <summary> 
-  /// This class represents the EventArgs for Ldap events in general.
-  /// This is also the base class for more specific Ldap events.
-  /// </summary>
-  /// <seealso cref='Novell.Directory.Ldap.Events.SearchResultEventArgs'/>
-  /// <seealso cref='Novell.Directory.Ldap.Events.SearchReferralEventArgs'/>
-  public class LdapEventArgs : DirectoryEventArgs
-  {
-    protected LdapEventType eType;
-    public LdapEventType EventType
+    /// <summary>
+    ///     This class represents the EventArgs for Ldap events in general.
+    ///     This is also the base class for more specific Ldap events.
+    /// </summary>
+    /// <seealso cref='Novell.Directory.Ldap.Events.SearchResultEventArgs' />
+    /// <seealso cref='Novell.Directory.Ldap.Events.SearchReferralEventArgs' />
+    public class LdapEventArgs : DirectoryEventArgs
     {
-      get
-      {
-	return eType;
-      }
-      set
-      {
-	eType = value;
-      }
-    }
+        protected LdapEventType eType;
 
-    public LdapEventArgs(
-		     LdapMessage sourceMessage,
-		     EventClassifiers aClassification,
-		     LdapEventType aType)
-      : base(sourceMessage, aClassification)
-    {
-      eType = aType;
-    }
+        public LdapEventType EventType
+        {
+            get { return eType; }
+            set { eType = value; }
+        }
 
-    public override string ToString()
-    {
-      StringBuilder buf = new StringBuilder();
-      buf.Append("[");
-      buf.AppendFormat("{0}:", GetType());
-      buf.AppendFormat("(Classification={0})", eClassification);
-      buf.AppendFormat("(Type={0})", eType);
-      buf.AppendFormat("(EventInformation:{0})", ldap_message);
-      buf.Append("]");
+        public LdapEventArgs(
+            LdapMessage sourceMessage,
+            EventClassifiers aClassification,
+            LdapEventType aType)
+            : base(sourceMessage, aClassification)
+        {
+            eType = aType;
+        }
 
-      return buf.ToString();
-    }
-  } // end of class LdapEventArgs
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+            buf.Append("[");
+            buf.AppendFormat("{0}:", GetType());
+            buf.AppendFormat("(Classification={0})", eClassification);
+            buf.AppendFormat("(Type={0})", eType);
+            buf.AppendFormat("(EventInformation:{0})", ldap_message);
+            buf.Append("]");
+
+            return buf.ToString();
+        }
+    } // end of class LdapEventArgs
 }

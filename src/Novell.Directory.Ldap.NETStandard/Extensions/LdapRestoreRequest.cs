@@ -32,8 +32,7 @@
 
 using System;
 using System.IO;
-
-using Novell.Directory.Ldap;
+using System.Text;
 using Novell.Directory.Ldap.Asn1;
 
 /**
@@ -72,126 +71,125 @@ using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Extensions
 {
-	public class LdapRestoreRequest : LdapExtendedOperation	
-	{	
-		/**
-		*
-		* Constructs an extended operations object which contains the ber encoded
-		* restore data.
-		*
-		* @param objectDN The object DN to restore
-		* <br>
-		* @param passwd 		The encrypted password required for the object to
-		* be backed up
-		* <br>
-		* @param bufferLength The length of backed up data
-		* <br>
-		* @param chunkSizesString The String containing number of chunks and 
-		* each chunk elements representing chunk sizes
-		* <br>
-		* @param returnedBuffer The actual data in byte[]
-		* <br><br>
-		* @exception LdapException A general exception which includes an error
-		*                          message and an LDAP error code.
-		*/
+    public class LdapRestoreRequest : LdapExtendedOperation
+    {
+        /**
+        *
+        * Constructs an extended operations object which contains the ber encoded
+        * restore data.
+        *
+        * @param objectDN The object DN to restore
+        * <br>
+        * @param passwd 		The encrypted password required for the object to
+        * be backed up
+        * <br>
+        * @param bufferLength The length of backed up data
+        * <br>
+        * @param chunkSizesString The String containing number of chunks and 
+        * each chunk elements representing chunk sizes
+        * <br>
+        * @param returnedBuffer The actual data in byte[]
+        * <br><br>
+        * @exception LdapException A general exception which includes an error
+        *                          message and an LDAP error code.
+        */
 
-		public LdapRestoreRequest(String objectDN, byte[] passwd, 
-			int bufferLength, String chunkSizesString, byte[] returnedBuffer): 
-			base(BackupRestoreConstants.NLDAP_LDAP_RESTORE_REQUEST, null)			
-		{	
-			try 
-			{
-				//Verify the validity of arguments
-				if (objectDN == null || bufferLength == 0 || 
-					chunkSizesString == null || returnedBuffer == null)
-						throw new ArgumentException("PARAM_ERROR");
-				
-				//If encrypted password has null reference make it null String
-				if(passwd == null)
-					passwd = System.Text.Encoding.UTF8.GetBytes("");
-			
-				/*
-				 * From the input argument chunkSizesString get::
-				 * chunkSize => Represents the number of chunks of data returned from server
-				 * sizeOf each chunk => int represents the size of each chunk
-				*/
-				int index;
-				int chunkSize;
-				int[] chunks = null;
-				index = chunkSizesString.IndexOf(';');
-				try 
-				{
-					chunkSize = int.Parse(chunkSizesString.Substring(0, index));
-				} 
-				catch (FormatException e) 
-				{
-					throw new LdapLocalException(
-							"Invalid data buffer send in the request",
-							LdapException.ENCODING_ERROR);
-				}
-				//Return exception if chunkSize == 0
-				if (chunkSize == 0)
-					throw new ArgumentException("PARAM_ERROR");
+        public LdapRestoreRequest(string objectDN, byte[] passwd,
+            int bufferLength, string chunkSizesString, byte[] returnedBuffer) :
+            base(BackupRestoreConstants.NLDAP_LDAP_RESTORE_REQUEST, null)
+        {
+            try
+            {
+                //Verify the validity of arguments
+                if (objectDN == null || bufferLength == 0 ||
+                    chunkSizesString == null || returnedBuffer == null)
+                    throw new ArgumentException("PARAM_ERROR");
 
-				chunkSizesString = chunkSizesString.Substring(index + 1);
+                //If encrypted password has null reference make it null String
+                if (passwd == null)
+                    passwd = Encoding.UTF8.GetBytes("");
 
-				int chunkIndex;
-				//Construct chunks array
-				chunks = new int[chunkSize];
-				/*
-				* Iterate through each member in buffer and
-				* assign to chunks array elements
-				*/
-				for (int i = 0; i < chunkSize; i++) 
-				{
-					chunkIndex = chunkSizesString.IndexOf(';');
-					if(chunkIndex == -1)
-					{
-						chunks[i] = int.Parse(chunkSizesString);
-						break;
-					}
-					chunks[i] = int.Parse(chunkSizesString.Substring(0,
-															chunkIndex));
-					chunkSizesString = chunkSizesString.Substring(chunkIndex + 1);
-				}
-			
-				MemoryStream encodedData = new MemoryStream();
-				LBEREncoder encoder = new LBEREncoder();
+                /*
+                 * From the input argument chunkSizesString get::
+                 * chunkSize => Represents the number of chunks of data returned from server
+                 * sizeOf each chunk => int represents the size of each chunk
+                */
+                int index;
+                int chunkSize;
+                int[] chunks = null;
+                index = chunkSizesString.IndexOf(';');
+                try
+                {
+                    chunkSize = int.Parse(chunkSizesString.Substring(0, index));
+                }
+                catch (FormatException e)
+                {
+                    throw new LdapLocalException(
+                        "Invalid data buffer send in the request",
+                        LdapException.ENCODING_ERROR);
+                }
+                //Return exception if chunkSize == 0
+                if (chunkSize == 0)
+                    throw new ArgumentException("PARAM_ERROR");
 
-				//Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
-				Asn1OctetString asn1_objectDN = new Asn1OctetString(objectDN);
-				Asn1OctetString asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
-				Asn1Integer asn1_bufferLength = new Asn1Integer(bufferLength);
-				Asn1OctetString asn1_buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
-				
-				//Form the chunks sequence to be passed to Server
-				Asn1Sequence asn1_chunksSeq = new Asn1Sequence();
-				asn1_chunksSeq.add(new Asn1Integer(chunkSize));
-				Asn1Set asn1_chunksSet = new Asn1Set();
-				for (int i = 0; i < chunkSize; i++) 
-				{
-					Asn1Integer tmpChunk = new Asn1Integer(chunks[i]);
-					Asn1Sequence tmpSeq = new Asn1Sequence();
-					tmpSeq.add(tmpChunk);
-					asn1_chunksSet.add(tmpSeq);
-				}
-				asn1_chunksSeq.add(asn1_chunksSet);
+                chunkSizesString = chunkSizesString.Substring(index + 1);
 
-				//Encode data to send to server
-				asn1_objectDN.encode(encoder, encodedData);
-				asn1_passwd.encode(encoder, encodedData);
-				asn1_bufferLength.encode(encoder, encodedData);
-				asn1_buffer.encode(encoder, encodedData);
-				asn1_chunksSeq.encode(encoder, encodedData);
-			
-				// set the value of operation specific data
-				setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                int chunkIndex;
+                //Construct chunks array
+                chunks = new int[chunkSize];
+                /*
+                * Iterate through each member in buffer and
+                * assign to chunks array elements
+                */
+                for (var i = 0; i < chunkSize; i++)
+                {
+                    chunkIndex = chunkSizesString.IndexOf(';');
+                    if (chunkIndex == -1)
+                    {
+                        chunks[i] = int.Parse(chunkSizesString);
+                        break;
+                    }
+                    chunks[i] = int.Parse(chunkSizesString.Substring(0,
+                        chunkIndex));
+                    chunkSizesString = chunkSizesString.Substring(chunkIndex + 1);
+                }
 
-			} 
-			catch (IOException ioe) 
-			{
-				throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, (String) null);
-			}
-		}	
-	}
+                var encodedData = new MemoryStream();
+                var encoder = new LBEREncoder();
+
+                //Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
+                var asn1_objectDN = new Asn1OctetString(objectDN);
+                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1_bufferLength = new Asn1Integer(bufferLength);
+                var asn1_buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
+
+                //Form the chunks sequence to be passed to Server
+                var asn1_chunksSeq = new Asn1Sequence();
+                asn1_chunksSeq.add(new Asn1Integer(chunkSize));
+                var asn1_chunksSet = new Asn1Set();
+                for (var i = 0; i < chunkSize; i++)
+                {
+                    var tmpChunk = new Asn1Integer(chunks[i]);
+                    var tmpSeq = new Asn1Sequence();
+                    tmpSeq.add(tmpChunk);
+                    asn1_chunksSet.add(tmpSeq);
+                }
+                asn1_chunksSeq.add(asn1_chunksSet);
+
+                //Encode data to send to server
+                asn1_objectDN.encode(encoder, encodedData);
+                asn1_passwd.encode(encoder, encodedData);
+                asn1_bufferLength.encode(encoder, encodedData);
+                asn1_buffer.encode(encoder, encodedData);
+                asn1_chunksSeq.encode(encoder, encodedData);
+
+                // set the value of operation specific data
+                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+            }
+            catch (IOException ioe)
+            {
+                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null);
+            }
+        }
+    }
 }

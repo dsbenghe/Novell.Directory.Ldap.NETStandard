@@ -30,82 +30,83 @@
 //
 
 using System;
+using System.Collections;
 
 namespace Novell.Directory.Ldap
 {
-	
-	/// <summary> The <code>MessageVector</code> class implements additional semantics
-	/// to Vector needed for handling messages.
-	/// </summary>
-	/* package */
-	class MessageVector:System.Collections.ArrayList
-	{
-		/// <summary>Returns an array containing all of the elements in this MessageVector.
-		/// The elements returned are in the same order in the array as in the
-		/// Vector.  The contents of the vector are cleared.
-		/// 
-		/// </summary>
-		/// <returns> the array containing all of the elements.
-		/// </returns>
-		virtual internal System.Object[] ObjectArray
-		{
-			/* package */
-			
-			get
-			{
-				lock (this)
-				{
-					System.Object[] results = new System.Object[Count];
-					Array.Copy((System.Array) ToArray(), 0, (System.Array) results, 0, Count);
-					for (int i = 0; i < Count; i++)
-					{
-						ToArray()[i] = null;
-					}
+    /// <summary>
+    ///     The <code>MessageVector</code> class implements additional semantics
+    ///     to Vector needed for handling messages.
+    /// </summary>
+    /* package */
+    internal class MessageVector : ArrayList
+    {
+        /// <summary>
+        ///     Returns an array containing all of the elements in this MessageVector.
+        ///     The elements returned are in the same order in the array as in the
+        ///     Vector.  The contents of the vector are cleared.
+        /// </summary>
+        /// <returns>
+        ///     the array containing all of the elements.
+        /// </returns>
+        internal virtual object[] ObjectArray
+        {
+            /* package */
+            get
+            {
+                lock (this)
+                {
+                    var results = new object[Count];
+                    Array.Copy(ToArray(), 0, results, 0, Count);
+                    for (var i = 0; i < Count; i++)
+                    {
+                        ToArray()[i] = null;
+                    }
 //					Count = 0;
-					return results;
-				}
-			}
-			
-		}
-		/* package */
-		internal MessageVector(int cap, int incr):base(cap)
-		{
-			return ;
-		}
-		
-		/// <summary> Finds the Message object with the given MsgID, and returns the Message
-		/// object. It finds the object and returns it in an atomic operation.
-		/// 
-		/// </summary>
-		/// <param name="msgId">The msgId of the Message object to return
-		/// 
-		/// </param>
-		/// <returns> The Message object corresponding to this MsgId.
-		/// 
-		/// @throws NoSuchFieldException when no object with the corresponding
-		/// value for the MsgId field can be found.
-		/// </returns>
-		/* package */
-		internal Message findMessageById(int msgId)
-		{
-			lock (this)
-			{
-				Message msg = null;
-				for (int i = 0; i < Count; i++)
-				{
-					//if ((msg = (Message) ToArray()[i]) == null)
+                    return results;
+                }
+            }
+        }
 
-					if ((msg = (Message)(this[i])) == null)
-					{
-						throw new System.FieldAccessException();
-					}
-					if (msg.MessageID == msgId)
-					{
-						return msg;
-					}
-				}
-				throw new System.FieldAccessException();
-			}
-		}
-	}
+        /* package */
+
+        internal MessageVector(int cap, int incr) : base(cap)
+        {
+        }
+
+        /// <summary>
+        ///     Finds the Message object with the given MsgID, and returns the Message
+        ///     object. It finds the object and returns it in an atomic operation.
+        /// </summary>
+        /// <param name="msgId">
+        ///     The msgId of the Message object to return
+        /// </param>
+        /// <returns>
+        ///     The Message object corresponding to this MsgId.
+        ///     @throws NoSuchFieldException when no object with the corresponding
+        ///     value for the MsgId field can be found.
+        /// </returns>
+        /* package */
+        internal Message findMessageById(int msgId)
+        {
+            lock (this)
+            {
+                Message msg = null;
+                for (var i = 0; i < Count; i++)
+                {
+                    //if ((msg = (Message) ToArray()[i]) == null)
+
+                    if ((msg = (Message) this[i]) == null)
+                    {
+                        throw new FieldAccessException();
+                    }
+                    if (msg.MessageID == msgId)
+                    {
+                        return msg;
+                    }
+                }
+                throw new FieldAccessException();
+            }
+        }
+    }
 }

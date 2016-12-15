@@ -34,44 +34,41 @@ using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Events.Edir.EventData
 {
-  /// <summary> 
-  /// This is the base class for all types of data classes associated
-  /// with an event.
-  /// </summary>
-  public class BaseEdirEventData
-  {
-    protected MemoryStream decodedData = null;
-    protected LBERDecoder decoder = null;
-
-    protected EdirEventDataType event_data_type;
-
-    /// <summary> 
-    /// The value for this attribute allows the caller to identify the
-    /// type of the data object.
+    /// <summary>
+    ///     This is the base class for all types of data classes associated
+    ///     with an event.
     /// </summary>
-    public EdirEventDataType EventDataType
+    public class BaseEdirEventData
     {
-      get
-      {
-	return event_data_type;
-      }
-    }
+        protected MemoryStream decodedData;
+        protected LBERDecoder decoder;
 
-    public BaseEdirEventData(EdirEventDataType eventDataType, Asn1Object message)
-    {
-      event_data_type = eventDataType;
+        protected EdirEventDataType event_data_type;
 
-      byte[] byteData = SupportClass.ToByteArray(((Asn1OctetString) message).byteValue());
-      decodedData = new MemoryStream(byteData);
-      decoder = new LBERDecoder();
-    }
+        /// <summary>
+        ///     The value for this attribute allows the caller to identify the
+        ///     type of the data object.
+        /// </summary>
+        public EdirEventDataType EventDataType
+        {
+            get { return event_data_type; }
+        }
 
-    protected void DataInitDone()
-    {
-      // We dont want the unnecessary memory to remain occupied if
-      // this object is retained by the caller
-      decodedData = null;
-      decoder = null;
+        public BaseEdirEventData(EdirEventDataType eventDataType, Asn1Object message)
+        {
+            event_data_type = eventDataType;
+
+            var byteData = SupportClass.ToByteArray(((Asn1OctetString) message).byteValue());
+            decodedData = new MemoryStream(byteData);
+            decoder = new LBERDecoder();
+        }
+
+        protected void DataInitDone()
+        {
+            // We dont want the unnecessary memory to remain occupied if
+            // this object is retained by the caller
+            decodedData = null;
+            decoder = null;
+        }
     }
-  }
 }

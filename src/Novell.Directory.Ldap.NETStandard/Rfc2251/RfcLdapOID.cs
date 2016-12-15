@@ -34,21 +34,21 @@ using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
-	
-	/*
-	* Represents an LdapOID.
-	*/
-	public class RfcLdapOID:Asn1OctetString
-	{
-		/// <summary> </summary>
-		public RfcLdapOID(System.String s):base(s)
-		{
-		}
-		
-		/// <summary> </summary>
-		[CLSCompliantAttribute(false)]
-		public RfcLdapOID(sbyte[] s):base(s)
-		{
-		}
-	}
+    /*
+        * Represents an LdapOID.
+        */
+
+    public class RfcLdapOID : Asn1OctetString
+    {
+        /// <summary> </summary>
+        public RfcLdapOID(string s) : base(s)
+        {
+        }
+
+        /// <summary> </summary>
+        [CLSCompliant(false)]
+        public RfcLdapOID(sbyte[] s) : base(s)
+        {
+        }
+    }
 }

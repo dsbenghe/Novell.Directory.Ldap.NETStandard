@@ -28,6 +28,7 @@
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
+
 using System;
 using System.Reflection;
 
@@ -36,6 +37,7 @@ using System.Reflection;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 //
+
 [assembly: AssemblyTitle("C# LDAP")]
 [assembly: AssemblyDescription("Novell.Directory.Ldap")]
 [assembly: AssemblyConfiguration("")]
@@ -84,6 +86,7 @@ using System.Reflection;
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
 //
+
 [assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
 //[assembly: AssemblyKeyName("")]

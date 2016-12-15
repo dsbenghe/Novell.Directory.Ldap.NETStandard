@@ -30,90 +30,79 @@
 //
 
 using System.Text;
-
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Events.Edir.EventData
 {
-  /// <summary> 
-  /// This class represents the data for Bindery Events.
-  /// </summary>
-  public class BinderyObjectEventData : BaseEdirEventData
-  {
-    protected string strEntryDN;
-    public string EntryDN
-    {
-      get
-      {
-	return strEntryDN;
-      }
-    }
-
-    protected int nType;
-    public int ValueType
-    {
-      get
-      {
-	return nType;
-      }
-    }
-
-    protected int nEmuObjFlags;
-    public int EmuObjFlags
-    {
-      get
-      {
-	return nEmuObjFlags;
-      }
-    }
-
-    protected int nSecurity;
-    public int Security
-    {
-      get
-      {
-	return nSecurity;
-      }
-    }
-
-    protected string strName;
-    public string Name
-    {
-      get
-      {
-	return strName;
-      }
-    }
-
-    public BinderyObjectEventData(EdirEventDataType eventDataType, Asn1Object message)
-      : base(eventDataType, message)
-    {
-      int[] length = new int[1];
-
-      strEntryDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-      nType = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-      nEmuObjFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-      nSecurity = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-      strName = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-
-      DataInitDone();
-    }
-
-    /// <summary> 
-    /// Returns a string representation of the object.
+    /// <summary>
+    ///     This class represents the data for Bindery Events.
     /// </summary>
-    public override string ToString()
+    public class BinderyObjectEventData : BaseEdirEventData
     {
-      StringBuilder buf = new StringBuilder();
-      buf.Append("[BinderyObjectEvent");
-      buf.AppendFormat("(EntryDn={0})", strEntryDN);
-      buf.AppendFormat("(Type={0})", nType);
-      buf.AppendFormat("(EnumOldFlags={0})", nEmuObjFlags);
-      buf.AppendFormat("(Secuirty={0})", nSecurity);
-      buf.AppendFormat("(Name={0})", strName);
-      buf.Append("]");
+        protected string strEntryDN;
 
-      return buf.ToString();
+        public string EntryDN
+        {
+            get { return strEntryDN; }
+        }
+
+        protected int nType;
+
+        public int ValueType
+        {
+            get { return nType; }
+        }
+
+        protected int nEmuObjFlags;
+
+        public int EmuObjFlags
+        {
+            get { return nEmuObjFlags; }
+        }
+
+        protected int nSecurity;
+
+        public int Security
+        {
+            get { return nSecurity; }
+        }
+
+        protected string strName;
+
+        public string Name
+        {
+            get { return strName; }
+        }
+
+        public BinderyObjectEventData(EdirEventDataType eventDataType, Asn1Object message)
+            : base(eventDataType, message)
+        {
+            var length = new int[1];
+
+            strEntryDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            nType = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
+            nEmuObjFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
+            nSecurity = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
+            strName = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+
+            DataInitDone();
+        }
+
+        /// <summary>
+        ///     Returns a string representation of the object.
+        /// </summary>
+        public override string ToString()
+        {
+            var buf = new StringBuilder();
+            buf.Append("[BinderyObjectEvent");
+            buf.AppendFormat("(EntryDn={0})", strEntryDN);
+            buf.AppendFormat("(Type={0})", nType);
+            buf.AppendFormat("(EnumOldFlags={0})", nEmuObjFlags);
+            buf.AppendFormat("(Secuirty={0})", nSecurity);
+            buf.AppendFormat("(Name={0})", strName);
+            buf.Append("]");
+
+            return buf.ToString();
+        }
     }
-  }
 }

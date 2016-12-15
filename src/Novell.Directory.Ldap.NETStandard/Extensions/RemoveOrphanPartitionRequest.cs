@@ -30,69 +30,64 @@
 //
 
 using System;
-using Novell.Directory.Ldap;
+using System.IO;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap.Extensions
 {
-	
-	/// <summary>  Deletes an orphan partition.
-	/// 
-	/// To delete an orphan partition, you must create an instance of this
-	/// class and then call the extendedOperation method with this
-	/// object as the required LdapExtendedOperation parameter.
-	/// 
-	/// The RemoveOrphanPartitionRequest extension uses the following OID:
-	/// 2.16.840.1.113719.1.27.100.41
-	/// 
-	/// The requestValue has the following format:
-	/// 
-	/// requestValue ::=
-	///       serverDN     LdapDN
-	///       contextName  LdapDN
-	/// </summary>
-	public class RemoveOrphanPartitionRequest:LdapExtendedOperation
-	{
-		
-		/// <summary> Constructs an extended operation object for deleting an orphan partition.
-		/// 
-		/// </summary>
-		/// <param name="serverDN">  The distinguished name of the server
-		/// on which the orphan partition resides.
-		/// 
-		/// </param>
-		/// <param name="contextName"> The distinguished name of the orphan
-		/// partition to delete.
-		/// 
-		/// </param>
-		/// <exception> LdapException A general exception which includes an error message
-		/// and an Ldap error code.
-		/// </exception>
-		public RemoveOrphanPartitionRequest(System.String serverDN, System.String contextName):base(ReplicationConstants.REMOVE_ORPHAN_NAMING_CONTEXT_REQ, null)
-		{
-			
-			try
-			{
-				
-				if (((System.Object) serverDN == null) || ((System.Object) contextName == null))
-					throw new System.ArgumentException(ExceptionMessages.PARAM_ERROR);
-				
-				System.IO.MemoryStream encodedData = new System.IO.MemoryStream();
-				LBEREncoder encoder = new LBEREncoder();
-				
-				Asn1OctetString asn1_serverDN = new Asn1OctetString(serverDN);
-				Asn1OctetString asn1_contextName = new Asn1OctetString(contextName);
-				
-				asn1_serverDN.encode(encoder, encodedData);
-				asn1_contextName.encode(encoder, encodedData);
-				
-				setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
-			}
-			catch (System.IO.IOException ioe)
-			{
-				throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, (System.String) null);
-			}
-		}
-	}
+    /// <summary>
+    ///     Deletes an orphan partition.
+    ///     To delete an orphan partition, you must create an instance of this
+    ///     class and then call the extendedOperation method with this
+    ///     object as the required LdapExtendedOperation parameter.
+    ///     The RemoveOrphanPartitionRequest extension uses the following OID:
+    ///     2.16.840.1.113719.1.27.100.41
+    ///     The requestValue has the following format:
+    ///     requestValue ::=
+    ///     serverDN     LdapDN
+    ///     contextName  LdapDN
+    /// </summary>
+    public class RemoveOrphanPartitionRequest : LdapExtendedOperation
+    {
+        /// <summary>
+        ///     Constructs an extended operation object for deleting an orphan partition.
+        /// </summary>
+        /// <param name="serverDN">
+        ///     The distinguished name of the server
+        ///     on which the orphan partition resides.
+        /// </param>
+        /// <param name="contextName">
+        ///     The distinguished name of the orphan
+        ///     partition to delete.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error message
+        ///     and an Ldap error code.
+        /// </exception>
+        public RemoveOrphanPartitionRequest(string serverDN, string contextName)
+            : base(ReplicationConstants.REMOVE_ORPHAN_NAMING_CONTEXT_REQ, null)
+        {
+            try
+            {
+                if ((object) serverDN == null || (object) contextName == null)
+                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+
+                var encodedData = new MemoryStream();
+                var encoder = new LBEREncoder();
+
+                var asn1_serverDN = new Asn1OctetString(serverDN);
+                var asn1_contextName = new Asn1OctetString(contextName);
+
+                asn1_serverDN.encode(encoder, encodedData);
+                asn1_contextName.encode(encoder, encodedData);
+
+                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+            }
+            catch (IOException ioe)
+            {
+                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null);
+            }
+        }
+    }
 }

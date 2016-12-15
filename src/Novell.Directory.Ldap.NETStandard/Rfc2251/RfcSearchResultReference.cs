@@ -30,42 +30,40 @@
 //
 
 using System;
-using Novell.Directory.Ldap;
+using System.IO;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
-	
-	/// <summary> Represents an Ldap Search Result Reference.
-	/// 
-	/// <pre>
-	/// SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LdapURL
-	/// </pre>
-	/// </summary>
-	public class RfcSearchResultReference:Asn1SequenceOf
-	{
-		
-		//*************************************************************************
-		// Constructors for SearchResultReference
-		//*************************************************************************
-		
-		/// <summary> The only time a client will create a SearchResultReference is when it is
-		/// decoding it from an InputStream
-		/// </summary>
-		[CLSCompliantAttribute(false)]
-		public RfcSearchResultReference(Asn1Decoder dec, System.IO.Stream in_Renamed, int len):base(dec, in_Renamed, len)
-		{
-			return ;
-		}
-		
-		//*************************************************************************
-		// Accessors
-		//*************************************************************************
-		
-		/// <summary> Override getIdentifier to return an application-wide id.</summary>
-		public override Asn1Identifier getIdentifier()
-		{
-			return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.SEARCH_RESULT_REFERENCE);
-		}
-	}
+    /// <summary>
+    ///     Represents an Ldap Search Result Reference.
+    ///     <pre>
+    ///         SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LdapURL
+    ///     </pre>
+    /// </summary>
+    public class RfcSearchResultReference : Asn1SequenceOf
+    {
+        //*************************************************************************
+        // Constructors for SearchResultReference
+        //*************************************************************************
+
+        /// <summary>
+        ///     The only time a client will create a SearchResultReference is when it is
+        ///     decoding it from an InputStream
+        /// </summary>
+        [CLSCompliant(false)]
+        public RfcSearchResultReference(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        {
+        }
+
+        //*************************************************************************
+        // Accessors
+        //*************************************************************************
+
+        /// <summary> Override getIdentifier to return an application-wide id.</summary>
+        public override Asn1Identifier getIdentifier()
+        {
+            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.SEARCH_RESULT_REFERENCE);
+        }
+    }
 }

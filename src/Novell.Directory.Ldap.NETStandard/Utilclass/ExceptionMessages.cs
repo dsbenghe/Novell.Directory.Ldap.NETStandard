@@ -163,9 +163,15 @@ namespace Novell.Directory.Ldap.Utilclass
             {NO_MEMORY, "All results could not be stored in memory, sort failed"},
             {SERVER_SHUTDOWN_REQ, "Received unsolicited notification from server {0}:{1} to shutdown"},
             {INVALID_ADDRESS, "Invalid syntax for address with port; {0}"},
-            {UNKNOWN_RESULT, "Unknown Ldap result code {0}"},        
-            {OUTSTANDING_OPERATIONS, "Cannot start or stop TLS because outstanding Ldap operations exist on this connection"},
-            {WRONG_FACTORY, "StartTLS cannot use the set socket factory because it does not implement LdapTLSSocketFactory"},
+            {UNKNOWN_RESULT, "Unknown Ldap result code {0}"},
+            {
+                OUTSTANDING_OPERATIONS,
+                "Cannot start or stop TLS because outstanding Ldap operations exist on this connection"
+            },
+            {
+                WRONG_FACTORY,
+                "StartTLS cannot use the set socket factory because it does not implement LdapTLSSocketFactory"
+            },
             {NO_TLS_FACTORY, "StartTLS failed because no LdapTLSSocketFactory has been set for this Connection"},
             {NO_STARTTLS, "An attempt to stopTLS on a connection where startTLS had not been called"},
             {STOPTLS_ERROR, "Error stopping TLS: Error getting input & output streams from the original socket"},
@@ -178,7 +184,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public static string GetErrorMessage(string code)
         {
-            if(messageMap.ContainsKey(code))
+            if (messageMap.ContainsKey(code))
                 return messageMap[code];
             return code;
         }

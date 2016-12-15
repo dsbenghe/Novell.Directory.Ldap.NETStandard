@@ -32,112 +32,111 @@
 
 using System;
 using System.IO;
-
-using Novell.Directory.Ldap.Utilclass;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap.Events.Edir
 {
-  /// <summary>
-  /// This class denotes the mechanism to specify the event of interest.
-  /// </summary>
-  public class MonitorEventRequest : LdapExtendedOperation
-  {
-    static MonitorEventRequest()
+    /// <summary>
+    ///     This class denotes the mechanism to specify the event of interest.
+    /// </summary>
+    public class MonitorEventRequest : LdapExtendedOperation
     {
-      /*
-       * Register the extendedresponse class which is returned by the
-       * server in response to a MonitorEventRequest
-       */
-      try
-      {
-	LdapExtendedResponse.register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE,
-				      Type.GetType("Novell.Directory.Ldap.Events.Edir.MonitorEventResponse", true));
-      }
-      catch(TypeLoadException e)
-      {
-	// TODO: put something in the Debug...
-      }
-      catch(Exception e)
-      {
-	// TODO: put something in the Debug...
-      }
+        static MonitorEventRequest()
+        {
+            /*
+             * Register the extendedresponse class which is returned by the
+             * server in response to a MonitorEventRequest
+             */
+            try
+            {
+                LdapExtendedResponse.register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE,
+                    Type.GetType("Novell.Directory.Ldap.Events.Edir.MonitorEventResponse", true));
+            }
+            catch (TypeLoadException e)
+            {
+                // TODO: put something in the Debug...
+            }
+            catch (Exception e)
+            {
+                // TODO: put something in the Debug...
+            }
 
-      //Also try to register EdirEventIntermediateResponse
-      try
-      {
-	LdapIntermediateResponse.register(EventOids.NLDAP_EVENT_NOTIFICATION,
-					  Type.GetType("Novell.Directory.Ldap.Events.Edir.EdirEventIntermediateResponse", true));
-      }
-      catch(TypeLoadException e)
-      {
-	// TODO: put something in the Debug...
-      }
-      catch(Exception e)
-      {
-	// TODO: put something in the Debug...
-      }
-    } // end of static constructor
+            //Also try to register EdirEventIntermediateResponse
+            try
+            {
+                LdapIntermediateResponse.register(EventOids.NLDAP_EVENT_NOTIFICATION,
+                    Type.GetType("Novell.Directory.Ldap.Events.Edir.EdirEventIntermediateResponse", true));
+            }
+            catch (TypeLoadException e)
+            {
+                // TODO: put something in the Debug...
+            }
+            catch (Exception e)
+            {
+                // TODO: put something in the Debug...
+            }
+        } // end of static constructor
 
-    public MonitorEventRequest(EdirEventSpecifier[] specifiers) :
-      base(EventOids.NLDAP_MONITOR_EVENTS_REQUEST, null)
-    {
-      if ((specifiers == null)) 
-      {
-	throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
-      }
+        public MonitorEventRequest(EdirEventSpecifier[] specifiers) :
+            base(EventOids.NLDAP_MONITOR_EVENTS_REQUEST, null)
+        {
+            if (specifiers == null)
+            {
+                throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+            }
 
-      MemoryStream encodedData = new MemoryStream();
-      LBEREncoder encoder = new LBEREncoder();
+            var encodedData = new MemoryStream();
+            var encoder = new LBEREncoder();
 
-      Asn1Sequence asnSequence = new Asn1Sequence();
-      try
-      {
-	asnSequence.add(new Asn1Integer(specifiers.Length));
+            var asnSequence = new Asn1Sequence();
+            try
+            {
+                asnSequence.add(new Asn1Integer(specifiers.Length));
 
-	Asn1Set asnSet = new Asn1Set();
-	bool bFiltered = false;
-	for (int nIndex = 0; nIndex < specifiers.Length; nIndex++)
-	{
-	  Asn1Sequence specifierSequence = new Asn1Sequence();
-	  specifierSequence.add(new Asn1Integer((int)(specifiers[nIndex].EventType)));
-	  specifierSequence.add(new Asn1Enumerated((int)(specifiers[nIndex].EventResultType)));
-	  if (0 == nIndex)
-	  {
-	    bFiltered = (null != specifiers[nIndex].EventFilter);
-	    if (bFiltered)
-	      setID(EventOids.NLDAP_FILTERED_MONITOR_EVENTS_REQUEST);
-	  }
-	  
-	  if (bFiltered)
-	  {
-	    // A filter is expected
-	    if (null == specifiers[nIndex].EventFilter)
-	      throw new ArgumentException("Filter cannot be null,for Filter events");
+                var asnSet = new Asn1Set();
+                var bFiltered = false;
+                for (var nIndex = 0; nIndex < specifiers.Length; nIndex++)
+                {
+                    var specifierSequence = new Asn1Sequence();
+                    specifierSequence.add(new Asn1Integer((int) specifiers[nIndex].EventType));
+                    specifierSequence.add(new Asn1Enumerated((int) specifiers[nIndex].EventResultType));
+                    if (0 == nIndex)
+                    {
+                        bFiltered = null != specifiers[nIndex].EventFilter;
+                        if (bFiltered)
+                            setID(EventOids.NLDAP_FILTERED_MONITOR_EVENTS_REQUEST);
+                    }
 
-	    specifierSequence.add(new Asn1OctetString(specifiers[nIndex].EventFilter));
-	  }
-	  else
-	  {
-	    // No filter is expected
-	    if (null != specifiers[nIndex].EventFilter)
-	      throw new ArgumentException("Filter cannot be specified for non Filter events");	 
-	  }
+                    if (bFiltered)
+                    {
+                        // A filter is expected
+                        if (null == specifiers[nIndex].EventFilter)
+                            throw new ArgumentException("Filter cannot be null,for Filter events");
 
-	  asnSet.add(specifierSequence);
-	}
+                        specifierSequence.add(new Asn1OctetString(specifiers[nIndex].EventFilter));
+                    }
+                    else
+                    {
+                        // No filter is expected
+                        if (null != specifiers[nIndex].EventFilter)
+                            throw new ArgumentException("Filter cannot be specified for non Filter events");
+                    }
 
-	asnSequence.add(asnSet);
-	asnSequence.encode(encoder, encodedData);
-      }
-      catch(Exception e)
-      {
-	throw new LdapException(ExceptionMessages.ENCODING_ERROR,
-				LdapException.ENCODING_ERROR, 
-				null);
-      }
+                    asnSet.add(specifierSequence);
+                }
 
-      setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
-    } // end of the constructor MonitorEventRequest
-  }
+                asnSequence.add(asnSet);
+                asnSequence.encode(encoder, encodedData);
+            }
+            catch (Exception e)
+            {
+                throw new LdapException(ExceptionMessages.ENCODING_ERROR,
+                    LdapException.ENCODING_ERROR,
+                    null);
+            }
+
+            setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+        } // end of the constructor MonitorEventRequest
+    }
 }
