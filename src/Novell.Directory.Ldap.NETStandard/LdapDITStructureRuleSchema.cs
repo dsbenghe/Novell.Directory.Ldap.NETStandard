@@ -178,7 +178,7 @@ namespace Novell.Directory.Ldap
                 }
                 Value = formatString();
             }
-            catch (IOException e)
+            catch (IOException)
             {
             }
         }

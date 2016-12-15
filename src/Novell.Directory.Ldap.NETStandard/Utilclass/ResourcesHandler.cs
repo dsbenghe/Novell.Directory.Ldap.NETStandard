@@ -158,7 +158,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 result = ResultCodeMessages.GetResultCode(Convert.ToString(code));
             }
-            catch (ArgumentNullException mre)
+            catch (ArgumentNullException)
             {
                 result = getMessage(ExceptionMessages.UNKNOWN_RESULT, new object[] {code}, locale);
             }

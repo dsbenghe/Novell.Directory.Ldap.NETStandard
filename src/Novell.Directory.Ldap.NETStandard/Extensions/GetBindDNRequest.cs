@@ -51,18 +51,10 @@ namespace Novell.Directory.Ldap.Extensions
         static GetBindDNRequest()
         {
             /*
-                * Register the extendedresponse class which is returned by the
-                * server in response to a ListReplicasRequest
-                */
-            try
-            {
-                LdapExtendedResponse.register(ReplicationConstants.GET_IDENTITY_NAME_RES,
-                    Type.GetType("Novell.Directory.Ldap.Extensions.GetBindDNResponse"));
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Could not register Extended Response -" + " Class not found");
-            }
+            * Register the extendedresponse class which is returned by the
+            * server in response to a ListReplicasRequest
+            */
+            LdapExtendedResponse.register(ReplicationConstants.GET_IDENTITY_NAME_RES, typeof(GetBindDNResponse));
         }
 
         /// <summary>

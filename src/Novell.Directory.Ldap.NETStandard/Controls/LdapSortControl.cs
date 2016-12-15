@@ -30,6 +30,7 @@
 //
 
 using System;
+using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Controls
@@ -125,6 +126,7 @@ namespace Novell.Directory.Ldap.Controls
                 }
                 catch (Exception e)
                 {
+                    Logger.Log.LogWarning("Exception swallowed", e);
                 }
             }
         }

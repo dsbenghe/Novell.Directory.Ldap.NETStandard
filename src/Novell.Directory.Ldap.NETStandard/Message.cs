@@ -331,7 +331,7 @@ namespace Novell.Directory.Ldap
                 }
                 catch (LdapException ex)
                 {
-                    ; // do nothing
+                    Logger.Log.LogWarning("Exception swallowed", ex);
                 }
                 // If not informing user, remove message from agent
                 if (informUserEx == null)
@@ -383,7 +383,7 @@ namespace Novell.Directory.Ldap
             }
             catch (Exception ex)
             {
-                // nothing
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
             _stackTraceCleanup = Environment.StackTrace;
             // Let GC clean up this stuff, leave name in case finalized is called

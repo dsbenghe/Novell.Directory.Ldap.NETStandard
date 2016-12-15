@@ -522,7 +522,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     }
                     catch (IOException ue)
                     {
-                        throw new Exception("UTF-8 String encoding not supported by JVM");
+                        throw new Exception("UTF-8 String encoding not supported by JVM", ue);
                     }
                 }
             }
@@ -670,7 +670,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             catch (InvalidCastException e)
             {
                 throw new LdapLocalException("A call to addSubstring occured " + "without calling startSubstring",
-                    LdapException.FILTER_ERROR);
+                    LdapException.FILTER_ERROR, e);
             }
         }
 
@@ -692,7 +692,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
             catch (InvalidCastException e)
             {
-                throw new LdapLocalException("Missmatched ending of substrings", LdapException.FILTER_ERROR);
+                throw new LdapLocalException("Missmatched ending of substrings", LdapException.FILTER_ERROR, e);
             }
             filterStack.Pop();
         }

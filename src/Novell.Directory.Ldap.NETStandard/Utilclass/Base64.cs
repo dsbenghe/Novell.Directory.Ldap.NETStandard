@@ -121,7 +121,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (IOException ue)
             {
-                throw new Exception("US-ASCII String encoding not supported by JVM");
+                throw new Exception("US-ASCII String encoding not supported by JVM", ue);
             }
         }
 
@@ -568,7 +568,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (IOException ue)
             {
-                throw new Exception("UTF-8 String encoding not supported by JVM");
+                throw new Exception("UTF-8 String encoding not supported by JVM", ue);
             }
         }
 

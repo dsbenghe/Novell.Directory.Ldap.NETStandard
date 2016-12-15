@@ -73,20 +73,7 @@ namespace Novell.Directory.Ldap.Extensions
             * Register the extendedresponse class which is returned by the server
             * in response to a LdapBackupRequest
             */
-            try
-            {
-                LdapExtendedResponse.register(
-                    BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE,
-                    Type.GetType("Novell.Directory.Ldap.Extensions.LdapBackupResponse"));
-            }
-            catch (TypeLoadException e)
-            {
-                Console.Error.WriteLine("Could not register Extended Response - Class not found");
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e.StackTrace);
-            }
+            LdapExtendedResponse.register(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE, typeof(LdapBackupResponse));
         }
 
         /**
@@ -150,7 +137,7 @@ namespace Novell.Directory.Ldap.Extensions
                     catch (FormatException e)
                     {
                         throw new LdapLocalException("Invalid Modification Timestamp send in the request",
-                            LdapException.ENCODING_ERROR);
+                            LdapException.ENCODING_ERROR, e);
                     }
                     try
                     {
@@ -160,7 +147,7 @@ namespace Novell.Directory.Ldap.Extensions
                     {
                         throw new LdapLocalException(
                             "Invalid Revision send in the request",
-                            LdapException.ENCODING_ERROR);
+                            LdapException.ENCODING_ERROR, e);
                     }
                 }
 
@@ -183,7 +170,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null);
+                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
             }
         }
     }

@@ -149,7 +149,7 @@ namespace Novell.Directory.Ldap
             }
             catch (Exception ce)
             {
-                throw new Exception("Internal error, cannot create clone");
+                throw new Exception("Internal error, cannot create clone", ce);
             }
             var vals = getValue();
             sbyte[] twin = null;

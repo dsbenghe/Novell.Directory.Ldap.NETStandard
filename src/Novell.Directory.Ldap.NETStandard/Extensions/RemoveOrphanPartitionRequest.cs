@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null);
+                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
             }
         }
     }

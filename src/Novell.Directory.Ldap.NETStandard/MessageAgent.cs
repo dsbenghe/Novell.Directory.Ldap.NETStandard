@@ -31,6 +31,7 @@
 
 using System;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -191,7 +192,7 @@ namespace Novell.Directory.Ldap
                 var info = messages.findMessageById(msgId);
                 return info.hasReplies();
             }
-            catch (FieldAccessException ex)
+            catch (FieldAccessException)
             {
                 return false;
             }
@@ -219,6 +220,7 @@ namespace Novell.Directory.Ldap
             }
             catch (FieldAccessException ex)
             {
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
 
@@ -255,7 +257,8 @@ namespace Novell.Directory.Ldap
             }
             catch (FieldAccessException ex)
             {
-                ; // return true, if no message, it must be complete
+                // return true, if no message, it must be complete
+                Logger.Log.LogWarning("Exception swallowed", ex);                
             }
             return true;
         }
@@ -335,7 +338,7 @@ namespace Novell.Directory.Ldap
                     }
                     return rfcMsg;
                 }
-                catch (FieldAccessException ex)
+                catch (FieldAccessException)
                 {
                     // no such message id
                     return null;

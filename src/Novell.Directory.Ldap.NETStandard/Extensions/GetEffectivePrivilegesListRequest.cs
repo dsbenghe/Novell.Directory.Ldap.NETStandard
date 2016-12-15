@@ -57,15 +57,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </summary>
         static GetEffectivePrivilegesListRequest()
         {
-            try
-            {
-                LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES,
-                    Type.GetType("Novell.Directory.Ldap.Extensions.GetEffectivePrivilegesListResponse"));
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Could not register Extended Response -" + " Class not found");
-            }
+            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES, typeof(GetEffectivePrivilegesListResponse));
         }
 
         /// <summary>
@@ -113,7 +105,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null);
+                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
             }
         }
     }

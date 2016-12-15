@@ -185,7 +185,7 @@ namespace Novell.Directory.Ldap
             {
                 new DN(dn);
             }
-            catch (ArgumentException iae)
+            catch (ArgumentException)
             {
                 return false;
             }

@@ -330,10 +330,11 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal object copy()
         {
-            var c = new Connection();
-            c.host = host;
-            c.port = port;
-            protocol = protocol;
+            var c = new Connection
+            {
+                host = host,
+                port = port
+            };
             return c;
         }
 
@@ -894,7 +895,7 @@ namespace Novell.Directory.Ldap
                     messages.RemoveAt(0);
                     info = (Message) temp_object;
                 }
-                catch (ArgumentOutOfRangeException ex)
+                catch (ArgumentOutOfRangeException)
                 {
                     // No more messages
                     break;
@@ -1198,7 +1199,7 @@ namespace Novell.Directory.Ldap
                             info = enclosingInstance.messages.findMessageById(msgId);
                             info.putReply(msg); // queue & wake up waiting thread
                         }
-                        catch (FieldAccessException ex)
+                        catch (FieldAccessException)
                         {
                             /*
                                                         * We get the NoSuchFieldException when we could not find

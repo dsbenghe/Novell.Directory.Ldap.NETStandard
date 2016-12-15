@@ -48,34 +48,9 @@ namespace Novell.Directory.Ldap.Events.Edir
              * Register the extendedresponse class which is returned by the
              * server in response to a MonitorEventRequest
              */
-            try
-            {
-                LdapExtendedResponse.register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE,
-                    Type.GetType("Novell.Directory.Ldap.Events.Edir.MonitorEventResponse", true));
-            }
-            catch (TypeLoadException e)
-            {
-                // TODO: put something in the Debug...
-            }
-            catch (Exception e)
-            {
-                // TODO: put something in the Debug...
-            }
-
+            LdapExtendedResponse.register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE, typeof(MonitorEventResponse));
             //Also try to register EdirEventIntermediateResponse
-            try
-            {
-                LdapIntermediateResponse.register(EventOids.NLDAP_EVENT_NOTIFICATION,
-                    Type.GetType("Novell.Directory.Ldap.Events.Edir.EdirEventIntermediateResponse", true));
-            }
-            catch (TypeLoadException e)
-            {
-                // TODO: put something in the Debug...
-            }
-            catch (Exception e)
-            {
-                // TODO: put something in the Debug...
-            }
+            LdapIntermediateResponse.register(EventOids.NLDAP_EVENT_NOTIFICATION, typeof(EdirEventIntermediateResponse));
         } // end of static constructor
 
         public MonitorEventRequest(EdirEventSpecifier[] specifiers) :
@@ -133,7 +108,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             {
                 throw new LdapException(ExceptionMessages.ENCODING_ERROR,
                     LdapException.ENCODING_ERROR,
-                    null);
+                    null, e);
             }
 
             setValue(SupportClass.ToSByteArray(encodedData.ToArray()));

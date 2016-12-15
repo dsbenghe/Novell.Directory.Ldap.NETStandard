@@ -55,15 +55,7 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            try
-            {
-                LdapExtendedResponse.register(ReplicationConstants.LIST_REPLICAS_RES,
-                    Type.GetType("Novell.Directory.Ldap.Extensions.ListReplicasResponse"));
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine("Could not register Extended Response -" + " Class not found");
-            }
+            LdapExtendedResponse.register(ReplicationConstants.LIST_REPLICAS_RES, typeof(ListReplicasResponse));
         }
 
         /// <summary>
@@ -94,7 +86,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null);
+                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
             }
         }
     }

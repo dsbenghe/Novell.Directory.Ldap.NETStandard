@@ -294,7 +294,7 @@ namespace Novell.Directory.Ldap.Asn1
             }
             catch (Exception ce)
             {
-                throw new Exception("Internal error, cannot create clone");
+                throw new Exception("Internal error, cannot create clone", ce);
             }
         }
     }

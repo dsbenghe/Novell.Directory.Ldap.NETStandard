@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap.Extensions
                 {
                     throw new LdapLocalException(
                         "Invalid data buffer send in the request",
-                        LdapException.ENCODING_ERROR);
+                        LdapException.ENCODING_ERROR, e);
                 }
                 //Return exception if chunkSize == 0
                 if (chunkSize == 0)
@@ -188,7 +188,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null);
+                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
             }
         }
     }

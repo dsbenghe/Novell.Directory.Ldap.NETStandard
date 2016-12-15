@@ -33,6 +33,8 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
+using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -582,7 +584,7 @@ namespace Novell.Directory.Ldap
             }
             catch (Exception ce)
             {
-                throw new Exception("Internal error, cannot create clone");
+                throw new Exception("Internal error, cannot create clone", ce);
             }
             newClone.conn = conn; // same underlying connection
 
@@ -884,7 +886,7 @@ namespace Novell.Directory.Ldap
                 var agent = conn.getMessageAgent(id);
                 agent.Abandon(id, cons);
             }
-            catch (FieldAccessException ex)
+            catch (FieldAccessException)
             {
             }
         }
@@ -1211,20 +1213,9 @@ namespace Novell.Directory.Ldap
             sbyte[] pw = null;
             if ((object) passwd != null)
             {
-                try
-                {
-                    var encoder = Encoding.GetEncoding("utf-8");
-                    var ibytes = encoder.GetBytes(passwd);
-                    pw = SupportClass.ToSByteArray(ibytes);
-
-                    //					pw = passwd.getBytes("UTF8");
-                    passwd = null; // Keep no reference to String object
-                }
-                catch (IOException ex)
-                {
-                    passwd = null; // Keep no reference to String object
-                    throw;
-                }
+                var encoder = Encoding.GetEncoding("utf-8");
+                var ibytes = encoder.GetBytes(passwd);
+                pw = SupportClass.ToSByteArray(ibytes);
             }
             Bind(version, dn, pw, cons);
         }
@@ -1667,7 +1658,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            throw new ArgumentException(ExceptionMessages.INVALID_ADDRESS);
+                            throw new ArgumentException(ExceptionMessages.INVALID_ADDRESS, e);
                         }
                     }
                     // This may return a different conn object
@@ -3216,9 +3207,9 @@ namespace Novell.Directory.Ldap
                                 rconn = null;
                                 ex = lex;
                             }
-                            catch (LdapException e)
+                            catch (LdapException ldapException)
                             {
-                                ; // ignore
+                                Logger.Log.LogWarning("Exception swallowed", ldapException);
                             }
                         }
                     }
@@ -3251,7 +3242,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            ; // ignore
+                            Logger.Log.LogWarning("Exception swallowed", e);
                         }
                     }
                     if (refInfo == null)
@@ -3567,9 +3558,11 @@ namespace Novell.Directory.Ldap
                 }
                 catch (IndexOutOfRangeException ex)
                 {
+                    Logger.Log.LogWarning("Exception swallowed", ex);
                 }
                 catch (LdapException lex)
                 {
+                    Logger.Log.LogWarning("Exception swallowed", lex);
                 }
             }
         }

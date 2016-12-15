@@ -31,6 +31,7 @@
 
 using System;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -107,10 +108,11 @@ namespace Novell.Directory.Ldap.Utilclass
                     ex = e;
                 }
             }
-            catch (MissingFieldException e)
+            catch (MissingFieldException ex)
             {
                 // No match with the OID
                 // Do nothing. Fall through and construct a default LDAPControl object.
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
             // If we get here we did not have a registered extendedresponse
             // for this oid.  Return a default LDAPIntermediateResponse object.

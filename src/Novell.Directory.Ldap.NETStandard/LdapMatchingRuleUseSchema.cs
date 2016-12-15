@@ -31,6 +31,7 @@
 
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -123,8 +124,9 @@ namespace Novell.Directory.Ldap
                 attributes = matchParser.Applies;
                 Value = formatString();
             }
-            catch (IOException e)
+            catch (IOException ex)
             {
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
 
