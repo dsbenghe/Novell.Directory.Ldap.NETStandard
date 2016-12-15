@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.Text;
 using Novell.Directory.Ldap.Asn1;
 

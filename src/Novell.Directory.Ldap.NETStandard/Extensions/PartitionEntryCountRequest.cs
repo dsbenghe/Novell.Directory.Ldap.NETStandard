@@ -60,7 +60,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.NAMING_CONTEXT_COUNT_RES, typeof(PartitionEntryCountResponse));
+            LdapExtendedResponse.register(ReplicationConstants.NAMING_CONTEXT_COUNT_RES,
+                typeof(PartitionEntryCountResponse));
         }
 
         /// <summary>

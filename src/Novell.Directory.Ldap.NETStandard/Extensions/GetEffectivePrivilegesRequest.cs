@@ -61,7 +61,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES, typeof(GetEffectivePrivilegesResponse));
+            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_PRIVILEGES_RES,
+                typeof(GetEffectivePrivilegesResponse));
         }
 
         /// <summary>

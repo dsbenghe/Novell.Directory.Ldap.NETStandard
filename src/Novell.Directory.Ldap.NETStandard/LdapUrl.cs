@@ -410,7 +410,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 return MemberwiseClone();
-            }   
+            }
             catch (Exception ce)
             {
                 throw new Exception("Internal error, cannot create clone", ce);

@@ -31,7 +31,6 @@
 
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
@@ -886,8 +885,9 @@ namespace Novell.Directory.Ldap
                 var agent = conn.getMessageAgent(id);
                 agent.Abandon(id, cons);
             }
-            catch (FieldAccessException)
+            catch (FieldAccessException fae)
             {
+                Logger.Log.LogWarning("Exception swallowed", fae);
             }
         }
 
@@ -995,7 +995,7 @@ namespace Novell.Directory.Ldap
             {
                 responseCtls = addResponse.Controls;
             }
-            chkResultCode(queue, cons, addResponse);
+            ChkResultCode(queue, cons, addResponse);
         }
 
         /// <summary>
@@ -1298,7 +1298,7 @@ namespace Novell.Directory.Ldap
                     responseCtls = res.Controls;
                 }
 
-                chkResultCode(queue, cons, res);
+                ChkResultCode(queue, cons, res);
             }
         }
 
@@ -1511,7 +1511,7 @@ namespace Novell.Directory.Ldap
             }
             else
             {
-                chkResultCode(queue, cons, res);
+                ChkResultCode(queue, cons, res);
             }
             return ret;
         }
@@ -1637,17 +1637,13 @@ namespace Novell.Directory.Ldap
             // If not a clone, destroys old connection.
             // Step through the space-delimited list
             var hostList = new SupportClass.Tokenizer(host, " ");
-            string address = null;
-
-            int specifiedPort;
-            int colonIndex; //after the colon is the port
             while (hostList.HasMoreTokens())
             {
                 try
                 {
-                    specifiedPort = port;
-                    address = hostList.NextToken();
-                    colonIndex = address.IndexOf(':');
+                    var specifiedPort = port;
+                    var address = hostList.NextToken();
+                    var colonIndex = address.IndexOf(':'); //after the colon is the port
                     if (colonIndex != -1 && colonIndex + 1 != address.Length)
                     {
                         //parse Port out of address
@@ -1667,10 +1663,10 @@ namespace Novell.Directory.Ldap
                     conn.connect(address, specifiedPort);
                     break;
                 }
-                catch (LdapException LE)
+                catch (LdapException)
                 {
                     if (!hostList.HasMoreTokens())
-                        throw LE;
+                        throw;
                 }
             }
         }
@@ -1726,7 +1722,7 @@ namespace Novell.Directory.Ldap
             {
                 responseCtls = deleteResponse.Controls;
             }
-            chkResultCode(queue, cons, deleteResponse);
+            ChkResultCode(queue, cons, deleteResponse);
         }
 
         /// <summary>
@@ -1890,7 +1886,7 @@ namespace Novell.Directory.Ldap
                 responseCtls = response.Controls;
             }
 
-            chkResultCode(queue, cons, response);
+            ChkResultCode(queue, cons, response);
             return response;
         }
 
@@ -2117,7 +2113,7 @@ namespace Novell.Directory.Ldap
                 responseCtls = modifyResponse.Controls;
             }
 
-            chkResultCode(queue, cons, modifyResponse);
+            ChkResultCode(queue, cons, modifyResponse);
         }
 
         /// <summary>
@@ -2551,7 +2547,7 @@ namespace Novell.Directory.Ldap
                 responseCtls = renameResponse.Controls;
             }
 
-            chkResultCode(queue, cons, renameResponse);
+            ChkResultCode(queue, cons, renameResponse);
         }
 
         /*
@@ -2910,14 +2906,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            try
-            {
-                agent.sendMessage(conn, msg, cons.TimeLimit, myqueue, null);
-            }
-            catch (LdapException lex)
-            {
-                throw lex;
-            }
+            agent.sendMessage(conn, msg, cons.TimeLimit, myqueue, null);
             return myqueue;
         }
 
@@ -3159,16 +3148,16 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException A general exception which includes
         ///     an error message and an Ldap error code.
         /// </exception>
-        private ReferralInfo getReferralConnection(string[] referrals)
+        private ReferralInfo GetReferralConnection(string[] referrals)
         {
             ReferralInfo refInfo = null;
             Exception ex = null;
             LdapConnection rconn = null;
             var rh = defSearchCons.getReferralHandler();
-            var i = 0;
             // Check if we use LdapRebind to get authentication credentials
             if (rh == null || rh is LdapAuthHandler)
             {
+                int i;
                 for (i = 0; i < referrals.Length; i++)
                 {
                     // dn, pw are null in the default case (anonymous bind)
@@ -3180,15 +3169,12 @@ namespace Novell.Directory.Ldap
                         rconn.Constraints = defSearchCons;
                         var url = new LdapUrl(referrals[i]);
                         rconn.Connect(url.Host, url.Port);
-                        if (rh != null)
+                        if (rh is LdapAuthHandler)
                         {
-                            if (rh is LdapAuthHandler)
-                            {
-                                // Get application supplied dn and pw
-                                var ap = ((LdapAuthHandler) rh).getAuthProvider(url.Host, url.Port);
-                                dn = ap.DN;
-                                pw = ap.Password;
-                            }
+                            // Get application supplied dn and pw
+                            var ap = ((LdapAuthHandler) rh).getAuthProvider(url.Host, url.Port);
+                            dn = ap.DN;
+                            pw = ap.Password;
                         }
                         rconn.Bind(Ldap_V3, dn, pw);
                         ex = null;
@@ -3301,7 +3287,7 @@ namespace Novell.Directory.Ldap
         /// <param name="response">
         ///     - the LdapResponse to check
         /// </param>
-        private void chkResultCode(LdapMessageQueue queue, LdapConstraints cons, LdapResponse response)
+        private void ChkResultCode(LdapMessageQueue queue, LdapConstraints cons, LdapResponse response)
         {
             if (response.ResultCode == LdapException.REFERRAL && cons.ReferralFollowing)
             {
@@ -3309,11 +3295,11 @@ namespace Novell.Directory.Ldap
                 ArrayList refConn = null;
                 try
                 {
-                    chaseReferral(queue, cons, response, response.Referrals, 0, false, null);
+                    ChaseReferral(queue, cons, response, response.Referrals, 0, false, null);
                 }
                 finally
                 {
-                    releaseReferralConnections(refConn);
+                    ReleaseReferralConnections(refConn);
                 }
             }
             else
@@ -3366,11 +3352,10 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal virtual ArrayList chaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
+        internal virtual ArrayList ChaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
             string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
         {
             var connList = connectionList;
-            LdapConnection rconn = null; // new conn for following referral
             ReferralInfo rinfo = null; // referral info
             LdapMessage origMsg;
 
@@ -3410,14 +3395,14 @@ namespace Novell.Directory.Ldap
                     throw new LdapLocalException("Max hops exceeded", LdapException.REFERRAL_LIMIT_EXCEEDED);
                 }
                 // Get a connection to follow the referral
-                rinfo = getReferralConnection(refs);
-                rconn = rinfo.ReferralConnection;
+                rinfo = GetReferralConnection(refs);
+                var rconn = rinfo.ReferralConnection; // new conn for following referral
                 refUrl = rinfo.ReferralUrl;
                 connList.Add(rconn);
 
 
                 // rebuild msg into new msg changing msgID,dn,scope,filter
-                var newMsg = rebuildRequest(origMsg, refUrl, searchReference);
+                var newMsg = RebuildRequest(origMsg, refUrl, searchReference);
 
 
                 // Send new message on new connection
@@ -3451,7 +3436,7 @@ namespace Novell.Directory.Ldap
                     // the stack unwinds back to the original and returns
                     // to the application.
                     // An exception is thrown for an error
-                    connList = chaseReferral(queue, cons, null, null, hopCount, false, connList);
+                    connList = ChaseReferral(queue, cons, null, null, hopCount, false, connList);
                 }
                 else
                 {
@@ -3497,7 +3482,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        private LdapMessage rebuildRequest(LdapMessage msg, LdapUrl url, bool reference)
+        private LdapMessage RebuildRequest(LdapMessage msg, LdapUrl url, bool reference)
         {
             var dn = url.getDN(); // new base
             string filter = null;
@@ -3539,7 +3524,7 @@ namespace Novell.Directory.Ldap
         */
 
 
-        internal virtual void releaseReferralConnections(ArrayList list)
+        internal virtual void ReleaseReferralConnections(ArrayList list)
         {
             if (list == null)
             {

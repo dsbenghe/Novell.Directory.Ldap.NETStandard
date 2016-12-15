@@ -258,7 +258,7 @@ namespace Novell.Directory.Ldap
             catch (FieldAccessException ex)
             {
                 // return true, if no message, it must be complete
-                Logger.Log.LogWarning("Exception swallowed", ex);                
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
             return true;
         }

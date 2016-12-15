@@ -218,7 +218,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal string ConnectionName
         {
-            /*package*/
             get { return name; }
         }
 
@@ -328,7 +327,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a shallow copy of this object
         /// </returns>
-        internal object copy()
+        internal object Copy()
         {
             var c = new Connection
             {
@@ -444,25 +443,8 @@ namespace Novell.Directory.Ldap
         private void waitForReader(Thread thread)
         {
             // wait for previous reader thread to terminate
-            Thread rInst;
-            Thread tInst;
-            if (reader != null)
-            {
-                rInst = reader;
-            }
-            else
-            {
-                rInst = null;
-            }
-
-            if (thread != null)
-            {
-                tInst = thread;
-            }
-            else
-            {
-                tInst = null;
-            }
+            var rInst = reader;
+            var tInst = thread;
             while (!Equals(rInst, tInst))
             {
                 // Don't initialize connection while previous reader thread still
@@ -489,23 +471,8 @@ namespace Novell.Directory.Ldap
                 {
                     Monitor.Wait(this, TimeSpan.FromMilliseconds(5));
                 }
-                if (reader != null)
-                {
-                    rInst = reader;
-                }
-                else
-                {
-                    rInst = null;
-                }
-
-                if (thread != null)
-                {
-                    tInst = thread;
-                }
-                else
-                {
-                    tInst = null;
-                }
+                rInst = reader;
+                tInst = thread;
             }
             deadReaderException = null;
             deadReader = null;
@@ -711,7 +678,7 @@ namespace Novell.Directory.Ldap
                 if (cloneCount > 0)
                 {
                     cloneCount--;
-                    conn = (Connection) copy();
+                    conn = (Connection) Copy();
                 }
                 else
                 {

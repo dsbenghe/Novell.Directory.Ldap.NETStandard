@@ -57,7 +57,8 @@ namespace Novell.Directory.Ldap.Extensions
         /// </summary>
         static GetEffectivePrivilegesListRequest()
         {
-            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES, typeof(GetEffectivePrivilegesListResponse));
+            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES,
+                typeof(GetEffectivePrivilegesListResponse));
         }
 
         /// <summary>

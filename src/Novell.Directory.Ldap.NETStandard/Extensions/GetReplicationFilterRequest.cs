@@ -57,7 +57,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICATION_FILTER_RES, typeof(GetReplicationFilterResponse));
+            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICATION_FILTER_RES,
+                typeof(GetReplicationFilterResponse));
         }
 
         /// <summary>
