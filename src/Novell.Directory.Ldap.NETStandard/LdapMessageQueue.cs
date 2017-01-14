@@ -168,11 +168,9 @@ namespace Novell.Directory.Ldap
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case
         /// </summary>
-//		private LdapMessage getResponse(System.Int32 msgid)
         private LdapMessage getResponse(Integer32 msgid)
         {
             object resp;
-            RfcLdapMessage message;
             LdapMessage response;
             if ((resp = agent.getLdapMessage(msgid)) == null)
             {
@@ -185,7 +183,7 @@ namespace Novell.Directory.Ldap
                 return (LdapMessage) resp;
             }
             // Normal message handling
-            message = (RfcLdapMessage) resp;
+            var message = (RfcLdapMessage) resp;
             switch (message.Type)
             {
                 case LdapMessage.SEARCH_RESPONSE:
@@ -197,7 +195,6 @@ namespace Novell.Directory.Ldap
                     break;
 
                 case LdapMessage.EXTENDED_RESPONSE:
-                    var fac = new ExtResponseFactory();
                     response = ExtResponseFactory.convertToExtendedResponse(message);
                     break;
 

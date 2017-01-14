@@ -788,12 +788,10 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ioe)
             {
-                if (msg.Type == LdapMessage.BIND_REQUEST &&
-                    ssl)
+                if (msg.Type == LdapMessage.BIND_REQUEST && ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] {host, port}, LdapException.SSL_HANDSHAKE_FAILED, null,
-                        ioe);
+                    throw new LdapException(strMsg, new object[] {host, port}, LdapException.SSL_HANDSHAKE_FAILED, null, ioe);
                 }
                 /*
                 * IOException could be due to a server shutdown notification which

@@ -54,9 +54,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 var respOID = ((RfcExtendedResponse) message.Response).ResponseName;
-                if (respOID == null)
-                    return null;
-                return respOID.stringValue();
+                return respOID?.stringValue();
             }
         }
 
@@ -65,10 +63,7 @@ namespace Novell.Directory.Ldap
             registeredResponses = new RespExtensionSet();
         }
 
-        public static RespExtensionSet RegisteredResponses
-        {
-            get { return registeredResponses; }
-        }
+        public static RespExtensionSet RegisteredResponses => registeredResponses;
 
         /// <summary>
         ///     Returns the value part of the response in raw bytes.
@@ -82,9 +77,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 var tempString = ((RfcExtendedResponse) message.Response).Response;
-                if (tempString == null)
-                    return null;
-                return tempString.byteValue();
+                return tempString?.byteValue();
             }
         }
 
