@@ -199,7 +199,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     the String representation of this object.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual string toString(string type)
+        public string ToString(string type)
         {
             var sb = new StringBuilder();
 
@@ -213,7 +213,7 @@ namespace Novell.Directory.Ldap.Asn1
             }
             sb.Append(" }");
 
-            return ToString() + sb;
+            return base.ToString() + sb;
         }
     }
 }

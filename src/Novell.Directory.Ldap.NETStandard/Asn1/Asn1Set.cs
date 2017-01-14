@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         public override string ToString()
         {
-            return toString("SET: { ");
+            return ToString("SET: { ");
         }
     }
 }

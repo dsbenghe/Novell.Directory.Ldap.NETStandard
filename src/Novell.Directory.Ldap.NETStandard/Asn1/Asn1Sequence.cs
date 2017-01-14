@@ -115,7 +115,7 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         public override string ToString()
         {
-            return toString("SEQUENCE: { ");
+            return ToString("SEQUENCE: { ");
         }
     }
 }

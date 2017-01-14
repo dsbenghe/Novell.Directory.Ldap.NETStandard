@@ -211,7 +211,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Implementations of formatString format a schema element into a string
         ///     suitable for using in a modify (ADD) operation to the directory.
-        ///     toString uses this method.  This method is needed because a call to
+        ///     ToString uses this method.  This method is needed because a call to
         ///     setQualifier requires reconstructing the string value of the schema
         ///     element.
         /// </summary>

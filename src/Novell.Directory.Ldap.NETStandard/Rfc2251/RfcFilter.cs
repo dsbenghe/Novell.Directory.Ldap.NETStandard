@@ -835,7 +835,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The first object returned by an iterator is an integer indicating the
         ///     type of filter components.  Subseqence values are returned.  If a
         ///     component is of type 'AND' or 'OR' or 'NOT' then the value
-        ///     returned is another iterator.  This iterator is used by toString.
+        ///     returned is another iterator.  This iterator is used by ToString.
         /// </summary>
         /// <returns>
         ///     Iterator over filter segments
