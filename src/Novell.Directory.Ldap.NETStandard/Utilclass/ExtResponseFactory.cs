@@ -36,6 +36,7 @@ namespace Novell.Directory.Ldap.Utilclass
             var tempResponse = new LdapExtendedResponse(inResponse);
             // Get the oid stored in the Extended response
             var inOID = tempResponse.ID;
+            if(inOID == null) return tempResponse;
 
             var regExtResponses = LdapExtendedResponse.RegisteredResponses;
             try
