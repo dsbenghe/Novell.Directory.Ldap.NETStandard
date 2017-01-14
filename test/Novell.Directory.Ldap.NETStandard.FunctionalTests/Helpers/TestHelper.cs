@@ -4,11 +4,14 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class TestHelper
     {
-        public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection)
+        public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false)
         {
             using (var ldapConnection = new LdapConnection())
             {
-                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
+                ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
+                if (useSsl)
+                    ldapConnection.SecureSocketLayer = true;
+                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, useSsl ? TestsConfig.LdapServer.ServerPortSsl : TestsConfig.LdapServer.ServerPort);
                 actionOnConnectedLdapConnection(ldapConnection);
             }
         }
