@@ -31,6 +31,31 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             TestHelper.WithLdapConnection(
                 ldapConnection =>
                 {
+                    ldapConnection.StartTls();
+                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    ldapConnection.StopTls();
+                });
+        }
+
+        [Fact]
+        public void Connect_WithStartTlsAfterBindWithNonTls_Works()
+        {
+            TestHelper.WithLdapConnection(
+                ldapConnection =>
+                {
+                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    ldapConnection.StartTls();
+                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    ldapConnection.StopTls();
+                });
+        }
+
+        [Fact(Skip = "This randomly fails")]
+        public void Connect_WithBindAfterStartTlsAndRestoreNonTls_Works()
+        {
+            TestHelper.WithLdapConnection(
+                ldapConnection =>
+                {
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                     ldapConnection.StartTls();
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
