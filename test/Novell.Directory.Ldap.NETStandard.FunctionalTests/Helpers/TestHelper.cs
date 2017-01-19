@@ -6,14 +6,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
     {
         public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false)
         {
-            using (var ldapConnection = new LdapConnection())
+            WithLdapConnectionImpl<object>((ldapConnection) =>
             {
-                ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
-                if (useSsl)
-                    ldapConnection.SecureSocketLayer = true;
-                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, useSsl ? TestsConfig.LdapServer.ServerPortSsl : TestsConfig.LdapServer.ServerPort);
                 actionOnConnectedLdapConnection(ldapConnection);
-            }
+                return null;
+            }, useSsl);
         }
 
         public static void WithAuthenticatedLdapConnection(Action<ILdapConnection> actionOnAuthenticatedLdapConnection)
@@ -25,13 +22,9 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             });
         }
 
-        public static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection)
+        public static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
         {
-            using (var ldapConnection = new LdapConnection())
-            {
-                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
-                return funcOnConnectedLdapConnection(ldapConnection);
-            }
+            return WithLdapConnectionImpl(funcOnConnectedLdapConnection);
         }
 
         public static T WithAuthenticatedLdapConnection<T>(Func<ILdapConnection, T> funcOnAuthenticatedLdapConnection)
@@ -41,6 +34,20 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 return funcOnAuthenticatedLdapConnection(ldapConnection);
             });
+        }
+
+        private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
+        {
+            using (var ldapConnection = new LdapConnection())
+            {
+                ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
+                if (useSsl)
+                {                    
+                    ldapConnection.SecureSocketLayer = true;
+                }
+                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, useSsl ? TestsConfig.LdapServer.ServerPortSsl : TestsConfig.LdapServer.ServerPort);
+                return funcOnConnectedLdapConnection(ldapConnection);
+            }
         }
 
         public static string BuildDn(string cn)
