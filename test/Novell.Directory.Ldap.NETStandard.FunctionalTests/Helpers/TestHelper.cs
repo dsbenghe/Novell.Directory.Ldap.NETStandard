@@ -4,13 +4,20 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class TestHelper
     {
-        public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false)
+        public enum TransportSecurity
+        {
+            Off,
+            Ssl,
+            Tls
+        }
+
+        public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             WithLdapConnectionImpl<object>((ldapConnection) =>
             {
                 actionOnConnectedLdapConnection(ldapConnection);
                 return null;
-            }, useSsl);
+            }, useSsl, disableEnvTransportSecurity);
         }
 
         public static void WithAuthenticatedLdapConnection(Action<ILdapConnection> actionOnAuthenticatedLdapConnection)
@@ -36,18 +43,52 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             });
         }
 
-        private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
+        private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             using (var ldapConnection = new LdapConnection())
             {
                 ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
-                if (useSsl)
+                var ldapPort = TestsConfig.LdapServer.ServerPort;
+                var transportSecurity = GetTransportSecurity(useSsl, disableEnvTransportSecurity);
+                if (transportSecurity == TransportSecurity.Ssl)
                 {                    
                     ldapConnection.SecureSocketLayer = true;
+                    ldapPort = TestsConfig.LdapServer.ServerPortSsl;
                 }
-                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, useSsl ? TestsConfig.LdapServer.ServerPortSsl : TestsConfig.LdapServer.ServerPort);
-                return funcOnConnectedLdapConnection(ldapConnection);
+                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, ldapPort);
+
+                T retValue;
+                if (transportSecurity == TransportSecurity.Tls)
+                {
+                    ldapConnection.StartTls();
+                    retValue = funcOnConnectedLdapConnection(ldapConnection);
+                    ldapConnection.StopTls();
+                }
+                else
+                {
+                    retValue = funcOnConnectedLdapConnection(ldapConnection);
+                }
+                return retValue;
             }
+        }
+
+        private static TransportSecurity GetTransportSecurity(bool useSsl, bool disableEnvTransportSecurity)
+        {
+            var transportSecurity = useSsl ? TransportSecurity.Ssl : TransportSecurity.Off;
+            if(disableEnvTransportSecurity)
+                return transportSecurity;
+
+            var envValue = Environment.GetEnvironmentVariable("TRANSPORT_SECURITY");
+            if (!string.IsNullOrWhiteSpace(envValue))
+            {
+                TransportSecurity parsedValue;
+                if (Enum.TryParse(envValue, true, out parsedValue))
+                {
+                    transportSecurity = parsedValue;
+                }
+            }
+
+            return transportSecurity;
         }
 
         public static string BuildDn(string cn)

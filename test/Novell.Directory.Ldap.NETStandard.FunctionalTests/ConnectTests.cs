@@ -22,7 +22,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 ldapConnection =>
                 {
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                }, true);
+                }, true, true);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     ldapConnection.StartTls();
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                     ldapConnection.StopTls();
-                });
+                }, false, true);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     ldapConnection.StartTls();
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                     ldapConnection.StopTls();
-                });
+                }, false, true);
         }
 
         [Fact(Skip = "This randomly fails")]
@@ -61,7 +61,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                     ldapConnection.StopTls();
                     ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                });
+                }, false, true);
         }
     }
 }
