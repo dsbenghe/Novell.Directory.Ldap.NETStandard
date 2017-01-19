@@ -1058,8 +1058,8 @@ namespace Novell.Directory.Ldap
             try
             {
                 stopReaderMessageID = STOP_READING;
-                out_Renamed.Dispose();
-                in_Renamed.Dispose();
+                out_Renamed?.Dispose();
+                in_Renamed?.Dispose();
                 //				this.sock.Shutdown(SocketShutdown.Both);
                 //				this.sock.Close();
                 waitForReader(null);
