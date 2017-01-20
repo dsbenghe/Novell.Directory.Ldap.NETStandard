@@ -31,7 +31,6 @@
 
 using System;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -46,9 +45,9 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     empty and return all messages owned by this agent
         /// </summary>
-        internal virtual object[] MessageArray
+        internal virtual object[] RemoveAll()
         {
-            get { return messages.ObjectArray; }
+            return messages.RemoveAll();
         }
 
         /// <summary>
@@ -123,7 +122,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal void merge(MessageAgent fromAgent)
         {
-            var msgs = fromAgent.MessageArray;
+            var msgs = fromAgent.RemoveAll();
             for (var i = 0; i < msgs.Length; i++)
             {
                 messages.Add(msgs[i]);
@@ -189,7 +188,7 @@ namespace Novell.Directory.Ldap
         {
             try
             {
-                var info = messages.findMessageById(msgId);
+                var info = messages.FindMessageById(msgId);
                 return info.hasReplies();
             }
             catch (FieldAccessException)
@@ -214,7 +213,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 // Send abandon request and remove from connection list
-                info = messages.findMessageById(msgId);
+                info = messages.FindMessageById(msgId);
                 SupportClass.VectorRemoveElement(messages, info); // This message is now dead
                 info.Abandon(cons, null);
             }
@@ -249,7 +248,7 @@ namespace Novell.Directory.Ldap
         {
             try
             {
-                var info = messages.findMessageById(msgid);
+                var info = messages.FindMessageById(msgid);
                 if (!info.Complete)
                 {
                     return false;
@@ -271,7 +270,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal Message getMessage(int msgid)
         {
-            return messages.findMessageById(msgid);
+            return messages.FindMessageById(msgid);
         }
 
         /// <summary>
@@ -328,7 +327,7 @@ namespace Novell.Directory.Ldap
                 {
                     // Get message for this ID
 //					Message info = messages.findMessageById(msgId);
-                    var info = messages.findMessageById(msgId.intValue);
+                    var info = messages.FindMessageById(msgId.intValue);
                     rfcMsg = info.waitForReply(); // blocks for a response
                     if (!info.acceptsReplies() && !info.hasReplies())
                     {

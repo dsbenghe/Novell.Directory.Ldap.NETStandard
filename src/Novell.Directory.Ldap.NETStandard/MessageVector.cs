@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Linq;
 
 namespace Novell.Directory.Ldap
 {
@@ -40,6 +41,10 @@ namespace Novell.Directory.Ldap
     /// </summary>
     internal class MessageVector : ArrayList
     {
+        internal MessageVector(int cap, int incr) : base(cap)
+        {
+        }
+
         /// <summary>
         ///     Returns an array containing all of the elements in this MessageVector.
         ///     The elements returned are in the same order in the array as in the
@@ -48,27 +53,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the array containing all of the elements.
         /// </returns>
-        internal virtual object[] ObjectArray
+        internal virtual object[] RemoveAll()
         {
-            get
+            lock (this)
             {
-                lock (this)
-                {
-                    var results = new object[Count];
-                    Array.Copy(ToArray(), 0, results, 0, Count);
-                    for (var i = 0; i < Count; i++)
-                    {
-                        ToArray()[i] = null;
-                    }
-//					Count = 0;
-                    return results;
-                }
+                var results = ToArray();
+                Clear();
+                return results;
             }
-        }
-
-
-        internal MessageVector(int cap, int incr) : base(cap)
-        {
         }
 
         /// <summary>
@@ -83,25 +75,16 @@ namespace Novell.Directory.Ldap
         ///     @throws NoSuchFieldException when no object with the corresponding
         ///     value for the MsgId field can be found.
         /// </returns>
-        internal Message findMessageById(int msgId)
+        internal Message FindMessageById(int msgId)
         {
             lock (this)
             {
-                Message msg = null;
-                for (var i = 0; i < Count; i++)
+                var message = this.OfType<Message>().SingleOrDefault(m => m.MessageID == msgId);
+                if (message == null)
                 {
-                    //if ((msg = (Message) ToArray()[i]) == null)
-
-                    if ((msg = (Message) this[i]) == null)
-                    {
-                        throw new FieldAccessException();
-                    }
-                    if (msg.MessageID == msgId)
-                    {
-                        return msg;
-                    }
+                    throw new FieldAccessException();
                 }
-                throw new FieldAccessException();
+                return message;
             }
         }
     }

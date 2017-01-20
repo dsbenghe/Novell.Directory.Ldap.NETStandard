@@ -725,7 +725,7 @@ namespace Novell.Directory.Ldap
             conn.acquireWriteSemaphore(tlsID);
             try
             {
-                if (!conn.areMessagesComplete())
+                if (!conn.AreMessagesComplete())
                 {
                     throw new LdapLocalException(ExceptionMessages.OUTSTANDING_OPERATIONS,
                         LdapException.OPERATIONS_ERROR);
@@ -778,7 +778,7 @@ namespace Novell.Directory.Ldap
             var semaphoreID = conn.acquireWriteSemaphore();
             try
             {
-                if (!conn.areMessagesComplete())
+                if (!conn.AreMessagesComplete())
                 {
                     throw new LdapLocalException(ExceptionMessages.OUTSTANDING_OPERATIONS,
                         LdapException.OPERATIONS_ERROR);

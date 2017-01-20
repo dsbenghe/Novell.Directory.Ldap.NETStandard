@@ -827,7 +827,7 @@ namespace Novell.Directory.Ldap
         /// <summary> Returns the message agent for this msg ID</summary>
         internal MessageAgent getMessageAgent(int msgId)
         {
-            var info = messages.findMessageById(msgId);
+            var info = messages.FindMessageById(msgId);
             return info.MessageAgent;
         }
 
@@ -844,29 +844,12 @@ namespace Novell.Directory.Ldap
 
         private void Destroy(string reason, int semaphoreId, InterThreadException notifyUser)
         {
-            Message info = null;
             if (!clientActive)
             {
                 return;
             }
             clientActive = false;
-            while (true)
-            {
-                // remove messages from connection list and send abandon
-                try
-                {
-                    object temp_object;
-                    temp_object = messages[0];
-                    messages.RemoveAt(0);
-                    info = (Message) temp_object;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    // No more messages
-                    break;
-                }
-                info.Abandon(null, notifyUser); // also notifies the application
-            }
+            AbandonMessages(notifyUser);
 
             var semId = acquireWriteSemaphore(semaphoreId);
             try
@@ -922,6 +905,14 @@ namespace Novell.Directory.Ldap
             }
         }
 
+        private void AbandonMessages(InterThreadException notifyUser)
+        {
+            // remove messages from connection list and send abandon
+            var leftMessages = messages.RemoveAll();
+            foreach(Message message in leftMessages)
+                message.Abandon(null, notifyUser); // also notifies the application
+        }
+
 
         /// <summary>
         ///     This tests to see if there are any outstanding messages.  If no messages
@@ -932,10 +923,10 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if no outstanding messages
         /// </returns>
-        internal bool areMessagesComplete()
+        internal bool AreMessagesComplete()
         {
-            var messages = this.messages.ObjectArray;
-            var length = messages.Length;
+            var leftMessages = messages.RemoveAll();
+            var length = leftMessages.Length;
 
             // Check if SASL bind in progress
             if (bindSemaphoreId != 0)
@@ -951,7 +942,7 @@ namespace Novell.Directory.Ldap
 
             for (var i = 0; i < length; i++)
             {
-                if (((Message) messages[i]).Complete == false)
+                if (((Message) leftMessages[i]).Complete == false)
                     return false;
             }
             return true;
@@ -1161,7 +1152,7 @@ namespace Novell.Directory.Ldap
                         // has been abandoned. If abandoned, throw it away
                         try
                         {
-                            info = enclosingInstance.messages.findMessageById(msgId);
+                            info = enclosingInstance.messages.FindMessageById(msgId);
                             info.putReply(msg); // queue & wake up waiting thread
                         }
                         catch (FieldAccessException)
