@@ -743,8 +743,7 @@ namespace Novell.Directory.Ldap
             }
             finally
             {
-                //Free this semaphore no matter what exceptions get thrown
-                conn.startReader();
+                //Free this semaphore no matter what exceptions get thrown                
                 conn.freeWriteSemaphore(tlsID);
             }
         }
@@ -790,11 +789,11 @@ namespace Novell.Directory.Ldap
             finally
             {
                 conn.freeWriteSemaphore(semaphoreID);
-
-                /* Now that the TLS socket is closed, reset everything.  This next
-                line is temporary until JSSE is fixed to properly handle TLS stop */
-                Connect(Host, Port);
             }
+            /* Now that the TLS socket is closed, reset everything.  This next
+            line is temporary until JSSE is fixed to properly handle TLS stop */
+            /* After stopTls the stream is very likely unusable */
+            Connect(Host, Port);
         }
 
 

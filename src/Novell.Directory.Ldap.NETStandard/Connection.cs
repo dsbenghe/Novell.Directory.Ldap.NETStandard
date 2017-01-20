@@ -1016,6 +1016,7 @@ namespace Novell.Directory.Ldap
                 sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap();
                 in_Renamed = sslstream;
                 out_Renamed = sslstream;
+                startReader();
             }
             catch (IOException ioe)
             {
@@ -1076,7 +1077,6 @@ namespace Novell.Directory.Ldap
             finally
             {
                 nonTLSBackup = null;
-                startReader();
             }
         }
 
