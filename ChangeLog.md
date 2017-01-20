@@ -1,5 +1,14 @@
 # Changelog
 
+
+### 2.3.6
+* The build matrix is running the stress tests in three ways: with no transport security, with ssl and wiht tls.
+* Improve TLS support - it use to throw exception in some rare conditions.
+* Added new tests for connect with/without ssl/tls 
+* Added new tests for search
+* Some smaller cleanups
+
+
 ### 2.3.5
 * Added stress tests which are running the functional tests on multiple threads - running in Travis CI using OpenLDAP in a build matrix with different number of threads
 * Added functional tests which are running in CI using OpenLDAP as ldap server
