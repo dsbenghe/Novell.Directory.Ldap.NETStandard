@@ -60,9 +60,15 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 T retValue;
                 if (transportSecurity == TransportSecurity.Tls)
                 {
-                    ldapConnection.StartTls();
-                    retValue = funcOnConnectedLdapConnection(ldapConnection);
-                    ldapConnection.StopTls();
+                    try
+                    {
+                        ldapConnection.StartTls();
+                        retValue = funcOnConnectedLdapConnection(ldapConnection);
+                    }
+                    finally
+                    {
+                        ldapConnection.StopTls();
+                    }
                 }
                 else
                 {
