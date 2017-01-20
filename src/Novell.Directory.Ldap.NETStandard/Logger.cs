@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System;
+using Microsoft.Extensions.Logging;
 
 namespace Novell.Directory.Ldap
 {
@@ -23,6 +24,11 @@ namespace Novell.Directory.Ldap
         }
 
         public static ILogger Log => _log;
+
+        public static void LogWarning(this ILogger logger, string message, Exception ex)
+        {
+            logger.LogWarning(message + " - {0}", ex.ToString());
+        }
 
         private static void Init()
         {

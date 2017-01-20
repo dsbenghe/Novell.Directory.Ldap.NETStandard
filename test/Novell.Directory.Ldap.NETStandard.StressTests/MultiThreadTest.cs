@@ -139,7 +139,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                                 Ex = ex,
                                 ThreadId = Thread.CurrentThread.ManagedThreadId
                             });
-                            _logger.LogError("Error in runner thread", ex);
+                            _logger.LogError("Error in runner thread - {0}", ex);
                         }
                     }
                     i++;
