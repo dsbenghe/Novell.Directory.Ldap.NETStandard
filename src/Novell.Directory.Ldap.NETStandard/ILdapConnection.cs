@@ -488,6 +488,19 @@ namespace Novell.Directory.Ldap
         LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons);
 
         /// <summary>
+        ///     Synchronously disconnects from the Ldap server.
+        ///     Before the object can perform Ldap operations again, it must
+        ///     reconnect to the server by calling connect.
+        ///     The disconnect method abandons any outstanding requests, issues an
+        ///     unbind request to the server, and then closes the socket.
+        /// </summary>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        void Disconnect();
+
+        /// <summary>
         ///     Provides a synchronous means to access extended, non-mandatory
         ///     operations offered by a particular Ldapv3 compliant server.
         /// </summary>
