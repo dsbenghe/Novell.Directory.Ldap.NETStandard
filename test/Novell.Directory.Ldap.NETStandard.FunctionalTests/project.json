@@ -11,7 +11,7 @@
     "xunit": "2.1.0",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "Novell.Directory.Ldap.NETStandard": "2.3.5",
+    "Novell.Directory.Ldap.NETStandard": "2.3.7",
     "Microsoft.Extensions.Configuration.Binder": "1.0.0",
     "FluentAssertions":  "4.15.0" 
   },
