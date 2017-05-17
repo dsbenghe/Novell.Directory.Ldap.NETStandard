@@ -4,9 +4,9 @@
 * Disconnect method added to ILdapConnection
 
 ### 2.3.6
-* The build matrix is running the stress tests in three ways: with no transport security, with ssl and wiht tls.
-* Improve TLS support - it use to throw exception in some rare conditions.
-* Added new tests for connect with/without ssl/tls 
+* The build matrix is running the stress tests in three ways: with no transport security, with SSL and with TLS.
+* Improve TLS support - it used to throw exception in some rare conditions.
+* Added new tests for connect with/without SSL/TLS 
 * Added new tests for search
 * Some smaller cleanups
 
