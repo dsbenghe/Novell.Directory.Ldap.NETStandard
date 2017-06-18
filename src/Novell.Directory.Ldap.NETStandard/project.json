@@ -34,5 +34,8 @@
     "System.Text.RegularExpressions": "4.1.0",
     "System.Threading": "4.0.11",
     "System.Threading.Thread": "4.0.0"
+  },
+  "buildOptions": {
+    "xmlDoc": true
   }
 }
