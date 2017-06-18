@@ -5,7 +5,7 @@
   "packOptions": {
     "projectUrl": "https://github.com/dsbenghe/Novell.Directory.Ldap.NETStandard",
     "licenseUrl": "https://opensource.org/licenses/MIT",
-    "tags": [ "LDAP", "Microsoft Active Directory - AD", "NETStandard", "NETCore" ]
+    "tags": [ "LDAP", "Microsoft Active Directory - AD", ".NET Standard", ".NET Core", "C#" ]
   },
   "authors": [ "Novell", "dsbenghe" ],
   "frameworks": {
