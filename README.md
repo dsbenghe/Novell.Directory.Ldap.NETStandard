@@ -2,7 +2,7 @@
 
 Supported on the .NET Standard 1.3 (https://docs.microsoft.com/en-us/dotnet/articles/standard/library) compatible .NET runtimes: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin.
 
-It works against any LDAP protocol compatible directory server (including Microsoft Active Directory).
+It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nabbc061vlumiivs/branch/master?svg=true)](https://ci.appveyor.com/project/dsbenghe/novell-directory-ldap-netstandard/branch/master) - Windows Build<br />
 [![Build Status](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard.svg?branch=master)](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard) - Linux Build (includes functional tests & stress tests running against OpenLDAP) <br />
@@ -14,7 +14,7 @@ The Novell documentation for the original library:
 * html: https://www.novell.com/documentation/developer/ldapcsharp/?page=/documentation/developer/ldapcsharp/cnet/data/front.html
 * pdf: https://www.novell.com/documentation/developer/ldapcsharp/pdfdoc/cnet/cnet.pdf
 
-First commit in this repo is the original source code from Novell.
+First commit in this repo is the original C# source code from Novell. Next around 20 commits are my changes in order to port the code base to run on .NET Standard.
 
 See ChangeLog for summary of changes.
 
