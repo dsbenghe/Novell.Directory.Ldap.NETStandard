@@ -2358,16 +2358,14 @@ namespace Novell.Directory.Ldap
         public virtual LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
         {
             var sr = Search(dn, SCOPE_BASE, null, attrs, false, cons);
+            
+            if (!sr.HasMore()) return null;
 
-            LdapEntry ret = null;
-            if (sr.hasMore())
+            var ret = sr.Next();
+            if (sr.HasMore())
             {
-                ret = sr.next();
-                if (sr.hasMore())
-                {
-                    // "Read response is ambiguous, multiple entries returned"
-                    throw new LdapLocalException(ExceptionMessages.READ_MULTIPLE, LdapException.AMBIGUOUS_RESPONSE);
-                }
+                // "Read response is ambiguous, multiple entries returned"
+                throw new LdapLocalException(ExceptionMessages.READ_MULTIPLE, LdapException.AMBIGUOUS_RESPONSE);
             }
             return ret;
         }
