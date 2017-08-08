@@ -299,6 +299,19 @@ namespace Novell.Directory.Ldap
             set { conn.Ssl = value; }
         }
 
+        /// <summary>
+        ///     Connection timeout in milliseconds, default is 0 which will use
+        ///     the platform default timeout for TCP connections.
+        /// </summary>
+        /// <returns>
+        ///     True if SSL is on
+        ///     False if its not on
+        /// </returns>
+        public int ConnectionTimeout
+        {
+            get { return conn.ConnectionTimeout; }
+            set { conn.ConnectionTimeout = value; }
+        }
 
         /// <summary>
         ///     Indicates whether the object has authenticated to the connected Ldap
