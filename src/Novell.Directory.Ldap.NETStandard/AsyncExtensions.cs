@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
@@ -21,11 +22,14 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        public static void WaitAndUnwrap(this Task task)
+        public static void WaitAndUnwrap(this Task task, int timeout)
         {
             try
             {
-                task.Wait();
+                if (timeout == 0)
+                    task.Wait();
+                else if (!task.Wait(timeout))
+                    throw new SocketException(258); // WAIT_TIMEOUT
             }
             catch (AggregateException exception)
             {

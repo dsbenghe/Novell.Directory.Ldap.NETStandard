@@ -131,6 +131,12 @@ namespace Novell.Directory.Ldap
             get { return port; }
         }
 
+        internal int ConnectionTimeout
+        {
+            get { return connectionTimeout; }
+            set { connectionTimeout = value; }
+        }
+
         /// <summary> gets the writeSemaphore id used for active bind operation</summary>
         internal int BindSemId => bindSemaphoreId;
 
@@ -255,6 +261,7 @@ namespace Novell.Directory.Ldap
         private bool clientActive = true;
 
         private bool ssl;
+        private int connectionTimeout = 0;
 
         // Indicates we have received a server shutdown unsolicited notification
         private bool unsolSvrShutDnNotification;
@@ -589,14 +596,14 @@ namespace Novell.Directory.Ldap
                                 false,
                                 RemoteCertificateValidationCallback
                             );
-                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap();
+                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(connectionTimeout);
                             in_Renamed = sslstream;
                             out_Renamed = sslstream;
                         }
                         else
                         {
                             socket = new TcpClient();
-                            socket.ConnectAsync(host, port).WaitAndUnwrap();
+                            socket.ConnectAsync(host, port).WaitAndUnwrap(connectionTimeout);
                             in_Renamed = socket.GetStream();
                             out_Renamed = socket.GetStream();
                         }
@@ -1004,7 +1011,7 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback
                 );
-                sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap();
+                sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(connectionTimeout);
                 in_Renamed = sslstream;
                 out_Renamed = sslstream;
                 startReader();
