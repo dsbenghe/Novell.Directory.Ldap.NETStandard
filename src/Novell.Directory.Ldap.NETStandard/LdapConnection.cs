@@ -32,7 +32,6 @@
 using System;
 using System.Collections;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -304,8 +303,7 @@ namespace Novell.Directory.Ldap
         ///     the platform default timeout for TCP connections.
         /// </summary>
         /// <returns>
-        ///     True if SSL is on
-        ///     False if its not on
+        ///     The timeout value in milliseconds
         /// </returns>
         public int ConnectionTimeout
         {
