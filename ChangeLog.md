@@ -1,5 +1,9 @@
 # Changelog
 
+### 2.3.8
+* Timeout on connect
+* xml docs
+
 ### 2.3.7
 * Disconnect method added to ILdapConnection
 
