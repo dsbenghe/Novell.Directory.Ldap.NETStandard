@@ -451,7 +451,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Used with search to specify that the scope of entrys to search is to
         ///     search the base object and all entries within its subtree.
-        ///     SCOPE_ONE = 2
+        ///     SCOPE_SUB = 2
         /// </summary>
         public const int SCOPE_SUB = 2;
 
