@@ -233,10 +233,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     An RDN string
         /// </returns>
-        public override string ToString()
-        {
-            return toString(false);
-        }
+        public override string ToString => toString(false);
 
         /// <summary>
         ///     Creates a string that represents this RDN.

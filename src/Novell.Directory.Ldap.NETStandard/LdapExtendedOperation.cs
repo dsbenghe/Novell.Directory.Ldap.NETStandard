@@ -40,10 +40,8 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.ExtendedOperation">
     /// </seealso>
-    public class LdapExtendedOperation
+    public class LdapExtendedOperation : ICloneable
     {
-        private string oid;
-        private sbyte[] vals;
 
         /// <summary>
         ///     Constructs a new object with the specified object ID and data.
@@ -55,10 +53,10 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data of the operation.
         /// </param>
         [CLSCompliant(false)]
-        public LdapExtendedOperation(string oid, sbyte[] vals)
+        public LdapExtendedOperation(string oid, byte[] vals)
         {
-            this.oid = oid;
-            this.vals = vals;
+            Id = oid;
+            Value = vals;
         }
 
         /// <summary>
@@ -69,17 +67,9 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public object Clone()
         {
-            try
-            {
-                var newObj = MemberwiseClone();
-//				Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
-                Array.Copy(vals, 0, ((LdapExtendedOperation) newObj).vals, 0, vals.Length);
-                return newObj;
-            }
-            catch (Exception ce)
-            {
-                throw new Exception("Internal error, cannot create clone", ce);
-            }
+            var newObj = MemberwiseClone();
+            Array.Copy(Value, 0, ((LdapExtendedOperation)newObj).Value, 0, Value.Length);
+            return newObj;
         }
 
         /// <summary>
@@ -88,10 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID (object ID) of the operation.
         /// </returns>
-        public virtual string getID()
-        {
-            return oid;
-        }
+        public virtual string Id { get; set; }
 
         /// <summary>
         ///     Returns a reference to the operation-specific data.
@@ -99,33 +86,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The operation-specific data.
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] getValue()
-        {
-            return vals;
-        }
-
-        /// <summary>
-        ///     Sets the value for the operation-specific data.
-        /// </summary>
-        /// <param name="newVals">
-        ///     The byte array of operation-specific data.
-        /// </param>
-        [CLSCompliant(false)]
-        protected internal virtual void setValue(sbyte[] newVals)
-        {
-            vals = newVals;
-        }
-
-        /// <summary>
-        ///     Resets the OID for the operation to a new value
-        /// </summary>
-        /// <param name="newoid">
-        ///     The new OID for the operation
-        /// </param>
-        protected internal virtual void setID(string newoid)
-        {
-            oid = newoid;
-        }
+        public virtual byte[] Value { get; set; }
     }
 }

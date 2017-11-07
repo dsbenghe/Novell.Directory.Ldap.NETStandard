@@ -89,12 +89,12 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("Decoding error");
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.decode(returnedValue);
+                var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
                 if (returnedSequence == null)
                     throw new IOException("Decoding error");
 
                 // How many replicas were returned
-                var len = returnedSequence.size();
+                var len = returnedSequence.Size();
                 replicaList = new string[len];
 
                 // Copy each one into our String array
@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap.Extensions
                         throw new IOException("Decoding error");
 
                     // Convert to a string
-                    replicaList[i] = asn1_nextReplica.stringValue();
+                    replicaList[i] = asn1_nextReplica.StringValue();
                     if ((object) replicaList[i] == null)
                         throw new IOException("Decoding error");
                 }

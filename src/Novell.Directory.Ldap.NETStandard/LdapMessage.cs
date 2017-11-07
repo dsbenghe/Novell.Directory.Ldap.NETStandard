@@ -78,8 +78,8 @@ namespace Novell.Directory.Ldap
                 // convert from RFC 2251 Controls to LDAPControl[].
                 if (asn1Ctrls != null)
                 {
-                    controls = new LdapControl[asn1Ctrls.size()];
-                    for (var i = 0; i < asn1Ctrls.size(); i++)
+                    controls = new LdapControl[asn1Ctrls.Size()];
+                    for (var i = 0; i < asn1Ctrls.Size(); i++)
                     {
                         /*
                                                 * At this point we have an RfcControl which needs to be
@@ -95,9 +95,9 @@ namespace Novell.Directory.Ldap
                                                 * code realizes that we have a control it is already too late.
                                                 */
                         var rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-                        var oid = rfcCtl.ControlType.stringValue();
-                        var value_Renamed = rfcCtl.ControlValue.byteValue();
-                        var critical = rfcCtl.Criticality.booleanValue();
+                        var oid = rfcCtl.ControlType.StringValue();
+                        var value_Renamed = rfcCtl.ControlValue.ByteValue();
+                        var critical = rfcCtl.Criticality.BooleanValue();
 
                         /* Return from this call should return either an LDAPControl
                         * or a class extending LDAPControl that implements the
@@ -635,9 +635,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a String representation for this LdapMessage
         /// </returns>
-        public override string ToString()
-        {
-            return Name + "(" + MessageID + "): " + message;
-        }
+        public override string ToString => Name + "(" + MessageID + "): " + message;
     }
 }

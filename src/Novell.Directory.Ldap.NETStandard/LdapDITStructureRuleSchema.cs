@@ -126,14 +126,14 @@ namespace Novell.Directory.Ldap
         public LdapDITStructureRuleSchema(string[] names, int ruleID, string description, bool obsolete, string nameForm,
             string[] superiorIDs) : base(LdapSchema.schemaTypeNames[LdapSchema.DITSTRUCTURE])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
+            this.Names = new string[names.Length];
+            names.CopyTo(this.Names, 0);
             this.ruleID = ruleID;
-            this.description = description;
-            this.obsolete = obsolete;
+            this.Description = description;
+            this.Obsolete = obsolete;
             this.nameForm = nameForm;
             this.superiorIDs = superiorIDs;
-            Value = formatString();
+            Value = FormatString();
         }
 
         /// <summary>
@@ -146,21 +146,21 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapDITStructureRuleSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.DITSTRUCTURE])
         {
-            obsolete = false;
+            Obsolete = false;
             try
             {
                 var parser = new SchemaParser(raw);
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
                 if ((object) parser.ID != null)
                     ruleID = int.Parse(parser.ID);
                 if ((object) parser.Description != null)
-                    description = parser.Description;
+                    Description = parser.Description;
                 if (parser.Superiors != null)
                 {
                     superiorIDs = new string[parser.Superiors.Length];
@@ -168,15 +168,15 @@ namespace Novell.Directory.Ldap
                 }
                 if ((object) parser.NameForm != null)
                     nameForm = parser.NameForm;
-                obsolete = parser.Obsolete;
+                Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException)
             {
@@ -190,13 +190,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            token = RuleID.ToString();
+            token = RuleID.ToString;
             valueBuffer.Append(token);
 
             strArray = Names;
@@ -256,7 +256,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");
@@ -272,7 +272,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString();
+            return valueBuffer.ToString;
         }
     }
 }

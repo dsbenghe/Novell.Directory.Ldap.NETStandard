@@ -96,9 +96,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this add request.
         ///     #return an Asn1 representation of this object.
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString => Asn1Object.ToString;
     }
 }

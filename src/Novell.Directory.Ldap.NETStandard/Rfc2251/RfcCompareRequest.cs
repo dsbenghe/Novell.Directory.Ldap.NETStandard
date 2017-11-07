@@ -56,8 +56,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcCompareRequest(RfcLdapDN entry, RfcAttributeValueAssertion ava) : base(2)
         {
-            add(entry);
-            add(ava);
+            Add(entry);
+            Add(ava);
             if (ava.AssertionValue == null)
             {
                 throw new ArgumentException("compare: Attribute must have an assertion value");
@@ -83,19 +83,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.COMPARE_REQUEST);
         }
 
         public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
         {
-            return new RfcCompareRequest(toArray(), base_Renamed);
+            return new RfcCompareRequest(ToArray(), base_Renamed);
         }
 
         public string getRequestDN()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDN) get_Renamed(0)).StringValue();
         }
     }
 }

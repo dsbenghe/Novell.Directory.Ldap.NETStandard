@@ -124,17 +124,17 @@ namespace Novell.Directory.Ldap
         public LdapNameFormSchema(string[] names, string oid, string description, bool obsolete, string objectClass,
             string[] required, string[] optional) : base(LdapSchema.schemaTypeNames[LdapSchema.NAME_FORM])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
+            this.Names = new string[names.Length];
+            names.CopyTo(this.Names, 0);
+            this.Id = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
             this.objectClass = objectClass;
             this.required = new string[required.Length];
             required.CopyTo(this.required, 0);
             this.optional = new string[optional.Length];
             optional.CopyTo(this.optional, 0);
-            Value = formatString();
+            Value = FormatString();
         }
 
         /*
@@ -150,20 +150,20 @@ namespace Novell.Directory.Ldap
 
         public LdapNameFormSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.NAME_FORM])
         {
-            obsolete = false;
+            Obsolete = false;
             try
             {
                 var parser = new SchemaParser(raw);
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
                 if ((object) parser.ID != null)
-                    oid = new StringBuilder(parser.ID).ToString();
+                    Id = new StringBuilder(parser.ID).ToString;
                 if ((object) parser.Description != null)
-                    description = new StringBuilder(parser.Description).ToString();
+                    Description = new StringBuilder(parser.Description).ToString;
                 if (parser.Required != null)
                 {
                     required = new string[parser.Required.Length];
@@ -176,15 +176,15 @@ namespace Novell.Directory.Ldap
                 }
                 if ((object) parser.ObjectClass != null)
                     objectClass = parser.ObjectClass;
-                obsolete = parser.Obsolete;
+                Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -199,13 +199,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -279,7 +279,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");
@@ -295,7 +295,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString();
+            return valueBuffer.ToString;
         }
     }
 }

@@ -58,15 +58,15 @@ namespace Novell.Directory.Ldap
 
                 //Zeroth element is the OID, element one is the value
                 var tag = (Asn1Tagged) xreq.get_Renamed(0);
-                var oid = (RfcLdapOID) tag.taggedValue();
-                var requestID = oid.stringValue();
+                var oid = (RfcLdapOID) tag.TaggedValue();
+                var requestID = oid.StringValue();
 
                 sbyte[] requestValue = null;
-                if (xreq.size() >= 2)
+                if (xreq.Size() >= 2)
                 {
                     tag = (Asn1Tagged) xreq.get_Renamed(1);
-                    var value_Renamed = (Asn1OctetString) tag.taggedValue();
-                    requestValue = value_Renamed.byteValue();
+                    var value_Renamed = (Asn1OctetString) tag.TaggedValue();
+                    requestValue = value_Renamed.ByteValue();
                 }
                 return new LdapExtendedOperation(requestID, requestValue);
             }
@@ -88,8 +88,8 @@ namespace Novell.Directory.Ldap
         public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
             : base(
                 EXTENDED_REQUEST,
-                new RfcExtendedRequest(new RfcLdapOID(op.getID()),
-                    op.getValue() != null ? new Asn1OctetString(op.getValue()) : null), cont)
+                new RfcExtendedRequest(new RfcLdapOID(op.Id()),
+                    op.Value() != null ? new Asn1OctetString(op.Value()) : null), cont)
         {
         }
     }

@@ -160,10 +160,10 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1_revision = new Asn1Integer(revision);
                 var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
 
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_mts.encode(encoder, encodedData);
-                asn1_revision.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
+                asn1_objectDN.Encode(encoder, encodedData);
+                asn1_mts.Encode(encoder, encodedData);
+                asn1_revision.Encode(encoder, encodedData);
+                asn1_passwd.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));

@@ -172,7 +172,7 @@ namespace Novell.Directory.Ldap
         private int msLimit;
         private int hopLimit = 10;
         private bool doReferrals;
-        private LdapReferralHandler refHandler;
+        private ILdapReferralHandler refHandler;
         private LdapControl[] controls;
         private static object nameLock; // protect agentNum
         private static int lConsNum = 0; // Debug, LdapConstraints num
@@ -243,9 +243,9 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapBindHandler">
         /// </seealso>
-        /// <seealso cref="LdapAuthHandler">
+        /// <seealso cref="ILdapAuthHandler">
         /// </seealso>
-        public LdapConstraints(int msLimit, bool doReferrals, LdapReferralHandler handler, int hop_limit)
+        public LdapConstraints(int msLimit, bool doReferrals, ILdapReferralHandler handler, int hop_limit)
         {
             this.msLimit = msLimit;
             this.doReferrals = doReferrals;
@@ -300,7 +300,7 @@ namespace Novell.Directory.Ldap
         ///     An LdapReferralHandler object that can process authentication.
         /// </returns>
         /*package*/
-        internal virtual LdapReferralHandler getReferralHandler()
+        internal virtual ILdapReferralHandler getReferralHandler()
         {
             return refHandler;
         }
@@ -378,11 +378,11 @@ namespace Novell.Directory.Ldap
         ///     An object that implements LdapBindHandler or
         ///     LdapAuthHandler
         /// </param>
-        /// <seealso cref="LdapAuthHandler">
+        /// <seealso cref="ILdapAuthHandler">
         /// </seealso>
         /// <seealso cref="LdapBindHandler">
         /// </seealso>
-        public virtual void setReferralHandler(LdapReferralHandler handler)
+        public virtual void setReferralHandler(ILdapReferralHandler handler)
         {
             refHandler = handler;
         }

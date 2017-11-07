@@ -27,7 +27,7 @@ namespace Novell.Directory.Ldap
 
         public static void LogWarning(this ILogger logger, string message, Exception ex)
         {
-            logger.LogWarning(message + " - {0}", ex.ToString());
+            logger.LogWarning(message + " - {0}", ex.ToString);
         }
 
         private static void Init()

@@ -88,9 +88,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcBindRequest(Asn1Integer version, RfcLdapDN name, RfcAuthenticationChoice auth) : base(3)
         {
-            add(version);
-            add(name);
-            add(auth);
+            Add(version);
+            Add(name);
+            Add(auth);
         }
 
         [CLSCompliant(false)]
@@ -126,19 +126,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return ID;
         }
 
         public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
         {
-            return new RfcBindRequest(toArray(), base_Renamed);
+            return new RfcBindRequest(ToArray(), base_Renamed);
         }
 
         public string getRequestDN()
         {
-            return ((RfcLdapDN) get_Renamed(1)).stringValue();
+            return ((RfcLdapDN) get_Renamed(1)).StringValue();
         }
     }
 }

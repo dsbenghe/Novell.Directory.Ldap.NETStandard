@@ -29,8 +29,8 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System.Text;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Controls;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -58,15 +58,15 @@ namespace Novell.Directory.Ldap.Controls
         ///     to the value ANY which is defined as the logical OR of all of the
         ///     preceding values.
         /// </summary>
-        public virtual int ChangeTypes
+        public virtual ChangeType ChangeTypes
         {
-            get { return m_changeTypes; }
+            get => _changeTypes;
 
             set
             {
-                m_changeTypes = value;
-                m_sequence.set_Renamed(CHANGETYPES_INDEX, new Asn1Integer(m_changeTypes));
-                setValue();
+                _changeTypes = value;
+                _sequence[CHANGETYPES_INDEX] = new Asn1Integer((int)_changeTypes);
+                UpdateValue();
             }
         }
 
@@ -87,13 +87,13 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ReturnControls
         {
-            get { return m_returnControls; }
+            get => _returnControls;
 
             set
             {
-                m_returnControls = value;
-                m_sequence.set_Renamed(RETURNCONTROLS_INDEX, new Asn1Boolean(m_returnControls));
-                setValue();
+                _returnControls = value;
+                _sequence[RETURNCONTROLS_INDEX] = new Asn1Boolean(_returnControls);
+                UpdateValue();
             }
         }
 
@@ -113,13 +113,12 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ChangesOnly
         {
-            get { return m_changesOnly; }
-
+            get => _changesOnly;
             set
             {
-                m_changesOnly = value;
-                m_sequence.set_Renamed(CHANGESONLY_INDEX, new Asn1Boolean(m_changesOnly));
-                setValue();
+                _changesOnly = value;
+                _sequence[CHANGESONLY_INDEX] = new Asn1Boolean(_changesOnly);
+                UpdateValue();
             }
         }
 
@@ -130,12 +129,12 @@ namespace Novell.Directory.Ldap.Controls
         private static readonly int CHANGESONLY_INDEX = 1;
         private static readonly int RETURNCONTROLS_INDEX = 2;
 
-        private static readonly LBEREncoder s_encoder;
+        private static readonly IAsn1Encoder s_encoder;
 
-        private int m_changeTypes;
-        private bool m_changesOnly;
-        private bool m_returnControls;
-        private readonly Asn1Sequence m_sequence;
+        private ChangeType _changeTypes;
+        private bool _changesOnly;
+        private bool _returnControls;
+        private readonly Asn1Sequence _sequence;
 
         /// <summary> The requestOID of the persistent search control</summary>
         private static readonly string requestOID = "2.16.840.1.113730.3.4.3";
@@ -143,46 +142,16 @@ namespace Novell.Directory.Ldap.Controls
         /// <summary> The responseOID of the psersistent search - entry change control</summary>
         private static readonly string responseOID = "2.16.840.1.113730.3.4.7";
 
-        /// <summary>
-        ///     Change type specifying that you want to track additions of new entries
-        ///     to the directory.
-        /// </summary>
-        public const int ADD = 1;
-
-        /// <summary>
-        ///     Change type specifying that you want to track removals of entries from
-        ///     the directory.
-        /// </summary>
-        public const int DELETE = 2;
-
-        /// <summary>
-        ///     Change type specifying that you want to track modifications of entries
-        ///     in the directory.
-        /// </summary>
-        public const int MODIFY = 4;
-
-        /// <summary>
-        ///     Change type specifying that you want to track modifications of the DNs
-        ///     of entries in the directory.
-        /// </summary>
-        public const int MODDN = 8;
-
-        /// <summary>
-        ///     Change type specifying that you want to track any of the above
-        ///     modifications.
-        /// </summary>
-        public static readonly int ANY = ADD | DELETE | MODIFY | MODDN;
-
-        /* public constructors */
 
         /// <summary>
         ///     The default constructor. A control with changes equal to ANY,
         ///     isCritical equal to true, changesOnly equal to true, and
         ///     returnControls equal to true
         /// </summary>
-        public LdapPersistSearchControl() : this(ANY, true, true, true)
+        public LdapPersistSearchControl() : this(ChangeType.ALL, true, true, true)
         {
         }
+
 
         /// <summary>
         ///     Constructs an LdapPersistSearchControl object according to the
@@ -217,55 +186,70 @@ namespace Novell.Directory.Ldap.Controls
         ///     the server will not perform the search at all.
         /// </param>
         public LdapPersistSearchControl(int changeTypes, bool changesOnly, bool returnControls, bool isCritical)
+            : this((ChangeType)changeTypes, changesOnly, returnControls, isCritical)
+        {
+
+        }
+        /// <summary>
+        ///     Constructs an LdapPersistSearchControl object according to the
+        ///     supplied parameters. The resulting control is used to specify a
+        ///     persistent search.
+        /// </summary>
+        /// <param name="changeTypes">
+        ///     the change types to monitor. The bitwise OR of any
+        ///     of the following values:
+        ///     <li>                           LdapPersistSearchControl.ADD</li>
+        ///     <li>                           LdapPersistSearchControl.DELETE</li>
+        ///     <li>                           LdapPersistSearchControl.MODIFY</li>
+        ///     <li>                           LdapPersistSearchControl.MODDN</li>
+        ///     To track all changes the value can be set to:
+        ///     <li>                           LdapPersistSearchControl.ANY</li>
+        /// </param>
+        /// <param name="changesOnly">
+        ///     true if you do not want the server to return
+        ///     all existing entries in the directory that match the search
+        ///     criteria. (Use this if you just want the changed entries to be
+        ///     returned.)
+        /// </param>
+        /// <param name="returnControls">
+        ///     true if you want the server to return entry
+        ///     change controls with each entry in the search results. You need to
+        ///     return entry change controls to discover what type of change
+        ///     and other additional information about the change.
+        /// </param>
+        /// <param name="isCritical">
+        ///     true if this control is critical to the search
+        ///     operation. If true and the server does not support this control,
+        ///     the server will not perform the search at all.
+        /// </param>
+        public LdapPersistSearchControl(ChangeType changeTypes, bool changesOnly, bool returnControls, bool isCritical)
             : base(requestOID, isCritical, null)
         {
-            m_changeTypes = changeTypes;
-            m_changesOnly = changesOnly;
-            m_returnControls = returnControls;
+            _changeTypes = changeTypes;
+            _changesOnly = changesOnly;
+            _returnControls = returnControls;
 
-            m_sequence = new Asn1Sequence(SEQUENCE_SIZE);
-
-            m_sequence.add(new Asn1Integer(m_changeTypes));
-            m_sequence.add(new Asn1Boolean(m_changesOnly));
-            m_sequence.add(new Asn1Boolean(m_returnControls));
-
-            setValue();
-        }
-
-        public override string ToString()
-        {
-            var data = m_sequence.getEncoding(s_encoder);
-
-            var buf = new StringBuilder(data.Length);
-
-            for (var i = 0; i < data.Length; i++)
+            _sequence = new Asn1Sequence(SEQUENCE_SIZE)
             {
-                buf.Append(data[i].ToString());
-                if (i < data.Length - 1)
-                    buf.Append(",");
-            }
+                new Asn1Integer((int)_changeTypes),
+                new Asn1Boolean(_changesOnly),
+                new Asn1Boolean(_returnControls)
+            };
 
-            return buf.ToString();
+            UpdateValue();
         }
+
 
         /// <summary>  Sets the encoded value of the LdapControlClass</summary>
-        private void setValue()
+        private void UpdateValue()
         {
-            base.setValue(m_sequence.getEncoding(s_encoder));
+            Value = _sequence.Encoding(s_encoder);
         }
 
         static LdapPersistSearchControl()
         {
             s_encoder = new LBEREncoder();
-            /*
-            * This is where we register the control response
-            */
-            {
-                /* Register the Entry Change control class which is returned by the
-                * server in response to a persistent search request
-                */
-                register(responseOID, typeof(LdapEntryChangeControl));
-            }
+            Register(responseOID, typeof(LdapEntryChangeControl));
         }
-    } // end class LdapPersistentSearchControl
+    }
 }

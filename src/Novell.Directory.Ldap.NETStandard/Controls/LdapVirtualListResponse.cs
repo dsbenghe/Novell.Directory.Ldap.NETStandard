@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
 
@@ -55,10 +54,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     Returns the size of the virtual search results list.  This integer as
         ///     the servers current estimate of what the search result size.
         /// </summary>
-        public virtual int ContentCount
-        {
-            get { return m_ContentCount; }
-        }
+        public virtual int ContentCount { get; }
 
         /// <summary>
         ///     Returns the index of the first entry in the returned list.  The server uses
@@ -66,34 +62,17 @@ namespace Novell.Directory.Ldap.Controls
         ///     list to estimate what list of entries the client is requesting.  This integer
         ///     is the index into the search results that is returned to the client.
         /// </summary>
-        public virtual int FirstPosition
-        {
-            get { return m_firstPosition; }
-        }
+        public virtual int FirstPosition { get; }
 
         /// <summary> Returns the result code for the virtual list search request.</summary>
-        public virtual int ResultCode
-        {
-            get { return m_resultCode; }
-        }
+        public virtual int ResultCode { get; }
 
         /// <summary>
         ///     Returns the cookie used by some servers to optimize the processing of
         ///     virtual list requests. Subsequent VLV requests to the same server
         ///     should return this String to the server.
         /// </summary>
-        public virtual string Context
-        {
-            get { return m_context; }
-        }
-
-        /* The parsed fields are stored in these private variables */
-        private readonly int m_firstPosition;
-        private readonly int m_ContentCount;
-        private readonly int m_resultCode;
-
-        /* The context field if one was returned by the server */
-        private readonly string m_context;
+        public virtual string Context { get; }
 
         /// <summary>
         ///     This constructor is usually called by the SDK to instantiate an
@@ -132,17 +111,15 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="values">
         ///     The control-specific data.
         /// </param>
-        [CLSCompliant(false)]
-        public LdapVirtualListResponse(string oid, bool critical, sbyte[] values) : base(oid, critical, values)
+        public LdapVirtualListResponse(string oid, bool critical, byte[] values)
+            : base(oid, critical, values)
         {
             /* Create a decoder object */
             var decoder = new LBERDecoder();
-            if (decoder == null)
-                throw new IOException("Decoding error");
 
             /* We should get back an ASN.1 Sequence object */
-            var asnObj = decoder.decode(values);
-            if (asnObj == null || !(asnObj is Asn1Sequence))
+            var asnObj = decoder.Decode(values) as Asn1Sequence;
+            if (asnObj == null)
                 throw new IOException("Decoding error");
 
             /* Else we got back a ASN.1 sequence - print it if running debug code */
@@ -150,36 +127,36 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 1st element which should be an integer containing the
             * targetPosition (firstPosition)
             */
-            var asn1firstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
-            if (asn1firstPosition != null && asn1firstPosition is Asn1Integer)
-                m_firstPosition = ((Asn1Integer) asn1firstPosition).intValue();
+            var asn1firstPosition = asnObj[0];
+            if (asn1firstPosition != null && asn1firstPosition is Asn1Integer interger)
+                FirstPosition = interger.IntValue;
             else
                 throw new IOException("Decoding error");
 
             /* Get the 2nd element which should be an integer containing the
             * current estimate of the contentCount
             */
-            var asn1ContentCount = ((Asn1Sequence) asnObj).get_Renamed(1);
-            if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
-                m_ContentCount = ((Asn1Integer) asn1ContentCount).intValue();
+            var asn1ContentCount = asnObj[1];
+            if (asn1ContentCount != null && asn1ContentCount is Asn1Integer interger2)
+                ContentCount = interger2.IntValue;
             else
                 throw new IOException("Decoding error");
 
             /* The 3rd element is an enum containing the errorcode */
-            var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(2);
-            if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                m_resultCode = ((Asn1Enumerated) asn1Enum).intValue();
+            var asn1Enum = asnObj[2];
+            if (asn1Enum != null && asn1Enum is Asn1Enumerated enumerated)
+                ResultCode = enumerated.IntValue;
             else
                 throw new IOException("Decoding error");
 
             /* Optional 4th element could be the context string that the server
             * wants the client to send back with each subsequent VLV request
             */
-            if (((Asn1Sequence) asnObj).size() > 3)
+            if (asnObj.Count > 3)
             {
-                var asn1String = ((Asn1Sequence) asnObj).get_Renamed(3);
-                if (asn1String != null && asn1String is Asn1OctetString)
-                    m_context = ((Asn1OctetString) asn1String).stringValue();
+                var asn1String = asnObj[3];
+                if (asn1String != null && asn1String is Asn1OctetString str)
+                    Context = str.StringValue;
             }
         }
     }

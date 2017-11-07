@@ -136,25 +136,25 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcLdapResult(Asn1Enumerated resultCode, RfcLdapDN matchedDN, RfcLdapString errorMessage,
             RfcReferral referral) : base(4)
         {
-            add(resultCode);
-            add(matchedDN);
-            add(errorMessage);
+            Add(resultCode);
+            Add(matchedDN);
+            Add(errorMessage);
             if (referral != null)
-                add(referral);
+                Add(referral);
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream</summary>
         [CLSCompliant(false)]
-        public RfcLdapResult(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcLdapResult(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
-            if (size() > 3)
+            if (Count() > 3)
             {
                 var obj = (Asn1Tagged) get_Renamed(3);
-                var id = obj.getIdentifier();
+                var id = obj.Identifier();
                 if (id.Tag == REFERRAL)
                 {
-                    var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
+                    var content = ((Asn1OctetString) obj.TaggedValue()).ByteValue();
                     var bais = new MemoryStream(SupportClass.ToByteArray(content));
                     set_Renamed(3, new RfcReferral(dec, bais, content.Length));
                 }
@@ -184,7 +184,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcLdapDN getMatchedDN()
         {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
+            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).ByteValue());
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcLdapString getErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
+            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).ByteValue());
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcReferral getReferral()
         {
-            return size() > 3 ? (RfcReferral) get_Renamed(3) : null;
+            return Count() > 3 ? (RfcReferral) get_Renamed(3) : null;
         }
     }
 }

@@ -148,7 +148,7 @@ namespace Novell.Directory.Ldap.Utilclass
             if (len == 0)
             {
                 // No data, return no data.
-                return new StringBuilder("").ToString();
+                return new StringBuilder("").ToString;
             }
 
             // every three bytes will be encoded into four bytes
@@ -238,12 +238,11 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        [CLSCompliant(false)]
-        public static sbyte[] decode(string encodedString)
+        public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
             SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
-            return decode(c);
+            return Decode(c);
         }
 
         /// <summary>
@@ -256,19 +255,18 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     A byte array object containing decoded bytes.
         /// </returns>
-        [CLSCompliant(false)]
-        public static sbyte[] decode(char[] encodedChars)
+        public static byte[] Decode(char[] encodedChars)
         {
             int i, j, k;
             var ecLen = encodedChars.Length; // length of encodedChars
             var gn = ecLen / 4; // number of four-byte groups in encodedChars
             int dByteLen; // length of decoded bytes, default is '0'
             bool onePad = false, twoPads = false;
-            sbyte[] decodedBytes; // decoded bytes
+            byte[] decodedBytes; // decoded bytes
 
             if (encodedChars.Length == 0)
             {
-                return new sbyte[0];
+                return new byte[0];
             }
             // the number of encoded bytes should be multiple of 4
             if (ecLen % 4 != 0)
@@ -287,7 +285,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into one byte.
                 dByteLen = gn * 3 - 2;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else if (encodedChars[ecLen - 1] == '=')
             {
@@ -296,14 +294,14 @@ namespace Novell.Directory.Ldap.Utilclass
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into two bytes.
                 dByteLen = gn * 3 - 1;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else
             {
                 // the last four bytes of encodedChars is in the form of '****',
                 // e.g. no pad.
                 dByteLen = gn * 3;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
 
             // map of encoded and decoded bits
@@ -325,7 +323,7 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < ecLen; i += 4, j += 3, k++)
             {
                 // build decodedBytes[j].
-                decodedBytes[j] = (sbyte) ((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
+                decodedBytes[j] = (byte) ((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -333,7 +331,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 1] =
-                    (sbyte) (((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
+                    (byte) (((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
@@ -341,7 +339,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 2] =
-                    (sbyte) (((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
+                    (byte) (((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
             }
             return decodedBytes;
         }
@@ -365,19 +363,18 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array
         /// </returns>
-        [CLSCompliant(false)]
-        public static sbyte[] decode(StringBuilder encodedSBuf, int start, int end)
+        public static byte[] Decode(StringBuilder encodedSBuf, int start, int end)
         {
             int i, j, k;
             var esbLen = end - start; // length of the encoded part
             var gn = esbLen / 4; // number of four-bytes group in ebs
             int dByteLen; // length of dbs, default is '0'
             bool onePad = false, twoPads = false;
-            sbyte[] decodedBytes; // decoded bytes
+            byte[] decodedBytes; // decoded bytes
 
             if (encodedSBuf.Length == 0)
             {
-                return new sbyte[0];
+                return new byte[0];
             }
             // the number of encoded bytes should be multiple of number 4
             if (esbLen % 4 != 0)
@@ -396,7 +393,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into one byte.
                 dByteLen = gn * 3 - 2;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else if (encodedSBuf[end - 1] == '=')
             {
@@ -405,13 +402,13 @@ namespace Novell.Directory.Ldap.Utilclass
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into two bytes.
                 dByteLen = gn * 3 - 1;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else
             {
                 // the last four bytes of ebs is in the form of '****', eg. no pad.
                 dByteLen = gn * 3;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
 
             // map of encoded and decoded bits
@@ -434,7 +431,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // build decodedBytes[j].
                 decodedBytes[j] =
-                    (sbyte) ((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
+                    (byte) ((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -442,7 +439,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 1] =
-                    (sbyte)
+                    (byte)
                     (((dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) | ((dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
@@ -451,7 +448,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 2] =
-                    (sbyte)
+                    (byte)
                     (((dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (dmap[encodedSBuf[start + i + 3]] & 0x3f));
             }
             return decodedBytes;
@@ -490,7 +487,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF
         /// </returns>
-        [CLSCompliant(false)]
         public static bool isLDIFSafe(sbyte[] bytes)
         {
             var len = bytes.Length;

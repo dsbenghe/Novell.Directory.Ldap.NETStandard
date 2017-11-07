@@ -87,9 +87,9 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1_serverDN = new Asn1OctetString(serverDN);
                 var asn1_dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                asn1_flags.Encode(encoder, encodedData);
+                asn1_serverDN.Encode(encoder, encodedData);
+                asn1_dn.Encode(encoder, encodedData);
 
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }

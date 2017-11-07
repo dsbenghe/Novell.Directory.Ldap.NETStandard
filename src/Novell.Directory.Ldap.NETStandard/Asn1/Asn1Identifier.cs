@@ -29,6 +29,7 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System;
 using System.IO;
 
@@ -68,8 +69,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///         1 1 1 1 1 (> 30) multiple octet tag, more octets follow
     ///     </pre>
     /// </summary>
-    [CLSCompliant(true)]
-    public class Asn1Identifier : object
+    public class Asn1Identifier : ICloneable
     {
         /// <summary>
         ///     Returns the CLASS of this Asn1Identifier as an int value.
@@ -82,10 +82,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </seealso>
         /// <seealso cref="PRIVATE">
         /// </seealso>
-        public virtual int Asn1Class
-        {
-            get { return tagClass; }
-        }
+        public virtual TagClass Asn1Class { get; private set; }
 
         /// <summary>
         ///     Return a boolean indicating if the constructed bit is set.
@@ -93,22 +90,15 @@ namespace Novell.Directory.Ldap.Asn1
         /// <returns>
         ///     true if constructed and false if primitive.
         /// </returns>
-        public virtual bool Constructed
-        {
-            get { return constructed; }
-        }
+        public virtual bool Constructed { get; private set; }
 
-        /// <summary> Returns the TAG of this Asn1Identifier.</summary>
-        public virtual int Tag
-        {
-            get { return tag; }
-        }
+        /// <summary> 
+        /// The TAG of this Asn1Identifier.
+        /// </summary>
+        public virtual int Tag { get; private set; }
 
         /// <summary> Returns the encoded length of this Asn1Identifier.</summary>
-        public virtual int EncodedLength
-        {
-            get { return encodedLength; }
-        }
+        public virtual int EncodedLength { get; private set; }
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -116,11 +106,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="UNIVERSAL">
         /// </seealso>
-        [CLSCompliant(false)]
-        public virtual bool Universal
-        {
-            get { return tagClass == UNIVERSAL; }
-        }
+        public virtual bool Universal => Asn1Class == TagClass.UNIVERSAL;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -128,11 +114,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="APPLICATION">
         /// </seealso>
-        [CLSCompliant(false)]
-        public virtual bool Application
-        {
-            get { return tagClass == APPLICATION; }
-        }
+        public virtual bool Application => Asn1Class == TagClass.APPLICATION;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -140,58 +122,14 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="CONTEXT">
         /// </seealso>
-        [CLSCompliant(false)]
-        public virtual bool Context
-        {
-            get { return tagClass == CONTEXT; }
-        }
+        public virtual bool Context => Asn1Class == TagClass.CONTEXT;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
         ///     has a TAG CLASS of PRIVATE.
         /// </summary>
         /// <seealso cref="PRIVATE"></seealso>
-        [CLSCompliant(false)]
-        public virtual bool Private
-        {
-            get { return tagClass == PRIVATE; }
-        }
-
-        /// <summary>
-        ///     Universal tag class.
-        ///     UNIVERSAL = 0
-        /// </summary>
-        public const int UNIVERSAL = 0;
-
-        /// <summary>
-        ///     Application-wide tag class.
-        ///     APPLICATION = 1
-        /// </summary>
-        public const int APPLICATION = 1;
-
-        /// <summary>
-        ///     Context-specific tag class.
-        ///     CONTEXT = 2
-        /// </summary>
-        public const int CONTEXT = 2;
-
-        /// <summary>
-        ///     Private-use tag class.
-        ///     PRIVATE = 3
-        /// </summary>
-        public const int PRIVATE = 3;
-
-
-        /* Private variables
-        */
-
-        private int tagClass;
-        private bool constructed;
-        private int tag;
-        private int encodedLength;
-
-        /* Constructors for Asn1Identifier
-        */
+        public virtual bool Private => Asn1Class == TagClass.PRIVATE;
 
         /// <summary>
         ///     Constructs an Asn1Identifier using the classtype, form and tag.
@@ -206,10 +144,28 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The tag of this identifier
         /// </param>
         public Asn1Identifier(int tagClass, bool constructed, int tag)
+            : this((TagClass)tagClass, constructed, tag)
         {
-            this.tagClass = tagClass;
-            this.constructed = constructed;
-            this.tag = tag;
+
+        }
+
+        /// <summary>
+        ///     Constructs an Asn1Identifier using the classtype, form and tag.
+        /// </summary>
+        /// <param name="tagClass">
+        ///     As defined above.
+        /// </param>
+        /// <param name="constructed">
+        ///     Set to true if constructed and false if primitive.
+        /// </param>
+        /// <param name="tag">
+        ///     The tag of this identifier
+        /// </param>
+        public Asn1Identifier(TagClass tagClass, bool constructed, int tag)
+        {
+            Asn1Class = tagClass;
+            Constructed = constructed;
+            Tag = tag;
         }
 
         /// <summary>
@@ -219,18 +175,18 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     The input stream to decode from.
         /// </param>
-        public Asn1Identifier(Stream in_Renamed)
+        public Asn1Identifier(Stream @in)
         {
-            var r = in_Renamed.ReadByte();
-            encodedLength++;
+            var r = @in.ReadByte();
+            EncodedLength++;
             if (r < 0)
                 throw new EndOfStreamException("BERDecoder: decode: EOF in Identifier");
-            tagClass = r >> 6;
-            constructed = (r & 0x20) != 0;
-            tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (tag == 0x1F)
+            Asn1Class = (TagClass)(r >> 6);
+            Constructed = (r & 0x20) != 0;
+            Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
+            if (Tag == 0x1F)
                 // if true, its a multiple octet identifier.
-                tag = decodeTagNumber(in_Renamed);
+                Tag = DecodeTagNumber(@in);
         }
 
         public Asn1Identifier()
@@ -244,32 +200,32 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     The input stream to decode from.
         /// </param>
-        public void reset(Stream in_Renamed)
+        public void Reset(Stream @in)
         {
-            encodedLength = 0;
-            var r = in_Renamed.ReadByte();
-            encodedLength++;
+            EncodedLength = 0;
+            var r = @in.ReadByte();
+            EncodedLength++;
             if (r < 0)
                 throw new EndOfStreamException("BERDecoder: decode: EOF in Identifier");
-            tagClass = r >> 6;
-            constructed = (r & 0x20) != 0;
-            tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (tag == 0x1F)
+            Asn1Class = (TagClass)(r >> 6);
+            Constructed = (r & 0x20) != 0;
+            Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
+            if (Tag == 0x1F)
                 // if true, its a multiple octet identifier.
-                tag = decodeTagNumber(in_Renamed);
+                Tag = DecodeTagNumber(@in);
         }
 
         /// <summary>
         ///     In the case that we have a tag number that is greater than 30, we need
         ///     to decode a multiple octet tag number.
         /// </summary>
-        private int decodeTagNumber(Stream in_Renamed)
+        private int DecodeTagNumber(Stream @in)
         {
             var n = 0;
             while (true)
             {
-                var r = in_Renamed.ReadByte();
-                encodedLength++;
+                var r = @in.ReadByte();
+                EncodedLength++;
                 if (r < 0)
                     throw new EndOfStreamException("BERDecoder: decode: EOF in tag number");
                 n = (n << 7) + (r & 0x7F);
@@ -279,23 +235,13 @@ namespace Novell.Directory.Ldap.Asn1
             return n;
         }
 
-        /* Convenience methods
-        */
-
         /// <summary>
         ///     Creates a duplicate, not a true clone, of this object and returns
         ///     a reference to the duplicate.
         /// </summary>
         public object Clone()
         {
-            try
-            {
-                return MemberwiseClone();
-            }
-            catch (Exception ce)
-            {
-                throw new Exception("Internal error, cannot create clone", ce);
-            }
+            return MemberwiseClone();
         }
     }
 }

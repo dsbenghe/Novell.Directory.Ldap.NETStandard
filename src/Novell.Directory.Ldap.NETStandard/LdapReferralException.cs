@@ -252,42 +252,45 @@ namespace Novell.Directory.Ldap
         ///     returns a string of information about the exception and the
         ///     the nested exceptions, if any.
         /// </summary>
-        public override string ToString()
+        public override string ToString
         {
-            string msg, tmsg;
-
-            // Format the basic exception information
-            msg = getExceptionString("LdapReferralException");
-
-            // Add failed referral information
-            if ((object) failedReferral != null)
+            get
             {
-                tmsg = ResourcesHandler.getMessage("FAILED_REFERRAL",
-                    new object[] {"LdapReferralException", failedReferral});
-                // If found no string from resource file, use a default string
-                if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
-                {
-                    tmsg = "LdapReferralException: Failed Referral: " + failedReferral;
-                }
-                msg = msg + '\n' + tmsg;
-            }
+                string msg, tmsg;
 
-            // Add referral information, display all the referrals in the list
-            if (referrals != null)
-            {
-                for (var i = 0; i < referrals.Length; i++)
+                // Format the basic exception information
+                msg = getExceptionString("LdapReferralException");
+
+                // Add failed referral information
+                if ((object)failedReferral != null)
                 {
-                    tmsg = ResourcesHandler.getMessage("REFERRAL_ITEM",
-                        new object[] {"LdapReferralException", referrals[i]});
+                    tmsg = ResourcesHandler.getMessage("FAILED_REFERRAL",
+                        new object[] { "LdapReferralException", failedReferral });
                     // If found no string from resource file, use a default string
                     if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                     {
-                        tmsg = "LdapReferralException: Referral: " + referrals[i];
+                        tmsg = "LdapReferralException: Failed Referral: " + failedReferral;
                     }
                     msg = msg + '\n' + tmsg;
                 }
+
+                // Add referral information, display all the referrals in the list
+                if (referrals != null)
+                {
+                    for (var i = 0; i < referrals.Length; i++)
+                    {
+                        tmsg = ResourcesHandler.getMessage("REFERRAL_ITEM",
+                            new object[] { "LdapReferralException", referrals[i] });
+                        // If found no string from resource file, use a default string
+                        if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
+                        {
+                            tmsg = "LdapReferralException: Referral: " + referrals[i];
+                        }
+                        msg = msg + '\n' + tmsg;
+                    }
+                }
+                return msg;
             }
-            return msg;
         }
     }
 }

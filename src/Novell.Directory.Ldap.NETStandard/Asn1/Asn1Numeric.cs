@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -38,38 +37,27 @@ namespace Novell.Directory.Ldap.Asn1
     ///     for all Asn1 numeric (integral) types. These include
     ///     Asn1Integer and Asn1Enumerated.
     /// </summary>
-    [CLSCompliant(true)]
     public abstract class Asn1Numeric : Asn1Object
     {
         private readonly long content;
 
-        internal Asn1Numeric(Asn1Identifier id, int value_Renamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, int value)
+            : base(id)
         {
-            content = value_Renamed;
+            content = value;
         }
 
-        internal Asn1Numeric(Asn1Identifier id, long value_Renamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, long value)
+            : base(id)
         {
-            content = value_Renamed;
+            content = value;
         }
 
-/*		internal Asn1Numeric(Asn1Identifier id, System.Int64 value_Renamed):base(id)
-		{
-			content = value_Renamed;
-			return ;
-		}
-*/
 
         /// <summary> Returns the content of this Asn1Numeric object as an int.</summary>
-        public int intValue()
-        {
-            return (int) content;
-        }
+        public int IntValue => (int)content;
 
         /// <summary> Returns the content of this Asn1Numeric object as a long.</summary>
-        public long longValue()
-        {
-            return content;
-        }
+        public long LongValue => content;
     }
 }

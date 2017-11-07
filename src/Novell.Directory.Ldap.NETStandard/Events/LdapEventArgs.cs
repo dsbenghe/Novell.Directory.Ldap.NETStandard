@@ -66,10 +66,10 @@ namespace Novell.Directory.Ldap.Events
             buf.AppendFormat("{0}:", GetType());
             buf.AppendFormat("(Classification={0})", eClassification);
             buf.AppendFormat("(Type={0})", eType);
-            buf.AppendFormat("(EventInformation:{0})", ldap_message);
+            buf.AppendFormat("(EventInformation:{0})", ContianedEventInformation);
             buf.Append("]");
 
-            return buf.ToString();
+            return buf.ToString;
         }
     } // end of class LdapEventArgs
 }

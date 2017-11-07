@@ -150,14 +150,12 @@ public class SupportClass
     ///     The number of characters read. The number will be less than or equal to count depending on the data available
     ///     in the source Stream. Returns -1 if the end of the stream is reached.
     /// </returns>
-    [CLSCompliant(false)]
-    public static int ReadInput(Stream sourceStream, ref sbyte[] target, int start, int count)
+    public static int ReadInput(Stream sourceStream, byte[] receiver, int start, int count)
     {
         // Returns 0 bytes if not enough space in target
-        if (target.Length == 0)
+        if (receiver.Length == 0)
             return 0;
 
-        var receiver = new byte[target.Length];
         var bytesRead = 0;
         var startIndex = start;
         var bytesToRead = count;
@@ -173,9 +171,6 @@ public class SupportClass
         // Returns -1 if EOF
         if (bytesRead == 0)
             return -1;
-
-        for (var i = start; i < start + bytesRead; i++)
-            target[i] = (sbyte) receiver[i];
 
         return bytesRead;
     }
@@ -737,10 +732,7 @@ public class SupportClass
         ///     Obtain a String that represents the current Object
         /// </summary>
         /// <returns>A String that represents the current Object</returns>
-        public override string ToString()
-        {
-            return "Thread[" + Name + "]";
-        }
+        public override string ToString => "Thread[" + Name + "]";
 
         /// <summary>
         ///     Gets the currently running thread
@@ -1825,10 +1817,7 @@ public class SupportClass
         ///     Returns a string representation of the Message Digest
         /// </summary>
         /// <returns>A string representation of the object</returns>
-        public override string ToString()
-        {
-            return Algorithm.ToString();
-        }
+        public override string ToString => Algorithm.ToString;
 
 
         /// <summary>

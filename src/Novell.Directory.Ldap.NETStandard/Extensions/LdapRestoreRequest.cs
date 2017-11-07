@@ -165,23 +165,23 @@ namespace Novell.Directory.Ldap.Extensions
 
                 //Form the chunks sequence to be passed to Server
                 var asn1_chunksSeq = new Asn1Sequence();
-                asn1_chunksSeq.add(new Asn1Integer(chunkSize));
+                asn1_chunksSeq.Add(new Asn1Integer(chunkSize));
                 var asn1_chunksSet = new Asn1Set();
                 for (var i = 0; i < chunkSize; i++)
                 {
                     var tmpChunk = new Asn1Integer(chunks[i]);
                     var tmpSeq = new Asn1Sequence();
-                    tmpSeq.add(tmpChunk);
-                    asn1_chunksSet.add(tmpSeq);
+                    tmpSeq.Add(tmpChunk);
+                    asn1_chunksSet.Add(tmpSeq);
                 }
-                asn1_chunksSeq.add(asn1_chunksSet);
+                asn1_chunksSeq.Add(asn1_chunksSet);
 
                 //Encode data to send to server
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
-                asn1_bufferLength.encode(encoder, encodedData);
-                asn1_buffer.encode(encoder, encodedData);
-                asn1_chunksSeq.encode(encoder, encodedData);
+                asn1_objectDN.Encode(encoder, encodedData);
+                asn1_passwd.Encode(encoder, encodedData);
+                asn1_bufferLength.Encode(encoder, encodedData);
+                asn1_buffer.Encode(encoder, encodedData);
+                asn1_chunksSeq.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));

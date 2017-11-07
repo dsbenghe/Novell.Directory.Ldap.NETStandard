@@ -28,8 +28,6 @@
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
-
-
 using System;
 
 namespace Novell.Directory.Ldap.Events.Edir
@@ -39,13 +37,13 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSource : LdapEventSource
     {
-        protected EdirEventHandler edir_event;
+        protected EventHandler<EdirEventArgs> edir_event;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
         ///     corresponding Edir events.
         /// </summary>
-        public event EdirEventHandler EdirEvent
+        public event EventHandler<EdirEventArgs> EdirEvent
         {
             add
             {
@@ -59,15 +57,6 @@ namespace Novell.Directory.Ldap.Events.Edir
             }
         }
 
-        /// <summary>
-        ///     EdirEventHandler is the delegate definition for EdirEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get corresponding Edir events.
-        /// </summary>
-        public delegate
-            void EdirEventHandler(object source,
-                EdirEventArgs objEdirEventArgs);
-
         protected override int GetListeners()
         {
             var nListeners = 0;
@@ -77,23 +66,22 @@ namespace Novell.Directory.Ldap.Events.Edir
             return nListeners;
         }
 
-        protected LdapConnection mConnection;
-        protected MonitorEventRequest mRequestOperation;
-        protected LdapResponseQueue mQueue;
+        protected LdapConnection Connection { get; set; }
+        protected MonitorEventRequest RequestOperation { get; set; }
+        protected LdapResponseQueue Queue { get; set; }
 
         public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
         {
-            if (null == specifier || null == conn)
-                throw new ArgumentException("Null argument specified");
-
-            mRequestOperation = new MonitorEventRequest(specifier);
-            mConnection = conn;
+            if (specifier == null)
+                throw new ArgumentNullException(nameof(specifier));
+            RequestOperation = new MonitorEventRequest(specifier);
+            Connection = conn ?? throw new ArgumentNullException(nameof(conn));
         }
 
         protected override void StartSearchAndPolling()
         {
-            mQueue = mConnection.ExtendedOperation(mRequestOperation, null, null);
-            var ids = mQueue.MessageIDs;
+            Queue = Connection.ExtendedOperation(RequestOperation, null, null);
+            var ids = Queue.MessageIDs;
 
             if (ids.Length != 1)
             {
@@ -104,12 +92,12 @@ namespace Novell.Directory.Ldap.Events.Edir
                 );
             }
 
-            StartEventPolling(mQueue, mConnection, ids[0]);
+            StartEventPolling(Queue, Connection, ids[0]);
         }
 
         protected override void StopSearchAndPolling()
         {
-            mConnection.Abandon(mQueue);
+            Connection.Abandon(Queue);
             StopEventPolling();
         }
 

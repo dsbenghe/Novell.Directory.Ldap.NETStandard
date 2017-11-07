@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number one stores the scope
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).intValue();
+                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
             }
         }
 
@@ -107,7 +107,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number two stores the dereference
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).intValue();
+                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
             }
         }
 
@@ -122,7 +122,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number three stores the max results
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).intValue();
+                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
             }
         }
 
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number four stores the server time limit
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).intValue();
+                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
             }
         }
 
@@ -154,7 +154,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number five stores types value
-                return ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).booleanValue();
+                return ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
             }
         }
 
@@ -168,10 +168,10 @@ namespace Novell.Directory.Ldap
             {
                 var attrs = (RfcAttributeDescriptionList) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(7);
 
-                var rAttrs = new string[attrs.size()];
+                var rAttrs = new string[attrs.Size()];
                 for (var i = 0; i < rAttrs.Length; i++)
                 {
-                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).stringValue();
+                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).StringValue();
                 }
                 return rAttrs;
             }

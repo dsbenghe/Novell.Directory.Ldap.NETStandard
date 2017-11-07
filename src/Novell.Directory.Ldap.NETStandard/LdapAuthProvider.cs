@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     ///     encapsulates information that is used by the client for authentication
     ///     when following referrals automatically.
     /// </summary>
-    /// <seealso cref="LdapAuthHandler">
+    /// <seealso cref="ILdapAuthHandler">
     /// </seealso>
     /// <seealso cref="LdapBindHandler">
     /// </seealso>

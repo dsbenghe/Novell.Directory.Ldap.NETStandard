@@ -85,11 +85,11 @@ namespace Novell.Directory.Ldap.Extensions
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
-                var asn1_privileges = (Asn1Integer) decoder.decode(returnedValue);
+                var asn1_privileges = (Asn1Integer) decoder.Decode(returnedValue);
                 if (asn1_privileges == null)
                     throw new IOException("Decoding error");
 
-                privileges = asn1_privileges.intValue();
+                privileges = asn1_privileges.IntValue();
             }
             else
             {

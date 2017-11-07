@@ -1593,7 +1593,7 @@ namespace Novell.Directory.Ldap
         public virtual LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
             LdapConstraints cons)
         {
-            if (attr.size() != 1)
+            if (attr.Size!= 1)
             {
                 throw new ArgumentException("compare: Exactly one value " + "must be present in the LdapAttribute");
             }
@@ -1988,7 +1988,7 @@ namespace Novell.Directory.Ldap
                 cons = defSearchCons;
 
             // error check the parameters
-            if ((object) op.getID() == null)
+            if ((object) op.Id() == null)
             {
                 // Invalid extended operation parameter, no OID specified
                 throw new ArgumentException(ExceptionMessages.OP_PARAM_ERROR);
@@ -3160,7 +3160,7 @@ namespace Novell.Directory.Ldap
             LdapConnection rconn = null;
             var rh = defSearchCons.getReferralHandler();
             // Check if we use LdapRebind to get authentication credentials
-            if (rh == null || rh is LdapAuthHandler)
+            if (rh == null || rh is ILdapAuthHandler)
             {
                 int i;
                 for (i = 0; i < referrals.Length; i++)
@@ -3174,10 +3174,10 @@ namespace Novell.Directory.Ldap
                         rconn.Constraints = defSearchCons;
                         var url = new LdapUrl(referrals[i]);
                         rconn.Connect(url.Host, url.Port);
-                        if (rh is LdapAuthHandler)
+                        if (rh is ILdapAuthHandler)
                         {
                             // Get application supplied dn and pw
-                            var ap = ((LdapAuthHandler) rh).getAuthProvider(url.Host, url.Port);
+                            var ap = ((ILdapAuthHandler) rh).GetAuthProvider(url.Host, url.Port);
                             dn = ap.DN;
                             pw = ap.Password;
                         }
@@ -3431,7 +3431,7 @@ namespace Novell.Directory.Ldap
                         null, ex);
                     rex.setReferrals(initialReferrals);
                     var ref_Renamed = rconn.Connection.ActiveReferral;
-                    rex.FailedReferral = ref_Renamed.ReferralUrl.ToString();
+                    rex.FailedReferral = ref_Renamed.ReferralUrl.ToString;
                     throw rex;
                 }
 
@@ -3460,7 +3460,7 @@ namespace Novell.Directory.Ldap
                 rex.setReferrals(refs);
                 if (rinfo != null)
                 {
-                    rex.FailedReferral = rinfo.ReferralUrl.ToString();
+                    rex.FailedReferral = rinfo.ReferralUrl.ToString;
                 }
                 else
                 {

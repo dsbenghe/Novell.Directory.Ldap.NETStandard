@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap.Events
 
         public string[] getUrls()
         {
-            return ((LdapSearchResultReference) ldap_message).Referrals;
+            return ((LdapSearchResultReference) ContianedEventInformation).Referrals;
         }
     }
 }

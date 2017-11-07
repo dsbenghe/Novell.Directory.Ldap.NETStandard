@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() > 1)
+                if (Count() > 1)
                 {
                     // MAY be a criticality
                     var obj = get_Renamed(1);
@@ -85,12 +85,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() > 2)
+                if (Count() > 2)
                 {
                     // MUST be a control value
                     return (Asn1OctetString) get_Renamed(2);
                 }
-                if (size() > 1)
+                if (Count() > 1)
                 {
                     // MAY be a control value
                     var obj = get_Renamed(1);
@@ -105,14 +105,14 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (value == null)
                     return;
 
-                if (size() == 3)
+                if (Count() == 3)
                 {
                     // We already have a control value, replace it
                     set_Renamed(2, value);
                     return;
                 }
 
-                if (size() == 2)
+                if (Count() == 2)
                 {
                     // Get the second element
                     var obj = get_Renamed(1);
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     else
                     {
                         // add a new one at the end
-                        add(value);
+                        Add(value);
                     }
                 }
             }
@@ -153,25 +153,25 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality, Asn1OctetString controlValue) : base(3)
         {
-            add(controlType);
-            if (criticality.booleanValue())
-                add(criticality);
+            Add(controlType);
+            if (criticality.BooleanValue())
+                Add(criticality);
             if (controlValue != null)
-                add(controlValue);
+                Add(controlValue);
         }
 
         /// <summary> Constructs a Control object by decoding it from an InputStream.</summary>
         [CLSCompliant(false)]
-        public RfcControl(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcControl(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
         }
 
         /// <summary> Constructs a Control object by decoding from an Asn1Sequence</summary>
         public RfcControl(Asn1Sequence seqObj) : base(3)
         {
-            var len = seqObj.size();
+            var len = seqObj.Size();
             for (var i = 0; i < len; i++)
-                add(seqObj.get_Renamed(i));
+                Add(seqObj.get_Renamed(i));
         }
 
         //*************************************************************************

@@ -84,11 +84,11 @@ namespace Novell.Directory.Ldap.Extensions
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
-                var asn1_count = (Asn1Integer) decoder.decode(returnedValue);
+                var asn1_count = (Asn1Integer) decoder.Decode(returnedValue);
                 if (asn1_count == null)
                     throw new IOException("Decoding error");
 
-                count = asn1_count.intValue();
+                count = asn1_count.IntValue();
             }
             else
             {

@@ -603,18 +603,21 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     A DN string.
         /// </returns>
-        public override string ToString()
+        public override string ToString
         {
-            var length = rdnList.Count;
-            var dn = "";
-            if (length < 1)
-                return null;
-            dn = rdnList[0].ToString();
-            for (var i = 1; i < length; i++)
+            get
             {
-                dn += "," + rdnList[i];
+                var length = rdnList.Count;
+                var dn = "";
+                if (length < 1)
+                    return null;
+                dn = rdnList[0].ToString;
+                for (var i = 1; i < length; i++)
+                {
+                    dn += "," + rdnList[i];
+                }
+                return dn;
             }
-            return dn;
         }
 
 

@@ -64,8 +64,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </param>
         public RfcAddRequest(RfcLdapDN entry, RfcAttributeList attributes) : base(2)
         {
-            add(entry);
-            add(attributes);
+            Add(entry);
+            Add(attributes);
         }
 
         /// <summary>
@@ -96,19 +96,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 8. (0x68)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.ADD_REQUEST);
         }
 
         public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
         {
-            return new RfcAddRequest(toArray(), base_Renamed);
+            return new RfcAddRequest(ToArray(), base_Renamed);
         }
 
         public string getRequestDN()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDN) get_Renamed(0)).StringValue();
         }
     }
 }

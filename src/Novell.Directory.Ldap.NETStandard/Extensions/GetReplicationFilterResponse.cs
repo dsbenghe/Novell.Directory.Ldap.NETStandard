@@ -99,13 +99,13 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("Decoding error");
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.decode(returnedValue);
+                var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
                 if (returnedSequence == null)
                     throw new IOException("Decoding error");
 
                 // How many sequences in this list
-                var numberOfSequences = returnedSequence.size();
+                var numberOfSequences = returnedSequence.Size();
                 returnedFilter = new string[numberOfSequences][];
 
                 // Parse each returned sequence object
@@ -126,11 +126,11 @@ namespace Novell.Directory.Ldap.Extensions
                     if (asn1_attributeList == null)
                         throw new IOException("Decoding error");
 
-                    var numberOfAttributes = asn1_attributeList.size();
+                    var numberOfAttributes = asn1_attributeList.Size();
                     returnedFilter[classNumber] = new string[numberOfAttributes + 1];
 
                     // Get the classname
-                    returnedFilter[classNumber][0] = asn1_className.stringValue();
+                    returnedFilter[classNumber][0] = asn1_className.StringValue();
                     if ((object) returnedFilter[classNumber][0] == null)
                         throw new IOException("Decoding error");
 
@@ -142,7 +142,7 @@ namespace Novell.Directory.Ldap.Extensions
                             throw new IOException("Decoding error");
 
                         // Get attributename string
-                        returnedFilter[classNumber][attributeNumber + 1] = asn1_attributeName.stringValue();
+                        returnedFilter[classNumber][attributeNumber + 1] = asn1_attributeName.StringValue();
                         if ((object) returnedFilter[classNumber][attributeNumber + 1] == null)
                             throw new IOException("Decoding error");
                     }

@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                 var asn1_serverName = new Asn1OctetString(serverName);
 
-                asn1_serverName.encode(encoder, encodedData);
+                asn1_serverName.Encode(encoder, encodedData);
 
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }

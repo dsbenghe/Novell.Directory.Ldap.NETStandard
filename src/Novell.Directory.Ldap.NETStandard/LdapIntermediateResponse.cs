@@ -95,10 +95,10 @@ namespace Novell.Directory.Ldap
         public string getID()
         {
             var respOID =
-                ((RfcIntermediateResponse) message.Response).getResponseName();
+                ((RfcIntermediateResponse)message.Response).getResponseName();
             if (respOID == null)
                 return null;
-            return respOID.stringValue();
+            return respOID.StringValue;
         }
 
         /**
@@ -106,15 +106,16 @@ namespace Novell.Directory.Ldap
          *
          * @return The value of the response.
          */
-
-        [CLSCompliant(false)]
-        public sbyte[] getValue()
+        public byte[] Value
         {
-            var tempString =
-                ((RfcIntermediateResponse) message.Response).getResponse();
-            if (tempString == null)
-                return null;
-            return tempString.byteValue();
+            get
+            {
+                var tempString =(message.Response as RfcIntermediateResponse).Response;
+                if (tempString == null)
+                    return null;
+                return tempString.ByteValue;
+            }
+
         }
     }
 }

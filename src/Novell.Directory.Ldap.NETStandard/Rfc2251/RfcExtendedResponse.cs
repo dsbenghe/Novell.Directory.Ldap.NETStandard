@@ -78,31 +78,31 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     decoding it from an InputStream
         /// </summary>
         [CLSCompliant(false)]
-        public RfcExtendedResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcExtendedResponse(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
             // decode optional tagged elements
-            if (size() > 3)
+            if (Count() > 3)
             {
-                for (var i = 3; i < size(); i++)
+                for (var i = 3; i < Count(); i++)
                 {
                     var obj = (Asn1Tagged) get_Renamed(i);
-                    var id = obj.getIdentifier();
+                    var id = obj.Identifier();
                     switch (id.Tag)
                     {
                         case RfcLdapResult.REFERRAL:
-                            var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
+                            var content = ((Asn1OctetString) obj.TaggedValue()).ByteValue();
                             var bais = new MemoryStream(SupportClass.ToByteArray(content));
                             set_Renamed(i, new RfcReferral(dec, bais, content.Length));
                             referralIndex = i;
                             break;
 
                         case RESPONSE_NAME:
-                            set_Renamed(i, new RfcLdapOID(((Asn1OctetString) obj.taggedValue()).byteValue()));
+                            set_Renamed(i, new RfcLdapOID(((Asn1OctetString) obj.TaggedValue()).ByteValue()));
                             responseNameIndex = i;
                             break;
 
                         case RESPONSE:
-                            set_Renamed(i, obj.taggedValue());
+                            set_Renamed(i, obj.TaggedValue());
                             responseIndex = i;
                             break;
                     }
@@ -123,13 +123,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcLdapDN getMatchedDN()
         {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
+            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).ByteValue());
         }
 
         /// <summary> </summary>
         public RfcLdapString getErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
+            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).ByteValue());
         }
 
         /// <summary> </summary>
@@ -139,7 +139,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.EXTENDED_RESPONSE);
         }

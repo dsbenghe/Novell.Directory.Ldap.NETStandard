@@ -423,7 +423,7 @@ namespace Novell.Directory.Ldap
                     complete = true;
                     if (bindprops != null)
                     {
-                        res = ((RfcResponse) message.Response).getResultCode().intValue();
+                        res = ((RfcResponse) message.Response).getResultCode().IntValue();
                         if (res != LdapException.SASL_BIND_IN_PROGRESS)
                         {
                             if (conn == null)

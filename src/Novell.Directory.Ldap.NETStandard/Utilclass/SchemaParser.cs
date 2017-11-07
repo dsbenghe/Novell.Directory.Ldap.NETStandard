@@ -213,7 +213,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         newString.Append('\\');
                     }
                 }
-                rawString = newString.ToString();
+                rawString = newString.ToString;
             }
             else
             {

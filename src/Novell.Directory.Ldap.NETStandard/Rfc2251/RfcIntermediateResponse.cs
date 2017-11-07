@@ -97,7 +97,7 @@ namespace Novell.Directory.Ldap.Rfc2251
          */
 
         [CLSCompliant(false)]
-        public RfcIntermediateResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcIntermediateResponse(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         //		throws IOException
         {
             //		super(dec, in, len);
@@ -109,25 +109,25 @@ namespace Novell.Directory.Ldap.Rfc2251
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.
 
-            if (size() >= 3) //the incorrectly encoded case, LDAPResult contains 
+            if (Count() >= 3) //the incorrectly encoded case, LDAPResult contains 
                 i = 3; //at least 3 components
             else
                 i = 0; //correctly encoded case, can have zero components
 
-            for (; i < size(); i++)
+            for (; i < Count(); i++)
             {
-                var obj = (Asn1Tagged) get_Renamed(i);
-                var id = obj.getIdentifier();
+                var obj = (Asn1Tagged)get_Renamed(i);
+                var id = obj.Identifier();
                 switch (id.Tag)
                 {
                     case TAG_RESPONSE_NAME:
                         set_Renamed(i, new RfcLdapOID(
-                            ((Asn1OctetString) obj.taggedValue()).byteValue()));
+                            ((Asn1OctetString)obj.TaggedValue()).ByteValue()));
                         m_responseNameIndex = i;
                         break;
 
                     case TAG_RESPONSE:
-                        set_Renamed(i, obj.taggedValue());
+                        set_Renamed(i, obj.TaggedValue());
                         m_responseValueIndex = i;
                         break;
                 }
@@ -136,52 +136,47 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public Asn1Enumerated getResultCode()
         {
-            if (size() > 3)
-                return (Asn1Enumerated) get_Renamed(0);
+            if (Count() > 3)
+                return (Asn1Enumerated)get_Renamed(0);
             return null;
         }
 
         public RfcLdapDN getMatchedDN()
         {
-            if (size() > 3)
-                return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
+            if (Count() > 3)
+                return new RfcLdapDN(((Asn1OctetString)get_Renamed(1)).ByteValue());
             return null;
         }
 
         public RfcLdapString getErrorMessage()
         {
-            if (size() > 3)
-                return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
+            if (Count() > 3)
+                return new RfcLdapString(((Asn1OctetString)get_Renamed(2)).ByteValue());
             return null;
         }
 
         public RfcReferral getReferral()
         {
-            return size() > 3 ? (RfcReferral) get_Renamed(3) : null;
+            return Count() > 3 ? (RfcReferral)get_Renamed(3) : null;
         }
 
         public RfcLdapOID getResponseName()
         {
             return m_responseNameIndex >= 0
-                ? (RfcLdapOID) get_Renamed(m_responseNameIndex)
+                ? (RfcLdapOID)get_Renamed(m_responseNameIndex)
                 : null;
         }
 
-        public Asn1OctetString getResponse()
-        {
-            return m_responseValueIndex != 0
-                ? (Asn1OctetString) get_Renamed(m_responseValueIndex)
-                : null;
-        }
+        public Asn1OctetString Response => m_responseValueIndex != 0 ? this[m_responseValueIndex] as Asn1OctetString : null;
 
         /**
          * Override getIdentifier to return an application-wide id.
          */
 
-        public override Asn1Identifier getIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true,
-                LdapMessage.INTERMEDIATE_RESPONSE);
-        }
+        public override Asn1Identifier Identifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.APPLICATION, true,
+            LdapMessage.INTERMEDIATE_RESPONSE);
     }
+}
 }

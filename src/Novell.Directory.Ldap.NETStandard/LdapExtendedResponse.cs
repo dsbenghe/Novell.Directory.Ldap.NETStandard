@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 var respOID = ((RfcExtendedResponse) message.Response).ResponseName;
-                return respOID?.stringValue();
+                return respOID?.StringValue();
             }
         }
 
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 var tempString = ((RfcExtendedResponse) message.Response).Response;
-                return tempString?.byteValue();
+                return tempString?.ByteValue();
             }
         }
 

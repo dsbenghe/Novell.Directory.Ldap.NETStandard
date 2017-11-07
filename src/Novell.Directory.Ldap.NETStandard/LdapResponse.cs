@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
 				Console.WriteLine(" Response is non null" + str);
 				return str;
 */
-                return ((RfcResponse) message.Response).getErrorMessage().stringValue();
+                return ((RfcResponse) message.Response).getErrorMessage().StringValue();
             }
         }
 
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap
                 {
                     return exception.MatchedDN;
                 }
-                return ((RfcResponse) message.Response).getMatchedDN().stringValue();
+                return ((RfcResponse) message.Response).getMatchedDN().StringValue();
             }
         }
 
@@ -120,11 +120,11 @@ namespace Novell.Directory.Ldap
                 else
                 {
                     // convert RFC 2251 Referral to String[]
-                    var size = ref_Renamed.size();
+                    var size = ref_Renamed.Size();
                     referrals = new string[size];
                     for (var i = 0; i < size; i++)
                     {
-                        var aRef = ((Asn1OctetString) ref_Renamed.get_Renamed(i)).stringValue();
+                        var aRef = ((Asn1OctetString) ref_Renamed.get_Renamed(i)).StringValue();
                         try
                         {
                             // get the referral URL
@@ -136,7 +136,7 @@ namespace Novell.Directory.Ldap
                                 if ((object) (dn = origMsg.RequestDN) != null)
                                 {
                                     urlRef.setDN(dn);
-                                    aRef = urlRef.ToString();
+                                    aRef = urlRef.ToString;
                                 }
                             }
                         }
@@ -171,7 +171,7 @@ namespace Novell.Directory.Ldap
                 }
                 if ((RfcResponse) message.Response is RfcIntermediateResponse)
                     return 0;
-                return ((RfcResponse) message.Response).getResultCode().intValue();
+                return ((RfcResponse) message.Response).getResultCode().IntValue();
             }
         }
 

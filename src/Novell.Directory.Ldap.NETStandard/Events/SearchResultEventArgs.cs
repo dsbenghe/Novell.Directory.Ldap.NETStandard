@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap.Events
 
         public LdapEntry Entry
         {
-            get { return ((LdapSearchResult) ldap_message).Entry; }
+            get { return ((LdapSearchResult) ContianedEventInformation).Entry; }
         }
 
         public override string ToString()
@@ -61,13 +61,13 @@ namespace Novell.Directory.Ldap.Events
             buf.AppendFormat("(EventInformation:{0})", getStringRepresentaionOfEventInformation());
             buf.Append("]");
 
-            return buf.ToString();
+            return buf.ToString;
         }
 
         private string getStringRepresentaionOfEventInformation()
         {
             var buf = new StringBuilder();
-            var result = (LdapSearchResult) ldap_message;
+            var result = (LdapSearchResult) ContianedEventInformation;
 
             buf.AppendFormat("(Entry={0})", result.Entry);
             var controls = result.Controls;
@@ -78,12 +78,12 @@ namespace Novell.Directory.Ldap.Events
                 var i = 0;
                 foreach (var control in controls)
                 {
-                    buf.AppendFormat("(Control{0}={1})", ++i, control.ToString());
+                    buf.AppendFormat("(Control{0}={1})", ++i, control.ToString);
                 }
                 buf.Append(")");
             }
 
-            return buf.ToString();
+            return buf.ToString;
         }
 
         private string getChangeTypeString()

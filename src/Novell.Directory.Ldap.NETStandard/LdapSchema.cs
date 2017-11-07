@@ -476,7 +476,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         private void addElement(int schemaType, LdapSchemaElement element)
         {
-            SupportClass.PutElement(idTable[schemaType], element.ID, element);
+            SupportClass.PutElement(idTable[schemaType], element.Id, element);
             var names = element.Names;
             for (var i = 0; i < names.Length; i++)
             {

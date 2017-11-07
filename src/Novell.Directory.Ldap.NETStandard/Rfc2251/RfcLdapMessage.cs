@@ -75,13 +75,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
         public virtual int MessageID
         {
-            get { return ((Asn1Integer) get_Renamed(0)).intValue(); }
+            get { return ((Asn1Integer) get_Renamed(0)).IntValue(); }
         }
 
         /// <summary> Returns this RfcLdapMessage's message type</summary>
         public virtual int Type
         {
-            get { return get_Renamed(1).getIdentifier().Tag; }
+            get { return get_Renamed(1).Identifier().Tag; }
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() > 2)
+                if (Count() > 2)
                     return (RfcControls) get_Renamed(2);
                 return null;
             }
@@ -163,11 +163,11 @@ namespace Novell.Directory.Ldap.Rfc2251
             this.op = (Asn1Object) op;
             this.controls = controls;
 
-            add(new RfcMessageID()); // MessageID has static counter
-            add((Asn1Object) op);
+            Add(new RfcMessageID()); // MessageID has static counter
+            Add((Asn1Object) op);
             if (controls != null)
             {
-                add(controls);
+                Add(controls);
             }
         }
 
@@ -182,17 +182,17 @@ namespace Novell.Directory.Ldap.Rfc2251
             this.op = op;
             this.controls = controls;
 
-            add(new RfcMessageID()); // MessageID has static counter
-            add(op);
+            Add(new RfcMessageID()); // MessageID has static counter
+            Add(op);
             if (controls != null)
             {
-                add(controls);
+                Add(controls);
             }
         }
 
         /// <summary> Will decode an RfcLdapMessage directly from an InputStream.</summary>
         [CLSCompliant(false)]
-        public RfcLdapMessage(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcLdapMessage(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
             sbyte[] content;
             MemoryStream bais;
@@ -200,8 +200,8 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Decode implicitly tagged protocol operation from an Asn1Tagged type
             // to its appropriate application type.
             var protocolOp = (Asn1Tagged) get_Renamed(1);
-            var protocolOpId = protocolOp.getIdentifier();
-            content = ((Asn1OctetString) protocolOp.taggedValue()).byteValue();
+            var protocolOpId = protocolOp.Identifier();
+            content = ((Asn1OctetString) protocolOp.TaggedValue()).ByteValue();
             bais = new MemoryStream(SupportClass.ToByteArray(content));
 
             switch (protocolOpId.Tag)
@@ -256,13 +256,13 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             // decode optional implicitly tagged controls from Asn1Tagged type to
             // to RFC 2251 types.
-            if (size() > 2)
+            if (Count() > 2)
             {
                 var controls = (Asn1Tagged) get_Renamed(2);
                 //   Asn1Identifier controlsId = protocolOp.getIdentifier();
                 // we could check to make sure we have controls here....
 
-                content = ((Asn1OctetString) controls.taggedValue()).byteValue();
+                content = ((Asn1OctetString) controls.TaggedValue()).ByteValue();
                 bais = new MemoryStream(SupportClass.ToByteArray(content));
                 set_Renamed(2, new RfcControls(dec, bais, content.Length));
             }
@@ -308,7 +308,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 throw new LdapException("DUP_ERROR", LdapException.LOCAL_ERROR, null);
             }
 
-            var newMsg = new RfcLdapMessage(toArray(), (RfcRequest) get_Renamed(1), dn, filter, reference);
+            var newMsg = new RfcLdapMessage(ToArray(), (RfcRequest) get_Renamed(1), dn, filter, reference);
             return newMsg;
         }
     }

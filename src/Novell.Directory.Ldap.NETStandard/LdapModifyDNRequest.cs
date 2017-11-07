@@ -71,8 +71,8 @@ namespace Novell.Directory.Ldap
             {
                 // Get the RFC request object for this request
                 var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var relDN = (RfcRelativeLdapDN) req.toArray()[1];
-                return relDN.stringValue();
+                var relDN = (RfcRelativeLdapDN) req.ToArray()[1];
+                return relDN.StringValue();
             }
         }
 
@@ -89,8 +89,8 @@ namespace Novell.Directory.Ldap
             {
                 // Get the RFC request object for this request
                 var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var delOld = (Asn1Boolean) req.toArray()[2];
-                return delOld.booleanValue();
+                var delOld = (Asn1Boolean) req.ToArray()[2];
+                return delOld.BooleanValue();
             }
         }
 
@@ -107,13 +107,13 @@ namespace Novell.Directory.Ldap
             {
                 // Get the RFC request object for this request
                 var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var seq = req.toArray();
+                var seq = req.ToArray();
                 if (seq.Length < 4 || seq[3] == null)
                 {
                     return null;
                 }
-                var parentDN = (RfcLdapDN) req.toArray()[3];
-                return parentDN.stringValue();
+                var parentDN = (RfcLdapDN) req.ToArray()[3];
+                return parentDN.StringValue();
             }
         }
 
@@ -151,9 +151,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this mod DN request
         ///     #return an Asn1 representation of this object
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString => Asn1Object.ToString;
     }
 }

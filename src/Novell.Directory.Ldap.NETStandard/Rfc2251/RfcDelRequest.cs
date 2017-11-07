@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     when this object is encoded.
         ///     Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.DEL_REQUEST);
         }
@@ -82,14 +82,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             if ((object) base_Renamed == null)
             {
-                return new RfcDelRequest(byteValue());
+                return new RfcDelRequest(ByteValue());
             }
             return new RfcDelRequest(base_Renamed);
         }
 
         public string getRequestDN()
         {
-            return stringValue();
+            return StringValue();
         }
     }
 }

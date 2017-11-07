@@ -789,7 +789,7 @@ namespace Novell.Directory.Ldap
                 {
                     return;
                 }
-                var ber = msg.Asn1Object.getEncoding(encoder);
+                var ber = msg.Asn1Object.Encoding(encoder);
                 myOut.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
                 myOut.Flush();
             }
@@ -867,7 +867,7 @@ namespace Novell.Directory.Ldap
                     try
                     {
                         var msg = new LdapUnbindRequest(null);
-                        var ber = msg.Asn1Object.getEncoding(encoder);
+                        var ber = msg.Asn1Object.Encoding(encoder);
                         out_Renamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
                         out_Renamed.Flush();
                     }
@@ -1359,7 +1359,7 @@ namespace Novell.Directory.Ldap
 
         static Connection()
         {
-            sdk = new StringBuilder("2.2.1").ToString();
+            sdk = new StringBuilder("2.2.1").ToString;
             protocol = 3;
         }
     }

@@ -83,9 +83,9 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
                 var asn1_delay = new Asn1Integer(delay);
 
-                asn1_serverName.encode(encoder, encodedData);
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_delay.encode(encoder, encodedData);
+                asn1_serverName.Encode(encoder, encodedData);
+                asn1_partitionRoot.Encode(encoder, encodedData);
+                asn1_delay.Encode(encoder, encodedData);
 
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }

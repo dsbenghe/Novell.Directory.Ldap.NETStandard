@@ -111,7 +111,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 var strB = new StringBuilder();
                 strB.AppendFormat(pattern, arguments);
-                pattern = strB.ToString();
+                pattern = strB.ToString;
                 //				MessageFormat mf = new MessageFormat(pattern);
                 //				pattern=System.String.Format(locale,pattern,arguments);
                 //				mf.setLocale(locale);

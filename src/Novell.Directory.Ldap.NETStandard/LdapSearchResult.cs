@@ -59,22 +59,22 @@ namespace Novell.Directory.Ldap
 
                     var attrList = ((RfcSearchResultEntry) message.Response).Attributes;
 
-                    var seqArray = attrList.toArray();
+                    var seqArray = attrList.ToArray();
                     for (var i = 0; i < seqArray.Length; i++)
                     {
                         var seq = (Asn1Sequence) seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).stringValue());
+                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
 
                         var set_Renamed = (Asn1Set) seq.get_Renamed(1);
-                        object[] setArray = set_Renamed.toArray();
+                        object[] setArray = set_Renamed.ToArray();
                         for (var j = 0; j < setArray.Length; j++)
                         {
-                            attr.addValue(((Asn1OctetString) setArray[j]).byteValue());
+                            attr.addValue(((Asn1OctetString) setArray[j]).ByteValue());
                         }
                         attrs.Add(attr);
                     }
 
-                    entry = new LdapEntry(((RfcSearchResultEntry) message.Response).ObjectName.stringValue(), attrs);
+                    entry = new LdapEntry(((RfcSearchResultEntry) message.Response).ObjectName.StringValue(), attrs);
                 }
                 return entry;
             }
@@ -117,18 +117,21 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a String representing this object.
         /// </returns>
-        public override string ToString()
+        public override string ToString
         {
-            string str;
-            if (entry == null)
+            get
             {
-                str = base.ToString();
+                string str;
+                if (entry == null)
+                {
+                    str = base.ToString;
+                }
+                else
+                {
+                    str = entry.ToString;
+                }
+                return str;
             }
-            else
-            {
-                str = entry.ToString();
-            }
-            return str;
         }
     }
 }

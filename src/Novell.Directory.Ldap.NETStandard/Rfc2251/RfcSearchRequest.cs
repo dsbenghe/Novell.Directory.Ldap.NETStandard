@@ -68,14 +68,14 @@ namespace Novell.Directory.Ldap.Rfc2251
             Asn1Integer sizeLimit, Asn1Integer timeLimit, Asn1Boolean typesOnly, RfcFilter filter,
             RfcAttributeDescriptionList attributes) : base(8)
         {
-            add(baseObject);
-            add(scope);
-            add(derefAliases);
-            add(sizeLimit);
-            add(timeLimit);
-            add(typesOnly);
-            add(filter);
-            add(attributes);
+            Add(baseObject);
+            Add(scope);
+            Add(derefAliases);
+            Add(sizeLimit);
+            Add(timeLimit);
+            Add(typesOnly);
+            Add(filter);
+            Add(attributes);
         }
 
         /// <summary> Constructs a new Search Request copying from an existing request.</summary>
@@ -93,7 +93,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // base so we don't return objects a level deeper than requested
             if (request)
             {
-                var scope = ((Asn1Enumerated) origRequest[1]).intValue();
+                var scope = ((Asn1Enumerated) origRequest[1]).IntValue();
                 if (scope == LdapConnection.SCOPE_ONE)
                 {
                     set_Renamed(1, new Asn1Enumerated(LdapConnection.SCOPE_BASE));
@@ -116,19 +116,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 3. (0x63)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.SEARCH_REQUEST);
         }
 
         public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
         {
-            return new RfcSearchRequest(toArray(), base_Renamed, filter, request);
+            return new RfcSearchRequest(ToArray(), base_Renamed, filter, request);
         }
 
         public string getRequestDN()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDN) get_Renamed(0)).StringValue();
         }
     }
 }

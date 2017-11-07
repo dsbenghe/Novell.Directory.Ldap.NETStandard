@@ -49,11 +49,11 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var references = ((RfcSearchResultReference) message.Response).toArray();
+                var references = ((RfcSearchResultReference) message.Response).ToArray();
                 srefs = new string[references.Length];
                 for (var i = 0; i < references.Length; i++)
                 {
-                    srefs[i] = ((Asn1OctetString) references[i]).stringValue();
+                    srefs[i] = ((Asn1OctetString) references[i]).StringValue();
                 }
                 return srefs;
             }

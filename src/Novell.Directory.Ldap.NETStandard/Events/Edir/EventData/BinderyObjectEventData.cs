@@ -39,51 +39,22 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class BinderyObjectEventData : BaseEdirEventData
     {
-        protected string strEntryDN;
-
-        public string EntryDN
-        {
-            get { return strEntryDN; }
-        }
-
-        protected int nType;
-
-        public int ValueType
-        {
-            get { return nType; }
-        }
-
-        protected int nEmuObjFlags;
-
-        public int EmuObjFlags
-        {
-            get { return nEmuObjFlags; }
-        }
-
-        protected int nSecurity;
-
-        public int Security
-        {
-            get { return nSecurity; }
-        }
-
-        protected string strName;
-
-        public string Name
-        {
-            get { return strName; }
-        }
+        public string EntryDN { get; protected set; }
+        public int ValueType { get; protected set; }
+        public int EmuObjFlags { get; protected set; }
+        public int Security { get; protected set; }
+        public string Name { get; protected set; }
 
         public BinderyObjectEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            strEntryDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            nType = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            nEmuObjFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            nSecurity = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strName = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            EntryDN = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue;
+            ValueType = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue;
+            EmuObjFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue;
+            Security = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue;
+            Name = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue;
 
             DataInitDone();
         }
@@ -95,11 +66,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[BinderyObjectEvent");
-            buf.AppendFormat("(EntryDn={0})", strEntryDN);
-            buf.AppendFormat("(Type={0})", nType);
-            buf.AppendFormat("(EnumOldFlags={0})", nEmuObjFlags);
-            buf.AppendFormat("(Secuirty={0})", nSecurity);
-            buf.AppendFormat("(Name={0})", strName);
+            buf.AppendFormat("(EntryDn={0})", EntryDN);
+            buf.AppendFormat("(Type={0})", ValueType);
+            buf.AppendFormat("(EnumOldFlags={0})", EmuObjFlags);
+            buf.AppendFormat("(Secuirty={0})", Security);
+            buf.AppendFormat("(Name={0})", Name);
             buf.Append("]");
 
             return buf.ToString();

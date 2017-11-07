@@ -59,13 +59,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcModifyDNRequest(RfcLdapDN entry, RfcRelativeLdapDN newrdn, Asn1Boolean deleteoldrdn,
             RfcLdapDN newSuperior) : base(4)
         {
-            add(entry);
-            add(newrdn);
-            add(deleteoldrdn);
+            Add(entry);
+            Add(newrdn);
+            Add(deleteoldrdn);
             if (newSuperior != null)
             {
-                newSuperior.setIdentifier(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0));
-                add(newSuperior);
+                newSuperior.Identifier(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0));
+                Add(newSuperior);
             }
         }
 
@@ -93,19 +93,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RDN_REQUEST);
         }
 
         public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
         {
-            return new RfcModifyDNRequest(toArray(), base_Renamed);
+            return new RfcModifyDNRequest(ToArray(), base_Renamed);
         }
 
         public string getRequestDN()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDN) get_Renamed(0)).StringValue();
         }
     }
 }

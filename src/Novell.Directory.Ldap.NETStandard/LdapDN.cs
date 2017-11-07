@@ -121,7 +121,7 @@ namespace Novell.Directory.Ldap
             {
                 escapedS.Insert(escapedS.Length - 1, '\\');
             }
-            return escapedS.ToString();
+            return escapedS.ToString;
         }
 
 
@@ -202,7 +202,7 @@ namespace Novell.Directory.Ldap
         public static string normalize(string dn)
         {
             var testDN = new DN(dn);
-            return testDN.ToString();
+            return testDN.ToString;
         }
 
 
@@ -264,7 +264,7 @@ namespace Novell.Directory.Ldap
                 }
                 unescaped.Append(rdn[i]);
             }
-            return unescaped.ToString();
+            return unescaped.ToString;
         }
     } //end class LdapDN
 }

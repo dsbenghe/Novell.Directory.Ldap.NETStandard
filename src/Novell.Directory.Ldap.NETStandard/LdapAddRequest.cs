@@ -61,18 +61,18 @@ namespace Novell.Directory.Ldap
                 var attrs = new LdapAttributeSet();
 
                 // Build the list of attributes
-                var seqArray = addreq.Attributes.toArray();
+                var seqArray = addreq.Attributes.ToArray();
                 for (var i = 0; i < seqArray.Length; i++)
                 {
                     var seq = (RfcAttributeTypeAndValues) seqArray[i];
-                    var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).stringValue());
+                    var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
 
                     // Add the values to the attribute
                     var set_Renamed = (Asn1SetOf) seq.get_Renamed(1);
-                    object[] setArray = set_Renamed.toArray();
+                    object[] setArray = set_Renamed.ToArray();
                     for (var j = 0; j < setArray.Length; j++)
                     {
-                        attr.addValue(((Asn1OctetString) setArray[j]).byteValue());
+                        attr.addValue(((Asn1OctetString) setArray[j]).ByteValue());
                     }
                     attrs.Add(attr);
                 }
@@ -111,13 +111,13 @@ namespace Novell.Directory.Ldap
             while (itr.MoveNext())
             {
                 var attr = (LdapAttribute) itr.Current;
-                var vals = new Asn1SetOf(attr.size());
+                var vals = new Asn1SetOf(attr.Size);
                 var attrEnum = attr.ByteValues;
                 while (attrEnum.MoveNext())
                 {
-                    vals.add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
+                    vals.Add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
                 }
-                attrList.add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
+                attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
             }
             return attrList;
         }
@@ -126,9 +126,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this add request.
         ///     #return an Asn1 representation of this object.
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString => Asn1Object.ToString;
     }
 }

@@ -118,34 +118,34 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Parse bufferLength
                 var asn1_bufferLength = (Asn1Integer) decoder
-                    .decode(currentPtr);
+                    .Decode(currentPtr);
                 if (asn1_bufferLength == null)
                     throw new IOException("Decoding error");
-                bufferLength = asn1_bufferLength.intValue();
+                bufferLength = asn1_bufferLength.IntValue();
 
                 // Parse modificationTime
                 var asn1_modificationTime = (Asn1Integer) decoder
-                    .decode(currentPtr);
+                    .Decode(currentPtr);
                 if (asn1_modificationTime == null)
                     throw new IOException("Decoding error");
-                modificationTime = asn1_modificationTime.intValue();
+                modificationTime = asn1_modificationTime.IntValue();
 
                 // Parse revision
                 var asn1_revision = (Asn1Integer) decoder
-                    .decode(currentPtr);
+                    .Decode(currentPtr);
                 if (asn1_revision == null)
                     throw new IOException("Decoding error");
-                revision = asn1_revision.intValue();
+                revision = asn1_revision.IntValue();
 
                 //Format stateInfo to contain both modificationTime and revision
                 stateInfo = modificationTime + "+" + revision;
 
                 // Parse returnedBuffer
-                var asn1_returnedBuffer = (Asn1OctetString) decoder.decode(currentPtr);
+                var asn1_returnedBuffer = (Asn1OctetString) decoder.Decode(currentPtr);
                 if (asn1_returnedBuffer == null)
                     throw new IOException("Decoding error");
 
-                returnedBuffer = SupportClass.ToByteArray(asn1_returnedBuffer.byteValue());
+                returnedBuffer = SupportClass.ToByteArray(asn1_returnedBuffer.ByteValue());
 
 
                 /* 
@@ -159,12 +159,12 @@ namespace Novell.Directory.Ldap.Extensions
                  */
 
                 var asn1_chunksSeq = (Asn1Sequence) decoder
-                    .decode(currentPtr);
+                    .Decode(currentPtr);
                 if (asn1_chunksSeq == null)
                     throw new IOException("Decoding error");
 
                 //Get number of chunks returned from server
-                chunksSize = ((Asn1Integer) asn1_chunksSeq.get_Renamed(0)).intValue();
+                chunksSize = ((Asn1Integer) asn1_chunksSeq.get_Renamed(0)).IntValue();
 
                 //Construct chunks array
                 chunks = new int[chunksSize];
@@ -175,7 +175,7 @@ namespace Novell.Directory.Ldap.Extensions
                 for (var index = 0; index < chunksSize; index++)
                 {
                     var asn1_eachSeq = (Asn1Sequence) asn1_chunksSet.get_Renamed(index);
-                    chunks[index] = ((Asn1Integer) asn1_eachSeq.get_Renamed(0)).intValue();
+                    chunks[index] = ((Asn1Integer) asn1_eachSeq.get_Renamed(0)).IntValue();
                 }
 
                 //Construct a temporary StringBuffer and append chunksSize, each size
@@ -194,7 +194,7 @@ namespace Novell.Directory.Ldap.Extensions
                 tempBuffer.Append(chunks[i]);
 
                 //Assign tempBuffer to parsedString to be returned to Application
-                chunkSizesString = tempBuffer.ToString();
+                chunkSizesString = tempBuffer.ToString;
             }
             else
             {

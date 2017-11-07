@@ -29,17 +29,18 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System;
 using System.IO;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
 {
-    /// <summary> This class encapsulates the OCTET STRING type.</summary>
-    [CLSCompliant(true)]
+    /// <summary> 
+    /// This class encapsulates the OCTET STRING type.
+    /// </summary>
     public class Asn1OctetString : Asn1Object
     {
-        private readonly sbyte[] content;
+        public byte[] ByteValue { get; }
 
         /// <summary> ASN.1 OCTET STRING tag definition.</summary>
         public const int TAG = 0x04;
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        protected internal static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        protected internal static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, false, TAG);
 
         /* Constructors for Asn1OctetString
                 */
@@ -62,10 +63,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte array representing the string that
         ///     will be contained in the this Asn1OctetString object
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1OctetString(sbyte[] content) : base(ID)
+        public Asn1OctetString(byte[] content) : base(ID)
         {
-            this.content = content;
+            ByteValue = content;
         }
 
 
@@ -79,26 +79,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1OctetString(string content) : base(ID)
         {
-            try
-            {
-/*                System.Text.UTF8Encoding utf8 = new System.Text.UTF8Encoding();
-				byte[] bytes = utf8.GetBytes (content);
-				sbyte[] sbytes = new sbyte[bytes.Length+1]; //signed bytes
-				sbytes[0] = 0; //set sign byte to zero.
-				for(int i=1; i<sbytes.Length; i++)
-					sbytes[i] = (sbyte) bytes[i-1]; //cast byte-->sbyte
-*/
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(content);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-
-                this.content = sbytes;
-//				this.content = content.getBytes("UTF8");
-            }
-            catch (IOException uee)
-            {
-                throw new Exception(uee.ToString());
-            }
+            ByteValue = System.Text.Encoding.UTF8.GetBytes(content);
         }
 
 
@@ -114,10 +95,9 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1OctetString(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1OctetString(IAsn1Decoder dec, Stream @in, int len) : base(ID)
         {
-            content = len > 0 ? (sbyte[]) dec.decodeOctetString(in_Renamed, len) : new sbyte[0];
+            ByteValue = len > 0 ? dec.DecodeOctetString(@in, len) : new byte[0];
         }
 
 
@@ -135,48 +115,17 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
-        }
-
-
-        /*Asn1OctetString specific methods
-        */
-
-        /// <summary> Returns the content of this Asn1OctetString as a byte array.</summary>
-        [CLSCompliant(false)]
-        public sbyte[] byteValue()
-        {
-            return content;
+            enc.Encode(this, @out);
         }
 
 
         /// <summary> Returns the content of this Asn1OctetString as a String.</summary>
-        public string stringValue()
-        {
-            string s = null;
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var dchar = encoder.GetChars(SupportClass.ToByteArray(content));
-                s = new string(dchar);
-//				sbyte *sb=content;
-//				s = new  String(sb,0,content.Length, new System.Text.UTF8Encoding());
-            }
-            catch (IOException uee)
-            {
-                throw new Exception(uee.ToString());
-            }
-
-            return s;
-        }
+        public string StringValue => System.Text.Encoding.UTF8.GetString(ByteValue);
 
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "OCTET STRING: " + stringValue();
-        }
+        public override string ToString() => base.ToString() + "OCTET STRING: " + StringValue;
     }
 }

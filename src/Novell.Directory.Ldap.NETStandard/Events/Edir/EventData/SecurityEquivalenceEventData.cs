@@ -32,6 +32,7 @@
 using System.Collections;
 using System.Text;
 using Novell.Directory.Ldap.Asn1;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Events.Edir.EventData
 {
@@ -40,61 +41,32 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class SecurityEquivalenceEventData : BaseEdirEventData
     {
-        protected string strEntryDN;
-
-        public string EntryDN
-        {
-            get { return strEntryDN; }
-        }
-
-        protected int retry_count;
-
-        public int RetryCount
-        {
-            get { return retry_count; }
-        }
-
-        protected string strValueDN;
-
-        public string ValueDN
-        {
-            get { return strValueDN; }
-        }
-
-        protected int referral_count;
-
-        public int ReferralCount
-        {
-            get { return referral_count; }
-        }
-
-        protected ArrayList referral_list;
-
-        public ArrayList ReferralList
-        {
-            get { return referral_list; }
-        }
+        public string EntryDN { get; protected set; }
+        public int RetryCount { get; protected set; }
+        public string ValueDN { get; protected set; }
+        public int ReferralCount { get; protected set; }
+        public IList<ReferralAddress> ReferralList { get; protected set; }
 
         public SecurityEquivalenceEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            strEntryDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            retry_count = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strValueDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            EntryDN = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue;
+            RetryCount = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue;
+            ValueDN = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue;
 
-            var referalseq = (Asn1Sequence) decoder.decode(decodedData, length);
+            var referalseq = Decoder.Decode(DecodedData, length) as Asn1Sequence;
 
-            referral_count = ((Asn1Integer) referalseq.get_Renamed(0)).intValue();
-            referral_list = new ArrayList();
-            if (referral_count > 0)
+            ReferralCount = (referalseq[0] as Asn1Integer).IntValue;
+            ReferralList = new List<ReferralAddress>(ReferralCount);
+            if (ReferralCount > 0)
             {
-                var referalseqof = (Asn1Sequence) referalseq.get_Renamed(1);
+                var referalseqof = referalseq[1] as Asn1Sequence;
 
-                for (var i = 0; i < referral_count; i++)
+                for (var i = 0; i < ReferralCount; i++)
                 {
-                    referral_list.Add(new ReferralAddress((Asn1Sequence) referalseqof.get_Renamed(i)));
+                    ReferralList.Add(new ReferralAddress(referalseqof[i] as Asn1Sequence));
                 }
             }
 
@@ -108,11 +80,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[SecurityEquivalenceEventData");
-            buf.AppendFormat("(EntryDN={0})", strEntryDN);
-            buf.AppendFormat("(RetryCount={0})", retry_count);
-            buf.AppendFormat("(valueDN={0})", strValueDN);
-            buf.AppendFormat("(referralCount={0})", referral_count);
-            buf.AppendFormat("(Referral Lists={0})", referral_list);
+            buf.AppendFormat("(EntryDN={0})", EntryDN);
+            buf.AppendFormat("(RetryCount={0})", RetryCount);
+            buf.AppendFormat("(valueDN={0})", ValueDN);
+            buf.AppendFormat("(referralCount={0})", ReferralCount);
+            buf.AppendFormat("(Referral Lists={0})", ReferralList);
             buf.Append("]");
 
             return buf.ToString();

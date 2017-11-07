@@ -92,16 +92,16 @@ namespace Novell.Directory.Ldap.Extensions
 
                 var asn1_trusteeDN = new Asn1OctetString(trusteeDN);
                 var asn1_dn = new Asn1OctetString(dn);
-                asn1_trusteeDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                asn1_trusteeDN.Encode(encoder, encodedData);
+                asn1_dn.Encode(encoder, encodedData);
 
                 var asn1_seqattr = new Asn1Sequence();
                 for (var i = 0; attrName[i] != null; i++)
                 {
                     var asn1_attrName = new Asn1OctetString(attrName[i]);
-                    asn1_seqattr.add(asn1_attrName);
+                    asn1_seqattr.Add(asn1_attrName);
                 }
-                asn1_seqattr.encode(encoder, encodedData);
+                asn1_seqattr.Encode(encoder, encodedData);
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)

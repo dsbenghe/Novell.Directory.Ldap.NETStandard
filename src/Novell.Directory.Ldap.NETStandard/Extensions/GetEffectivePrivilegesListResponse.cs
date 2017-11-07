@@ -78,11 +78,11 @@ namespace Novell.Directory.Ldap.Extensions
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
-                var asn1_seq1 = (Asn1Sequence) decoder.decode(returnedValue);
+                var asn1_seq1 = (Asn1Sequence) decoder.Decode(returnedValue);
                 if (asn1_seq1 == null)
                     throw new IOException("Decoding error");
                 var asn1_seq2 = (Asn1Sequence) asn1_seq1.get_Renamed(0);
-                no_privileges = ((Asn1Integer) asn1_seq2.get_Renamed(0)).intValue();
+                no_privileges = ((Asn1Integer) asn1_seq2.get_Renamed(0)).IntValue();
 
                 Asn1Set set_privileg_response = null;
 
@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap.Extensions
                 for (var index = 0; index < no_privileges; index++)
                 {
                     seq2 = (Asn1Sequence) set_privileg_response.get_Renamed(index);
-                    privileges[index] = ((Asn1Integer) seq2.get_Renamed(0)).intValue();
+                    privileges[index] = ((Asn1Integer) seq2.get_Renamed(0)).IntValue();
                 }
             }
         }

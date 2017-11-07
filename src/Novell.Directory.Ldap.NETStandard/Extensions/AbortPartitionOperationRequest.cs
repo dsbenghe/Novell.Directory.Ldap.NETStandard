@@ -80,8 +80,8 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1_flags = new Asn1Integer(flags);
                 var asn1_partitionDN = new Asn1OctetString(partitionDN);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_partitionDN.encode(encoder, encodedData);
+                asn1_flags.Encode(encoder, encodedData);
+                asn1_partitionDN.Encode(encoder, encodedData);
 
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }

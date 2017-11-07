@@ -91,65 +91,65 @@ namespace Novell.Directory.Ldap.Extensions
                 var currentPtr = new MemoryStream(SupportClass.ToByteArray(returnedValue));
 
                 // Parse partitionID
-                var asn1_partitionID = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_partitionID = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_partitionID == null)
                     throw new IOException("Decoding error");
 
-                partitionID = asn1_partitionID.intValue();
+                partitionID = asn1_partitionID.IntValue();
 
 
                 // Parse replicaState
-                var asn1_replicaState = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_replicaState = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_replicaState == null)
                     throw new IOException("Decoding error");
 
-                replicaState = asn1_replicaState.intValue();
+                replicaState = asn1_replicaState.IntValue();
 
                 // Parse modificationTime
-                var asn1_modificationTime = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_modificationTime = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_modificationTime == null)
                     throw new IOException("Decoding error");
 
-                modificationTime = asn1_modificationTime.intValue();
+                modificationTime = asn1_modificationTime.IntValue();
 
                 // Parse purgeTime
-                var asn1_purgeTime = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_purgeTime = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_purgeTime == null)
                     throw new IOException("Decoding error");
 
-                purgeTime = asn1_purgeTime.intValue();
+                purgeTime = asn1_purgeTime.IntValue();
 
                 // Parse localPartitionID
-                var asn1_localPartitionID = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_localPartitionID = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_localPartitionID == null)
                     throw new IOException("Decoding error");
 
-                localPartitionID = asn1_localPartitionID.intValue();
+                localPartitionID = asn1_localPartitionID.IntValue();
 
                 // Parse partitionDN
-                var asn1_partitionDN = (Asn1OctetString) decoder.decode(currentPtr);
+                var asn1_partitionDN = (Asn1OctetString) decoder.Decode(currentPtr);
                 if (asn1_partitionDN == null)
                     throw new IOException("Decoding error");
 
-                partitionDN = asn1_partitionDN.stringValue();
+                partitionDN = asn1_partitionDN.StringValue();
                 if ((object) partitionDN == null)
                     throw new IOException("Decoding error");
 
 
                 // Parse replicaType
-                var asn1_replicaType = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_replicaType = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_replicaType == null)
                     throw new IOException("Decoding error");
 
-                replicaType = asn1_replicaType.intValue();
+                replicaType = asn1_replicaType.IntValue();
 
 
                 // Parse flags
-                var asn1_flags = (Asn1Integer) decoder.decode(currentPtr);
+                var asn1_flags = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1_flags == null)
                     throw new IOException("Decoding error");
 
-                flags = asn1_flags.intValue();
+                flags = asn1_flags.IntValue();
             }
             else
             {

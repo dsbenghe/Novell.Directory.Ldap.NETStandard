@@ -379,7 +379,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapException.TIME_LIMIT_EXCEEDED">
         /// </seealso>
         public LdapSearchConstraints(int msLimit, int serverTimeLimit, int dereference, int maxResults, bool doReferrals,
-            int batchSize, LdapReferralHandler handler, int hop_limit) : base(msLimit, doReferrals, handler, hop_limit)
+            int batchSize, ILdapReferralHandler handler, int hop_limit) : base(msLimit, doReferrals, handler, hop_limit)
         {
             InitBlock();
             this.serverTimeLimit = serverTimeLimit;

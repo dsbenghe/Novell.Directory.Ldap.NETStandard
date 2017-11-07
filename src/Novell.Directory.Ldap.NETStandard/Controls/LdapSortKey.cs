@@ -42,10 +42,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <returns>
         ///     The name of the attribute used for sorting.
         /// </returns>
-        public virtual string Key
-        {
-            get { return key; }
-        }
+        public virtual string Key { get; }
 
         /// <summary>
         ///     Returns the sorting order, ascending or descending.
@@ -54,10 +51,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     True if the sorting is done is descending order; false, if the
         ///     sorting is done is ascending order.
         /// </returns>
-        public virtual bool Reverse
-        {
-            get { return reverse; }
-        }
+        public virtual bool Reverse { get; }
 
         /// <summary>
         ///     Returns the OID to be used as a matching rule.
@@ -66,14 +60,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The OID to be used as matching rule, or null if none is to be
         ///     used.
         /// </returns>
-        public virtual string MatchRule
-        {
-            get { return matchRule; }
-        }
-
-        private readonly string key;
-        private readonly bool reverse;
-        private readonly string matchRule;
+        public virtual string MatchRule { get; }
 
         // Constructors
 
@@ -98,23 +85,23 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public LdapSortKey(string keyDescription)
         {
-            matchRule = null;
-            reverse = false;
-            var myKey = keyDescription;
-            if (myKey[0] == '-')
+            MatchRule = null;
+            Reverse = false;
+            string myKey = keyDescription;
+            if (keyDescription[0] == '-')
             {
                 myKey = myKey.Substring(1);
-                reverse = true;
+                Reverse = true;
             }
-            var pos = myKey.IndexOf(":");
+            int pos = myKey.IndexOf(":");
             if (pos != -1)
             {
-                key = myKey.Substring(0, pos - 0);
-                matchRule = myKey.Substring(pos + 1);
+                Key = myKey.Substring(0, pos - 0);
+                MatchRule = myKey.Substring(pos + 1);
             }
             else
             {
-                key = myKey;
+                Key = myKey;
             }
         }
 
@@ -129,7 +116,8 @@ namespace Novell.Directory.Ldap.Controls
         ///     If true, sorting is done in descending order. If false,
         ///     sorting is done in ascending order.
         /// </param>
-        public LdapSortKey(string key, bool reverse) : this(key, reverse, null)
+        public LdapSortKey(string key, bool reverse) 
+            : this(key, reverse, null)
         {
         }
 
@@ -153,9 +141,9 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public LdapSortKey(string key, bool reverse, string matchRule)
         {
-            this.key = key;
-            this.reverse = reverse;
-            this.matchRule = matchRule;
+            Key = key;
+            Reverse = reverse;
+            MatchRule = matchRule;
         }
     }
 }

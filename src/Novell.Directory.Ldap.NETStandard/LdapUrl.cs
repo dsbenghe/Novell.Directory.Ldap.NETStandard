@@ -510,7 +510,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            return decoded.ToString();
+            return decoded.ToString;
         }
 
 
@@ -564,7 +564,7 @@ namespace Novell.Directory.Ldap
                     buffer.Append(currChar);
             }
 
-            return buffer.ToString();
+            return buffer.ToString;
         }
 
 
@@ -595,177 +595,178 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string representation of the Ldap URL.
         /// </returns>
-        public override string ToString()
-
+        public override string ToString
         {
-            var url = new StringBuilder(256);
-
-            // Scheme
-
-            if (secure)
-
+            get
             {
-                url.Append("ldaps://");
-            }
+                var url = new StringBuilder(256);
 
-            else
+                // Scheme
 
-            {
-                url.Append("ldap://");
-            }
-
-            // Host:port/dn
-
-            if (ipV6)
-
-            {
-                url.Append("[" + host + "]");
-            }
-
-            else
-
-            {
-                url.Append(host);
-            }
-
-
-            // Port not specified
-
-            if (port != 0)
-
-            {
-                url.Append(":" + port);
-            }
-
-
-            if ((object) dn == null && attrs == null && scope == DEFAULT_SCOPE && (object) filter == null &&
-                extensions == null)
-
-            {
-                return url.ToString();
-            }
-
-
-            url.Append("/");
-
-
-            if ((object) dn != null)
-
-            {
-                url.Append(dn);
-            }
-
-
-            if (attrs == null && scope == DEFAULT_SCOPE && (object) filter == null && extensions == null)
-
-            {
-                return url.ToString();
-            }
-
-
-            // attributes
-
-            url.Append("?");
-
-            if (attrs != null)
-
-            {
-                //should we check also for attrs != "*"
-
-                for (var i = 0; i < attrs.Length; i++)
+                if (secure)
 
                 {
-                    url.Append(attrs[i]);
-
-                    if (i < attrs.Length - 1)
-
-                    {
-                        url.Append(",");
-                    }
-                }
-            }
-
-
-            if (scope == DEFAULT_SCOPE && (object) filter == null && extensions == null)
-
-            {
-                return url.ToString();
-            }
-
-
-            // scope
-
-            url.Append("?");
-
-            if (scope != DEFAULT_SCOPE)
-
-            {
-                if (scope == LdapConnection.SCOPE_ONE)
-
-                {
-                    url.Append("one");
+                    url.Append("ldaps://");
                 }
 
                 else
 
                 {
-                    url.Append("sub");
+                    url.Append("ldap://");
                 }
-            }
 
+                // Host:port/dn
 
-            if ((object) filter == null && extensions == null)
-
-            {
-                return url.ToString();
-            }
-
-
-            // filter
-
-            if ((object) filter == null)
-
-            {
-                url.Append("?");
-            }
-
-            else
-
-            {
-                url.Append("?" + Filter);
-            }
-
-
-            if (extensions == null)
-
-            {
-                return url.ToString();
-            }
-
-
-            // extensions
-
-            url.Append("?");
-
-            if (extensions != null)
-
-            {
-                for (var i = 0; i < extensions.Length; i++)
+                if (ipV6)
 
                 {
-                    url.Append(extensions[i]);
+                    url.Append("[" + host + "]");
+                }
 
-                    if (i < extensions.Length - 1)
+                else
+
+                {
+                    url.Append(host);
+                }
+
+
+                // Port not specified
+
+                if (port != 0)
+
+                {
+                    url.Append(":" + port);
+                }
+
+
+                if ((object)dn == null && attrs == null && scope == DEFAULT_SCOPE && (object)filter == null &&
+                    extensions == null)
+
+                {
+                    return url.ToString;
+                }
+
+
+                url.Append("/");
+
+
+                if ((object)dn != null)
+
+                {
+                    url.Append(dn);
+                }
+
+
+                if (attrs == null && scope == DEFAULT_SCOPE && (object)filter == null && extensions == null)
+
+                {
+                    return url.ToString;
+                }
+
+
+                // attributes
+
+                url.Append("?");
+
+                if (attrs != null)
+
+                {
+                    //should we check also for attrs != "*"
+
+                    for (var i = 0; i < attrs.Length; i++)
 
                     {
-                        url.Append(",");
+                        url.Append(attrs[i]);
+
+                        if (i < attrs.Length - 1)
+
+                        {
+                            url.Append(",");
+                        }
                     }
                 }
+
+
+                if (scope == DEFAULT_SCOPE && (object)filter == null && extensions == null)
+
+                {
+                    return url.ToString;
+                }
+
+
+                // scope
+
+                url.Append("?");
+
+                if (scope != DEFAULT_SCOPE)
+
+                {
+                    if (scope == LdapConnection.SCOPE_ONE)
+
+                    {
+                        url.Append("one");
+                    }
+
+                    else
+
+                    {
+                        url.Append("sub");
+                    }
+                }
+
+
+                if ((object)filter == null && extensions == null)
+
+                {
+                    return url.ToString;
+                }
+
+
+                // filter
+
+                if ((object)filter == null)
+
+                {
+                    url.Append("?");
+                }
+
+                else
+
+                {
+                    url.Append("?" + Filter);
+                }
+
+
+                if (extensions == null)
+
+                {
+                    return url.ToString;
+                }
+
+
+                // extensions
+
+                url.Append("?");
+
+                if (extensions != null)
+
+                {
+                    for (var i = 0; i < extensions.Length; i++)
+
+                    {
+                        url.Append(extensions[i]);
+
+                        if (i < extensions.Length - 1)
+
+                        {
+                            url.Append(",");
+                        }
+                    }
+                }
+
+                return url.ToString;
             }
-
-            return url.ToString();
         }
-
 
         private string[] parseList(string listStr, char delimiter, int listStart, int listEnd)
 

@@ -62,9 +62,9 @@ namespace Novell.Directory.Ldap.Events.Edir
 
             var decoder = new LBERDecoder();
 
-            var sequence = (Asn1Sequence) decoder.decode(returnedValue);
+            var sequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
-            var length = ((Asn1Integer) sequence.get_Renamed(0)).intValue();
+            var length = ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
             var sequenceSet = (Asn1Set) sequence.get_Renamed(1);
             specifier_list = new EdirEventSpecifier[length];
 
@@ -73,9 +73,9 @@ namespace Novell.Directory.Ldap.Events.Edir
                 var eventspecifiersequence =
                     (Asn1Sequence) sequenceSet.get_Renamed(i);
                 var classfication =
-                    ((Asn1Integer) eventspecifiersequence.get_Renamed(0)).intValue();
+                    ((Asn1Integer) eventspecifiersequence.get_Renamed(0)).IntValue();
                 var enumtype =
-                    ((Asn1Enumerated) eventspecifiersequence.get_Renamed(1)).intValue();
+                    ((Asn1Enumerated) eventspecifiersequence.get_Renamed(1)).IntValue();
                 specifier_list[i] =
                     new EdirEventSpecifier((EdirEventType) classfication, (EdirEventResultType) enumtype);
             }

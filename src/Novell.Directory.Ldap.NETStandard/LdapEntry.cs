@@ -189,18 +189,21 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a string representation of this LdapEntry
         /// </returns>
-        public override string ToString()
+        public override string ToString
         {
-            var result = new StringBuilder("LdapEntry: ");
-            if ((object) dn != null)
+            get
             {
-                result.Append(dn + "; ");
+                var result = new StringBuilder("LdapEntry: ");
+                if ((object)dn != null)
+                {
+                    result.Append(dn + "; ");
+                }
+                if (attrs != null)
+                {
+                    result.Append(attrs);
+                }
+                return result.ToString;
             }
-            if (attrs != null)
-            {
-                result.Append(attrs);
-            }
-            return result.ToString();
         }
     }
 }

@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     decoding it from an InputStream
         /// </summary>
         [CLSCompliant(false)]
-        public RfcDelResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcDelResponse(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
         }
 
@@ -81,7 +81,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier()
         {
             return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.DEL_RESPONSE);
         }

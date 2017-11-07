@@ -64,9 +64,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string oid, string description) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
         {
-            this.oid = oid;
-            this.description = description;
-            Value = formatString();
+            this.Id = oid;
+            this.Description = description;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -84,21 +84,21 @@ namespace Novell.Directory.Ldap
                 var parser = new SchemaParser(raw);
 
                 if ((object) parser.ID != null)
-                    oid = parser.ID;
+                    Id = parser.ID;
                 if ((object) parser.Description != null)
-                    description = parser.Description;
+                    Description = parser.Description;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException e)
             {
-                throw new Exception(e.ToString());
+                throw new Exception(e.ToString);
             }
         }
 
@@ -109,12 +109,12 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the syntax's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -133,7 +133,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                         {
@@ -155,7 +155,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString();
+            return valueBuffer.ToString;
         }
     }
 }

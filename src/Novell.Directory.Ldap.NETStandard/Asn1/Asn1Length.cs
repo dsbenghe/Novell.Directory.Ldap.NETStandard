@@ -38,26 +38,13 @@ namespace Novell.Directory.Ldap.Asn1
     ///     This class provides a means to manipulate ASN.1 Length's. It will
     ///     be used by Asn1Encoder's and Asn1Decoder's by composition.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Length
     {
         /// <summary> Returns the length of this Asn1Length.</summary>
-        public virtual int Length
-        {
-            get { return length; }
-        }
+        public virtual int Length { get; private set; }
 
         /// <summary> Returns the encoded length of this Asn1Length.</summary>
-        public virtual int EncodedLength
-        {
-            get { return encodedLength; }
-        }
-
-        /* Private variables
-        */
-
-        private int length;
-        private int encodedLength;
+        public virtual int EncodedLength{ get; private set; }
 
         /* Constructors for Asn1Length
         */
@@ -70,7 +57,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Constructs an Asn1Length</summary>
         public Asn1Length(int length)
         {
-            this.length = length;
+            Length = length;
         }
 
         /// <summary>
@@ -80,24 +67,24 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        public Asn1Length(Stream in_Renamed)
+        public Asn1Length(Stream @in)
         {
-            var r = in_Renamed.ReadByte();
-            encodedLength++;
+            var r = @in.ReadByte();
+            EncodedLength++;
             if (r == 0x80)
-                length = -1;
+                Length = -1;
             else if (r < 0x80)
-                length = r;
+                Length = r;
             else
             {
-                length = 0;
+                Length = 0;
                 for (r = r & 0x7F; r > 0; r--)
                 {
-                    var part = in_Renamed.ReadByte();
-                    encodedLength++;
+                    var part = @in.ReadByte();
+                    EncodedLength++;
                     if (part < 0)
                         throw new EndOfStreamException("BERDecoder: decode: EOF in Asn1Length");
-                    length = (length << 8) + part;
+                    Length = (Length << 8) + part;
                 }
             }
         }
@@ -110,25 +97,25 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        public void reset(Stream in_Renamed)
+        public void Reset(Stream @in)
         {
-            encodedLength = 0;
-            var r = in_Renamed.ReadByte();
-            encodedLength++;
+            EncodedLength = 0;
+            var r = @in.ReadByte();
+            EncodedLength++;
             if (r == 0x80)
-                length = -1;
+                Length = -1;
             else if (r < 0x80)
-                length = r;
+                Length = r;
             else
             {
-                length = 0;
+                Length = 0;
                 for (r = r & 0x7F; r > 0; r--)
                 {
-                    var part = in_Renamed.ReadByte();
-                    encodedLength++;
+                    var part = @in.ReadByte();
+                    EncodedLength++;
                     if (part < 0)
                         throw new EndOfStreamException("BERDecoder: decode: EOF in Asn1Length");
-                    length = (length << 8) + part;
+                    Length = (Length << 8) + part;
                 }
             }
         }

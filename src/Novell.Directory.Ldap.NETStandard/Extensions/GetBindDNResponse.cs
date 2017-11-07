@@ -83,12 +83,12 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("Decoding error");
 
                 // The only parameter returned should be an octet string
-                var asn1_identity = (Asn1OctetString) decoder.decode(returnedValue);
+                var asn1_identity = (Asn1OctetString) decoder.Decode(returnedValue);
                 if (asn1_identity == null)
                     throw new IOException("Decoding error");
 
                 // Convert to normal string object
-                identity = asn1_identity.stringValue();
+                identity = asn1_identity.StringValue();
                 if ((object) identity == null)
                     throw new IOException("Decoding error");
             }

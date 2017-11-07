@@ -250,7 +250,7 @@ namespace Novell.Directory.Ldap
 
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
-                if (attr.hasSubtype(subtype))
+                if (attr.HasSubtype(subtype))
                     tempAttributeSet.Add(attr.Clone());
             }
             return tempAttributeSet;
@@ -413,7 +413,7 @@ namespace Novell.Directory.Ldap
                 var attr = (LdapAttribute) attrs.Current;
                 retValue.Append(attr);
             }
-            return retValue.ToString();
+            return retValue.ToString;
         }
     }
 }

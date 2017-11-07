@@ -336,7 +336,7 @@ namespace Novell.Directory.Ldap
                             // Error attempting to follow a search continuation reference
                             var rex = new LdapReferralException(ExceptionMessages.REFERENCE_ERROR, lr.Exception);
                             rex.setReferrals(ri.ReferralList);
-                            rex.FailedReferral = ri.ReferralUrl.ToString();
+                            rex.FailedReferral = ri.ReferralUrl.ToString;
                             throw rex;
                         }
                     }

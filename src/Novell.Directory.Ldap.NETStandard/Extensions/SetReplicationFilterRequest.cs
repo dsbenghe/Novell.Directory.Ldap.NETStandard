@@ -87,14 +87,14 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1_serverDN = new Asn1OctetString(serverDN);
 
                 // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
+                asn1_serverDN.Encode(encoder, encodedData);
 
                 // The toplevel sequenceOF
                 var asn1_replicationFilter = new Asn1SequenceOf();
 
                 if (replicationFilter == null)
                 {
-                    asn1_replicationFilter.encode(encoder, encodedData);
+                    asn1_replicationFilter.Encode(encoder, encodedData);
                     setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
                     return;
                 }
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap.Extensions
                     var buginAsn1Representation = new Asn1Sequence();
 
                     // Add the classname to the sequence -
-                    buginAsn1Representation.add(new Asn1OctetString(replicationFilter[i][0]));
+                    buginAsn1Representation.Add(new Asn1OctetString(replicationFilter[i][0]));
 
                     // Start a sequenceOF for attributes
                     var asn1_attributeList = new Asn1SequenceOf();
@@ -121,18 +121,18 @@ namespace Novell.Directory.Ldap.Extensions
                     while (j < replicationFilter[i].Length && (object) replicationFilter[i][j] != null)
                     {
                         // Add the attribute name to the inner SequenceOf
-                        asn1_attributeList.add(new Asn1OctetString(replicationFilter[i][j]));
+                        asn1_attributeList.Add(new Asn1OctetString(replicationFilter[i][j]));
                         j++;
                     }
 
 
                     // Add the attributeList to the sequence - extra add due to bug
-                    buginAsn1Representation.add(asn1_attributeList);
-                    asn1_replicationFilter.add(buginAsn1Representation);
+                    buginAsn1Representation.Add(asn1_attributeList);
+                    asn1_replicationFilter.Add(buginAsn1Representation);
                     i++;
                 }
 
-                asn1_replicationFilter.encode(encoder, encodedData);
+                asn1_replicationFilter.Encode(encoder, encodedData);
                 setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)

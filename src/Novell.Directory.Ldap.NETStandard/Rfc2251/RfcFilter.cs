@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             if ((object) filterExpr == null || filterExpr.Equals(""))
             {
-                filterExpr = new StringBuilder("(objectclass=*)").ToString();
+                filterExpr = new StringBuilder("(objectclass=*)").ToString;
             }
             int idx;
             if ((idx = filterExpr.IndexOf('\\')) != -1)
@@ -167,7 +167,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         }
                     }
                 }
-                filterExpr = sb.ToString();
+                filterExpr = sb.ToString;
             }
 
             // missing opening and closing parentheses, must be V2, add parentheses
@@ -282,7 +282,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
 
-                                var lastTok = new StringBuilder("").ToString();
+                                var lastTok = new StringBuilder("").ToString;
 
                                 while (sub.HasMoreTokens())
                                 {
@@ -295,7 +295,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                         if (lastTok.Equals(subTok))
                                         {
                                             // '**'
-                                            seq.add(
+                                            seq.Add(
                                                 new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, ANY),
                                                     new RfcLdapString(unescapeString("")), false));
                                         }
@@ -306,7 +306,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                         if (cnt == 1)
                                         {
                                             // initial
-                                            seq.add(
+                                            seq.Add(
                                                 new Asn1Tagged(
                                                     new Asn1Identifier(Asn1Identifier.CONTEXT, false, INITIAL),
                                                     new RfcLdapString(unescapeString(subTok)), false));
@@ -314,14 +314,14 @@ namespace Novell.Directory.Ldap.Rfc2251
                                         else if (cnt < tokCnt)
                                         {
                                             // any
-                                            seq.add(
+                                            seq.Add(
                                                 new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, ANY),
                                                     new RfcLdapString(unescapeString(subTok)), false));
                                         }
                                         else
                                         {
                                             // final
-                                            seq.add(
+                                            seq.Add(
                                                 new Asn1Tagged(
                                                     new Asn1Identifier(Asn1Identifier.CONTEXT, false, FINAL),
                                                     new RfcLdapString(unescapeString(subTok)), false));
@@ -386,12 +386,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             var set_Renamed = new Asn1SetOf();
 
-            set_Renamed.add(parseFilter()); // must have at least 1 filter
+            set_Renamed.Add(parseFilter()); // must have at least 1 filter
 
             while (ft.peekChar() == '(')
             {
                 // check for more filters
-                set_Renamed.add(parseFilter());
+                set_Renamed.Add(parseFilter());
             }
             return set_Renamed;
         }
@@ -483,7 +483,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             {
                                 // char > 0x7f, could be encoded in 2 or 3 bytes
                                 ca[0] = ch;
-                                var encoder = Encoding.GetEncoding("utf-8");
+                                var encoder = System.Text.Encoding.GetEncoding("utf-8");
                                 var ibytes = encoder.GetBytes(new string(ca));
                                 utf8Bytes = SupportClass.ToSByteArray(ibytes);
 
@@ -499,7 +499,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             // found invalid character
                             var escString = "";
                             ca[0] = ch;
-                            var encoder = Encoding.GetEncoding("utf-8");
+                            var encoder = System.Text.Encoding.GetEncoding("utf-8");
                             var ibytes = encoder.GetBytes(new string(ca));
                             utf8Bytes = SupportClass.ToSByteArray(ibytes);
 
@@ -563,7 +563,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 filterStack = new Stack();
             }
-            if (choiceValue() == null)
+            if (ChoiceValue() == null)
             {
                 //ChoiceValue is the root Asn1 node
                 ChoiceValue = current;
@@ -571,7 +571,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             else
             {
                 var topOfStack = (Asn1Tagged) filterStack.Peek();
-                var value_Renamed = topOfStack.taggedValue();
+                var value_Renamed = topOfStack.TaggedValue();
                 if (value_Renamed == null)
                 {
                     topOfStack.TaggedValue = current;
@@ -580,21 +580,21 @@ namespace Novell.Directory.Ldap.Rfc2251
                 }
                 else if (value_Renamed is Asn1SetOf)
                 {
-                    ((Asn1SetOf) value_Renamed).add(current);
+                    ((Asn1SetOf) value_Renamed).Add(current);
                     //don't add this to the stack:
                 }
                 else if (value_Renamed is Asn1Set)
                 {
-                    ((Asn1Set) value_Renamed).add(current);
+                    ((Asn1Set) value_Renamed).Add(current);
                     //don't add this to the stack:
                 }
-                else if (value_Renamed.getIdentifier().Tag == LdapSearchRequest.NOT)
+                else if (value_Renamed.Identifier().Tag == LdapSearchRequest.NOT)
                 {
                     throw new LdapLocalException("Attemp to create more than one 'not' sub-filter",
                         LdapException.FILTER_ERROR);
                 }
             }
-            var type = current.getIdentifier().Tag;
+            var type = current.Identifier().Tag;
             if (type == AND || type == OR || type == NOT)
             {
 //				filterStack.Add(current);
@@ -649,7 +649,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         LdapException.FILTER_ERROR);
                 }
 
-                if (type == INITIAL && substringSeq.size() != 0)
+                if (type == INITIAL && substringSeq.Size() != 0)
                 {
                     throw new LdapLocalException(
                         "Attempt to add an initial " + "substring match after the first substring",
@@ -664,7 +664,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 {
                     finalFound = true;
                 }
-                substringSeq.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, type),
+                substringSeq.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, type),
                     new RfcLdapString(value_Renamed), false));
             }
             catch (InvalidCastException e)
@@ -685,7 +685,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 finalFound = false;
                 var substringSeq = (Asn1SequenceOf) filterStack.Peek();
-                if (substringSeq.size() == 0)
+                if (substringSeq.Size() == 0)
                 {
                     throw new LdapLocalException("Empty substring filter", LdapException.FILTER_ERROR);
                 }
@@ -822,7 +822,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 //if this is a Not than Not should be the second thing on the stack
                 filterStack.Pop();
             }
-            var topOfStackType = ((Asn1Object) filterStack.Peek()).getIdentifier().Tag;
+            var topOfStackType = ((Asn1Object) filterStack.Peek()).Identifier().Tag;
             if (topOfStackType != rfcType)
             {
                 throw new LdapLocalException("Missmatched ending of nested filter", LdapException.FILTER_ERROR);
@@ -842,7 +842,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public virtual IEnumerator getFilterIterator()
         {
-            return new FilterIterator(this, (Asn1Tagged) choiceValue());
+            return new FilterIterator(this, (Asn1Tagged) ChoiceValue());
         }
 
         /// <summary> Creates and returns a String representation of this filter.</summary>
@@ -850,7 +850,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             var filter = new StringBuilder();
             stringFilter(getFilterIterator(), filter);
-            return filter.ToString();
+            return filter.ToString;
         }
 
         /// <summary>
@@ -991,7 +991,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 try
                 {
-                    var encoder = Encoding.GetEncoding("utf-8");
+                    var encoder = System.Text.Encoding.GetEncoding("utf-8");
                     var dchar = encoder.GetChars(SupportClass.ToByteArray(value_Renamed));
                     toReturn = new string(dchar);
 
@@ -1021,7 +1021,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         binary.Append("\\" + Convert.ToString(value_Renamed[i], 16).Substring(6));
                     }
                 }
-                toReturn = binary.ToString();
+                toReturn = binary.ToString;
             }
             return toReturn;
         }
@@ -1059,17 +1059,17 @@ namespace Novell.Directory.Ldap.Rfc2251
                     if (!tagReturned)
                     {
                         tagReturned = true;
-                        toReturn = root.getIdentifier().Tag;
+                        toReturn = root.Identifier().Tag;
                     }
                     else
                     {
-                        var asn1 = root.taggedValue();
+                        var asn1 = root.TaggedValue();
 
                         if (asn1 is RfcLdapString)
                         {
                             //one value to iterate
                             hasMore = false;
-                            toReturn = ((RfcLdapString) asn1).stringValue();
+                            toReturn = ((RfcLdapString) asn1).StringValue();
                         }
                         else if (asn1 is RfcSubstringFilter)
                         {
@@ -1079,13 +1079,13 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 //return attribute name
                                 index = 0;
                                 var attr = (RfcAttributeDescription) sub.get_Renamed(0);
-                                toReturn = attr.stringValue();
+                                toReturn = attr.StringValue();
                             }
                             else if (index % 2 == 0)
                             {
                                 //return substring identifier
                                 var substrs = (Asn1SequenceOf) sub.get_Renamed(1);
-                                toReturn = ((Asn1Tagged) substrs.get_Renamed(index / 2)).getIdentifier().Tag;
+                                toReturn = ((Asn1Tagged) substrs.get_Renamed(index / 2)).Identifier().Tag;
                                 index++;
                             }
                             else
@@ -1093,11 +1093,11 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 //return substring value
                                 var substrs = (Asn1SequenceOf) sub.get_Renamed(1);
                                 var tag = (Asn1Tagged) substrs.get_Renamed(index / 2);
-                                var value_Renamed = (RfcLdapString) tag.taggedValue();
-                                toReturn = value_Renamed.stringValue();
+                                var value_Renamed = (RfcLdapString) tag.TaggedValue();
+                                toReturn = value_Renamed.StringValue();
                                 index++;
                             }
-                            if (index / 2 >= ((Asn1SequenceOf) sub.get_Renamed(1)).size())
+                            if (index / 2 >= ((Asn1SequenceOf) sub.get_Renamed(1)).Size())
                             {
                                 hasMore = false;
                             }
@@ -1128,8 +1128,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 index = 0;
                             }
                             toReturn =
-                                ((Asn1OctetString) ((Asn1Tagged) exMatch.get_Renamed(index++)).taggedValue())
-                                .stringValue();
+                                ((Asn1OctetString) ((Asn1Tagged) exMatch.get_Renamed(index++)).TaggedValue())
+                                .StringValue();
                             if (index > 2)
                             {
                                 hasMore = false;
@@ -1145,7 +1145,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             }
                             toReturn = new FilterIterator(enclosingInstance,
                                 (Asn1Tagged) set_Renamed.get_Renamed(index++));
-                            if (index >= set_Renamed.size())
+                            if (index >= set_Renamed.Size())
                             {
                                 hasMore = false;
                             }
@@ -1263,7 +1263,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             sb.Append(filter[offset++]);
                         }
 
-                        attr = sb.ToString().Trim();
+                        attr = sb.ToString.Trim();
 
                         // is there an attribute name specified in the filter ?
                         if (attr.Length == 0 || attr[0] == ';')
