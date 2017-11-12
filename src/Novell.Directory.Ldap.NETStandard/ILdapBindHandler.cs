@@ -42,11 +42,11 @@ namespace Novell.Directory.Ldap
     ///     or for all operations (through the LdapContraints object
     ///     associated with the connection).
     /// </summary>
-    /// <seealso cref="ILdapAuthHandler">
+    /// <seealso cref="LdapAuthHandler">
     /// </seealso>
     /// <seealso cref="LdapConstraints.ReferralFollowing">
     /// </seealso>
-    public interface LdapBindHandler : ILdapReferralHandler
+    public interface ILdapBindHandler : ILdapReferralHandler
     {
         /// <summary>
         ///     Called by LdapConnection when a referral is received.

@@ -32,6 +32,7 @@
 using System;
 using System.Collections;
 using Novell.Directory.Ldap.Utilclass;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
@@ -50,10 +51,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public abstract class LdapSchemaElement : LdapAttribute
     {
-        private void InitBlock()
-        {
-            hashQualifier = new Hashtable();
-        }
 
         /// <summary>
         ///     Returns an array of names for the element, or null if
@@ -66,7 +63,8 @@ namespace Novell.Directory.Ldap
         ///     An array of names for the element, or null if none
         ///     is found.
         /// </returns>
-        public virtual string[] Names { get; protected internal set; }
+        public virtual string[] Names { get; protected internal set; } = { "" };
+
 
         /// <summary>
         ///     Returns the description of the element.
@@ -84,7 +82,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the element.
         /// </returns>
-        public virtual string Id { get; protected internal set; }
+        public virtual string Id { get; protected internal set; } = string.Empty;
 
         /// <summary>
         ///     Returns an enumeration of all qualifiers of the element which are
@@ -93,10 +91,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public virtual IEnumerator QualifierNames
-        {
-            get { return new EnumeratedIterator(new SupportClass.SetSupport(hashQualifier.Keys).GetEnumerator()); }
-        }
+        public virtual IEnumerable<string> QualifierNames => HashQualifier.Keys;
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier
@@ -123,8 +118,10 @@ namespace Novell.Directory.Ldap
         /// </param>
         protected internal LdapSchemaElement(string attrName) : base(attrName)
         {
-            InitBlock();
+            
         }
+
+
 
         /// <summary>
         ///     A string array of optional, or vendor-specific, qualifiers for the
@@ -138,7 +135,7 @@ namespace Novell.Directory.Ldap
         ///     A hash table that contains the vendor-specific qualifiers (for example,
         ///     the X-NDS flags).
         /// </summary>
-        protected internal Hashtable hashQualifier;
+        private IDictionary<string, AttributeQualifier> HashQualifier { get; set; } = new Dictionary<string, AttributeQualifier>();
 
         /// <summary>
         ///     Returns an array of all values of a specified optional or non-
@@ -154,8 +151,10 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] GetQualifier(string name)
         {
-            if (hashQualifier[name] is AttributeQualifier attr)
-                return attr.Values;
+            if (HashQualifier.ContainsKey(name))
+            {
+                return HashQualifier[name].Values;
+            }
             return null;
         }
 
@@ -192,12 +191,10 @@ namespace Novell.Directory.Ldap
         public virtual void SetQualifier(string name, string[] values)
         {
             var attrQualifier = new AttributeQualifier(name, values);
-            hashQualifier[name] = attrQualifier;
-
-            /* 
-            * This is the only method that modifies the schema element.
-            * We need to reset the attribute value since it has changed.
-            */
+            if (HashQualifier.ContainsKey(name))
+                HashQualifier[name] = attrQualifier;
+            else
+                HashQualifier.Add(name, attrQualifier);
             Value = FormatString();
         }
 

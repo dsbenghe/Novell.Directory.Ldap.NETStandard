@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConstraints.getControls">
     /// </seealso>
-    /// <seealso cref="LdapConstraints.setControls">
+    /// <seealso cref="LdapConstraints.SetControls">
     /// </seealso>
     public class LdapControl : ICloneable
     {
@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual bool Critical => Asn1Object.Criticality.BooleanValue;
 
-        internal static RespControlVector RegisteredControls { get; private set; }
+        internal static RespControlVector RegisteredControls { get; private set; } = new RespControlVector(5, 5);
 
         /// <summary>
         ///     Returns the RFC 2251 Control object.
@@ -138,10 +138,7 @@ namespace Novell.Directory.Ldap
             {
                 byte[] result = null;
                 Asn1OctetString val = Asn1Object.ControlValue;
-                if (val != null)
-                {
-                    result = val.ByteValue;
-                }
+                result = val?.ByteValue;
                 return result;
             }
             set => Asn1Object.ControlValue = new Asn1OctetString(value);
@@ -161,12 +158,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public static void Register(string oid, Type controlClass)
         {
-            RegisteredControls.registerResponseControl(oid, controlClass);
-        }
-
-        static LdapControl()
-        {
-            RegisteredControls = new RespControlVector(5, 5);
+            RegisteredControls.RegisterResponseControl(oid, controlClass);
         }
     }
 }

@@ -31,6 +31,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -39,70 +41,70 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>
-    public class RespExtensionSet : SupportClass.AbstractSetSupport
+    public class RespExtensionSet : IDictionary<string, Type>
     {
+        private readonly ConcurrentDictionary<string, Type> _map = new ConcurrentDictionary<string, Type>();
+
         /// <summary>
         ///     Returns the number of extensions in this set.
         /// </summary>
         /// <returns>
         ///     number of extensions in this set.
         /// </returns>
-        public override int Count
+        public int Count => _map.Count;
+
+        public ICollection<string> Keys => _map.Keys;
+
+        public ICollection<Type> Values => _map.Values;
+
+        public bool IsReadOnly => false;
+
+        public Type this[string key]
         {
-            get { return map.Count; }
-        }
-
-        private readonly Hashtable map;
-
-        public RespExtensionSet()
-        {
-            map = new Hashtable();
-        }
-
-
-        /* Adds a responseExtension to the current list of registered responses.
-        *
-        */
-
-        public void registerResponseExtension(string oid, Type extClass)
-        {
-            lock (this)
+            get
             {
-                if (!map.ContainsKey(oid))
-                {
-                    map.Add(oid, extClass);
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Returns an iterator over the responses in this set.  The responses
-        ///     returned from this iterator are not in any particular order.
-        /// </summary>
-        /// <returns>
-        ///     iterator over the responses in this set
-        /// </returns>
-        public override IEnumerator GetEnumerator()
-        {
-            return map.Values.GetEnumerator();
-        }
-
-        /* Searches the list of registered responses for a mathcing response.  We
-        * search using the OID string.  If a match is found we return the
-        * Class name that was provided to us on registration.
-        */
-
-        public Type findResponseExtension(string searchOID)
-        {
-            lock (this)
-            {
-                if (map.ContainsKey(searchOID))
-                {
-                    return (Type) map[searchOID];
-                }
-                /* The requested extension does not have a registered response class */
+                if (_map.ContainsKey(key))
+                    return _map[key];
                 return null;
             }
+            set
+            {
+                if (_map.ContainsKey(key))
+                    _map[key] = value;
+                _map.TryAdd(key, value);
+            }
         }
+
+        public void Add(string key, Type value) => _map.TryAdd(key, value);
+
+        public bool ContainsKey(string key) => _map.ContainsKey(key);
+
+        public bool Remove(string key) => _map.TryRemove(key, out var ret);
+
+        public bool TryGetValue(string key, out Type value) => _map.TryGetValue(key, out value);
+
+        public void Add(KeyValuePair<string, Type> item) => _map.TryAdd(item.Key, item.Value);
+
+        public void Clear() => _map.Clear();
+
+        public bool Contains(KeyValuePair<string, Type> item) => _map.ContainsKey(item.Key) && _map[item.Key] == item.Value;
+
+        private static object locker = new object();
+        public void CopyTo(KeyValuePair<string, Type>[] array, int arrayIndex)
+        {
+            lock (locker)
+            {
+                var tmp = new List<KeyValuePair<string, Type>>(_map.Count);
+                foreach (var item in _map)
+                    tmp.Add(item);
+                array = tmp.ToArray();
+            }
+        }
+
+        public bool Remove(KeyValuePair<string, Type> item) => Remove(item.Key);
+
+        public IEnumerator<KeyValuePair<string, Type>> GetEnumerator() => _map.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

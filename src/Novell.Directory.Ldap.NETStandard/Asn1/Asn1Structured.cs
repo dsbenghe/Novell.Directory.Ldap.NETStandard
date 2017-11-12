@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Asn1
     /// </summary>
     public abstract class Asn1Structured : Asn1Object, IList<Asn1Object>,  ICollection<Asn1Object>
     {
-        private List<Asn1Object> _content = new List<Asn1Object>();
+        protected List<Asn1Object> Content { get; set; } =  new List<Asn1Object>();
 
         /// <summary>
         /// Create a an Asn1 structured type with default size of 10
@@ -60,6 +60,7 @@ namespace Novell.Directory.Ldap.Asn1
         protected internal Asn1Structured(Asn1Identifier id, int size) 
             : base(id)
         {
+            Content = new List<Asn1Object>(size);
         }
 
         /// <summary>
@@ -70,7 +71,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">size the number of items of content in the array</param>
         protected internal Asn1Structured(Asn1Identifier id, Asn1Object[] newContent, int size) : base(id)
         {
-            _content.AddRange(newContent);
+            Content = new List<Asn1Object>(size);
+            Content.AddRange(newContent);
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <returns>
         ///     an array of Asn1Objects
         /// </returns>
-        public Asn1Object[] ToArray() => _content.ToArray();
+        public Asn1Object[] ToArray() => Content.ToArray();
 
         /// <summary>
         ///     Adds a new Asn1Object to the end of this Asn1Structured
@@ -113,40 +115,45 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The Asn1Object to add to this Asn1Structured
         ///     object.
         /// </param>
-        public void Add(Asn1Object value)
+        public virtual void Add(Asn1Object value)
         {
-            _content.Add(value);
+            Content.Add(value);
         }
 
-        public void Clear() => _content.Clear();
+        public virtual void AddRange(IEnumerable<Asn1Object> values)
+        {
+            Content.AddRange(values);
+        }
 
-        public bool Contains(Asn1Object item) => _content.Contains(item);
+        public void Clear() => Content.Clear();
 
-        public void CopyTo(Asn1Object[] array, int arrayIndex) => _content.CopyTo(array, arrayIndex);
+        public bool Contains(Asn1Object item) => Content.Contains(item);
 
-        public bool Remove(Asn1Object item) => _content.Remove(item);
+        public void CopyTo(Asn1Object[] array, int arrayIndex) => Content.CopyTo(array, arrayIndex);
 
-        public IEnumerator<Asn1Object> GetEnumerator() => _content.GetEnumerator();
+        public bool Remove(Asn1Object item) => Content.Remove(item);
+
+        public IEnumerator<Asn1Object> GetEnumerator() => Content.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-        public int IndexOf(Asn1Object item) => _content.IndexOf(item);
+        public int IndexOf(Asn1Object item) => Content.IndexOf(item);
 
-        public void Insert(int index, Asn1Object item) => _content.Insert(index, item);
+        public void Insert(int index, Asn1Object item) => Content.Insert(index, item);
 
-        public void RemoveAt(int index) => _content.RemoveAt(index);
+        public void RemoveAt(int index) => Content.RemoveAt(index);
 
         public Asn1Object this[int index]
         {
-            get => _content[index];
-            set => _content[index] = value;
+            get => Content[index];
+            set => Content[index] = value;
         }
 
         /// <summary>
         ///     Returns the number of Asn1Obejcts that have been encoded
         ///     into this Asn1Structured class.
         /// </summary>
-        public int Count => _content.Count;
+        public int Count => Content.Count;
 
         public bool IsReadOnly => false;
     }

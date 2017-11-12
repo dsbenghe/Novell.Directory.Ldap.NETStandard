@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.LdapUnsolicitedNotificationListener.cs
+// Novell.Directory.Ldap.LdapAuthHandler.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -32,20 +32,37 @@
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     An object that implements this interface can be notified when
-    ///     unsolicited messages arrive from the server. A client registers the
-    ///     object with LdapConnection.AddUnsolicitedNotificationListener.
+    ///     Used to provide credentials for authentication when processing a
+    ///     referral.
+    ///     A programmer desiring to supply authentication credentials
+    ///     to the API when automatically following referrals MUST
+    ///     implement this interface. If LdapAuthHandler or LdapBindHandler are not
+    ///     implemented, automatically followed referrals will use anonymous
+    ///     authentication. Referral URLs of any type other than Ldap (i.e. a
+    ///     referral URL other than ldap://something) are not chased automatically
+    ///     by the API on automatic following.
     /// </summary>
-    public interface LdapUnsolicitedNotificationListener
+    /// <seealso cref="ILdapBindHandler">
+    /// </seealso>
+    /// <seealso cref="LdapConstraints.ReferralFollowing">
+    /// </seealso>
+    public interface LdapAuthHandler : ILdapReferralHandler
     {
         /// <summary>
-        ///     The method is called when an unsolicited message arrives from a
-        ///     server, if the object has registered with LdapCo
-        ///     LdapConnection.AddUnsolicitedNotificationListener.
+        ///     Returns an object which can provide credentials for authenticating to
+        ///     a server at the specified host and port.
         /// </summary>
-        /// <param name="msg">
-        ///     An unsolicited message received from the server.
+        /// <param name="host">
+        ///     Contains a host name or the IP address (in dotted string
+        ///     format) of a host running an Ldap server.
         /// </param>
-        void messageReceived(LdapExtendedResponse msg);
+        /// <param name="port">
+        ///     Contains the TCP or UDP port number of the host.
+        /// </param>
+        /// <returns>
+        ///     An object with authentication credentials to the specified
+        ///     host and port.
+        /// </returns>
+        LdapAuthProvider GetAuthProvider(string host, int port);
     }
 }

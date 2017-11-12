@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.Utilclass.ArrayEnumeration.cs
+// Novell.Directory.Ldap.Rfc2251.RfcResponse.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -29,63 +29,28 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.Collections;
+using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap.Rfc2251
 {
-    public class ArrayEnumeration : IEnumerator
+    /// <summary>
+    ///     This interface represents RfcLdapMessages that contain a response from a
+    ///     server.
+    ///     If the protocol operation of the RfcLdapMessage is of this type,
+    ///     it contains at least an RfcLdapResult.
+    /// </summary>
+    public interface IRfcResponse
     {
-        private object tempAuxObj;
+        /// <summary> </summary>
+        Asn1Enumerated ResultCode { get; }
 
-        public virtual bool MoveNext()
-        {
-            var result = hasMoreElements();
-            if (result)
-            {
-                tempAuxObj = nextElement();
-            }
-            return result;
-        }
+        /// <summary> </summary>
+        RfcLdapDN MatchedDN { get; }
 
-        public virtual void Reset()
-        {
-            tempAuxObj = null;
-        }
+        /// <summary> </summary>
+        RfcLdapString ErrorMessage { get; }
 
-        public virtual object Current
-        {
-            get { return tempAuxObj; }
-        }
-
-        private readonly object[] eArray;
-        private int index;
-
-        /// <summary>
-        ///     Constructor to create the Enumeration
-        /// </summary>
-        /// <param name="eArray">
-        ///     the array to use for the Enumeration
-        /// </param>
-        public ArrayEnumeration(object[] eArray)
-        {
-            this.eArray = eArray;
-        }
-
-        public bool hasMoreElements()
-        {
-            if (eArray == null)
-                return false;
-            return index < eArray.Length;
-        }
-
-        public object nextElement()
-        {
-            if (eArray == null || index >= eArray.Length)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            return eArray[index++];
-        }
+        /// <summary> </summary>
+        RfcReferral Referral { get; }
     }
 }

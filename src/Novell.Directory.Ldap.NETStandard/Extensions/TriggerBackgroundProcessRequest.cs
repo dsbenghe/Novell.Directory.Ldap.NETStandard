@@ -79,27 +79,27 @@ namespace Novell.Directory.Ldap.Extensions
             switch (processID)
             {
                 case Ldap_BK_PROCESS_BKLINKER:
-                    setID(ReplicationConstants.TRIGGER_BKLINKER_REQ);
+                    Id = ReplicationConstants.TRIGGER_BKLINKER_REQ;
                     break;
 
                 case Ldap_BK_PROCESS_JANITOR:
-                    setID(ReplicationConstants.TRIGGER_JANITOR_REQ);
+                    Id = ReplicationConstants.TRIGGER_JANITOR_REQ;
                     break;
 
                 case Ldap_BK_PROCESS_LIMBER:
-                    setID(ReplicationConstants.TRIGGER_LIMBER_REQ);
+                    Id = ReplicationConstants.TRIGGER_LIMBER_REQ;
                     break;
 
                 case Ldap_BK_PROCESS_SKULKER:
-                    setID(ReplicationConstants.TRIGGER_SKULKER_REQ);
+                    Id = ReplicationConstants.TRIGGER_SKULKER_REQ;
                     break;
 
                 case Ldap_BK_PROCESS_SCHEMA_SYNC:
-                    setID(ReplicationConstants.TRIGGER_SCHEMA_SYNC_REQ);
+                    Id = ReplicationConstants.TRIGGER_SCHEMA_SYNC_REQ;
                     break;
 
                 case Ldap_BK_PROCESS_PART_PURGE:
-                    setID(ReplicationConstants.TRIGGER_PART_PURGE_REQ);
+                    Id = ReplicationConstants.TRIGGER_PART_PURGE_REQ;
                     break;
 
                 default:

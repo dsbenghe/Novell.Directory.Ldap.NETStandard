@@ -53,17 +53,13 @@ namespace Novell.Directory.Ldap
                 srefs = new string[references.Length];
                 for (var i = 0; i < references.Length; i++)
                 {
-                    srefs[i] = ((Asn1OctetString) references[i]).StringValue();
+                    srefs[i] = ((Asn1OctetString) references[i]).StringValue;
                 }
                 return srefs;
             }
         }
 
         private string[] srefs;
-        private static object nameLock; // protect agentNum
-        private static int refNum = 0; // Debug, LdapConnection number
-        private string name; // String name for debug
-        /*package*/
 
         /// <summary>
         ///     Constructs an LdapSearchResultReference object.
@@ -73,11 +69,6 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal LdapSearchResultReference(RfcLdapMessage message) : base(message)
         {
-        }
-
-        static LdapSearchResultReference()
-        {
-            nameLock = new object();
         }
     }
 }

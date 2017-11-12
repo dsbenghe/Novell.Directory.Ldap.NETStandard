@@ -59,10 +59,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OIDs of the attributes to which this matching rule applies.
         /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return attributes; }
-        }
+        public virtual string[] Attributes { get; }
 
         /// <summary>
         ///     Returns the OID of the syntax that this matching rule is valid for.
@@ -70,13 +67,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the syntax that this matching rule is valid for.
         /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
-
-        private readonly string syntaxString;
-        private readonly string[] attributes;
+        public virtual string SyntaxString { get; }
 
         /// <summary>
         ///     Constructs a matching rule definition for adding to or deleting from
@@ -112,9 +103,9 @@ namespace Novell.Directory.Ldap
             this.Id = oid;
             this.Description = description;
             this.Obsolete = obsolete;
-            this.attributes = new string[attributes.Length];
-            attributes.CopyTo(this.attributes, 0);
-            this.syntaxString = syntaxString;
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
+            SyntaxString = syntaxString;
             Value = FormatString();
         }
 
@@ -140,14 +131,14 @@ namespace Novell.Directory.Ldap
                 var matchParser = new SchemaParser(rawMatchingRule);
                 Names = new string[matchParser.Names.Length];
                 matchParser.Names.CopyTo(Names, 0);
-                Id = matchParser.ID;
+                Id = matchParser.Id;
                 Description = matchParser.Description;
                 Obsolete = matchParser.Obsolete;
-                syntaxString = matchParser.Syntax;
-                if ((object) rawMatchingRuleUse != null)
+                SyntaxString = matchParser.Syntax;
+                if (rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
-                    attributes = matchUseParser.Applies;
+                    Attributes = matchUseParser.Applies;
                 }
                 Value = FormatString();
             }
@@ -170,7 +161,7 @@ namespace Novell.Directory.Ldap
             string token;
             string[] strArray;
 
-            if ((object) (token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -193,7 +184,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -202,13 +193,13 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = SyntaxString) != null)
+            if ((token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString;
+            return valueBuffer.ToString();
         }
     }
 }

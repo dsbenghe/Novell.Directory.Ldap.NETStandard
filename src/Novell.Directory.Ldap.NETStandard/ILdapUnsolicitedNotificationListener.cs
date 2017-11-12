@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.Rfc2251.RfcResponse.cs
+// Novell.Directory.Ldap.LdapUnsolicitedNotificationListener.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -29,28 +29,23 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using Novell.Directory.Ldap.Asn1;
-
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     This interface represents RfcLdapMessages that contain a response from a
-    ///     server.
-    ///     If the protocol operation of the RfcLdapMessage is of this type,
-    ///     it contains at least an RfcLdapResult.
+    ///     An object that implements this interface can be notified when
+    ///     unsolicited messages arrive from the server. A client registers the
+    ///     object with LdapConnection.AddUnsolicitedNotificationListener.
     /// </summary>
-    public interface RfcResponse
+    public interface ILdapUnsolicitedNotificationListener
     {
-        /// <summary> </summary>
-        Asn1Enumerated getResultCode();
-
-        /// <summary> </summary>
-        RfcLdapDN getMatchedDN();
-
-        /// <summary> </summary>
-        RfcLdapString getErrorMessage();
-
-        /// <summary> </summary>
-        RfcReferral getReferral();
+        /// <summary>
+        ///     The method is called when an unsolicited message arrives from a
+        ///     server, if the object has registered with LdapCo
+        ///     LdapConnection.AddUnsolicitedNotificationListener.
+        /// </summary>
+        /// <param name="msg">
+        ///     An unsolicited message received from the server.
+        /// </param>
+        void MessageReceived(LdapExtendedResponse msg);
     }
 }

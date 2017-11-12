@@ -55,10 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name of the object class.
         /// </returns>
-        public virtual string ObjectClass
-        {
-            get { return objectClass; }
-        }
+        public virtual string ObjectClass { get; }
 
         /// <summary>
         ///     Returns the list of required naming attributes for an entry
@@ -67,10 +64,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required naming attributes.
         /// </returns>
-        public virtual string[] RequiredNamingAttributes
-        {
-            get { return required; }
-        }
+        public virtual string[] RequiredNamingAttributes { get; }
 
         /// <summary>
         ///     Returns the list of optional naming attributes for an entry
@@ -79,14 +73,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of the optional naming attributes.
         /// </returns>
-        public virtual string[] OptionalNamingAttributes
-        {
-            get { return optional; }
-        }
-
-        private readonly string objectClass;
-        private readonly string[] required;
-        private readonly string[] optional;
+        public virtual string[] OptionalNamingAttributes { get; }
 
         /// <summary>
         ///     Constructs a name form for adding to or deleting from the schema.
@@ -129,11 +116,11 @@ namespace Novell.Directory.Ldap
             this.Id = oid;
             this.Description = description;
             this.Obsolete = obsolete;
-            this.objectClass = objectClass;
-            this.required = new string[required.Length];
-            required.CopyTo(this.required, 0);
-            this.optional = new string[optional.Length];
-            optional.CopyTo(this.optional, 0);
+            ObjectClass = objectClass;
+            RequiredNamingAttributes = new string[required.Length];
+            required.CopyTo(RequiredNamingAttributes, 0);
+            OptionalNamingAttributes = new string[optional.Length];
+            optional.CopyTo(OptionalNamingAttributes, 0);
             Value = FormatString();
         }
 
@@ -160,28 +147,25 @@ namespace Novell.Directory.Ldap
                     Names = new string[parser.Names.Length];
                     parser.Names.CopyTo(Names, 0);
                 }
-                if ((object) parser.ID != null)
-                    Id = new StringBuilder(parser.ID).ToString;
-                if ((object) parser.Description != null)
-                    Description = new StringBuilder(parser.Description).ToString;
+                if ( parser.Id != null)
+                    Id = parser.Id.ToString();
+                if ( parser.Description != null)
+                    Description = parser.Description.ToString();
                 if (parser.Required != null)
                 {
-                    required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(required, 0);
+                    RequiredNamingAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredNamingAttributes, 0);
                 }
                 if (parser.Optional != null)
                 {
-                    optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(optional, 0);
+                    OptionalNamingAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalNamingAttributes, 0);
                 }
-                if ((object) parser.ObjectClass != null)
-                    objectClass = parser.ObjectClass;
+                if ( parser.ObjectClass != null)
+                    ObjectClass = parser.ObjectClass;
                 Obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
+                foreach(var attrQualifier in parser.Qualifiers)
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
                 Value = FormatString();
@@ -205,7 +189,7 @@ namespace Novell.Directory.Ldap
             string token;
             string[] strArray;
 
-            if ((object) (token = Id) != null)
+            if ( (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -228,7 +212,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ( (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -237,7 +221,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = ObjectClass) != null)
+            if ( (token = ObjectClass) != null)
             {
                 valueBuffer.Append(" OC ");
                 valueBuffer.Append("'" + token + "'");
@@ -270,14 +254,11 @@ namespace Novell.Directory.Ldap
                 if (strArray.Length > 1)
                     valueBuffer.Append(" )");
             }
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach (var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
@@ -295,7 +276,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString;
+            return valueBuffer.ToString();
         }
     }
 }

@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Asn1
             @out.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            @out.WriteByte(b.BooleanValue ? (byte)SupportClass.Identity(0xff) : (byte)0x00);
+            @out.WriteByte(b.BooleanValue ? (byte)0xff : (byte)0x00);
         }
 
         /// <summary>

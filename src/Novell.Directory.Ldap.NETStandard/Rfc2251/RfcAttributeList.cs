@@ -46,7 +46,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
         // Constructor for AttributeList
         //*************************************************************************
-        public RfcAttributeList(int size) : base(size)
+        public RfcAttributeList(int size)
+            : base(size)
         {
         }
     }

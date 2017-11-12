@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         * Note: about half of the values in the table are only place holders
         */
-        private static readonly sbyte[] dmap =
+        private static readonly byte[] dmap =
         {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -110,20 +110,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the encoded value of the input.
         /// </returns>
-        public static string encode(string inputString)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(inputString);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                return encode(sbytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("US-ASCII String encoding not supported by JVM", ue);
-            }
-        }
+        public static string Encode(string inputString) => Encode(Encoding.UTF8.GetBytes(inputString));
 
         /// <summary>
         ///     Encodes the specified bytes into a base64 array of bytes.
@@ -135,8 +122,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the base64 encoded data
         /// </returns>
-        [CLSCompliant(false)]
-        public static string encode(sbyte[] inputBytes)
+        public static string Encode(byte[] inputBytes)
         {
             int i, j, k;
             int t, t1, t2;
@@ -148,7 +134,7 @@ namespace Novell.Directory.Ldap.Utilclass
             if (len == 0)
             {
                 // No data, return no data.
-                return new StringBuilder("").ToString;
+                return string.Empty;
             }
 
             // every three bytes will be encoded into four bytes
@@ -238,12 +224,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        public static byte[] Decode(string encodedString)
-        {
-            var c = new char[encodedString.Length];
-            SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
-            return Decode(c);
-        }
+        public static byte[] Decode(string encodedString) => Decode(encodedString.ToCharArray());
 
         /// <summary>
         ///     Decodes the input base64 encoded array of characters.
@@ -323,7 +304,7 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < ecLen; i += 4, j += 3, k++)
             {
                 // build decodedBytes[j].
-                decodedBytes[j] = (byte) ((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
+                decodedBytes[j] = (byte)((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -331,7 +312,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 1] =
-                    (byte) (((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
+                    (byte)(((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
@@ -339,7 +320,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 2] =
-                    (byte) (((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
+                    (byte)(((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
             }
             return decodedBytes;
         }
@@ -431,7 +412,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // build decodedBytes[j].
                 decodedBytes[j] =
-                    (byte) ((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
+                    (byte)((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -487,7 +468,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF
         /// </returns>
-        public static bool isLDIFSafe(sbyte[] bytes)
+        public static bool IsLDIFSafe(byte[] bytes)
         {
             var len = bytes.Length;
             if (len > 0)
@@ -553,20 +534,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF
         /// </returns>
-        public static bool isLDIFSafe(string str)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(str);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                return isLDIFSafe(sbytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("UTF-8 String encoding not supported by JVM", ue);
-            }
-        }
+        public static bool IsLDIFSafe(string str) => IsLDIFSafe(Encoding.UTF8.GetBytes(str));
 
         /* **************UTF-8 Validation methods and members*******************
         * The following text is taken from draft-yergeau-rfc2279bis-02 and explains
@@ -612,7 +580,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the number of additional bytes in a UTF-8 character sequence.
         /// </returns>
-        private static int getByteCount(sbyte b)
+        private static int GetByteCount(byte b)
         {
             if (b > 0)
                 return 0;
@@ -649,18 +617,18 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the array is one less than the number of bytes in a sequence.
         ///     A validity test for this could be:
         /// </summary>
-        private static readonly sbyte[][] lowerBoundMask =
+        private static readonly byte[][] lowerBoundMask =
         {
-            new sbyte[] {0, 0}, new[] {(sbyte) 0x1E, (sbyte) 0x00},
-            new[] {(sbyte) 0x0F, (sbyte) 0x20}, new[] {(sbyte) 0x07, (sbyte) 0x30}, new[] {(sbyte) 0x02, (sbyte) 0x38},
-            new[] {(sbyte) 0x01, (sbyte) 0x3C}
+            new byte[] {0, 0}, new[] {(byte) 0x1E, (byte) 0x00},
+            new[] {(byte) 0x0F, (byte) 0x20}, new[] {(byte) 0x07, (byte) 0x30}, new[] {(byte) 0x02, (byte) 0x38},
+            new[] {(byte) 0x01, (byte) 0x3C}
         };
 
         /// <summary>mask to AND with a continuation byte: should equal continuationResult </summary>
-        private static readonly sbyte continuationMask = (sbyte) SupportClass.Identity(0xC0);
+        private static readonly byte continuationMask = 0xC0;
 
         /// <summary>expected result of ANDing a continuation byte with continuationMask </summary>
-        private static readonly sbyte continuationResult = (sbyte) SupportClass.Identity(0x80);
+        private static readonly byte continuationResult = 0x80;
 
         /// <summary>
         ///     Determines if an array of bytes contains only valid UTF-8 characters.
@@ -689,13 +657,12 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     sequence generates any character that cannot be
         ///     represented as a UCS2 character (Java String)
         /// </returns>
-        [CLSCompliant(false)]
-        public static bool isValidUTF8(sbyte[] array, bool isUCS2Only)
+        public static bool IsValidUTF8(byte[] array, bool isUCS2Only)
         {
             var index = 0;
             while (index < array.Length)
             {
-                var count = getByteCount(array[index]);
+                var count = GetByteCount(array[index]);
                 if (count == 0)
                 {
                     //anything that qualifies as count=0 is valid UTF-8

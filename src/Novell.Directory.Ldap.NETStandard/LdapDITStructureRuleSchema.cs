@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The rule ID for this structure rule.
         /// </returns>
-        public virtual int RuleID
-        {
-            get { return ruleID; }
-        }
+        public virtual int RuleID { get; }
 
         /// <summary>
         ///     Returns the NameForm that this structure rule controls.
@@ -67,10 +64,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The NameForm that this structure rule controls.
         /// </returns>
-        public virtual string NameForm
-        {
-            get { return nameForm; }
-        }
+        public virtual string NameForm { get; }
 
         /// <summary>
         ///     Returns a list of all structure rules that are superior to this
@@ -82,14 +76,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public virtual string[] Superiors
-        {
-            get { return superiorIDs; }
-        }
+        public virtual string[] Superiors { get; } = { "" };
 
-        private readonly int ruleID;
-        private readonly string nameForm = "";
-        private readonly string[] superiorIDs = {""};
 
         /// <summary>
         ///     Constructs a DIT structure rule for adding to or deleting from the
@@ -128,11 +116,11 @@ namespace Novell.Directory.Ldap
         {
             this.Names = new string[names.Length];
             names.CopyTo(this.Names, 0);
-            this.ruleID = ruleID;
+            RuleID = ruleID;
             this.Description = description;
             this.Obsolete = obsolete;
-            this.nameForm = nameForm;
-            this.superiorIDs = superiorIDs;
+            NameForm = nameForm;
+            Superiors = superiorIDs;
             Value = FormatString();
         }
 
@@ -157,23 +145,20 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(Names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    ruleID = int.Parse(parser.ID);
-                if ((object) parser.Description != null)
+                if (parser.Id != null)
+                    RuleID = int.Parse(parser.Id);
+                if (parser.Description != null)
                     Description = parser.Description;
                 if (parser.Superiors != null)
                 {
-                    superiorIDs = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(superiorIDs, 0);
+                    Superiors = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(Superiors, 0);
                 }
-                if ((object) parser.NameForm != null)
-                    nameForm = parser.NameForm;
+                if (parser.NameForm != null)
+                    NameForm = parser.NameForm;
                 Obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
+                foreach (var attrQualifier in parser.Qualifiers)
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
                 Value = FormatString();
@@ -196,7 +181,7 @@ namespace Novell.Directory.Ldap
             string token;
             string[] strArray;
 
-            token = RuleID.ToString;
+            token = RuleID.ToString();
             valueBuffer.Append(token);
 
             strArray = Names;
@@ -218,7 +203,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -227,7 +212,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = NameForm) != null)
+            if ((token = NameForm) != null)
             {
                 valueBuffer.Append(" FORM ");
                 valueBuffer.Append("'" + token + "'");
@@ -247,14 +232,11 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
             }
 
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach (var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
@@ -272,7 +254,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString;
+            return valueBuffer.ToString();
         }
     }
 }

@@ -48,9 +48,9 @@ namespace Novell.Directory.Ldap.Events.Edir
              * Register the extendedresponse class which is returned by the
              * server in response to a MonitorEventRequest
              */
-            LdapExtendedResponse.register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE, typeof(MonitorEventResponse));
+            LdapExtendedResponse.Register(EventOids.NLDAP_MONITOR_EVENTS_RESPONSE, typeof(MonitorEventResponse));
             //Also try to register EdirEventIntermediateResponse
-            LdapIntermediateResponse.register(EventOids.NLDAP_EVENT_NOTIFICATION, typeof(EdirEventIntermediateResponse));
+            LdapIntermediateResponse.Register(EventOids.NLDAP_EVENT_NOTIFICATION, typeof(EdirEventIntermediateResponse));
         } // end of static constructor
 
         public MonitorEventRequest(EdirEventSpecifier[] specifiers) :
@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                     {
                         bFiltered = null != specifiers[nIndex].EventFilter;
                         if (bFiltered)
-                            setID(EventOids.NLDAP_FILTERED_MONITOR_EVENTS_REQUEST);
+                            Id = EventOids.NLDAP_FILTERED_MONITOR_EVENTS_REQUEST;
                     }
 
                     if (bFiltered)
@@ -107,7 +107,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                 asnSequence.Add(asnSet);
                 asnSequence.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                Value = encodedData.ToArray();
             }
         }
     }

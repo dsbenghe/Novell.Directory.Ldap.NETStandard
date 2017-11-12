@@ -1,4 +1,4 @@
-/******************************************************************************
+ /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 * 
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var req = (RfcCompareRequest) Asn1Object.getRequest();
+                RfcCompareRequest req = Asn1Object.Request as RfcCompareRequest;
                 return req.AttributeValueAssertion.AttributeDescription;
             }
         }
@@ -67,12 +67,11 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the LdapAttribute
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] AssertionValue
+        public virtual byte[] AssertionValue
         {
             get
             {
-                var req = (RfcCompareRequest) Asn1Object.getRequest();
+                RfcCompareRequest req = Asn1Object.Request as RfcCompareRequest;
                 return req.AttributeValueAssertion.AssertionValue;
             }
         }
@@ -83,10 +82,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to compare
         /// </returns>
-        public virtual string DN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
+        public virtual string DN => Asn1Object.RequestDN;
 
         /// <summary>
         ///     Constructs an LdapCompareRequest Object.
@@ -105,13 +101,12 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the compare request,
         ///     or null if none.
         /// </param>
-        [CLSCompliant(false)]
-        public LdapCompareRequest(string dn, string name, sbyte[] value_Renamed, LdapControl[] cont)
+        public LdapCompareRequest(string dn, string name, byte[] value, LdapControl[] cont)
             : base(
                 COMPARE_REQUEST,
                 new RfcCompareRequest(new RfcLdapDN(dn),
                     new RfcAttributeValueAssertion(new RfcAttributeDescription(name),
-                        new RfcAssertionValue(value_Renamed))), cont)
+                        new RfcAssertionValue(value))), cont)
         {
         }
     }

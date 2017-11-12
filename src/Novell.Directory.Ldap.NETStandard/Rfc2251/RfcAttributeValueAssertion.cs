@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
@@ -50,10 +49,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the attribute description
         /// </returns>
-        public virtual string AttributeDescription
-        {
-            get { return ((RfcAttributeDescription) get_Renamed(0)).StringValue(); }
-        }
+        public virtual string AttributeDescription => ((RfcAttributeDescription)this[0]).StringValue;
 
         /// <summary>
         ///     Returns the assertion value.
@@ -61,11 +57,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the assertion value.
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] AssertionValue
-        {
-            get { return ((RfcAssertionValue) get_Renamed(1)).ByteValue(); }
-        }
+        public virtual byte[] AssertionValue => ((RfcAssertionValue)this[1]).ByteValue;
 
         /// <summary>
         ///     Creates an Attribute Value Assertion.

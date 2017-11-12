@@ -29,8 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.IO;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -126,7 +124,7 @@ namespace Novell.Directory.Ldap
         ///     False if the attribute is read-only; true if the attribute
         ///     is read-write.
         /// </returns>
-        public virtual bool UserModifiable { get; } = true
+        public virtual bool UserModifiable { get; } = true;
 
         /// <summary>
         ///     Returns the usage of the attribute.
@@ -136,7 +134,8 @@ namespace Novell.Directory.Ldap
         ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
         ///     DSA_OPERATION.
         /// </returns>
-        public virtual int Usage { get; set; }
+        public virtual int Usage { get; private set; }
+
 
         /// <summary>
         ///     Indicates that the attribute usage is for ordinary application
@@ -246,17 +245,15 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned on a directory
         ///     query for "attributetypes".
         /// </param>
-        public LdapAttributeSchema(string raw)
-            : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
+        public LdapAttributeSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
         {
             InitBlock();
-
             var parser = new SchemaParser(raw);
 
             if (parser.Names != null)
                 Names = parser.Names;
-            if (parser.ID != null)
-                Id = parser.ID;
+            if (parser.Id != null)
+                Id = parser.Id;
             if (parser.Description != null)
                 Description = parser.Description;
             if (parser.Syntax != null)
@@ -265,14 +262,12 @@ namespace Novell.Directory.Ldap
                 Superior = parser.Superior;
             SingleValued = parser.Single;
             Obsolete = parser.Obsolete;
-            var qualifiers = parser.Qualifiers;
-            AttributeQualifier attrQualifier;
-            while (qualifiers.MoveNext())
+            foreach(var item in parser.Qualifiers)
             {
-                attrQualifier = (AttributeQualifier)qualifiers.Current;
-                SetQualifier(attrQualifier.Name, attrQualifier.Values);
+                SetQualifier(item.Name, item.Values);
             }
             Value = FormatString();
+
         }
 
         /// <summary>
@@ -378,11 +373,10 @@ namespace Novell.Directory.Ldap
                         break;
                 }
             }
-            var en = QualifierNames;
 
-            while (en.MoveNext())
+            foreach(var item in QualifierNames)
             {
-                token = (string)en.Current;
+                token = item;
                 if (token != null)
                 {
                     valueBuffer.Append(" " + token);

@@ -49,10 +49,10 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public virtual bool MoveNext()
         {
-            var result = hasMoreElements();
+            var result = HasMoreElements();
             if (result)
             {
-                tempAuxObj = nextElement();
+                tempAuxObj = NextElement();
             }
             return result;
         }
@@ -75,13 +75,13 @@ namespace Novell.Directory.Ldap.Utilclass
         }
 
         /// <summary> Enumeration method that maps to Iterator.hasNext()</summary>
-        public bool hasMoreElements()
+        public bool HasMoreElements()
         {
             return i.MoveNext();
         }
 
         /// <summary> Enumeration method that maps to Iterator.next()</summary>
-        public object nextElement()
+        public object NextElement()
         {
             return i.Current;
         }

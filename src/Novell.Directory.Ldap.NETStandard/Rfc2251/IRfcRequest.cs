@@ -35,12 +35,16 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///     This interface represents Protocol Operations that are requests from a
     ///     client.
     /// </summary>
-    public interface RfcRequest
+    public interface IRfcRequest
     {
-        /// <summary> Builds a new request using the data from the this object.</summary>
-        RfcRequest dupRequest(string base_Renamed, string filter, bool reference);
+        /// <summary> 
+        /// Builds a new request using the data from the this object.
+        /// </summary>
+        IRfcRequest DupRequest(string @base, string filter, bool reference);
 
-        /// <summary> Builds a new request using the data from the this object.</summary>
-        string getRequestDN();
+        /// <summary> 
+        /// Builds a new request using the data from the this object.
+        /// </summary>
+        string RequestDN { get; }
     }
 }

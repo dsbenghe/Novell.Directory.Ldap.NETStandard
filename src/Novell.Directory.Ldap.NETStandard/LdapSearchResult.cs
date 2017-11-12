@@ -57,24 +57,24 @@ namespace Novell.Directory.Ldap
                 {
                     var attrs = new LdapAttributeSet();
 
-                    var attrList = ((RfcSearchResultEntry) message.Response).Attributes;
+                    var attrList = ((RfcSearchResultEntry)message.Response).Attributes;
 
                     var seqArray = attrList.ToArray();
                     for (var i = 0; i < seqArray.Length; i++)
                     {
-                        var seq = (Asn1Sequence) seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
+                        var seq = (Asn1Sequence)seqArray[i];
+                        var attr = new LdapAttribute(((Asn1OctetString)seq[0]).StringValue);
 
-                        var set_Renamed = (Asn1Set) seq.get_Renamed(1);
+                        var set_Renamed = (Asn1Set)seq[1];
                         object[] setArray = set_Renamed.ToArray();
                         for (var j = 0; j < setArray.Length; j++)
                         {
-                            attr.addValue(((Asn1OctetString) setArray[j]).ByteValue());
+                            attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue);
                         }
                         attrs.Add(attr);
                     }
 
-                    entry = new LdapEntry(((RfcSearchResultEntry) message.Response).ObjectName.StringValue(), attrs);
+                    entry = new LdapEntry(((RfcSearchResultEntry)message.Response).ObjectName.StringValue, attrs);
                 }
                 return entry;
             }
@@ -104,11 +104,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSearchResult(LdapEntry entry, LdapControl[] cont)
         {
-            if (entry == null)
-            {
-                throw new ArgumentException("Argument \"entry\" cannot be null");
-            }
-            this.entry = entry;
+            this.entry = entry ?? throw new ArgumentNullException(nameof(entry));
         }
 
         /// <summary>
@@ -117,21 +113,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a String representing this object.
         /// </returns>
-        public override string ToString
-        {
-            get
-            {
-                string str;
-                if (entry == null)
-                {
-                    str = base.ToString;
-                }
-                else
-                {
-                    str = entry.ToString;
-                }
-                return str;
-            }
-        }
+        public override string ToString() => entry == null ? base.ToString() : entry.ToString();
     }
 }

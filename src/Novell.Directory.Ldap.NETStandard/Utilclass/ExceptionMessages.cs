@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         //static strings to aide lookup and guarantee accuracy:
         //DO NOT include these strings in other Locales
-        [CLSCompliant(false)] public const string TOSTRING = "TOSTRING";
+        public const string TOSTRING = "TOSTRING";
 
         public const string SERVER_MSG = "SERVER_MSG";
         public const string MATCHED_DN = "MATCHED_DN";

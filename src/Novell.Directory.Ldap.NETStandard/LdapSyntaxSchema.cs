@@ -29,9 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.Collections;
-using System.IO;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -64,8 +61,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string oid, string description) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
         {
-            this.Id = oid;
-            this.Description = description;
+            Id = oid;
+            Description = description;
             Value = FormatString();
         }
 
@@ -79,27 +76,17 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
         {
-            try
-            {
-                var parser = new SchemaParser(raw);
+            var parser = new SchemaParser(raw);
 
-                if ((object) parser.ID != null)
-                    Id = parser.ID;
-                if ((object) parser.Description != null)
-                    Description = parser.Description;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
-                {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
-                }
-                Value = FormatString();
-            }
-            catch (IOException e)
+            if (parser.Id != null)
+                Id = parser.Id;
+            if (parser.Description != null)
+                Description = parser.Description;
+            foreach (AttributeQualifier attrQualifier in parser.Qualifiers)
             {
-                throw new Exception(e.ToString);
+                SetQualifier(attrQualifier.Name, attrQualifier.Values);
             }
+            Value = FormatString();
         }
 
         /// <summary>
@@ -114,24 +101,21 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach (var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
@@ -155,7 +139,7 @@ namespace Novell.Directory.Ldap
                 }
             }
             valueBuffer.Append(" )");
-            return valueBuffer.ToString;
+            return valueBuffer.ToString();
         }
     }
 }

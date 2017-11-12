@@ -29,7 +29,7 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using Novell.Directory.Ldap.Controls;
+using Novell.Directory.Ldap.NETStandard.Controls;
 
 namespace Novell.Directory.Ldap.Events
 {
@@ -49,10 +49,10 @@ namespace Novell.Directory.Ldap.Events
     public enum LdapEventType
     {
         TYPE_UNKNOWN = LdapEventSource.EVENT_TYPE_UNKNOWN,
-        LDAP_PSEARCH_ADD = LdapPersistSearchControl.ADD,
-        LDAP_PSEARCH_DELETE = LdapPersistSearchControl.DELETE,
-        LDAP_PSEARCH_MODIFY = LdapPersistSearchControl.MODIFY,
-        LDAP_PSEARCH_MODDN = LdapPersistSearchControl.MODDN,
+        LDAP_PSEARCH_ADD = ChangeType.ADD,
+        LDAP_PSEARCH_DELETE = ChangeType.DELETE,
+        LDAP_PSEARCH_MODIFY = ChangeType.MODIFY,
+        LDAP_PSEARCH_MODDN = ChangeType.MODDN,
         LDAP_PSEARCH_ANY = LDAP_PSEARCH_ADD | LDAP_PSEARCH_DELETE | LDAP_PSEARCH_MODIFY | LDAP_PSEARCH_MODDN
     }
 }

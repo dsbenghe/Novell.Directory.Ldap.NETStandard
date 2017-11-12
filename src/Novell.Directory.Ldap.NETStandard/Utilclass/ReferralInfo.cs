@@ -43,10 +43,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the Referral URL
         /// </returns>
-        public virtual LdapUrl ReferralUrl
-        {
-            get { return referralUrl; }
-        }
+        public virtual LdapUrl ReferralUrl { get; }
 
         /// <summary>
         ///     Returns the referral Connection
@@ -54,10 +51,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the Referral Connection
         /// </returns>
-        public virtual LdapConnection ReferralConnection
-        {
-            get { return conn; }
-        }
+        public virtual LdapConnection ReferralConnection { get; }
 
         /// <summary>
         ///     Returns the referral list
@@ -65,15 +59,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the Referral list
         /// </returns>
-        public virtual string[] ReferralList
-        {
-            get { return referralList; }
-        }
-
-//		private DirectoryEntry conn;
-        private readonly LdapConnection conn;
-        private readonly LdapUrl referralUrl;
-        private readonly string[] referralList;
+        public virtual string[] ReferralList { get; }
 
         /// <summary>
         ///     Construct the ReferralInfo class
@@ -86,9 +72,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         public ReferralInfo(LdapConnection lc, string[] refList, LdapUrl refUrl)
         {
-            conn = lc;
-            referralUrl = refUrl;
-            referralList = refList;
+            ReferralConnection = lc;
+            ReferralUrl = refUrl;
+            ReferralList = refList;
         }
     }
 }

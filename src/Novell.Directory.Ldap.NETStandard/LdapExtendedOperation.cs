@@ -52,7 +52,6 @@ namespace Novell.Directory.Ldap
         /// <param name="vals">
         ///     The operation-specific data of the operation.
         /// </param>
-        [CLSCompliant(false)]
         public LdapExtendedOperation(string oid, byte[] vals)
         {
             Id = oid;
@@ -67,8 +66,8 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public object Clone()
         {
-            var newObj = MemberwiseClone();
-            Array.Copy(Value, 0, ((LdapExtendedOperation)newObj).Value, 0, Value.Length);
+            var newObj = MemberwiseClone() as LdapExtendedOperation;
+            Array.Copy(Value, 0, newObj.Value, 0, Value.Length);
             return newObj;
         }
 
