@@ -1,7 +1,7 @@
 sudo: required
 dist: trusty
 language: csharp
-dotnet: 1.0.0-preview2-1-003177
+dotnet: 1.1.5
 mono: none
 
 env:
@@ -53,6 +53,6 @@ before_script:
 
 script:
   - dotnet restore
-  - dotnet build --configuration $CONFIGURATION **/project.json
-  - export TRANSPORT_SECURITY=$SECURITY; dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/project.json
-  - export TRANSPORT_SECURITY=$SECURITY; dotnet run --configuration $CONFIGURATION --project test/Novell.Directory.Ldap.NETStandard.StressTests/project.json $NOTHREADS 45
+  - dotnet build --configuration $CONFIGURATION
+  - export TRANSPORT_SECURITY=$SECURITY; dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj
+  - export TRANSPORT_SECURITY=$SECURITY; dotnet run --configuration $CONFIGURATION --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj $NOTHREADS 45
