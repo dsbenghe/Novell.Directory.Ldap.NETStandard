@@ -6,7 +6,6 @@
     <AssemblyName>Novell.Directory.Ldap.NETStandard.FunctionalTests</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard.FunctionalTests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <PackageTargetFallback>$(PackageTargetFallback);dotnet5.4;portable-net451+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>

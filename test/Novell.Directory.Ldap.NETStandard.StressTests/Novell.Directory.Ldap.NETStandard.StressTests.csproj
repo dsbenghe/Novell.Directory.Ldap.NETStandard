@@ -6,7 +6,6 @@
     <AssemblyName>Novell.Directory.Ldap.NETStandard.StressTests</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Novell.Directory.Ldap.NETStandard.StressTests</PackageId>
-    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net45+win8</PackageTargetFallback>
   </PropertyGroup>
 
   <ItemGroup>
