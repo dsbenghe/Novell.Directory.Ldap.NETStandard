@@ -35,6 +35,8 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Novell.Directory.Ldap
 {
@@ -179,8 +181,8 @@ namespace Novell.Directory.Ldap
                 if (values != null)
                 {
                     // Deep copy so app can't change the value
-                    bva = new byte[((byte[])values[0]).Length];
-                    Array.Copy((Array)values[0], 0, bva, 0, bva.Length);
+                    bva = new byte[values.FirstOrDefault().Length];
+                    Array.Copy(values.FirstOrDefault(), 0, bva, 0, bva.Length);
                 }
                 return bva;
             }
@@ -201,13 +203,7 @@ namespace Novell.Directory.Ldap
             {
                 if (subTypes != null)
                 {
-                    for (var i = 0; i < subTypes.Length; i++)
-                    {
-                        if (subTypes[i].StartsWith("lang-"))
-                        {
-                            return subTypes[i];
-                        }
-                    }
+                    return subTypes.FirstOrDefault(x => x.StartsWith("lang-"));
                 }
                 return null;
             }
@@ -235,8 +231,8 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private readonly string[] subTypes; // lang-ja of cn;lang-ja
-        private object[] values; // Array of byte[] attribute values
+        private readonly ICollection<string> subTypes; // lang-ja of cn;lang-ja
+        private ICollection<byte[]> values; // Array of byte[] attribute values
 
         /// <summary>
         ///     Constructs an attribute with copies of all values of the input
@@ -255,16 +251,14 @@ namespace Novell.Directory.Ldap
             // Do a deep copy of the LdapAttribute template
             Name = attr.Name;
             BaseName = attr.BaseName;
-            if (null != attr.subTypes)
+            if (attr.subTypes != null)
             {
-                subTypes = new string[attr.subTypes.Length];
-                Array.Copy(attr.subTypes, 0, subTypes, 0, subTypes.Length);
+                subTypes = new List<string>(attr.subTypes);
             }
             // OK to just copy attributes, as the app only sees a deep copy of them
-            if (null != attr.values)
+            if (attr.values != null)
             {
-                values = new object[attr.values.Length];
-                Array.Copy(attr.values, 0, values, 0, values.Length);
+                values = new List<byte[]>(attr.values);
             }
         }
 
@@ -357,11 +351,9 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public object Clone()
         {
-            var newObj = MemberwiseClone();
+            var newObj = MemberwiseClone() as LdapAttribute;
             if (values != null)
-            {
-                Array.Copy(values, 0, ((LdapAttribute)newObj).values, 0, values.Length);
-            }
+                newObj.values = new List<byte[]>(values);
             return newObj;
         }
 
@@ -573,7 +565,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array subtypes or null if the attribute has none.
         /// </returns>
-        public virtual string[] Subtypes => subTypes;
+        public virtual IEnumerable<string> Subtypes => subTypes;
 
         /// <summary>
         ///     Extracts the subtypes from the specified attribute name.
@@ -629,13 +621,9 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentNullException(nameof(subtype));
             }
-            if (null != subTypes)
+            if (subTypes != null)
             {
-                for (var i = 0; i < subTypes.Length; i++)
-                {
-                    if (subTypes[i].ToUpper().Equals(subtype.ToUpper()))
-                        return true;
-                }
+                return subTypes.Any(x => x.Equals(subtype, StringComparison.InvariantCultureIgnoreCase));
             }
             return false;
         }
@@ -664,18 +652,20 @@ namespace Novell.Directory.Ldap
             }
             for (var i = 0; i < subtypes.Length; i++)
             {
-                for (var j = 0; j < subTypes.Length; j++)
+                bool found = false;
+                for (var j = 0; j < subTypes.Count; j++)
                 {
-                    if (subTypes[j] == null)
-                        throw new ArgumentNullException($"subtype at array index {i} cannot be null");
-                    if (subTypes[j].ToUpper().Equals(subtypes[i].ToUpper()))
+                    if (subTypes.ElementAt(j) == null)
+                        throw new ArgumentNullException($"subtype at array index {j} cannot be null");
+                    if (subTypes.ElementAt(j).ToUpper().Equals(subtypes[i].ToUpper()))
                     {
-                        goto gotSubType;
+                        found = false;
+                        break;
                     }
                 }
-                return false;
-                gotSubType:
-                ;
+
+                if (!found)
+                    return false;
             }
             return true;
         }
@@ -695,7 +685,7 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentNullException(nameof(attrString));
             }
-           RemoveValue(Encoding.UTF8.GetBytes(attrString));
+            RemoveValue(Encoding.UTF8.GetBytes(attrString));
         }
 
         /// <summary>
@@ -715,38 +705,9 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentNullException(nameof(attrBytes));
             }
-            for (var i = 0; i < values.Length; i++)
-            {
-                if (Equals(attrBytes, values[i]))
-                {
-                    if (0 == i && 1 == values.Length)
-                    {
-                        // Optimize if first element of a single valued attr
-                        values = null;
-                        return;
-                    }
-                    if (values.Length == 1)
-                    {
-                        values = null;
-                    }
-                    else
-                    {
-                        var moved = values.Length - i - 1;
-                        var tmp = new object[values.Length - 1];
-                        if (i != 0)
-                        {
-                            Array.Copy(values, 0, tmp, 0, i);
-                        }
-                        if (moved != 0)
-                        {
-                            Array.Copy(values, i + 1, tmp, i, moved);
-                        }
-                        values = tmp;
-                        tmp = null;
-                    }
-                    break;
-                }
-            }
+            byte[] remover = values.FirstOrDefault(x => x.SequenceEqual(attrBytes));
+            if (remover != default(byte[]))
+                values.Remove(remover);
         }
 
         /// <summary>
@@ -755,7 +716,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The number of values in the attribute.
         /// </returns>
-        public virtual int Size => null == values ? 0 : values.Length;
+        public virtual int Size => values == null ? 0 : values.Count;
 
         /// <summary>
         ///     Compares this object with the specified object for order.
@@ -786,65 +747,15 @@ namespace Novell.Directory.Ldap
         /// </param>
         private void Add(byte[] bytes)
         {
-            if (null == values)
+            if (values == null)
             {
-                values = new object[] { bytes };
+                values = new List<byte[]> { bytes };
             }
             else
             {
-                // Duplicate attribute values not allowed
-                for (var i = 0; i < values.Length; i++)
-                {
-                    if (Equals(bytes, (sbyte[])values[i]))
-                    {
-                        return; // Duplicate, don't Add
-                    }
-                }
-                var tmp = new object[values.Length + 1];
-                Array.Copy(values, 0, tmp, 0, values.Length);
-                tmp[values.Length] = bytes;
-                values = tmp;
-                tmp = null;
+                if (!values.Any(x => x.SequenceEqual(bytes)))
+                    values.Add(bytes);
             }
-        }
-
-        /// <summary>
-        ///     Returns true if the two specified arrays of bytes are equal to each
-        ///     another.  Matches the logic of Arrays.Equals which is not available
-        ///     in jdk 1.1.x.
-        /// </summary>
-        /// <param name="e1">
-        ///     the first array to be tested
-        /// </param>
-        /// <param name="e2">
-        ///     the second array to be tested
-        /// </param>
-        /// <returns>
-        ///     true if the two arrays are equal
-        /// </returns>
-        private bool Equals(byte[] e1, byte[] e2)
-        {
-            // If same object, they compare true
-            if (e1 == e2)
-                return true;
-
-            // If either but not both are null, they compare false
-            if (e1 == null || e2 == null)
-                return false;
-
-            // If arrays have different length, they compare false
-            var length = e1.Length;
-            if (e2.Length != length)
-                return false;
-
-            // If any of the bytes are different, they compare false
-            for (var i = 0; i < length; i++)
-            {
-                if (e1[i] != e2[i])
-                    return false;
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -861,7 +772,7 @@ namespace Novell.Directory.Ldap
             if (values != null)
             {
                 result.Append(", ");
-                if (values.Length == 1)
+                if (values.Count == 1)
                 {
                     result.Append("value='");
                 }
@@ -869,25 +780,23 @@ namespace Novell.Directory.Ldap
                 {
                     result.Append("values='");
                 }
-                for (var i = 0; i < values.Length; i++)
+
+                int i = 0;
+                foreach (var value in values)
                 {
                     if (i != 0)
                     {
                         result.Append("','");
                     }
-                    if (((sbyte[])values[i]).Length == 0)
+
+                    if (value.Length == 0)
                     {
                         continue;
                     }
-                    var encoder = Encoding.GetEncoding("utf-8");
-                    //						char[] dchar = encoder.GetChars((byte[]) values[i]);
-                    var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[])values[i]));
-                    var sval = new string(dchar);
 
-                    //						System.String sval = new String((sbyte[]) values[i], "UTF-8");
+                    string sval = Encoding.UTF8.GetString(value);
                     if (sval.Length == 0)
                     {
-                        // didn't decode well, must be binary
                         result.Append("<binary value, length:" + sval.Length);
                         continue;
                     }

@@ -275,7 +275,7 @@ namespace Novell.Directory.Ldap
 
         public void Add(LdapAttribute item)
         {
-            if (map.ContainsKey(item.Name))
+            if (!map.ContainsKey(item.Name))
                 map.Add(item.Name.ToUpper(), item);
         }
 

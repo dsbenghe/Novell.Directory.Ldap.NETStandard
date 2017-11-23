@@ -108,7 +108,11 @@ namespace Novell.Directory.Ldap.Asn1
         public override Asn1Identifier Identifier
         {
             get => ChoiceValue.Identifier;
-            set => ChoiceValue.Identifier = value;
+            set
+            {
+                if (ChoiceValue != null)
+                    ChoiceValue.Identifier = value;
+            }
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
