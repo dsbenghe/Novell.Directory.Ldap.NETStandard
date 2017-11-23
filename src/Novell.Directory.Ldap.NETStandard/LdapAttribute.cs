@@ -103,15 +103,15 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (null == values)
+                if (values == null)
                     return new byte[0][];
-                var size = values.Length;
+                var size = values.Count;
                 var bva = new byte[size][];
                 // Deep copy so application cannot change values
                 for (int i = 0, u = size; i < u; i++)
                 {
-                    bva[i] = new byte[((byte[])values[i]).Length];
-                    Array.Copy((Array)values[i], 0, bva[i], 0, bva[i].Length);
+                    bva[i] = new byte[values[i].Length];
+                    Array.Copy(values[i], 0, bva[i], 0, bva[i].Length);
                 }
                 return bva;
             }
@@ -128,15 +128,13 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (null == values)
+                if (values == null)
                     return new string[0];
-                var size = values.Length;
-                var sva = new string[size];
-                for (var j = 0; j < size; j++)
-                {
-                    sva[j] = Encoding.UTF8.GetString((byte[])values[j]);
-                }
-                return sva;
+                var size = values.Count;
+                var sva = new List<string>(size);
+                foreach(byte[] value in values)
+                    sva.Add(Encoding.UTF8.GetString(value));
+                return sva.ToArray();
             }
         }
 
@@ -231,8 +229,8 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private readonly ICollection<string> subTypes; // lang-ja of cn;lang-ja
-        private ICollection<byte[]> values; // Array of byte[] attribute values
+        private readonly IList<string> subTypes; // lang-ja of cn;lang-ja
+        private IList<byte[]> values; // Array of byte[] attribute values
 
         /// <summary>
         ///     Constructs an attribute with copies of all values of the input
@@ -655,9 +653,9 @@ namespace Novell.Directory.Ldap
                 bool found = false;
                 for (var j = 0; j < subTypes.Count; j++)
                 {
-                    if (subTypes.ElementAt(j) == null)
+                    if (subTypes[j] == null)
                         throw new ArgumentNullException($"subtype at array index {j} cannot be null");
-                    if (subTypes.ElementAt(j).ToUpper().Equals(subtypes[i].ToUpper()))
+                    if (subTypes[j].ToUpper().Equals(subtypes[i].ToUpper()))
                     {
                         found = false;
                         break;
