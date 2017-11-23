@@ -29,8 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.IO;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -53,7 +51,7 @@ namespace Novell.Directory.Ldap
     {
         private void InitBlock()
         {
-            usage = USER_APPLICATIONS;
+            Usage = USER_APPLICATIONS;
         }
 
         /// <summary>
@@ -63,10 +61,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object identifer of the attribute's syntax.
         /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
+        public virtual string SyntaxString { get; }
 
         /// <summary>
         ///     Returns the name of the attribute type which this attribute derives
@@ -75,10 +70,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute's superior attribute, or null if there is none.
         /// </returns>
-        public virtual string Superior
-        {
-            get { return superior; }
-        }
+        public virtual string Superior { get; }
 
         /// <summary>
         ///     Returns true if the attribute is single-valued.
@@ -87,10 +79,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is single-valued; false if the attribute
         ///     is multi-valued.
         /// </returns>
-        public virtual bool SingleValued
-        {
-            get { return single; }
-        }
+        public virtual bool SingleValued { get; }
 
         /// <summary>
         ///     Returns the matching rule for this attribute.
@@ -99,10 +88,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's equality matching rule; null if it has no equality
         ///     matching rule.
         /// </returns>
-        public virtual string EqualityMatchingRule
-        {
-            get { return equality; }
-        }
+        public virtual string EqualityMatchingRule { get; }
 
         /// <summary>
         ///     Returns the ordering matching rule for this attribute.
@@ -111,10 +97,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's ordering matching rule; null if it has no ordering
         ///     matching rule.
         /// </returns>
-        public virtual string OrderingMatchingRule
-        {
-            get { return ordering; }
-        }
+        public virtual string OrderingMatchingRule { get; }
 
         /// <summary>
         ///     Returns the substring matching rule for this attribute.
@@ -123,10 +106,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's substring matching rule; null if it has no substring
         ///     matching rule.
         /// </returns>
-        public virtual string SubstringMatchingRule
-        {
-            get { return substring; }
-        }
+        public virtual string SubstringMatchingRule { get; }
 
         /// <summary>
         ///     Returns true if the attribute is a collective attribute.
@@ -135,10 +115,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is a collective; false if the attribute
         ///     is not a collective attribute.
         /// </returns>
-        public virtual bool Collective
-        {
-            get { return collective; }
-        }
+        public virtual bool Collective { get; }
 
         /// <summary>
         ///     Returns false if the attribute is read-only.
@@ -147,10 +124,7 @@ namespace Novell.Directory.Ldap
         ///     False if the attribute is read-only; true if the attribute
         ///     is read-write.
         /// </returns>
-        public virtual bool UserModifiable
-        {
-            get { return userMod; }
-        }
+        public virtual bool UserModifiable { get; } = true;
 
         /// <summary>
         ///     Returns the usage of the attribute.
@@ -160,20 +134,8 @@ namespace Novell.Directory.Ldap
         ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
         ///     DSA_OPERATION.
         /// </returns>
-        public virtual int Usage
-        {
-            get { return usage; }
-        }
+        public virtual int Usage { get; private set; }
 
-        private readonly string syntaxString;
-        private readonly bool single;
-        private readonly string superior;
-        private readonly string equality;
-        private readonly string ordering;
-        private readonly string substring;
-        private readonly bool collective;
-        private readonly bool userMod = true;
-        private int usage;
 
         /// <summary>
         ///     Indicates that the attribute usage is for ordinary application
@@ -258,20 +220,20 @@ namespace Novell.Directory.Ldap
             bool isUserModifiable, int usage) : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
         {
             InitBlock();
-            this.names = names;
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.syntaxString = syntaxString;
-            this.single = single;
-            this.equality = equality;
-            this.ordering = ordering;
-            this.substring = substring;
-            this.collective = collective;
-            userMod = isUserModifiable;
-            this.usage = usage;
-            this.superior = superior;
-            Value = formatString();
+            this.Names = names;
+            this.Id = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
+            SyntaxString = syntaxString;
+            SingleValued = single;
+            EqualityMatchingRule = equality;
+            OrderingMatchingRule = ordering;
+            SubstringMatchingRule = substring;
+            Collective = collective;
+            UserModifiable = isUserModifiable;
+            Usage = usage;
+            Superior = superior;
+            Value = FormatString();
         }
 
 
@@ -286,35 +248,26 @@ namespace Novell.Directory.Ldap
         public LdapAttributeSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
         {
             InitBlock();
-            try
-            {
-                var parser = new SchemaParser(raw);
+            var parser = new SchemaParser(raw);
 
-                if (parser.Names != null)
-                    names = parser.Names;
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
-                if ((object) parser.Description != null)
-                    description = parser.Description;
-                if ((object) parser.Syntax != null)
-                    syntaxString = parser.Syntax;
-                if ((object) parser.Superior != null)
-                    superior = parser.Superior;
-                single = parser.Single;
-                obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
-                {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
-                }
-                Value = formatString();
-            }
-            catch (IOException e)
+            if (parser.Names != null)
+                Names = parser.Names;
+            if (parser.Id != null)
+                Id = parser.Id;
+            if (parser.Description != null)
+                Description = parser.Description;
+            if (parser.Syntax != null)
+                SyntaxString = parser.Syntax;
+            if (parser.Superior != null)
+                Superior = parser.Superior;
+            SingleValued = parser.Single;
+            Obsolete = parser.Obsolete;
+            foreach(var item in parser.Qualifiers)
             {
-                throw new Exception(e.ToString());
+                SetQualifier(item.Name, item.Values);
             }
+            Value = FormatString();
+
         }
 
         /// <summary>
@@ -324,13 +277,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -353,7 +306,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -362,27 +315,27 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = Superior) != null)
+            if ((token = Superior) != null)
             {
                 valueBuffer.Append(" SUP ");
                 valueBuffer.Append("'" + token + "'");
             }
-            if ((object) (token = EqualityMatchingRule) != null)
+            if ((token = EqualityMatchingRule) != null)
             {
                 valueBuffer.Append(" EQUALITY ");
                 valueBuffer.Append("'" + token + "'");
             }
-            if ((object) (token = OrderingMatchingRule) != null)
+            if ((token = OrderingMatchingRule) != null)
             {
                 valueBuffer.Append(" ORDERING ");
                 valueBuffer.Append("'" + token + "'");
             }
-            if ((object) (token = SubstringMatchingRule) != null)
+            if ((token = SubstringMatchingRule) != null)
             {
                 valueBuffer.Append(" SUBSTR ");
                 valueBuffer.Append("'" + token + "'");
             }
-            if ((object) (token = SyntaxString) != null)
+            if ((token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
@@ -420,15 +373,14 @@ namespace Novell.Directory.Ldap
                         break;
                 }
             }
-            var en = QualifierNames;
 
-            while (en.MoveNext())
+            foreach(var item in QualifierNames)
             {
-                token = (string) en.Current;
-                if ((object) token != null)
+                token = item;
+                if (token != null)
                 {
                     valueBuffer.Append(" " + token);
-                    strArray = getQualifier(token);
+                    strArray = GetQualifier(token);
                     if (strArray != null)
                     {
                         if (strArray.Length > 1)

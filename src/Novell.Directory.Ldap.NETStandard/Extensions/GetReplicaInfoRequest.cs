@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICA_INFO_RES, typeof(GetReplicaInfoResponse));
+            LdapExtendedResponse.Register(ReplicationConstants.GET_REPLICA_INFO_RES, typeof(GetReplicaInfoResponse));
         }
 
         /// <summary>
@@ -80,19 +80,24 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDN == null || (object) partitionDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (serverDN == null)
+                    throw new ArgumentNullException(nameof(serverDN));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                if (partitionDN == null)
+                    throw new ArgumentNullException(nameof(partitionDN));
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_partitionDN = new Asn1OctetString(partitionDN);
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_partitionDN.encode(encoder, encodedData);
+                    var asn1_serverDN = new Asn1OctetString(serverDN);
+                    var asn1_partitionDN = new Asn1OctetString(partitionDN);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    asn1_serverDN.Encode(encoder, encodedData);
+                    asn1_partitionDN.Encode(encoder, encodedData);
+
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

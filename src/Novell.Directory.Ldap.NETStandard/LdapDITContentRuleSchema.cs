@@ -51,10 +51,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public virtual string[] AuxiliaryClasses
-        {
-            get { return auxiliary; }
-        }
+        public virtual string[] AuxiliaryClasses { get; } = { "" };
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -63,10 +60,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public virtual string[] RequiredAttributes
-        {
-            get { return required; }
-        }
+        public virtual string[] RequiredAttributes { get; } = { "" };
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -75,10 +69,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public virtual string[] OptionalAttributes
-        {
-            get { return optional; }
-        }
+        public virtual string[] OptionalAttributes { get; } = { "" };
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -87,15 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public virtual string[] PrecludedAttributes
-        {
-            get { return precluded; }
-        }
-
-        private readonly string[] auxiliary = {""};
-        private readonly string[] required = {""};
-        private readonly string[] optional = {""};
-        private readonly string[] precluded = {""};
+        public virtual string[] PrecludedAttributes { get; } = { "" };
 
         /// <summary>
         ///     Constructs a DIT content rule for adding to or deleting from the
@@ -146,16 +129,16 @@ namespace Novell.Directory.Ldap
             string[] auxiliary, string[] required, string[] optional, string[] precluded)
             : base(LdapSchema.schemaTypeNames[LdapSchema.DITCONTENT])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.auxiliary = auxiliary;
-            this.required = required;
-            this.optional = optional;
-            this.precluded = precluded;
-            Value = formatString();
+            this.Names = new string[names.Length];
+            names.CopyTo(this.Names, 0);
+            this.Id = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
+            AuxiliaryClasses = auxiliary;
+            RequiredAttributes = required;
+            OptionalAttributes = optional;
+            PrecludedAttributes = precluded;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -166,52 +149,50 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a schema query
         ///     for content rules.
         /// </param>
-        public LdapDITContentRuleSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.DITCONTENT])
+        public LdapDITContentRuleSchema(string raw) 
+            : base(LdapSchema.schemaTypeNames[LdapSchema.DITCONTENT])
         {
-            obsolete = false;
+            Obsolete = false;
             try
             {
                 var parser = new SchemaParser(raw);
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
-                if ((object) parser.Description != null)
-                    description = parser.Description;
+                if (parser.Id != null)
+                    Id = parser.Id;
+                if (parser.Description != null)
+                    Description = parser.Description;
                 if (parser.Auxiliary != null)
                 {
-                    auxiliary = new string[parser.Auxiliary.Length];
-                    parser.Auxiliary.CopyTo(auxiliary, 0);
+                    AuxiliaryClasses = new string[parser.Auxiliary.Length];
+                    parser.Auxiliary.CopyTo(AuxiliaryClasses, 0);
                 }
                 if (parser.Required != null)
                 {
-                    required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(required, 0);
+                    RequiredAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredAttributes, 0);
                 }
                 if (parser.Optional != null)
                 {
-                    optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(optional, 0);
+                    OptionalAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalAttributes, 0);
                 }
                 if (parser.Precluded != null)
                 {
-                    precluded = new string[parser.Precluded.Length];
-                    parser.Precluded.CopyTo(precluded, 0);
+                    PrecludedAttributes = new string[parser.Precluded.Length];
+                    parser.Precluded.CopyTo(PrecludedAttributes, 0);
                 }
-                obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
+                Obsolete = parser.Obsolete;
+                foreach(var attrQualifier in parser.Qualifiers)
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException)
             {
@@ -225,13 +206,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -254,7 +235,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -319,16 +300,13 @@ namespace Novell.Directory.Ldap
                 if (strArray.Length > 1)
                     valueBuffer.Append(" )");
             }
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach(var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");

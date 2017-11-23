@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Extensions
             * Register the extendedresponse class which is returned by the server
             * in response to a LdapBackupRequest
             */
-            LdapExtendedResponse.register(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE, typeof(LdapBackupResponse));
+            LdapExtendedResponse.Register(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE, typeof(LdapBackupResponse));
         }
 
         /**
@@ -107,7 +107,7 @@ namespace Novell.Directory.Ldap.Extensions
             try
             {
                 if (objectDN == null)
-                    throw new ArgumentException("PARAM_ERROR");
+                    throw new ArgumentNullException(nameof(objectDN));
 
                 //If encrypted password has null reference make it null String
                 if (passwd == null)
@@ -151,22 +151,24 @@ namespace Novell.Directory.Ldap.Extensions
                     }
                 }
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                // Encode data of objectDN, mts and revision
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_mts = new Asn1Integer(mts);
-                var asn1_revision = new Asn1Integer(revision);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                    // Encode data of objectDN, mts and revision
+                    var asn1_objectDN = new Asn1OctetString(objectDN);
+                    var asn1_mts = new Asn1Integer(mts);
+                    var asn1_revision = new Asn1Integer(revision);
+                    var asn1_passwd = new Asn1OctetString(passwd);
 
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_mts.encode(encoder, encodedData);
-                asn1_revision.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
+                    asn1_objectDN.Encode(encoder, encodedData);
+                    asn1_mts.Encode(encoder, encodedData);
+                    asn1_revision.Encode(encoder, encodedData);
+                    asn1_passwd.Encode(encoder, encodedData);
 
-                // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    // set the value of operation specific data
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

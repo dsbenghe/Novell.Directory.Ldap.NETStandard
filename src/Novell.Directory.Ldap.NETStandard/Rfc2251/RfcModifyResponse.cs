@@ -32,6 +32,7 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -51,8 +52,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a ModifyResponse is when it is
         ///     decoding it from an InputStream
         /// </summary>
-        [CLSCompliant(false)]
-        public RfcModifyResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcModifyResponse(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
         }
 
@@ -81,9 +81,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.MODIFY_RESPONSE);
         }
     }
 }

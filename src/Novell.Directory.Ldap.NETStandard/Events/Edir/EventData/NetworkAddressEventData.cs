@@ -39,27 +39,16 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class NetworkAddressEventData : BaseEdirEventData
     {
-        protected int nType;
-
-        public int ValueType
-        {
-            get { return nType; }
-        }
-
-        protected string strData;
-
-        public string Data
-        {
-            get { return strData; }
-        }
+        public int ValueType { get; protected set; }
+        public string Data { get; protected set; }
 
         public NetworkAddressEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            nType = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strData = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            ValueType = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue;
+            Data = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue;
 
             DataInitDone();
         }
@@ -71,8 +60,8 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[NetworkAddress");
-            buf.AppendFormat("(type={0})", nType);
-            buf.AppendFormat("(Data={0})", strData);
+            buf.AppendFormat("(type={0})", ValueType);
+            buf.AppendFormat("(Data={0})", Data);
             buf.Append("]");
 
             return buf.ToString();

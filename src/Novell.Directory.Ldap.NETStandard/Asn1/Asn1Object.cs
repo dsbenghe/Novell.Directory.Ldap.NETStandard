@@ -29,21 +29,19 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This is the base class for all other Asn1 types.</summary>
-    [CLSCompliant(true)]
     public abstract class Asn1Object
     {
-        private Asn1Identifier id;
+        public virtual Asn1Identifier Identifier { get; set; }
 
         public Asn1Object(Asn1Identifier id)
         {
-            this.id = id;
+            Identifier = id;
         }
 
         /// <summary>
@@ -55,30 +53,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded
         ///     Asn1Object will be placed.
         /// </param>
-        public abstract void encode(Asn1Encoder enc, Stream out_Renamed);
+        public abstract void Encode(IAsn1Encoder enc, Stream @out);
 
-        /// <summary>
-        ///     Returns the identifier for this Asn1Object as an Asn1Identifier.
-        ///     This Asn1Identifier object will include the CLASS, FORM and TAG
-        ///     for this Asn1Object.
-        /// </summary>
-        public virtual Asn1Identifier getIdentifier()
-        {
-            return id;
-        }
-
-        /// <summary>
-        ///     Sets the identifier for this Asn1Object. This is helpful when
-        ///     creating implicit Asn1Tagged types.
-        /// </summary>
-        /// <param name="id">
-        ///     An Asn1Identifier object representing the CLASS,
-        ///     FORM and TAG)
-        /// </param>
-        public virtual void setIdentifier(Asn1Identifier id)
-        {
-            this.id = id;
-        }
 
         /// <summary>
         ///     This method returns a byte array representing the encoded
@@ -86,35 +62,25 @@ namespace Novell.Directory.Ldap.Asn1
         ///     defined in Asn1Object but will usually be implemented
         ///     in the child Asn1 classses.
         /// </summary>
-        [CLSCompliant(false)]
-        public sbyte[] getEncoding(Asn1Encoder enc)
+        public byte[] Encoding(IAsn1Encoder enc)
         {
-            var out_Renamed = new MemoryStream();
-            try
+            using (var @out = new MemoryStream())
             {
-                encode(enc, out_Renamed);
+                Encode(enc, @out);
+                return @out.ToArray();
             }
-            catch (IOException e)
-            {
-                // Should never happen - the current Asn1Object does not have
-                // a encode method. 
-                throw new Exception("IOException while encoding to byte array: " + e);
-            }
-            return SupportClass.ToSByteArray(out_Renamed.ToArray());
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
-        [CLSCompliant(false)]
         public override string ToString()
         {
-            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE "};
+                var sb = new StringBuilder();
 
-            var sb = new StringBuilder();
-            var id = getIdentifier(); // could be overridden.
+                sb.Append(Identifier.Asn1Class.ToString())
+                  .Append(Identifier.Tag)
+                  .Append("] ");
 
-            sb.Append(classTypes[id.Asn1Class]).Append(id.Tag).Append("] ");
-
-            return sb.ToString();
+                return sb.ToString();
         }
     }
 }

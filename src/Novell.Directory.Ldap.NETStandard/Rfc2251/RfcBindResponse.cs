@@ -29,9 +29,9 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         serverSaslCreds    [7] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcBindResponse : Asn1Sequence, RfcResponse
+    public class RfcBindResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary>
         ///     Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
@@ -53,17 +53,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() == 5)
-                    return (Asn1OctetString) ((Asn1Tagged) get_Renamed(4)).taggedValue();
-
-                if (size() == 4)
-                {
-                    // could be referral or serverSaslCreds
-                    var obj = get_Renamed(3);
-                    if (obj is Asn1Tagged)
-                        return (Asn1OctetString) ((Asn1Tagged) obj).taggedValue();
-                }
-
+                if (Count == 5)
+                    return (this[4] as Asn1Tagged).TaggedValue as Asn1OctetString;
+                else if (Count == 4 && this[3] is Asn1Tagged tag)
+                    return tag.TaggedValue as Asn1OctetString;
                 return null;
             }
         }
@@ -78,19 +71,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Note: If serverSaslCreds is included in the BindResponse, it does not
         ///     need to be decoded since it is already an OCTET STRING.
         /// </summary>
-        [CLSCompliant(false)]
-        public RfcBindResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcBindResponse(IAsn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
-            if (size() > 3)
+            if (Count > 3)
             {
-                var obj = (Asn1Tagged) get_Renamed(3);
-                var id = obj.getIdentifier();
-                if (id.Tag == RfcLdapResult.REFERRAL)
+                var obj = this[3] as Asn1Tagged;
+                if (obj.Identifier.Tag == RfcLdapResult.REFERRAL)
                 {
-                    var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
-                    var bais = new MemoryStream(SupportClass.ToByteArray(content));
-                    set_Renamed(3, new RfcReferral(dec, bais, content.Length));
+                    var content = (obj.TaggedValue as Asn1OctetString).ByteValue;
+                    using (var bais = new MemoryStream(content))
+                    {
+                        this[3] = new RfcReferral(dec, bais, content.Length);
+                    }
                 }
             }
         }
@@ -100,39 +93,33 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public Asn1Enumerated getResultCode()
-        {
-            return (Asn1Enumerated) get_Renamed(0);
-        }
+        public Asn1Enumerated ResultCode => this[0] as Asn1Enumerated;
 
         /// <summary> </summary>
-        public RfcLdapDN getMatchedDN()
-        {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
-        }
+        public RfcLdapDN MatchedDN => new RfcLdapDN((this[1] as Asn1OctetString).ByteValue);
 
         /// <summary> </summary>
-        public RfcLdapString getErrorMessage()
-        {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
-        }
+        public RfcLdapString ErrorMessage => new RfcLdapString((this[2] as Asn1OctetString).ByteValue);
 
         /// <summary> </summary>
-        public RfcReferral getReferral()
+        public RfcReferral Referral
         {
-            if (size() > 3)
+            get
             {
-                var obj = get_Renamed(3);
-                if (obj is RfcReferral)
-                    return (RfcReferral) obj;
+                if (Count > 3)
+                {
+                    if (this[3] is RfcReferral ret)
+                        return ret;
+                }
+                return null;
             }
-            return null;
         }
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.BIND_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.BIND_RESPONSE);
         }
     }
 }

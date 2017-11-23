@@ -32,6 +32,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -66,7 +67,8 @@ namespace Novell.Directory.Ldap.Controls
         ///     if the search operation is to fail if the
         ///     server does not support this control.
         /// </param>
-        public LdapSortControl(LdapSortKey key, bool critical) : this(new[] {key}, critical)
+        public LdapSortControl(LdapSortKey key, bool critical)
+                : this(new[] { key }, critical)
         {
         }
 
@@ -87,47 +89,39 @@ namespace Novell.Directory.Ldap.Controls
 
             for (var i = 0; i < keys.Length; i++)
             {
-                var key = new Asn1Sequence();
-
-                key.add(new Asn1OctetString(keys[i].Key));
-
-                if ((object) keys[i].MatchRule != null)
+                var key = new Asn1Sequence
                 {
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, ORDERING_RULE),
+                    new Asn1OctetString(keys[i].Key)
+                };
+
+                if (keys[i].MatchRule != null)
+                {
+                    key.Add(new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, false, ORDERING_RULE),
                         new Asn1OctetString(keys[i].MatchRule), false));
                 }
 
                 if (keys[i].Reverse)
                 {
                     // only add if true
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REVERSE_ORDER),
+                    key.Add(new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, false, REVERSE_ORDER),
                         new Asn1Boolean(true), false));
                 }
 
-                sortKeyList.add(key);
+                sortKeyList.Add(key);
             }
 
-            setValue(sortKeyList.getEncoding(new LBEREncoder()));
+            Value = sortKeyList.Encoding(new LBEREncoder());
         }
 
         static LdapSortControl()
         {
-            /*
-            * This is where we register the control responses
-            */
+            try
             {
-                /*
-                * Register the Server Sort Control class which is returned by the
-                * server in response to a Sort Request
-                */
-                try
-                {
-                    register(responseOID, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
-                }
-                catch (Exception e)
-                {
-                    Logger.Log.LogWarning("Exception swallowed", e);
-                }
+                Register(responseOID, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
+            }
+            catch (Exception e)
+            {
+                Logger.Log.LogWarning("Exception swallowed", e);
             }
         }
     }

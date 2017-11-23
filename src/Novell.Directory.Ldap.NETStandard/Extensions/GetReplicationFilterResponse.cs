@@ -51,14 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     String array contining a two dimensional array of strings.  The first
         ///     element of each array is the class name the others are the attribute names
         /// </returns>
-        public virtual string[][] ReplicationFilter
-        {
-            get { return returnedFilter; }
-        }
-
-
-        // Replication filter returned by the server goes here
-        internal string[][] returnedFilter;
+        public virtual string[][] ReplicationFilter { get; private set; }
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the replication
@@ -80,10 +73,10 @@ namespace Novell.Directory.Ldap.Extensions
         {
             if (ResultCode != LdapException.SUCCESS)
             {
-                returnedFilter = new string[0][];
+                ReplicationFilter = new string[0][];
                 for (var i = 0; i < 0; i++)
                 {
-                    returnedFilter[i] = new string[0];
+                    ReplicationFilter[i] = new string[0];
                 }
             }
             else
@@ -95,55 +88,52 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.decode(returnedValue);
-
+                var returnedSequence = decoder.Decode(returnedValue) as Asn1Sequence;
                 if (returnedSequence == null)
                     throw new IOException("Decoding error");
 
                 // How many sequences in this list
-                var numberOfSequences = returnedSequence.size();
-                returnedFilter = new string[numberOfSequences][];
+                var numberOfSequences = returnedSequence.Count;
+                ReplicationFilter = new string[numberOfSequences][];
 
                 // Parse each returned sequence object
                 for (var classNumber = 0; classNumber < numberOfSequences; classNumber++)
                 {
                     // Get the next Asn1Sequence
-                    var asn1_innerSequence = (Asn1Sequence) returnedSequence.get_Renamed(classNumber);
+                    var asn1_innerSequence = returnedSequence[classNumber] as Asn1Sequence;
                     if (asn1_innerSequence == null)
                         throw new IOException("Decoding error");
 
                     // Get the asn1 encoded classname
-                    var asn1_className = (Asn1OctetString) asn1_innerSequence.get_Renamed(0);
+                    var asn1_className = asn1_innerSequence[0] as Asn1OctetString;
                     if (asn1_className == null)
                         return;
 
                     // Get the attribute List
-                    var asn1_attributeList = (Asn1Sequence) asn1_innerSequence.get_Renamed(1);
+                    var asn1_attributeList = asn1_innerSequence[1] as Asn1Sequence;
                     if (asn1_attributeList == null)
                         throw new IOException("Decoding error");
 
-                    var numberOfAttributes = asn1_attributeList.size();
-                    returnedFilter[classNumber] = new string[numberOfAttributes + 1];
+                    var numberOfAttributes = asn1_attributeList.Count;
+                    ReplicationFilter[classNumber] = new string[numberOfAttributes + 1];
 
                     // Get the classname
-                    returnedFilter[classNumber][0] = asn1_className.stringValue();
-                    if ((object) returnedFilter[classNumber][0] == null)
+                    ReplicationFilter[classNumber][0] = asn1_className.StringValue;
+                    if (ReplicationFilter[classNumber][0] == null)
                         throw new IOException("Decoding error");
 
                     for (var attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++)
                     {
                         // Get the asn1 encoded attribute name
-                        var asn1_attributeName = (Asn1OctetString) asn1_attributeList.get_Renamed(attributeNumber);
+                        var asn1_attributeName = (Asn1OctetString)asn1_attributeList[attributeNumber];
                         if (asn1_attributeName == null)
                             throw new IOException("Decoding error");
 
                         // Get attributename string
-                        returnedFilter[classNumber][attributeNumber + 1] = asn1_attributeName.stringValue();
-                        if ((object) returnedFilter[classNumber][attributeNumber + 1] == null)
+                        ReplicationFilter[classNumber][attributeNumber + 1] = asn1_attributeName.StringValue;
+                        if (ReplicationFilter[classNumber][attributeNumber + 1] == null)
                             throw new IOException("Decoding error");
                     }
                 }

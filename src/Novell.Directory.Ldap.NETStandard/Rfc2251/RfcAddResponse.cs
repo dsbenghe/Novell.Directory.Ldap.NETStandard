@@ -29,9 +29,9 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -51,8 +51,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a AddResponse is when it is
         ///     decoding it from an InputStream
         /// </summary>
-        [CLSCompliant(false)]
-        public RfcAddResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcAddResponse(IAsn1Decoder dec, Stream @in, int len)
+            : base(dec, @in, len)
         {
         }
 
@@ -80,10 +80,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         // Accessors
         //*************************************************************************
 
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        /// <summary> 
+        /// Override getIdentifier to return an application-wide id.
+        /// </summary>
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.ADD_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.ADD_RESPONSE);
         }
     }
 }

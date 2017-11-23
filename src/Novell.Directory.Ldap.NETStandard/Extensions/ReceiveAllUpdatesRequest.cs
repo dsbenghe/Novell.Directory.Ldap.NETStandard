@@ -74,21 +74,29 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) partitionRoot == null || (object) toServerDN == null || (object) fromServerDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (partitionRoot == null)
+                    throw new ArgumentNullException(nameof(partitionRoot));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                if (toServerDN == null)
+                    throw new ArgumentNullException(nameof(toServerDN));
 
-                var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
-                var asn1_toServerDN = new Asn1OctetString(toServerDN);
-                var asn1_fromServerDN = new Asn1OctetString(fromServerDN);
+                if (fromServerDN == null)
+                    throw new ArgumentNullException(nameof(fromServerDN));
 
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_toServerDN.encode(encoder, encodedData);
-                asn1_fromServerDN.encode(encoder, encodedData);
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
+                    var asn1_toServerDN = new Asn1OctetString(toServerDN);
+                    var asn1_fromServerDN = new Asn1OctetString(fromServerDN);
+
+                    asn1_partitionRoot.Encode(encoder, encodedData);
+                    asn1_toServerDN.Encode(encoder, encodedData);
+                    asn1_fromServerDN.Encode(encoder, encodedData);
+
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

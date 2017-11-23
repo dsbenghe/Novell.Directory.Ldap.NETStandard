@@ -44,15 +44,6 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class GetReplicaInfoResponse : LdapExtendedResponse
     {
-        // Other info as returned by the server
-        private readonly int partitionID;
-        private readonly int replicaState;
-        private readonly int modificationTime;
-        private readonly int purgeTime;
-        private readonly int localPartitionID;
-        private readonly string partitionDN;
-        private readonly int replicaType;
-        private readonly int flags;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -83,84 +74,83 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
                 // Parse the parameters in the order
+                using (var currentPtr = new MemoryStream(returnedValue))
+                {
 
-                var currentPtr = new MemoryStream(SupportClass.ToByteArray(returnedValue));
+                    // Parse partitionID
+                    var asn1_partitionID = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_partitionID == null)
+                        throw new IOException("Decoding error");
 
-                // Parse partitionID
-                var asn1_partitionID = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_partitionID == null)
-                    throw new IOException("Decoding error");
-
-                partitionID = asn1_partitionID.intValue();
-
-
-                // Parse replicaState
-                var asn1_replicaState = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_replicaState == null)
-                    throw new IOException("Decoding error");
-
-                replicaState = asn1_replicaState.intValue();
-
-                // Parse modificationTime
-                var asn1_modificationTime = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_modificationTime == null)
-                    throw new IOException("Decoding error");
-
-                modificationTime = asn1_modificationTime.intValue();
-
-                // Parse purgeTime
-                var asn1_purgeTime = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_purgeTime == null)
-                    throw new IOException("Decoding error");
-
-                purgeTime = asn1_purgeTime.intValue();
-
-                // Parse localPartitionID
-                var asn1_localPartitionID = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_localPartitionID == null)
-                    throw new IOException("Decoding error");
-
-                localPartitionID = asn1_localPartitionID.intValue();
-
-                // Parse partitionDN
-                var asn1_partitionDN = (Asn1OctetString) decoder.decode(currentPtr);
-                if (asn1_partitionDN == null)
-                    throw new IOException("Decoding error");
-
-                partitionDN = asn1_partitionDN.stringValue();
-                if ((object) partitionDN == null)
-                    throw new IOException("Decoding error");
+                    PartitionId = asn1_partitionID.IntValue;
 
 
-                // Parse replicaType
-                var asn1_replicaType = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_replicaType == null)
-                    throw new IOException("Decoding error");
+                    // Parse replicaState
+                    var asn1_replicaState = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_replicaState == null)
+                        throw new IOException("Decoding error");
 
-                replicaType = asn1_replicaType.intValue();
+                    ReplicaState = asn1_replicaState.IntValue;
+
+                    // Parse modificationTime
+                    var asn1_modificationTime = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_modificationTime == null)
+                        throw new IOException("Decoding error");
+
+                    ModificationTime = asn1_modificationTime.IntValue;
+
+                    // Parse purgeTime
+                    var asn1_purgeTime = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_purgeTime == null)
+                        throw new IOException("Decoding error");
+
+                    PurgeTime = asn1_purgeTime.IntValue;
+
+                    // Parse localPartitionID
+                    var asn1_localPartitionID = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_localPartitionID == null)
+                        throw new IOException("Decoding error");
+
+                    LocalPartitionId = asn1_localPartitionID.IntValue;
+
+                    // Parse partitionDN
+                    var asn1_partitionDN = decoder.Decode(currentPtr) as Asn1OctetString;
+                    if (asn1_partitionDN == null)
+                        throw new IOException("Decoding error");
+
+                    PartitionDN = asn1_partitionDN.StringValue;
+                    if (PartitionDN == null)
+                        throw new IOException("Decoding error");
 
 
-                // Parse flags
-                var asn1_flags = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_flags == null)
-                    throw new IOException("Decoding error");
+                    // Parse replicaType
+                    var asn1_replicaType = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_replicaType == null)
+                        throw new IOException("Decoding error");
 
-                flags = asn1_flags.intValue();
+                    ReplicaType = asn1_replicaType.IntValue;
+
+
+                    // Parse flags
+                    var asn1_flags = decoder.Decode(currentPtr) as Asn1Integer;
+                    if (asn1_flags == null)
+                        throw new IOException("Decoding error");
+
+                    Flags = asn1_flags.IntValue;
+                }
             }
             else
             {
-                partitionID = 0;
-                replicaState = 0;
-                modificationTime = 0;
-                purgeTime = 0;
-                localPartitionID = 0;
-                partitionDN = "";
-                replicaType = 0;
-                flags = 0;
+                PartitionId = 0;
+                ReplicaState = 0;
+                ModificationTime = 0;
+                PurgeTime = 0;
+                LocalPartitionId = 0;
+                PartitionDN = "";
+                ReplicaType = 0;
+                Flags = 0;
             }
         }
 
@@ -171,10 +161,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the partition ID.
         /// </returns>
-        public virtual int getpartitionID()
-        {
-            return partitionID;
-        }
+        public virtual int PartitionId { get; }
 
         /// <summary>
         ///     Returns the current state of the replica.
@@ -205,10 +192,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.Ldap_RS_TRANSITION_ON">
         /// </seealso>
-        public virtual int getreplicaState()
-        {
-            return replicaState;
-        }
+        public virtual int ReplicaState { get; }
 
 
         /// <summary>
@@ -217,10 +201,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last modification time.
         /// </returns>
-        public virtual int getmodificationTime()
-        {
-            return modificationTime;
-        }
+        public virtual int ModificationTime { get; }
 
 
         /// <summary>
@@ -229,10 +210,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last purge time.
         /// </returns>
-        public virtual int getpurgeTime()
-        {
-            return purgeTime;
-        }
+        public virtual int PurgeTime { get; }
 
         /// <summary>
         ///     Returns the local numeric identifier for the replica.
@@ -240,10 +218,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the local ID of the partition.
         /// </returns>
-        public virtual int getlocalPartitionID()
-        {
-            return localPartitionID;
-        }
+        public virtual int LocalPartitionId { get; }
 
         /// <summary>
         ///     Returns the distinguished name of the partition.
@@ -251,10 +226,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     String value specifying the name of the partition read.
         /// </returns>
-        public virtual string getpartitionDN()
-        {
-            return partitionDN;
-        }
+        public virtual string PartitionDN { get; }
 
         /// <summary>
         ///     Returns the replica type.
@@ -276,10 +248,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_READ">
         /// </seealso>
-        public virtual int getreplicaType()
-        {
-            return replicaType;
-        }
+        public virtual int ReplicaType { get; }
 
         /// <summary>
         ///     Returns flags that specify whether the replica is busy or is a boundary.
@@ -293,9 +262,6 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.Ldap_DS_FLAG_BOUNDARY">
         /// </seealso>
-        public virtual int getflags()
-        {
-            return flags;
-        }
+        public virtual int Flags { get; }
     }
 }

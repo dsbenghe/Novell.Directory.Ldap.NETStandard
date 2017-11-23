@@ -29,6 +29,7 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, true, TAG);
+        public static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, true, TAG);
 
         /* Constructors for Asn1SetOf
                 */
@@ -58,7 +59,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1SetOf object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1SetOf() : base(ID)
+        public Asn1SetOf() 
+            : base(ID)
         {
         }
 
@@ -71,7 +73,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1SetOf(int size) : base(ID, size)
+        public Asn1SetOf(int size) 
+            : base(ID, size)
         {
         }
 
@@ -84,18 +87,17 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Set.
         /// </summary>
-        public Asn1SetOf(Asn1Set set_Renamed) : base(ID, set_Renamed.toArray(), set_Renamed.size())
+        public Asn1SetOf(Asn1Set set) 
+            : base(ID, set.ToArray(), set.Count)
         {
         }
 
         /* Asn1SetOf specific methods
         */
 
-        /// <summary> Return a String representation of this Asn1SetOf.</summary>
-        [CLSCompliant(false)]
-        public override string ToString()
-        {
-            return ToString("SET OF: { ");
-        }
+        /// <summary> 
+        /// Return a String representation of this Asn1SetOf
+        /// </summary>
+        //public override string ToString() => ToString("SET OF: { ");
     }
 }

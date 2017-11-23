@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap
                 {
                     try
                     {
-                        if ((msg = queue.getResponse()) != null)
+                        if ((msg = queue.Response) != null)
                         {
                             // Only save controls if there are some
                             var ctls = msg.Controls;
@@ -139,7 +139,7 @@ namespace Novell.Directory.Ldap
                                 var resp = (LdapResponse) msg;
                                 var resultCode = resp.ResultCode;
                                 // Check for an embedded exception
-                                if (resp.hasException())
+                                if (resp.HasException)
                                 {
                                     // Fake it, results in an exception when msg read
                                     resultCode = LdapException.CONNECT_ERROR;
@@ -315,8 +315,10 @@ namespace Novell.Directory.Ldap
             if (referenceIndex < referenceCount)
             {
                 var refs = (string[]) references[referenceIndex++];
-                var rex = new LdapReferralException(ExceptionMessages.REFERENCE_NOFOLLOW);
-                rex.setReferrals(refs);
+                var rex = new LdapReferralException(ExceptionMessages.REFERENCE_NOFOLLOW)
+                {
+                    Referrals = refs
+                };
                 throw rex;
             }
             if (entryIndex < entryCount)
@@ -326,7 +328,7 @@ namespace Novell.Directory.Ldap
                 if (element is LdapResponse)
                 {
                     // Search done w/bad status
-                    if (((LdapResponse) element).hasException())
+                    if (((LdapResponse) element).HasException)
                     {
                         var lr = (LdapResponse) element;
                         var ri = lr.ActiveReferral;
@@ -335,13 +337,13 @@ namespace Novell.Directory.Ldap
                         {
                             // Error attempting to follow a search continuation reference
                             var rex = new LdapReferralException(ExceptionMessages.REFERENCE_ERROR, lr.Exception);
-                            rex.setReferrals(ri.ReferralList);
+                            rex.Referrals = ri.ReferralList;
                             rex.FailedReferral = ri.ReferralUrl.ToString();
                             throw rex;
                         }
                     }
                     // Throw an exception if not success
-                    ((LdapResponse) element).chkResultCode();
+                    ((LdapResponse) element).ChkResultCode();
                 }
                 else if (element is LdapException)
                 {

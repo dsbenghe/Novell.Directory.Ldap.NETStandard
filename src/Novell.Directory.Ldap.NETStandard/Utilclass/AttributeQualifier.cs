@@ -30,7 +30,6 @@
 //
 
 using System;
-using System.Collections;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -40,50 +39,14 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class AttributeQualifier
     {
-        public virtual string Name
-        {
-            /*
-            public void addValue( String value )
-            {
-            values.add( value );
-            return;
-            }
-            */
-            get { return name; }
-        }
+        public virtual string Name { get; private set; }
 
-        public virtual string[] Values
-        {
-            get
-            {
-                string[] strValues = null;
-                if (values.Count > 0)
-                {
-                    strValues = new string[values.Count];
-                    for (var i = 0; i < values.Count; i++)
-                    {
-                        strValues[i] = (string) values[i];
-                    }
-                }
-                return strValues;
-            }
-        }
+        public virtual string[] Values { get; private set; }
 
-        internal string name;
-        internal ArrayList values;
-
-        public AttributeQualifier(string name, string[] value_Renamed)
+        public AttributeQualifier(string name, string[] value)
         {
-            if ((object) name == null || value_Renamed == null)
-            {
-                throw new ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
-            }
-            this.name = name;
-            values = new ArrayList(5);
-            for (var i = 0; i < value_Renamed.Length; i++)
-            {
-                values.Add(value_Renamed[i]);
-            }
+            Name = name ?? throw new ArgumentNullException(nameof(name));
+            Values = value ?? throw new ArgumentNullException(nameof(value));
         }
     }
 }

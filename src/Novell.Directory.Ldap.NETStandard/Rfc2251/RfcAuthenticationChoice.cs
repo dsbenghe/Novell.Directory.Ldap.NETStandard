@@ -29,8 +29,8 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -50,26 +50,18 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcAuthenticationChoice(Asn1Tagged choice) : base(choice)
+        public RfcAuthenticationChoice(Asn1Tagged choice) 
+            : base(choice)
         {
         }
 
-        [CLSCompliant(false)]
-        public RfcAuthenticationChoice(string mechanism, sbyte[] credentials)
+        public RfcAuthenticationChoice(string mechanism, byte[] credentials)
             : base(
-                new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, true, 3),
+                new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, true, 3),
                     new RfcSaslCredentials(new RfcLdapString(mechanism),
                         credentials != null ? new Asn1OctetString(credentials) : null), false))
         {
             // implicit tagging
         }
-
-        //*************************************************************************
-        // Mutators
-        //*************************************************************************
-
-        //*************************************************************************
-        // Accessors
-        //*************************************************************************
     }
 }

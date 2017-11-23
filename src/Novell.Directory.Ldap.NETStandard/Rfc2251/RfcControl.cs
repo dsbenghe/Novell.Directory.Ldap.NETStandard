@@ -47,10 +47,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcControl : Asn1Sequence
     {
         /// <summary> </summary>
-        public virtual Asn1OctetString ControlType
-        {
-            get { return (Asn1OctetString) get_Renamed(0); }
-        }
+        public virtual Asn1OctetString ControlType => this[0] as Asn1OctetString;
 
         /// <summary>
         ///     Returns criticality.
@@ -60,12 +57,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() > 1)
+                if (Count > 1)
                 {
                     // MAY be a criticality
-                    var obj = get_Renamed(1);
-                    if (obj is Asn1Boolean)
-                        return (Asn1Boolean) obj;
+                    if (this[1] is Asn1Boolean ret)
+                        return ret;
                 }
 
                 return new Asn1Boolean(false);
@@ -85,17 +81,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() > 2)
+                if (Count > 2)
                 {
                     // MUST be a control value
-                    return (Asn1OctetString) get_Renamed(2);
+                    return this[2] as Asn1OctetString;
                 }
-                if (size() > 1)
+                if (Count > 1)
                 {
                     // MAY be a control value
-                    var obj = get_Renamed(1);
-                    if (obj is Asn1OctetString)
-                        return (Asn1OctetString) obj;
+                    if (this[1] is Asn1OctetString ret)
+                        return ret;
                 }
                 return null;
             }
@@ -105,44 +100,37 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (value == null)
                     return;
 
-                if (size() == 3)
+                if (Count == 3)
                 {
                     // We already have a control value, replace it
-                    set_Renamed(2, value);
-                    return;
+                    this[2] = value;
                 }
-
-                if (size() == 2)
+                else if (Count == 2)
                 {
-                    // Get the second element
-                    var obj = get_Renamed(1);
-
                     // Is this a control value
-                    if (obj is Asn1OctetString)
+                    if (this[1] is Asn1OctetString)
                     {
                         // replace this one
-                        set_Renamed(1, value);
+                        this[1] = value;
                     }
                     else
                     {
                         // add a new one at the end
-                        add(value);
+                        Add(value);
                     }
                 }
             }
         }
 
-        //*************************************************************************
-        // Constructors for Control
-        //*************************************************************************
-
         /// <summary> </summary>
-        public RfcControl(RfcLdapOID controlType) : this(controlType, new Asn1Boolean(false), null)
+        public RfcControl(RfcLdapOID controlType)
+            : this(controlType, new Asn1Boolean(false), null)
         {
         }
 
         /// <summary> </summary>
-        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality) : this(controlType, criticality, null)
+        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality)
+            : this(controlType, criticality, null)
         {
         }
 
@@ -151,31 +139,31 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     (4): If a value of a type is its default value, it MUST be
         ///     absent.
         /// </summary>
-        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality, Asn1OctetString controlValue) : base(3)
+        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality, Asn1OctetString controlValue)
+            : base(3)
         {
-            add(controlType);
-            if (criticality.booleanValue())
-                add(criticality);
+            Add(controlType);
+            if (criticality.BooleanValue)
+                Add(criticality);
             if (controlValue != null)
-                add(controlValue);
+                Add(controlValue);
         }
 
-        /// <summary> Constructs a Control object by decoding it from an InputStream.</summary>
-        [CLSCompliant(false)]
-        public RfcControl(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        /// <summary> 
+        /// Constructs a Control object by decoding it from an InputStream.
+        /// </summary>
+        public RfcControl(IAsn1Decoder dec, Stream in_Renamed, int len)
+            : base(dec, in_Renamed, len)
         {
         }
 
-        /// <summary> Constructs a Control object by decoding from an Asn1Sequence</summary>
-        public RfcControl(Asn1Sequence seqObj) : base(3)
+        /// <summary> 
+        /// Constructs a Control object by decoding from an Asn1Sequence
+        /// </summary>
+        public RfcControl(Asn1Sequence seqObj)
+            : base(3)
         {
-            var len = seqObj.size();
-            for (var i = 0; i < len; i++)
-                add(seqObj.get_Renamed(i));
+            AddRange(seqObj);
         }
-
-        //*************************************************************************
-        // Accessors
-        //*************************************************************************
     }
 }

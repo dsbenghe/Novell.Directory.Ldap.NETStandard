@@ -39,51 +39,22 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ModuleStateEventData : BaseEdirEventData
     {
-        protected string strConnectionDN;
-
-        public string ConnectionDN
-        {
-            get { return strConnectionDN; }
-        }
-
-        protected int nFlags;
-
-        public int Flags
-        {
-            get { return nFlags; }
-        }
-
-        protected string strName;
-
-        public string Name
-        {
-            get { return strName; }
-        }
-
-        protected string strDescription;
-
-        public string Description
-        {
-            get { return strDescription; }
-        }
-
-        protected string strSource;
-
-        public string Source
-        {
-            get { return strSource; }
-        }
+        public string ConnectionDN { get; protected set; }
+        public int Flags { get; protected set; }
+        public string Name { get; protected set; }
+        public string Description { get; protected set; }
+        public string Source { get; protected set; }
 
         public ModuleStateEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            strConnectionDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            nFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strName = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strDescription = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strSource = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            ConnectionDN = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
+            Flags = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue;
+            Name = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
+            Description = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
+            Source = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
 
             DataInitDone();
         }
@@ -95,11 +66,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[ModuleStateEvent");
-            buf.AppendFormat("(connectionDN={0})", strConnectionDN);
-            buf.AppendFormat("(flags={0})", nFlags);
-            buf.AppendFormat("(Name={0})", strName);
-            buf.AppendFormat("(Description={0})", strDescription);
-            buf.AppendFormat("(Source={0})", strSource);
+            buf.AppendFormat("(connectionDN={0})", ConnectionDN);
+            buf.AppendFormat("(flags={0})", Flags);
+            buf.AppendFormat("(Name={0})", Name);
+            buf.AppendFormat("(Description={0})", Description);
+            buf.AppendFormat("(Source={0})", Source);
             buf.Append("]");
 
             return buf.ToString();

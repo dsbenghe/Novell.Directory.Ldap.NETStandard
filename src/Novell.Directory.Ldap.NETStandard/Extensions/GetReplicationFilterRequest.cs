@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICATION_FILTER_RES,
+            LdapExtendedResponse.Register(ReplicationConstants.GET_REPLICATION_FILTER_RES,
                 typeof(GetReplicationFilterResponse));
         }
 
@@ -77,17 +77,19 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (serverDN == null)
+                    throw new ArgumentNullException(nameof(serverDN));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
+                    var asn1_serverDN = new Asn1OctetString(serverDN);
 
-                // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    // Add the serverDN to encoded data
+                    asn1_serverDN.Encode(encoder, encodedData);
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

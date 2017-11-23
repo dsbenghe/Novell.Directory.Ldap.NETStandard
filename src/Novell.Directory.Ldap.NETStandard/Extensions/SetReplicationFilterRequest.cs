@@ -78,62 +78,65 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (serverDN == null)
+                    throw new ArgumentNullException(nameof(serverDN));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
-
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-
-                // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
-
-                // The toplevel sequenceOF
-                var asn1_replicationFilter = new Asn1SequenceOf();
-
-                if (replicationFilter == null)
+                using (var encodedData = new MemoryStream())
                 {
-                    asn1_replicationFilter.encode(encoder, encodedData);
-                    setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
-                    return;
-                }
+                    var encoder = new LBEREncoder();
 
-                var i = 0;
-                // for every element in the array
-                while (i < replicationFilter.Length && replicationFilter[i] != null)
-                {
-                    // The following additional Sequence is not needed
-                    // as defined by the Asn1. But the server and the
-                    // C client are encoding it. Remove this when server
-                    // and C client are fixed to conform to the published Asn1.
-                    var buginAsn1Representation = new Asn1Sequence();
+                    var asn1_serverDN = new Asn1OctetString(serverDN);
 
-                    // Add the classname to the sequence -
-                    buginAsn1Representation.add(new Asn1OctetString(replicationFilter[i][0]));
+                    // Add the serverDN to encoded data
+                    asn1_serverDN.Encode(encoder, encodedData);
 
-                    // Start a sequenceOF for attributes
-                    var asn1_attributeList = new Asn1SequenceOf();
+                    // The toplevel sequenceOF
+                    var asn1_replicationFilter = new Asn1SequenceOf();
 
-                    // For every attribute in the array - remember attributes start after
-                    // the first element
-                    var j = 1;
-                    while (j < replicationFilter[i].Length && (object) replicationFilter[i][j] != null)
+                    if (replicationFilter == null)
                     {
-                        // Add the attribute name to the inner SequenceOf
-                        asn1_attributeList.add(new Asn1OctetString(replicationFilter[i][j]));
-                        j++;
+                        asn1_replicationFilter.Encode(encoder, encodedData);
+                        Value = encodedData.ToArray();
+                        return;
                     }
 
+                    var i = 0;
+                    // for every element in the array
+                    while (i < replicationFilter.Length && replicationFilter[i] != null)
+                    {
+                        // The following additional Sequence is not needed
+                        // as defined by the Asn1. But the server and the
+                        // C client are encoding it. Remove this when server
+                        // and C client are fixed to conform to the published Asn1.
+                        var buginAsn1Representation = new Asn1Sequence
+                        {
+                            // Add the classname to the sequence -
+                            new Asn1OctetString(replicationFilter[i][0])
+                        };
 
-                    // Add the attributeList to the sequence - extra add due to bug
-                    buginAsn1Representation.add(asn1_attributeList);
-                    asn1_replicationFilter.add(buginAsn1Representation);
-                    i++;
+                        // Start a sequenceOF for attributes
+                        var asn1_attributeList = new Asn1SequenceOf();
+
+                        // For every attribute in the array - remember attributes start after
+                        // the first element
+                        var j = 1;
+                        while (j < replicationFilter[i].Length && replicationFilter[i][j] != null)
+                        {
+                            // Add the attribute name to the inner SequenceOf
+                            asn1_attributeList.Add(new Asn1OctetString(replicationFilter[i][j]));
+                            j++;
+                        }
+
+
+                        // Add the attributeList to the sequence - extra add due to bug
+                        buginAsn1Representation.Add(asn1_attributeList);
+                        asn1_replicationFilter.Add(buginAsn1Representation);
+                        i++;
+                    }
+
+                    asn1_replicationFilter.Encode(encoder, encodedData);
+                    Value = encodedData.ToArray();
                 }
-
-                asn1_replicationFilter.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {

@@ -48,10 +48,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals) : base(2)
+        public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals) 
+            : base(2)
         {
-            add(type);
-            add(vals);
+            Add(type);
+            Add(vals);
         }
     }
 }

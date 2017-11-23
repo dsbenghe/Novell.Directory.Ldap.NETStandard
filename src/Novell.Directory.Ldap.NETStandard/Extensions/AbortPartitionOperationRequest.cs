@@ -70,20 +70,23 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) partitionDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (partitionDN == null)
+                    throw new ArgumentNullException(nameof(partitionDN));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                using (var encodedData = new MemoryStream())
+                {
+
+                    var encoder = new LBEREncoder();
 
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_partitionDN = new Asn1OctetString(partitionDN);
+                    var asn1_flags = new Asn1Integer(flags);
+                    var asn1_partitionDN = new Asn1OctetString(partitionDN);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_partitionDN.encode(encoder, encodedData);
+                    asn1_flags.Encode(encoder, encodedData);
+                    asn1_partitionDN.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

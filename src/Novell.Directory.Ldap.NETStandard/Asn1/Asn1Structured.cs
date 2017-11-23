@@ -29,9 +29,9 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -39,70 +39,61 @@ namespace Novell.Directory.Ldap.Asn1
     ///     This class serves as the base type for all ASN.1
     ///     structured types.
     /// </summary>
-    [CLSCompliant(true)]
-    public abstract class Asn1Structured : Asn1Object
+    public abstract class Asn1Structured : Asn1Object, IList<Asn1Object>,  ICollection<Asn1Object>
     {
-        private Asn1Object[] content;
+        protected List<Asn1Object> Content { get; set; } =  new List<Asn1Object>();
 
-        private int contentIndex;
-
-        /*
-        * Create a an Asn1 structured type with default size of 10
-        *
-        * @param the Asn1Identifier containing the tag for this structured type
-        */
-
-        protected internal Asn1Structured(Asn1Identifier id) : this(id, 10)
+        /// <summary>
+        /// Create a an Asn1 structured type with default size of 10
+        /// </summary>
+        /// <param name="id">the Asn1Identifier containing the tag for this structured type</param>
+        protected internal Asn1Structured(Asn1Identifier id) 
+            : this(id, 10)
         {
         }
 
-        /*
-        * Create a an Asn1 structured type with the designated size
-        *
-        * @param id the Asn1Identifier containing the tag for this structured type
-        *
-        * @param size the size to allocate
-        */
-
-        protected internal Asn1Structured(Asn1Identifier id, int size) : base(id)
+        /// <summary>
+        /// Create a an Asn1 structured type with the designated size
+        /// </summary>
+        /// <param name="id">id the Asn1Identifier containing the tag for this structured type</param>
+        /// <param name="size">size the size to allocate</param>
+        protected internal Asn1Structured(Asn1Identifier id, int size) 
+            : base(id)
         {
-            content = new Asn1Object[size];
+            Content = new List<Asn1Object>(size);
         }
 
-        /*
-        * Create a an Asn1 structured type with default size of 10
-        *
-        * @param id the Asn1Identifier containing the tag for this structured type
-        *
-        * @param content an array containing the content
-        *
-        * @param size the number of items of content in the array
-        */
-
+        /// <summary>
+        /// Create a an Asn1 structured type with default size of 10
+        /// </summary>
+        /// <param name="id">id the Asn1Identifier containing the tag for this structured type</param>
+        /// <param name="newContent">content an array containing the content</param>
+        /// <param name="size">size the number of items of content in the array</param>
         protected internal Asn1Structured(Asn1Identifier id, Asn1Object[] newContent, int size) : base(id)
         {
-            content = newContent;
-            contentIndex = size;
+            Content = new List<Asn1Object>(size);
+            Content.AddRange(newContent);
         }
 
         /// <summary>
         ///     Encodes the contents of this Asn1Structured directly to an output
         ///     stream.
         /// </summary>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, @out);
         }
 
-        /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
-        [CLSCompliant(false)]
-        protected internal void decodeStructured(Asn1Decoder dec, Stream in_Renamed, int len)
+        /// <summary>
+        /// Decode an Asn1Structured type from an InputStream.
+        /// </summary>
+        protected internal void DecodeStructured(IAsn1Decoder dec, Stream @in, int len)
         {
             var componentLen = new int[1]; // collects length of component
 
             while (len > 0)
             {
-                add(dec.decode(in_Renamed, componentLen));
+                Add(dec.Decode(@in, componentLen));
                 len -= componentLen[0];
             }
         }
@@ -114,12 +105,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <returns>
         ///     an array of Asn1Objects
         /// </returns>
-        public Asn1Object[] toArray()
-        {
-            var cloneArray = new Asn1Object[contentIndex];
-            Array.Copy(content, 0, cloneArray, 0, contentIndex);
-            return cloneArray;
-        }
+        public Asn1Object[] ToArray() => Content.ToArray();
 
         /// <summary>
         ///     Adds a new Asn1Object to the end of this Asn1Structured
@@ -129,91 +115,46 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The Asn1Object to add to this Asn1Structured
         ///     object.
         /// </param>
-        public void add(Asn1Object value_Renamed)
+        public virtual void Add(Asn1Object value)
         {
-            if (contentIndex == content.Length)
-            {
-                // Array too small, need to expand it, double length
-                var newSize = contentIndex + contentIndex;
-                var newArray = new Asn1Object[newSize];
-                Array.Copy(content, 0, newArray, 0, contentIndex);
-                content = newArray;
-            }
-            content[contentIndex++] = value_Renamed;
+            Content.Add(value);
         }
 
-        /// <summary>
-        ///     Replaces the Asn1Object in the specified index position of
-        ///     this Asn1Structured object.
-        /// </summary>
-        /// <param name="index">
-        ///     The index into the Asn1Structured object where
-        ///     this new ANS1Object will be placed.
-        /// </param>
-        /// <param name="value">
-        ///     The Asn1Object to set in this Asn1Structured
-        ///     object.
-        /// </param>
-        public void set_Renamed(int index, Asn1Object value_Renamed)
+        public virtual void AddRange(IEnumerable<Asn1Object> values)
         {
-            if (index >= contentIndex || index < 0)
-            {
-                throw new IndexOutOfRangeException("Asn1Structured: get: index " + index + ", size " + contentIndex);
-            }
-            content[index] = value_Renamed;
+            Content.AddRange(values);
         }
 
-        /// <summary>
-        ///     Gets a specific Asn1Object in this structred object.
-        /// </summary>
-        /// <param name="index">
-        ///     The index of the Asn1Object to get from
-        ///     this Asn1Structured object.
-        /// </param>
-        public Asn1Object get_Renamed(int index)
+        public void Clear() => Content.Clear();
+
+        public bool Contains(Asn1Object item) => Content.Contains(item);
+
+        public void CopyTo(Asn1Object[] array, int arrayIndex) => Content.CopyTo(array, arrayIndex);
+
+        public bool Remove(Asn1Object item) => Content.Remove(item);
+
+        public IEnumerator<Asn1Object> GetEnumerator() => Content.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public int IndexOf(Asn1Object item) => Content.IndexOf(item);
+
+        public void Insert(int index, Asn1Object item) => Content.Insert(index, item);
+
+        public void RemoveAt(int index) => Content.RemoveAt(index);
+
+        public Asn1Object this[int index]
         {
-            if (index >= contentIndex || index < 0)
-            {
-                throw new IndexOutOfRangeException("Asn1Structured: set: index " + index + ", size " + contentIndex);
-            }
-            return content[index];
+            get => Content[index];
+            set => Content[index] = value;
         }
 
         /// <summary>
         ///     Returns the number of Asn1Obejcts that have been encoded
         ///     into this Asn1Structured class.
         /// </summary>
-        public int size()
-        {
-            return contentIndex;
-        }
+        public int Count => Content.Count;
 
-        /// <summary>
-        ///     Creates a String representation of this Asn1Structured.
-        ///     object.
-        /// </summary>
-        /// <param name="type">
-        ///     the Type to put in the String representing this structured object
-        /// </param>
-        /// <returns>
-        ///     the String representation of this object.
-        /// </returns>
-        [CLSCompliant(false)]
-        public string ToString(string type)
-        {
-            var sb = new StringBuilder();
-
-            sb.Append(type);
-
-            for (var i = 0; i < contentIndex; i++)
-            {
-                sb.Append(content[i]);
-                if (i != contentIndex - 1)
-                    sb.Append(", ");
-            }
-            sb.Append(" }");
-
-            return base.ToString() + sb;
-        }
+        public bool IsReadOnly => false;
     }
 }

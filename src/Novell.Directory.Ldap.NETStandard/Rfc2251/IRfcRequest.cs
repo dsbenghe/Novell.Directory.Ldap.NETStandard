@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.Rfc2251.RfcResponse.cs
+// Novell.Directory.Ldap.Rfc2251.RfcRequest.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -29,28 +29,22 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using Novell.Directory.Ldap.Asn1;
-
 namespace Novell.Directory.Ldap.Rfc2251
 {
     /// <summary>
-    ///     This interface represents RfcLdapMessages that contain a response from a
-    ///     server.
-    ///     If the protocol operation of the RfcLdapMessage is of this type,
-    ///     it contains at least an RfcLdapResult.
+    ///     This interface represents Protocol Operations that are requests from a
+    ///     client.
     /// </summary>
-    public interface RfcResponse
+    public interface IRfcRequest
     {
-        /// <summary> </summary>
-        Asn1Enumerated getResultCode();
+        /// <summary> 
+        /// Builds a new request using the data from the this object.
+        /// </summary>
+        IRfcRequest DupRequest(string @base, string filter, bool reference);
 
-        /// <summary> </summary>
-        RfcLdapDN getMatchedDN();
-
-        /// <summary> </summary>
-        RfcLdapString getErrorMessage();
-
-        /// <summary> </summary>
-        RfcReferral getReferral();
+        /// <summary> 
+        /// Builds a new request using the data from the this object.
+        /// </summary>
+        string RequestDN { get; }
     }
 }

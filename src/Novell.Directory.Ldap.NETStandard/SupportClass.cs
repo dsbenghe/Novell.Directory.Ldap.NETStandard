@@ -58,40 +58,11 @@ public interface IThreadRunnable
 }
 
 
-public class Integer32 : object
-{
-    private int _wintv;
-
-    public Integer32(int ival)
-    {
-        _wintv = ival;
-    }
-
-    public int intValue
-    {
-        get { return _wintv; }
-        set { _wintv = value; }
-    }
-}
-
 /// <summary>
 ///     Contains conversion support elements such as classes, interfaces and static methods.
 /// </summary>
 public class SupportClass
 {
-    /// <summary>
-    ///     Receives a byte array and returns it transformed in an sbyte array
-    /// </summary>
-    /// <param name="byteArray">Byte array to process</param>
-    /// <returns>The transformed array</returns>
-    [CLSCompliant(false)]
-    public static sbyte[] ToSByteArray(byte[] byteArray)
-    {
-        var sbyteArray = new sbyte[byteArray.Length];
-        for (var index = 0; index < byteArray.Length; index++)
-            sbyteArray[index] = (sbyte) byteArray[index];
-        return sbyteArray;
-    }
 
     /*******************************/
 
@@ -100,7 +71,7 @@ public class SupportClass
     /// </summary>
     /// <param name="sbyteArray">The array of sbytes to be converted</param>
     /// <returns>The new array of bytes</returns>
-    [CLSCompliant(false)]
+    
     public static byte[] ToByteArray(sbyte[] sbyteArray)
     {
         var byteArray = new byte[sbyteArray.Length];
@@ -150,14 +121,12 @@ public class SupportClass
     ///     The number of characters read. The number will be less than or equal to count depending on the data available
     ///     in the source Stream. Returns -1 if the end of the stream is reached.
     /// </returns>
-    [CLSCompliant(false)]
-    public static int ReadInput(Stream sourceStream, ref sbyte[] target, int start, int count)
+    public static int ReadInput(Stream sourceStream, byte[] receiver, int start, int count)
     {
         // Returns 0 bytes if not enough space in target
-        if (target.Length == 0)
+        if (receiver.Length == 0)
             return 0;
 
-        var receiver = new byte[target.Length];
         var bytesRead = 0;
         var startIndex = start;
         var bytesToRead = count;
@@ -174,9 +143,6 @@ public class SupportClass
         if (bytesRead == 0)
             return -1;
 
-        for (var i = start; i < start + bytesRead; i++)
-            target[i] = (sbyte) receiver[i];
-
         return bytesRead;
     }
 
@@ -192,8 +158,7 @@ public class SupportClass
     ///     The number of characters read. The number will be less than or equal to count depending on the data available
     ///     in the source TextReader. Returns -1 if the end of the stream is reached.
     /// </returns>
-    [CLSCompliant(false)]
-    public static int ReadInput(TextReader sourceTextReader, ref sbyte[] target, int start, int count)
+    public static int ReadInput(TextReader sourceTextReader, ref byte[] target, int start, int count)
     {
         // Returns 0 bytes if not enough space in target
         if (target.Length == 0) return 0;
@@ -205,52 +170,9 @@ public class SupportClass
         if (bytesRead == 0) return -1;
 
         for (var index = start; index < start + bytesRead; index++)
-            target[index] = (sbyte) charArray[index];
+            target[index] = (byte) charArray[index];
 
         return bytesRead;
-    }
-
-    /*******************************/
-
-    /// <summary>
-    ///     This method returns the literal value received
-    /// </summary>
-    /// <param name="literal">The literal to return</param>
-    /// <returns>The received value</returns>
-    public static long Identity(long literal)
-    {
-        return literal;
-    }
-
-    /// <summary>
-    ///     This method returns the literal value received
-    /// </summary>
-    /// <param name="literal">The literal to return</param>
-    /// <returns>The received value</returns>
-    [CLSCompliant(false)]
-    public static ulong Identity(ulong literal)
-    {
-        return literal;
-    }
-
-    /// <summary>
-    ///     This method returns the literal value received
-    /// </summary>
-    /// <param name="literal">The literal to return</param>
-    /// <returns>The received value</returns>
-    public static float Identity(float literal)
-    {
-        return literal;
-    }
-
-    /// <summary>
-    ///     This method returns the literal value received
-    /// </summary>
-    /// <param name="literal">The literal to return</param>
-    /// <returns>The received value</returns>
-    public static double Identity(double literal)
-    {
-        return literal;
     }
 
     /*******************************/
@@ -737,10 +659,7 @@ public class SupportClass
         ///     Obtain a String that represents the current Object
         /// </summary>
         /// <returns>A String that represents the current Object</returns>
-        public override string ToString()
-        {
-            return "Thread[" + Name + "]";
-        }
+        public override string ToString() => "Thread[" + Name + "]";
 
         /// <summary>
         ///     Gets the currently running thread
@@ -1307,64 +1226,7 @@ public class SupportClass
             return this[index];
         }
     }
-
-    /*******************************/
-
-    /// <summary>
-    ///     This class manages array operations.
-    /// </summary>
-    public class ArraysSupport
-    {
-        /// <summary>
-        ///     Compares the entire members of one array whith the other one.
-        /// </summary>
-        /// <param name="array1">The array to be compared.</param>
-        /// <param name="array2">The array to be compared with.</param>
-        /// <returns>True if both arrays are equals otherwise it returns false.</returns>
-        /// <remarks>Two arrays are equal if they contains the same elements in the same order.</remarks>
-        public static bool IsArrayEqual(Array array1, Array array2)
-        {
-            if (array1.Length != array2.Length)
-                return false;
-            for (var i = 0; i < array1.Length; i++)
-                if (!array1.GetValue(i).Equals(array2.GetValue(i)))
-                    return false;
-            return true;
-        }
-
-        /// <summary>
-        ///     Fills the array with an specific value from an specific index to an specific index.
-        /// </summary>
-        /// <param name="array">The array to be filled.</param>
-        /// <param name="fromindex">The first index to be filled.</param>
-        /// <param name="toindex">The last index to be filled.</param>
-        /// <param name="val">The value to fill the array with.</param>
-        public static void FillArray(Array array, int fromindex, int toindex, object val)
-        {
-            var Temp_Object = val;
-            var elementtype = array.GetType().GetElementType();
-            if (elementtype != val.GetType())
-                Temp_Object = Convert.ChangeType(val, elementtype);
-            if (array.Length == 0)
-                throw new NullReferenceException();
-            if (fromindex > toindex)
-                throw new ArgumentException();
-            if (fromindex < 0 || array.Length < toindex)
-                throw new IndexOutOfRangeException();
-            for (var index = fromindex > 0 ? fromindex-- : fromindex; index < toindex; index++)
-                array.SetValue(Temp_Object, index);
-        }
-
-        /// <summary>
-        ///     Fills the array with an specific value.
-        /// </summary>
-        /// <param name="array">The array to be filled.</param>
-        /// <param name="val">The value to fill the array with.</param>
-        public static void FillArray(Array array, object val)
-        {
-            FillArray(array, 0, array.Length, val);
-        }
-    }
+    
 
 
     /*******************************/
@@ -1579,25 +1441,12 @@ public class SupportClass
     /// <summary>
     ///     This class manages different operation with collections.
     /// </summary>
-    public class AbstractSetSupport : SetSupport
+    public abstract class AbstractSetSupport : SetSupport
     {
     }
 
 
-    /*******************************/
-
-    /// <summary>
-    ///     Removes the element with the specified key from a Hashtable instance.
-    /// </summary>
-    /// <param name="hashtable">The Hashtable instance</param>
-    /// <param name="key">The key of the element to remove</param>
-    /// <returns>The element removed</returns>
-    public static object HashtableRemove(Hashtable hashtable, object key)
-    {
-        var element = hashtable[key];
-        hashtable.Remove(key);
-        return element;
-    }
+   
 
     /*******************************/
 
@@ -1658,260 +1507,6 @@ public class SupportClass
         }
     }
 
-    /*******************************/
-
-    /// <summary>
-    ///     Creates an output file stream to write to the file with the specified name.
-    /// </summary>
-    /// <param name="FileName">Name of the file to write.</param>
-    /// <param name="Append">True in order to write to the end of the file, false otherwise.</param>
-    /// <returns>New instance of FileStream with the proper file mode.</returns>
-    public static FileStream GetFileStream(string FileName, bool Append)
-    {
-        if (Append)
-            return new FileStream(FileName, FileMode.Append);
-        return new FileStream(FileName, FileMode.Create);
-    }
-
-
-    /*******************************/
-
-    /// <summary>
-    ///     Converts an array of sbytes to an array of chars
-    /// </summary>
-    /// <param name="sByteArray">The array of sbytes to convert</param>
-    /// <returns>The new array of chars</returns>
-    [CLSCompliant(false)]
-    public static char[] ToCharArray(sbyte[] sByteArray)
-    {
-        var charArray = new char[sByteArray.Length];
-        sByteArray.CopyTo(charArray, 0);
-        return charArray;
-    }
-
-    /// <summary>
-    ///     Converts an array of bytes to an array of chars
-    /// </summary>
-    /// <param name="byteArray">The array of bytes to convert</param>
-    /// <returns>The new array of chars</returns>
-    public static char[] ToCharArray(byte[] byteArray)
-    {
-        var charArray = new char[byteArray.Length];
-        byteArray.CopyTo(charArray, 0);
-        return charArray;
-    }
-
-    /*******************************/
-
-    /// <summary>
-    ///     Encapsulates the functionality of message digest algorithms such as SHA-1 or MD5.
-    /// </summary>
-    public class MessageDigestSupport
-    {
-        private HashAlgorithm algorithm;
-        private byte[] data;
-        private int position;
-        private string algorithmName;
-
-        /// <summary>
-        ///     The HashAlgorithm instance that provide the cryptographic hash algorithm
-        /// </summary>
-        public HashAlgorithm Algorithm
-        {
-            get { return algorithm; }
-            set { algorithm = value; }
-        }
-
-        /// <summary>
-        ///     The digest data
-        /// </summary>
-        public byte[] Data
-        {
-            get { return data; }
-            set { data = value; }
-        }
-
-        /// <summary>
-        ///     The name of the cryptographic hash algorithm used in the instance
-        /// </summary>
-        public string AlgorithmName
-        {
-            get { return algorithmName; }
-        }
-
-        /// <summary>
-        ///     Computes the hash value for the internal data digest.
-        /// </summary>
-        /// <returns>The array of signed bytes with the resulting hash value</returns>
-        [CLSCompliant(false)]
-        public sbyte[] DigestData()
-        {
-            var result = ToSByteArray(Algorithm.ComputeHash(data));
-            Reset();
-            return result;
-        }
-
-        /// <summary>
-        ///     Performs and update on the digest with the specified array and then completes the digest
-        ///     computation.
-        /// </summary>
-        /// <param name="newData">The array of bytes for final update to the digest</param>
-        /// <returns>An array of signed bytes with the resulting hash value</returns>
-        [CLSCompliant(false)]
-        public sbyte[] DigestData(byte[] newData)
-        {
-            Update(newData);
-            return DigestData();
-        }
-
-        /// <summary>
-        ///     Updates the digest data with the specified array of bytes by making an append
-        ///     operation in the internal array of data.
-        /// </summary>
-        /// <param name="newData">The array of bytes for the update operation</param>
-        public void Update(byte[] newData)
-        {
-            if (position == 0)
-            {
-                Data = newData;
-                position = Data.Length - 1;
-            }
-            else
-            {
-                var oldData = Data;
-                Data = new byte[newData.Length + position + 1];
-                oldData.CopyTo(Data, 0);
-                newData.CopyTo(Data, oldData.Length);
-
-                position = Data.Length - 1;
-            }
-        }
-
-        /// <summary>
-        ///     Updates the digest data with the input byte by calling the method Update with an array.
-        /// </summary>
-        /// <param name="newData">The input byte for the update</param>
-        public void Update(byte newData)
-        {
-            var newDataArray = new byte[1];
-            newDataArray[0] = newData;
-            Update(newDataArray);
-        }
-
-        /// <summary>
-        ///     Updates the specified count of bytes with the input array of bytes starting at the
-        ///     input offset.
-        /// </summary>
-        /// <param name="newData">The array of bytes for the update operation</param>
-        /// <param name="offset">The initial position to start from in the array of bytes</param>
-        /// <param name="count">The number of bytes fot the update</param>
-        public void Update(byte[] newData, int offset, int count)
-        {
-            var newDataArray = new byte[count];
-            Array.Copy(newData, offset, newDataArray, 0, count);
-            Update(newDataArray);
-        }
-
-        /// <summary>
-        ///     Resets the digest data to the initial state.
-        /// </summary>
-        public void Reset()
-        {
-            data = null;
-            position = 0;
-        }
-
-        /// <summary>
-        ///     Returns a string representation of the Message Digest
-        /// </summary>
-        /// <returns>A string representation of the object</returns>
-        public override string ToString()
-        {
-            return Algorithm.ToString();
-        }
-
-
-        /// <summary>
-        ///     Compares two arrays of signed bytes evaluating equivalence in digest data
-        /// </summary>
-        /// <param name="firstDigest">An array of signed bytes for comparison</param>
-        /// <param name="secondDigest">An array of signed bytes for comparison</param>
-        /// <returns>True if the input digest arrays are equal</returns>
-        [CLSCompliant(false)]
-        public static bool EquivalentDigest(sbyte[] firstDigest, sbyte[] secondDigest)
-        {
-            var result = false;
-            if (firstDigest.Length == secondDigest.Length)
-            {
-                var index = 0;
-                result = true;
-                while (result && index < firstDigest.Length)
-                {
-                    result = firstDigest[index] == secondDigest[index];
-                    index++;
-                }
-            }
-
-            return result;
-        }
-    }
-
-    // REMOVED Class not used
-
-    /// *******************************/
-    /// <summary>
-    ///     Interface used by classes which must be single threaded.
-    /// </summary>
-    public interface SingleThreadModel
-    {
-    }
-
-
-    /*******************************/
-
-    /// <summary>
-    ///     Creates an instance of a received Type.
-    /// </summary>
-    /// <param name="classType">The Type of the new class instance to return.</param>
-    /// <returns>An Object containing the new instance.</returns>
-    public static object CreateNewInstance(Type classType)
-    {
-        object instance = null;
-        Type[] constructor = {};
-        ConstructorInfo[] constructors = null;
-
-        constructors = classType.GetConstructors();
-
-        if (constructors.Length == 0)
-            throw new UnauthorizedAccessException();
-        for (var i = 0; i < constructors.Length; i++)
-        {
-            var parameters = constructors[i].GetParameters();
-
-            if (parameters.Length == 0)
-            {
-                instance = classType.GetConstructor(constructor).Invoke(new object[] {});
-                break;
-            }
-            if (i == constructors.Length - 1)
-                throw new MethodAccessException();
-        }
-        return instance;
-    }
-
-
-    /*******************************/
-
-    /// <summary>
-    ///     Writes the exception stack trace to the received stream
-    /// </summary>
-    /// <param name="throwable">Exception to obtain information from</param>
-    /// <param name="stream">Output sream used to write to</param>
-    public static void WriteStackTrace(Exception throwable, TextWriter stream)
-    {
-        stream.Write(throwable.StackTrace);
-        stream.Flush();
-    }
 
     /*******************************/
 
@@ -1934,34 +1529,9 @@ public class SupportClass
         return true;
     }
 
-    /// <summary>
-    ///     Determines if a Collection is equal to the Object.
-    /// </summary>
-    /// <param name="source">The first Collections to compare.</param>
-    /// <param name="target">The Object to compare.</param>
-    /// <returns>Return true if the first collection contains the same values of the second Object, otherwise return false.</returns>
-    public static bool EqualsSupport(ICollection source, object target)
-    {
-        if (target.GetType() != typeof(ICollection))
-            return false;
-        return EqualsSupport(source, (ICollection) target);
-    }
+   
 
-    /// <summary>
-    ///     Determines if a IDictionaryEnumerator is equal to the Object.
-    /// </summary>
-    /// <param name="source">The first IDictionaryEnumerator to compare.</param>
-    /// <param name="target">The second Object to compare.</param>
-    /// <returns>
-    ///     Return true if the first IDictionaryEnumerator contains the same values of the second Object, otherwise return
-    ///     false.
-    /// </returns>
-    public static bool EqualsSupport(IDictionaryEnumerator source, object target)
-    {
-        if (target.GetType() != typeof(IDictionaryEnumerator))
-            return false;
-        return EqualsSupport(source, (IDictionaryEnumerator) target);
-    }
+   
 
     /// <summary>
     ///     Determines whether two IDictionaryEnumerator instances are equals.

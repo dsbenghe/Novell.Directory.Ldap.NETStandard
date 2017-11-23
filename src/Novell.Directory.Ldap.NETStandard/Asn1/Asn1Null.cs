@@ -29,13 +29,13 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class represents the ASN.1 NULL type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Null : Asn1Object
     {
         /// <summary> ASN.1 NULL tag definition.</summary>
@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        public static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, false, TAG);
 
         /* Constructor for Asn1Null
                 */
@@ -55,7 +55,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Call this constructor to construct a new Asn1Null
         ///     object.
         /// </summary>
-        public Asn1Null() : base(ID)
+        public Asn1Null() 
+            : base(ID)
         {
         }
 
@@ -73,18 +74,15 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, @out);
         }
 
         /* Asn1Null specific methods
         */
 
         /// <summary> Return a String representation of this Asn1Null object.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "NULL: \"\"";
-        }
+        public override string ToString() => base.ToString() + "NULL: \"\"";
     }
 }

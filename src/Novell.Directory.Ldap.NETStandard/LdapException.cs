@@ -295,7 +295,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object) serverMessage != null && serverMessage.Length == 0)
+                if (string.IsNullOrEmpty(serverMessage))
                 {
                     return null;
                 }
@@ -308,10 +308,7 @@ namespace Novell.Directory.Ldap
         ///     For example, an IOException with additional information may be returned
         ///     on a CONNECT_ERROR failure.
         /// </summary>
-        public virtual Exception Cause
-        {
-            get { return rootException; }
-        }
+        public virtual Exception Cause { get; }
 
         /// <summary>
         ///     Returns the result code from the exception.
@@ -321,10 +318,7 @@ namespace Novell.Directory.Ldap
         ///     code will be one of those defined for the class. Otherwise, a local error
         ///     code is returned.
         /// </summary>
-        public virtual int ResultCode
-        {
-            get { return resultCode; }
-        }
+        public virtual int ResultCode { get; }
 
         /// <summary>
         ///     Returns the part of a submitted distinguished name which could be
@@ -344,15 +338,9 @@ namespace Novell.Directory.Ldap
         ///     The part of a submitted distinguished name which could be
         ///     matched by the server or null if the error is a local error.
         /// </returns>
-        public virtual string MatchedDN
-        {
-            get { return matchedDN; }
-        }
+        public virtual string MatchedDN { get; }
 
-        public override string Message
-        {
-            get { return resultCodeToString(); }
-        }
+        public override string Message => ResultCodeToString();
 
         /*	public override System.String Message
                 {
@@ -363,16 +351,10 @@ namespace Novell.Directory.Ldap
                     
                 }
             */
-        // The Result Code
-        private readonly int resultCode;
         // The localized message
         private string messageOrKey;
         // The arguments associated with the localized message
         private object[] arguments;
-        // The Matched DN
-        private readonly string matchedDN;
-        // The Root Cause
-        private readonly Exception rootException;
         // A message from the server
         private readonly string serverMessage;
 
@@ -1150,13 +1132,13 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg,
             string matchedDN, Exception rootException)
-            : base(ResourcesHandler.getMessage(messageOrKey, arguments))
+            : base(ResourcesHandler.GetMessage(messageOrKey, arguments))
         {
             this.messageOrKey = messageOrKey;
             this.arguments = arguments;
-            this.resultCode = resultCode;
-            this.rootException = rootException;
-            this.matchedDN = matchedDN;
+            ResultCode = resultCode;
+            Cause = rootException;
+            MatchedDN = matchedDN;
             serverMessage = serverMsg;
         }
 
@@ -1167,9 +1149,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message for the result code in the LdapException object.
         /// </returns>
-        public virtual string resultCodeToString()
+        public virtual string ResultCodeToString()
         {
-            return ResourcesHandler.getResultString(resultCode);
+            return ResourcesHandler.GetResultString(ResultCode);
         }
 
         /// <summary>
@@ -1183,9 +1165,9 @@ namespace Novell.Directory.Ldap
         ///     The message corresponding to the specified result code, or
         ///     or null if the message is not available for the default locale.
         /// </returns>
-        public static string resultCodeToString(int code)
+        public static string ResultCodeToString(int code)
         {
-            return ResourcesHandler.getResultString(code);
+            return ResourcesHandler.GetResultString(code);
         }
 
         /// <summary>
@@ -1200,9 +1182,9 @@ namespace Novell.Directory.Ldap
         ///     specified locale, or null if the message is not available
         ///     for the requested locale.
         /// </returns>
-        public virtual string resultCodeToString(CultureInfo locale)
+        public virtual string ResultCodeToString(CultureInfo locale)
         {
-            return ResourcesHandler.getResultString(resultCode, locale);
+            return ResourcesHandler.GetResultString(ResultCode, locale);
         }
 
         /// <summary>
@@ -1221,19 +1203,16 @@ namespace Novell.Directory.Ldap
         ///     specified locale, or null if the message is not available
         ///     for the requested locale.
         /// </returns>
-        public static string resultCodeToString(int code, CultureInfo locale)
+        public static string ResultCodeToString(int code, CultureInfo locale)
         {
-            return ResourcesHandler.getResultString(code, locale);
+            return ResourcesHandler.GetResultString(code, locale);
         }
 
         /// <summary>
         ///     returns a string of information about the exception and the
         ///     the nested exceptions, if any.
         /// </summary>
-        public override string ToString()
-        {
-            return getExceptionString("LdapException");
-        }
+        public override string ToString() => GetExceptionString("LdapException");
 
         /// <summary>
         ///     builds a string of information about the exception and the
@@ -1242,25 +1221,25 @@ namespace Novell.Directory.Ldap
         /// <param name="exception">
         ///     The name of the exception class
         /// </param>
-        internal virtual string getExceptionString(string exception)
+        internal virtual string GetExceptionString(string exception)
         {
             string tmsg;
 
             // Format the basic exception information
 
             // Craft a string from the resouce file
-            var msg = ResourcesHandler.getMessage("TOSTRING",
-                new object[] {exception, base.Message, resultCode, resultCodeToString()});
+            var msg = ResourcesHandler.GetMessage("TOSTRING",
+                new object[] { exception, base.Message, ResultCode, ResultCodeToString() });
             // If found no string from resource file, use a default string
             if (msg.ToUpper().Equals("TOSTRING".ToUpper()))
             {
-                msg = exception + ": (" + resultCode + ") " + resultCodeToString();
+                msg = exception + ": (" + ResultCode + ") " + ResultCodeToString();
             }
 
             // Add server message
-            if ((object) serverMessage != null && serverMessage.Length != 0)
+            if (string.IsNullOrEmpty(serverMessage))
             {
-                tmsg = ResourcesHandler.getMessage("SERVER_MSG", new object[] {exception, serverMessage});
+                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] { exception, serverMessage });
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                 {
@@ -1271,21 +1250,21 @@ namespace Novell.Directory.Ldap
             }
 
             // Add Matched DN message
-            if ((object) matchedDN != null)
+            if (string.IsNullOrEmpty(MatchedDN))
             {
-                tmsg = ResourcesHandler.getMessage("MATCHED_DN", new object[] {exception, matchedDN});
+                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] { exception, MatchedDN });
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("MATCHED_DN".ToUpper()))
                 {
-                    tmsg = exception + ": Matched DN: " + matchedDN;
+                    tmsg = exception + ": Matched DN: " + MatchedDN;
                 }
 
                 msg = msg + '\n' + tmsg;
             }
 
-            if (rootException != null)
+            if (Cause != null)
             {
-                msg = msg + '\n' + rootException;
+                msg = msg + '\n' + Cause;
             }
             return msg;
         }

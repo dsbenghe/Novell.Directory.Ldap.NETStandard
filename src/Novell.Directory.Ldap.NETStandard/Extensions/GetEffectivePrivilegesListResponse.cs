@@ -45,23 +45,19 @@ namespace Novell.Directory.Ldap.Extensions
         ///     2.16.840.1.113719.1.27.100.104
         /// </summary>
 
-        //Identity returned by the server
-        private readonly int[] privileges = {0};
-
-        //Number of responses
-        private readonly int no_privileges;
+        public int[] Privileges { get; } = { 0 };
 
         public GetEffectivePrivilegesListResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
         {
             /// <summary> Constructs an object from the responseValue which contains the effective
-            /// privileges.
+            /// Privileges.
             /// 
             /// The constructor parses the responseValue which has the following
             /// format:
             /// responseValue ::=<br>
             /// <p>SEQUENCE numberofresponses ::= INTEGER <br>
             /// SET of [<br>
-            /// SEQUENCES of {privileges INTEGER}]<br>
+            /// SEQUENCES of {Privileges INTEGER}]<br>
             ///  
             /// </summary>
             /// <exception> IOException The responseValue could not be decoded.
@@ -75,31 +71,23 @@ namespace Novell.Directory.Ldap.Extensions
 
                 //Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
-                var asn1_seq1 = (Asn1Sequence) decoder.decode(returnedValue);
+                var asn1_seq1 = decoder.Decode(returnedValue) as Asn1Sequence;
                 if (asn1_seq1 == null)
                     throw new IOException("Decoding error");
-                var asn1_seq2 = (Asn1Sequence) asn1_seq1.get_Renamed(0);
-                no_privileges = ((Asn1Integer) asn1_seq2.get_Renamed(0)).intValue();
+                var asn1_seq2 = asn1_seq1[0] as Asn1Sequence;
+                int no_Privileges = (asn1_seq2[0] as Asn1Integer).IntValue;
 
-                Asn1Set set_privileg_response = null;
-
-                set_privileg_response = (Asn1Set) asn1_seq1.get_Renamed(1);
+                 
+                Asn1Set set_privileg_response = (Asn1Set)asn1_seq1[1];
                 Asn1Sequence seq2 = null;
-                privileges = new int[no_privileges];
-                for (var index = 0; index < no_privileges; index++)
+                Privileges = new int[no_Privileges];
+                for (var index = 0; index < no_Privileges; index++)
                 {
-                    seq2 = (Asn1Sequence) set_privileg_response.get_Renamed(index);
-                    privileges[index] = ((Asn1Integer) seq2.get_Renamed(0)).intValue();
+                    seq2 = set_privileg_response[index] as Asn1Sequence;
+                    Privileges[index] = (seq2[0] as Asn1Integer).IntValue;
                 }
             }
-        }
-
-        public int[] getPrivileges()
-        {
-            return privileges;
         }
     }
 }

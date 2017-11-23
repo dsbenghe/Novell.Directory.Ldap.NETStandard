@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.LdapUnsolicitedNotificationListener.cs
+// Novell.Directory.Ldap.LdapReferralHandler.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -32,20 +32,14 @@
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     An object that implements this interface can be notified when
-    ///     unsolicited messages arrive from the server. A client registers the
-    ///     object with LdapConnection.AddUnsolicitedNotificationListener.
+    ///     Shared ancestor to the two types of referral objects - LdapBindHandler and
+    ///     LdapAuthHandler.
     /// </summary>
-    public interface LdapUnsolicitedNotificationListener
+    /// <seealso cref="ILdapBindHandler">
+    /// </seealso>
+    /// <seealso cref="LdapAuthHandler">
+    /// </seealso>
+    public interface ILdapReferralHandler
     {
-        /// <summary>
-        ///     The method is called when an unsolicited message arrives from a
-        ///     server, if the object has registered with LdapCo
-        ///     LdapConnection.AddUnsolicitedNotificationListener.
-        /// </summary>
-        /// <param name="msg">
-        ///     An unsolicited message received from the server.
-        /// </param>
-        void messageReceived(LdapExtendedResponse msg);
     }
 }

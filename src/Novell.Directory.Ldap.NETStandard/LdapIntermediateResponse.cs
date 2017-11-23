@@ -46,8 +46,6 @@ namespace Novell.Directory.Ldap
 
     public class LdapIntermediateResponse : LdapResponse
     {
-        private static readonly RespExtensionSet registeredResponses = new RespExtensionSet();
-
         /**
          * Registers a class to be instantiated on receipt of a extendedresponse
          * with the given OID.
@@ -62,16 +60,10 @@ namespace Novell.Directory.Ldap
          *                                LdapIntermediateResponse.
          */
 
-        public static void register(string oid, Type extendedResponseClass)
-        {
-            registeredResponses.registerResponseExtension(oid, extendedResponseClass);
-        }
+        public static void Register(string oid, Type extendedResponseClass) => RegisteredResponses.Add(oid, extendedResponseClass);
 
 
-        public static RespExtensionSet getRegisteredResponses()
-        {
-            return registeredResponses;
-        }
+        public static RespExtensionSet RegisteredResponses { get; } = new RespExtensionSet();
 
 
         /**
@@ -92,13 +84,13 @@ namespace Novell.Directory.Ldap
          * @return OID of the response.
          */
 
-        public string getID()
+        public string ID
         {
-            var respOID =
-                ((RfcIntermediateResponse) message.Response).getResponseName();
-            if (respOID == null)
-                return null;
-            return respOID.stringValue();
+            get
+            {
+                var respOID = ((RfcIntermediateResponse)message.Response).ResponseName;
+                return respOID?.StringValue;
+            }
         }
 
         /**
@@ -106,15 +98,14 @@ namespace Novell.Directory.Ldap
          *
          * @return The value of the response.
          */
-
-        [CLSCompliant(false)]
-        public sbyte[] getValue()
+        public byte[] Value
         {
-            var tempString =
-                ((RfcIntermediateResponse) message.Response).getResponse();
-            if (tempString == null)
-                return null;
-            return tempString.byteValue();
+            get
+            {
+                var tempString = (message.Response as RfcIntermediateResponse).Response;
+                return tempString?.ByteValue;
+            }
+
         }
     }
 }

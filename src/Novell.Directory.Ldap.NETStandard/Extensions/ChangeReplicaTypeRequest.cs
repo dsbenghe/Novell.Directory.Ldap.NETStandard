@@ -94,23 +94,27 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) dn == null || (object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (dn == null)
+                    throw new ArgumentNullException(nameof(dn));
+                if (serverDN == null)
+                    throw new ArgumentNullException(nameof(serverDN));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_replicaType = new Asn1Integer(replicaType);
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_dn = new Asn1OctetString(dn);
+                    var asn1_flags = new Asn1Integer(flags);
+                    var asn1_replicaType = new Asn1Integer(replicaType);
+                    var asn1_serverDN = new Asn1OctetString(serverDN);
+                    var asn1_dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_replicaType.encode(encoder, encodedData);
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                    asn1_flags.Encode(encoder, encodedData);
+                    asn1_replicaType.Encode(encoder, encodedData);
+                    asn1_serverDN.Encode(encoder, encodedData);
+                    asn1_dn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

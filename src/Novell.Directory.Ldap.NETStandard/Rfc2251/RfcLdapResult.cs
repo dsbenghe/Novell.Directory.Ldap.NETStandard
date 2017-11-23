@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         referral        [3] Referral OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcLdapResult : Asn1Sequence, RfcResponse
+    public class RfcLdapResult : Asn1Sequence, IRfcResponse
     {
         /// <summary> Context-specific TAG for optional Referral.</summary>
         public const int REFERRAL = 3;
@@ -136,27 +136,26 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcLdapResult(Asn1Enumerated resultCode, RfcLdapDN matchedDN, RfcLdapString errorMessage,
             RfcReferral referral) : base(4)
         {
-            add(resultCode);
-            add(matchedDN);
-            add(errorMessage);
+            Add(resultCode);
+            Add(matchedDN);
+            Add(errorMessage);
             if (referral != null)
-                add(referral);
+                Add(referral);
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream</summary>
-        [CLSCompliant(false)]
-        public RfcLdapResult(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcLdapResult(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
-            if (size() > 3)
+            if (Count > 3)
             {
-                var obj = (Asn1Tagged) get_Renamed(3);
-                var id = obj.getIdentifier();
+                var obj = (Asn1Tagged)this[3];
+                var id = obj.Identifier;
                 if (id.Tag == REFERRAL)
                 {
-                    var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
-                    var bais = new MemoryStream(SupportClass.ToByteArray(content));
-                    set_Renamed(3, new RfcReferral(dec, bais, content.Length));
+                    var content = (obj.TaggedValue as Asn1OctetString).ByteValue;
+                    using (var bais = new MemoryStream(content))
+                        this[3] = new RfcReferral(dec, bais, content.Length);
                 }
             }
         }
@@ -171,10 +170,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the result code
         /// </returns>
-        public Asn1Enumerated getResultCode()
-        {
-            return (Asn1Enumerated) get_Renamed(0);
-        }
+        public Asn1Enumerated ResultCode => this[0] as Asn1Enumerated;
 
         /// <summary>
         ///     Returns the matched DN from the server
@@ -182,10 +178,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the matched DN
         /// </returns>
-        public RfcLdapDN getMatchedDN()
-        {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
-        }
+        public RfcLdapDN MatchedDN => new RfcLdapDN((this[1] as Asn1OctetString).ByteValue);
 
         /// <summary>
         ///     Returns the error message from the server
@@ -193,10 +186,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the server error message
         /// </returns>
-        public RfcLdapString getErrorMessage()
-        {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
-        }
+        public RfcLdapString ErrorMessage => new RfcLdapString((this[2] as Asn1OctetString).ByteValue);
 
         /// <summary>
         ///     Returns the referral(s) from the server
@@ -204,9 +194,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the referral(s)
         /// </returns>
-        public RfcReferral getReferral()
-        {
-            return size() > 3 ? (RfcReferral) get_Renamed(3) : null;
-        }
+        public RfcReferral Referral => Count > 3 ? this[3] as RfcReferral : null;
     }
 }

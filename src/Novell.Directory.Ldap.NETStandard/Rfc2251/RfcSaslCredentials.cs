@@ -55,9 +55,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcSaslCredentials(RfcLdapString mechanism, Asn1OctetString credentials) : base(2)
         {
-            add(mechanism);
+            Add(mechanism);
             if (credentials != null)
-                add(credentials);
+                Add(credentials);
         }
     }
 }

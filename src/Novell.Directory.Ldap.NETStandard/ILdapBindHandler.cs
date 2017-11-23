@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConstraints.ReferralFollowing">
     /// </seealso>
-    public interface LdapBindHandler : LdapReferralHandler
+    public interface ILdapBindHandler : ILdapReferralHandler
     {
         /// <summary>
         ///     Called by LdapConnection when a referral is received.

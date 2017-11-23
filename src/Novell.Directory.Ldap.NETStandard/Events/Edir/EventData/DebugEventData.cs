@@ -32,6 +32,7 @@
 using System.Collections;
 using System.Text;
 using Novell.Directory.Ldap.Asn1;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Events.Edir.EventData
 {
@@ -40,82 +41,33 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugEventData : BaseEdirEventData
     {
-        protected int ds_time;
+        public int DSTime { get; protected set; }
+        public int MilliSeconds { get; protected set; }
+        public string PerpetratorDN { get; protected set; }
+        public string FormatString { get; protected set; }
+        public int Verb { get; protected set; }
 
-        public int DSTime
-        {
-            get { return ds_time; }
-        }
-
-        protected int milli_seconds;
-
-        public int MilliSeconds
-        {
-            get { return milli_seconds; }
-        }
-
-        protected string strPerpetratorDN;
-
-        public string PerpetratorDN
-        {
-            get { return strPerpetratorDN; }
-        }
-
-        protected string strFormatString;
-
-        public string FormatString
-        {
-            get { return strFormatString; }
-        }
-
-        protected int nVerb;
-
-        public int Verb
-        {
-            get { return nVerb; }
-        }
-
-        protected int parameter_count;
-
-        public int ParameterCount
-        {
-            get { return parameter_count; }
-        }
-
-        protected ArrayList parameter_collection;
-
-        public ArrayList Parameters
-        {
-            get { return parameter_collection; }
-        }
+        public int ParameterCount { get; protected set; }
+        public IList<DebugParameter> Parameters { get; protected set; }
 
         public DebugEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            ds_time = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            milli_seconds =
-                ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-
-            strPerpetratorDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strFormatString =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            nVerb = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            parameter_count =
-                ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-
-            parameter_collection = new ArrayList();
-
-            if (parameter_count > 0)
+            DSTime = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue;
+            MilliSeconds = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue;
+            PerpetratorDN = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
+            FormatString = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue;
+            Verb = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue;
+            ParameterCount = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue;
+            Parameters = new List<DebugParameter>(ParameterCount);
+            if (ParameterCount > 0)
             {
-                var seq = (Asn1Sequence) decoder.decode(decodedData, length);
-                for (var i = 0; i < parameter_count; i++)
+                Asn1Sequence seq = Decoder.Decode(DecodedData, length) as Asn1Sequence;
+                for (var i = 0; i < ParameterCount; i++)
                 {
-                    parameter_collection.Add(
-                        new DebugParameter((Asn1Tagged) seq.get_Renamed(i))
-                    );
+                    Parameters.Add(new DebugParameter(seq[i] as Asn1Tagged));
                 }
             }
 
@@ -129,14 +81,14 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[DebugEventData");
-            buf.AppendFormat("(Millseconds={0})", milli_seconds);
-            buf.AppendFormat("(DSTime={0})", ds_time);
-            buf.AppendFormat("(PerpetratorDN={0})", strPerpetratorDN);
-            buf.AppendFormat("(Verb={0})", nVerb);
-            buf.AppendFormat("(ParameterCount={0})", parameter_count);
-            for (var i = 0; i < parameter_count; i++)
+            buf.AppendFormat("(Millseconds={0})", MilliSeconds);
+            buf.AppendFormat("(DSTime={0})", DSTime);
+            buf.AppendFormat("(PerpetratorDN={0})", PerpetratorDN);
+            buf.AppendFormat("(Verb={0})", Verb);
+            buf.AppendFormat("(ParameterCount={0})", ParameterCount);
+            for (var i = 0; i < ParameterCount; i++)
             {
-                buf.AppendFormat("(Parameter[{0}]={1})", i, parameter_collection[i]);
+                buf.AppendFormat("(Parameter[{0}]={1})", i, Parameters[i]);
             }
             buf.Append("]");
 

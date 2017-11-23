@@ -100,10 +100,15 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                //Verify the validity of arguments
-                if (objectDN == null || bufferLength == 0 ||
-                    chunkSizesString == null || returnedBuffer == null)
-                    throw new ArgumentException("PARAM_ERROR");
+                if (objectDN == null)
+                    throw new ArgumentNullException(nameof(objectDN));
+                if (bufferLength == 0)
+                    throw new ArgumentOutOfRangeException(nameof(bufferLength));
+                if (chunkSizesString == null)
+                    throw new ArgumentNullException(nameof(chunkSizesString));
+                if (returnedBuffer == null)
+                    throw new ArgumentNullException(nameof(returnedBuffer));
+
 
                 //If encrypted password has null reference make it null String
                 if (passwd == null)
@@ -154,37 +159,42 @@ namespace Novell.Directory.Ldap.Extensions
                     chunkSizesString = chunkSizesString.Substring(chunkIndex + 1);
                 }
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
-
-                //Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
-                var asn1_bufferLength = new Asn1Integer(bufferLength);
-                var asn1_buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
-
-                //Form the chunks sequence to be passed to Server
-                var asn1_chunksSeq = new Asn1Sequence();
-                asn1_chunksSeq.add(new Asn1Integer(chunkSize));
-                var asn1_chunksSet = new Asn1Set();
-                for (var i = 0; i < chunkSize; i++)
+                using (var encodedData = new MemoryStream())
                 {
-                    var tmpChunk = new Asn1Integer(chunks[i]);
-                    var tmpSeq = new Asn1Sequence();
-                    tmpSeq.add(tmpChunk);
-                    asn1_chunksSet.add(tmpSeq);
+                    var encoder = new LBEREncoder();
+
+                    //Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
+                    var asn1_objectDN = new Asn1OctetString(objectDN);
+                    var asn1_passwd = new Asn1OctetString(passwd);
+                    var asn1_bufferLength = new Asn1Integer(bufferLength);
+                    var asn1_buffer = new Asn1OctetString(returnedBuffer);
+
+                    //Form the chunks sequence to be passed to Server
+                    var asn1_chunksSeq = new Asn1Sequence
+                    {
+                        new Asn1Integer(chunkSize)
+                    };
+                    var asn1_chunksSet = new Asn1Set();
+                    for (var i = 0; i < chunkSize; i++)
+                    {
+                        var tmpSeq = new Asn1Sequence
+                        {
+                            new Asn1Integer(chunks[i])
+                        };
+                        asn1_chunksSet.Add(tmpSeq);
+                    }
+                    asn1_chunksSeq.Add(asn1_chunksSet);
+
+                    //Encode data to send to server
+                    asn1_objectDN.Encode(encoder, encodedData);
+                    asn1_passwd.Encode(encoder, encodedData);
+                    asn1_bufferLength.Encode(encoder, encodedData);
+                    asn1_buffer.Encode(encoder, encodedData);
+                    asn1_chunksSeq.Encode(encoder, encodedData);
+
+                    // set the value of operation specific data
+                    Value = encodedData.ToArray();
                 }
-                asn1_chunksSeq.add(asn1_chunksSet);
-
-                //Encode data to send to server
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
-                asn1_bufferLength.encode(encoder, encodedData);
-                asn1_buffer.encode(encoder, encodedData);
-                asn1_chunksSeq.encode(encoder, encodedData);
-
-                // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {

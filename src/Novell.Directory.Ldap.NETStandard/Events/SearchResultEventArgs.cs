@@ -40,45 +40,41 @@ namespace Novell.Directory.Ldap.Events
     public class SearchResultEventArgs : LdapEventArgs
     {
         public SearchResultEventArgs(LdapMessage sourceMessage,
-            EventClassifiers aClassification,
-            LdapEventType aType)
-            : base(sourceMessage, EventClassifiers.CLASSIFICATION_LDAP_PSEARCH, aType)
+                                     EventClassifiers classification,
+                                     LdapEventType type)
+            : base(sourceMessage, EventClassifiers.CLASSIFICATION_LDAP_PSEARCH, type)
         {
         }
 
-        public LdapEntry Entry
-        {
-            get { return ((LdapSearchResult) ldap_message).Entry; }
-        }
+        public LdapEntry Entry => (ContianedEventInformation as LdapSearchResult).Entry;
 
         public override string ToString()
         {
             var buf = new StringBuilder();
 
             buf.AppendFormat("[{0}:", GetType());
-            buf.AppendFormat("(Classification={0})", eClassification);
-            buf.AppendFormat("(Type={0})", getChangeTypeString());
-            buf.AppendFormat("(EventInformation:{0})", getStringRepresentaionOfEventInformation());
+            buf.AppendFormat("(Classification={0})", EventClassification);
+            buf.AppendFormat("(Type={0})", GetChangeTypeString());
+            buf.AppendFormat("(EventInformation:{0})", GetStringRepresentaionOfEventInformation());
             buf.Append("]");
 
             return buf.ToString();
         }
 
-        private string getStringRepresentaionOfEventInformation()
+        private string GetStringRepresentaionOfEventInformation()
         {
             var buf = new StringBuilder();
-            var result = (LdapSearchResult) ldap_message;
+            LdapSearchResult result = ContianedEventInformation as LdapSearchResult;
 
             buf.AppendFormat("(Entry={0})", result.Entry);
             var controls = result.Controls;
 
-            if (null != controls)
+            if (controls != null)
             {
                 buf.Append("(Controls=");
-                var i = 0;
-                foreach (var control in controls)
+                for (int i = 0; i < controls.Length; i++)
                 {
-                    buf.AppendFormat("(Control{0}={1})", ++i, control.ToString());
+                    buf.Append($"(Control{++i}={controls[i].ToString()})");
                 }
                 buf.Append(")");
             }
@@ -86,9 +82,9 @@ namespace Novell.Directory.Ldap.Events
             return buf.ToString();
         }
 
-        private string getChangeTypeString()
+        private string GetChangeTypeString()
         {
-            switch (eType)
+            switch (EventType)
             {
                 case LdapEventType.LDAP_PSEARCH_ADD:
                     return "ADD";
@@ -103,8 +99,8 @@ namespace Novell.Directory.Ldap.Events
                     return "MODDN";
 
                 default:
-                    return "No change type: " + eType;
+                    return "No change type: " + EventType;
             }
         }
-    } // end of class SearchResultEventArgs
+    }
 }

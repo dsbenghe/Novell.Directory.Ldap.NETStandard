@@ -50,13 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     A string value specifying the bind dn returned by the server.
         /// </returns>
-        public virtual string Identity
-        {
-            get { return identity; }
-        }
-
-        // Identity returned by the server
-        private readonly string identity;
+        public virtual string Identity { get;}
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the bind dn.
@@ -79,22 +73,20 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
                 // The only parameter returned should be an octet string
-                var asn1_identity = (Asn1OctetString) decoder.decode(returnedValue);
+                var asn1_identity = decoder.Decode(returnedValue) as Asn1OctetString;
                 if (asn1_identity == null)
                     throw new IOException("Decoding error");
 
                 // Convert to normal string object
-                identity = asn1_identity.stringValue();
-                if ((object) identity == null)
+                Identity = asn1_identity.StringValue;
+                if (Identity == null)
                     throw new IOException("Decoding error");
             }
             else
             {
-                identity = "";
+                Identity = "";
             }
         }
     }

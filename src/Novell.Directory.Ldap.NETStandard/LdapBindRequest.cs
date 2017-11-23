@@ -32,6 +32,7 @@
 using System;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap
 {
@@ -54,10 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Authentication DN for a bind request
         /// </returns>
-        public virtual string AuthenticationDN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
+        public virtual string AuthenticationDN => Asn1Object.RequestDN;
 
         /// <summary>
         ///     Constructs a simple bind request.
@@ -82,12 +80,11 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the simple bind request,
         ///     or null if none.
         /// </param>
-        [CLSCompliant(false)]
-        public LdapBindRequest(int version, string dn, sbyte[] passwd, LdapControl[] cont)
+        public LdapBindRequest(int version, string dn, byte[] passwd, LdapControl[] cont)
             : base(
                 BIND_REQUEST,
                 new RfcBindRequest(new Asn1Integer(version), new RfcLdapDN(dn),
-                    new RfcAuthenticationChoice(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0),
+                    new RfcAuthenticationChoice(new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, false, 0),
                         new Asn1OctetString(passwd), false))), cont)
         {
         }
@@ -96,9 +93,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this add request.
         ///     #return an Asn1 representation of this object.
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString() => Asn1Object.ToString();
     }
 }

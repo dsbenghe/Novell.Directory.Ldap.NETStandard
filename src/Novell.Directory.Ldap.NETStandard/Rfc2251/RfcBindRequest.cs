@@ -31,6 +31,7 @@
 
 using System;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -43,33 +44,30 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         authentication          AuthenticationChoice }
     ///     </pre>
     /// </summary>
-    public class RfcBindRequest : Asn1Sequence, RfcRequest
+    public class RfcBindRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> </summary>
         /// <summary> Sets the protocol version</summary>
         public virtual Asn1Integer Version
         {
-            get { return (Asn1Integer) get_Renamed(0); }
-
-            set { set_Renamed(0, value); }
+            get => (Asn1Integer)this[0];
+            set => this[0] = value;
         }
 
         /// <summary> </summary>
         /// <summary> </summary>
         public virtual RfcLdapDN Name
         {
-            get { return (RfcLdapDN) get_Renamed(1); }
-
-            set { set_Renamed(1, value); }
+            get => (RfcLdapDN)this[1];
+            set => this[1] = value;
         }
 
         /// <summary> </summary>
         /// <summary> </summary>
         public virtual RfcAuthenticationChoice AuthenticationChoice
         {
-            get { return (RfcAuthenticationChoice) get_Renamed(2); }
-
-            set { set_Renamed(2, value); }
+            get => (RfcAuthenticationChoice)this[2];
+            set => this[2] = value;
         }
 
         /// <summary>
@@ -77,7 +75,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.APPLICATION, true,
+        private static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.APPLICATION, true,
             LdapMessage.BIND_REQUEST);
 
 
@@ -88,13 +86,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcBindRequest(Asn1Integer version, RfcLdapDN name, RfcAuthenticationChoice auth) : base(3)
         {
-            add(version);
-            add(name);
-            add(auth);
+            Add(version);
+            Add(name);
+            Add(auth);
         }
 
-        [CLSCompliant(false)]
-        public RfcBindRequest(int version, string dn, string mechanism, sbyte[] credentials)
+        public RfcBindRequest(int version, string dn, string mechanism, byte[] credentials)
             : this(new Asn1Integer(version), new RfcLdapDN(dn), new RfcAuthenticationChoice(mechanism, credentials))
         {
         }
@@ -103,22 +100,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Bind Request copying the original data from
         ///     an existing request.
         /// </summary>
-        internal RfcBindRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
+        internal RfcBindRequest(Asn1Object[] origRequest, string @base) : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if (@base != null)
             {
-                set_Renamed(1, new RfcLdapDN(base_Renamed));
+                this[1] = new RfcLdapDN(@base);
             }
         }
-
-        //*************************************************************************
-        // Mutators
-        //*************************************************************************
-
-        //*************************************************************************
-        // Accessors
-        //*************************************************************************
 
         /// <summary>
         ///     Override getIdentifier to return an application-wide id.
@@ -126,19 +115,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return ID;
+            get => ID;
+            set => base.Identifier = value;
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            return new RfcBindRequest(toArray(), base_Renamed);
-        }
+        public IRfcRequest DupRequest(string @base, string filter, bool request) => new RfcBindRequest(ToArray(), @base);
 
-        public string getRequestDN()
-        {
-            return ((RfcLdapDN) get_Renamed(1)).stringValue();
-        }
+        public string RequestDN => ((RfcLdapDN)this[1]).StringValue;
     }
 }

@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.Utilclass.ArrayEnumeration.cs
+// Novell.Directory.Ldap.LdapUnsolicitedNotificationListener.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -29,63 +29,23 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.Collections;
-
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap
 {
-    public class ArrayEnumeration : IEnumerator
+    /// <summary>
+    ///     An object that implements this interface can be notified when
+    ///     unsolicited messages arrive from the server. A client registers the
+    ///     object with LdapConnection.AddUnsolicitedNotificationListener.
+    /// </summary>
+    public interface ILdapUnsolicitedNotificationListener
     {
-        private object tempAuxObj;
-
-        public virtual bool MoveNext()
-        {
-            var result = hasMoreElements();
-            if (result)
-            {
-                tempAuxObj = nextElement();
-            }
-            return result;
-        }
-
-        public virtual void Reset()
-        {
-            tempAuxObj = null;
-        }
-
-        public virtual object Current
-        {
-            get { return tempAuxObj; }
-        }
-
-        private readonly object[] eArray;
-        private int index;
-
         /// <summary>
-        ///     Constructor to create the Enumeration
+        ///     The method is called when an unsolicited message arrives from a
+        ///     server, if the object has registered with LdapCo
+        ///     LdapConnection.AddUnsolicitedNotificationListener.
         /// </summary>
-        /// <param name="eArray">
-        ///     the array to use for the Enumeration
+        /// <param name="msg">
+        ///     An unsolicited message received from the server.
         /// </param>
-        public ArrayEnumeration(object[] eArray)
-        {
-            this.eArray = eArray;
-        }
-
-        public bool hasMoreElements()
-        {
-            if (eArray == null)
-                return false;
-            return index < eArray.Length;
-        }
-
-        public object nextElement()
-        {
-            if (eArray == null || index >= eArray.Length)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-            return eArray[index++];
-        }
+        void MessageReceived(LdapExtendedResponse msg);
     }
 }

@@ -32,6 +32,7 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///     responseName     [10] LDAPOID OPTIONAL,
     ///     responseValue    [11] OCTET STRING OPTIONAL }
     /// </summary>
-    public class RfcIntermediateResponse : Asn1Sequence, RfcResponse
+    public class RfcIntermediateResponse : Asn1Sequence, IRfcResponse
     {
         /**
          * Context-specific TAG for optional responseName.
@@ -56,8 +57,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         public const int TAG_RESPONSE = 1;
 
         private int m_referralIndex;
-        private readonly int m_responseNameIndex;
-        private readonly int m_responseValueIndex;
+        private readonly int _responseNameIndex;
+        private readonly int _responseValueIndex;
 
 
         //*************************************************************************
@@ -95,93 +96,57 @@ namespace Novell.Directory.Ldap.Rfc2251
          * oid of the response. The element at m_responseValueIndex will be set
          * to an ASN1OctetString containing the value bytes.
          */
-
-        [CLSCompliant(false)]
-        public RfcIntermediateResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
-        //		throws IOException
+        public RfcIntermediateResponse(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
-            //		super(dec, in, len);
 
             var i = 0;
-            m_responseNameIndex = m_responseValueIndex = 0;
+            _responseNameIndex = _responseValueIndex = 0;
 
             // decode optional tagged elements. The parent class constructor will
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.
 
-            if (size() >= 3) //the incorrectly encoded case, LDAPResult contains 
+            if (Count >= 3) //the incorrectly encoded case, LDAPResult contains 
                 i = 3; //at least 3 components
             else
                 i = 0; //correctly encoded case, can have zero components
 
-            for (; i < size(); i++)
+            for (; i < Count; i++)
             {
-                var obj = (Asn1Tagged) get_Renamed(i);
-                var id = obj.getIdentifier();
+                var obj = this[i] as Asn1Tagged;
+                var id = obj.Identifier;
                 switch (id.Tag)
                 {
                     case TAG_RESPONSE_NAME:
-                        set_Renamed(i, new RfcLdapOID(
-                            ((Asn1OctetString) obj.taggedValue()).byteValue()));
-                        m_responseNameIndex = i;
+                        this[i] = new RfcLdapOID(((Asn1OctetString)obj.TaggedValue).ByteValue);
+                        _responseNameIndex = i;
                         break;
 
                     case TAG_RESPONSE:
-                        set_Renamed(i, obj.taggedValue());
-                        m_responseValueIndex = i;
+                        this[i] = obj.TaggedValue;
+                        _responseValueIndex = i;
                         break;
                 }
             }
         }
 
-        public Asn1Enumerated getResultCode()
-        {
-            if (size() > 3)
-                return (Asn1Enumerated) get_Renamed(0);
-            return null;
-        }
+        public Asn1Enumerated ResultCode => Count > 3 ? this[0] as Asn1Enumerated : null;
 
-        public RfcLdapDN getMatchedDN()
-        {
-            if (size() > 3)
-                return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
-            return null;
-        }
+        public RfcLdapDN MatchedDN => Count > 3 ? new RfcLdapDN((this[1] as Asn1OctetString).ByteValue) : null;
 
-        public RfcLdapString getErrorMessage()
-        {
-            if (size() > 3)
-                return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
-            return null;
-        }
+        public RfcLdapString ErrorMessage => Count > 3 ? new RfcLdapString((this[2] as Asn1OctetString).ByteValue) : null;
 
-        public RfcReferral getReferral()
-        {
-            return size() > 3 ? (RfcReferral) get_Renamed(3) : null;
-        }
+        public RfcReferral Referral => Count > 3 ? this[3] as RfcReferral : null;
 
-        public RfcLdapOID getResponseName()
-        {
-            return m_responseNameIndex >= 0
-                ? (RfcLdapOID) get_Renamed(m_responseNameIndex)
-                : null;
-        }
+        public RfcLdapOID ResponseName => _responseNameIndex >= 0 ? this[_responseNameIndex] as RfcLdapOID : null;
 
-        public Asn1OctetString getResponse()
-        {
-            return m_responseValueIndex != 0
-                ? (Asn1OctetString) get_Renamed(m_responseValueIndex)
-                : null;
-        }
+        public Asn1OctetString Response => _responseValueIndex != 0 ? this[_responseValueIndex] as Asn1OctetString : null;
 
-        /**
-         * Override getIdentifier to return an application-wide id.
-         */
 
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true,
-                LdapMessage.INTERMEDIATE_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.INTERMEDIATE_RESPONSE);
         }
     }
 }

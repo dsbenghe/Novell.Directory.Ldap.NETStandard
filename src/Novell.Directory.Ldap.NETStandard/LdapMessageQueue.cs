@@ -47,10 +47,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     name of object instance used for debug
         /// </returns>
-        internal virtual string DebugName
-        {
-            get { return name; }
-        }
+        internal virtual string DebugName { get; set; }
 
         /// <summary>
         ///     Returns the internal client message agent
@@ -58,10 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The internal client message agent
         /// </returns>
-        internal virtual MessageAgent MessageAgent
-        {
-            get { return agent; }
-        }
+        internal virtual MessageAgent MessageAgent { get; set; }
 
         /// <summary>
         ///     Returns the message IDs for all outstanding requests. These are requests
@@ -73,21 +67,12 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message IDs for all outstanding requests.
         /// </returns>
-        public virtual int[] MessageIDs
-        {
-            get { return agent.MessageIDs; }
-        }
+        public virtual int[] MessageIDs => MessageAgent.MessageIDs;
 
-        /// <summary> The message agent object associated with this queue</summary>
-        internal MessageAgent agent;
-
-        // Queue name used only for debug
-
-        internal string name = "";
 
         // nameLock used to protect queueNum during increment
 
-        internal static object nameLock;
+        internal static object nameLock = new object();
 
         // Queue number used only for debug
 
@@ -102,7 +87,7 @@ namespace Novell.Directory.Ldap
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
             // Get a unique connection name for debug
-            this.agent = agent;
+            MessageAgent = agent;
         }
 
         /// <summary>
@@ -126,87 +111,46 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapMessage getResponse()
-        {
-            return getResponse(null);
-        }
+        public virtual LdapMessage Response => GetResponse(null);
 
-        /// <summary>
-        ///     Returns the response from an Ldap request for a particular message ID.
-        ///     The getResponse method blocks until a response is available
-        ///     for a particular message ID, or until all operations associated
-        ///     with the object have completed or been canceled, and
-        ///     then returns the response.  If there is no outstanding operation for
-        ///     the message ID (or if it is zero or a negative number),
-        ///     IllegalArgumentException is thrown.
-        ///     The application is responsible to determine the type of message
-        ///     returned.
-        /// </summary>
-        /// <param name="msgid">
-        ///     query for responses for a specific message request
-        /// </param>
-        /// <returns>
-        ///     The response from the server.
-        /// </returns>
-        /// <seealso cref="LdapResponse">
-        /// </seealso>
-        /// <seealso cref="LdapSearchResult">
-        /// </seealso>
-        /// <seealso cref="LdapSearchResultReference">
-        /// </seealso>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public virtual LdapMessage getResponse(int msgid)
-        {
-            return getResponse(new Integer32(msgid));
-        }
 
         /// <summary>
         ///     Private implementation of getResponse.
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case
         /// </summary>
-        private LdapMessage getResponse(Integer32 msgid)
+        public LdapMessage GetResponse(int? msgid)
         {
             object resp;
-            LdapMessage response;
-            if ((resp = agent.getLdapMessage(msgid)) == null)
+            if ((resp = MessageAgent.GetLdapMessage(msgid)) == null)
             {
                 // blocks
                 return null; // no messages from this agent
             }
             // Local error occurred, contains a LocalException
-            if (resp is LdapResponse)
+            if (resp is LdapResponse ldapRet)
             {
-                return (LdapMessage) resp;
+                return ldapRet;
             }
             // Normal message handling
-            var message = (RfcLdapMessage) resp;
+            var message = resp as RfcLdapMessage;
             switch (message.Type)
             {
                 case LdapMessage.SEARCH_RESPONSE:
-                    response = new LdapSearchResult(message);
-                    break;
+                    return new LdapSearchResult(message);
 
                 case LdapMessage.SEARCH_RESULT_REFERENCE:
-                    response = new LdapSearchResultReference(message);
-                    break;
+                    return new LdapSearchResultReference(message);
 
                 case LdapMessage.EXTENDED_RESPONSE:
-                    response = ExtResponseFactory.convertToExtendedResponse(message);
-                    break;
+                    return ExtResponseFactory.ConvertToExtendedResponse(message);
 
                 case LdapMessage.INTERMEDIATE_RESPONSE:
-                    response = IntermediateResponseFactory.convertToIntermediateResponse(message);
-                    break;
+                    return IntermediateResponseFactory.ConvertToIntermediateResponse(message);
 
                 default:
-                    response = new LdapResponse(message);
-                    break;
+                    return new LdapResponse(message);
             }
-            return response;
         }
 
         /// <summary>
@@ -219,10 +163,7 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse,
         ///     otherwise false.
         /// </returns>
-        public virtual bool isResponseReceived()
-        {
-            return agent.isResponseReceived();
-        }
+        public virtual bool IsResponseReceived() => MessageAgent.IsResponseReceived();
 
         /// <summary>
         ///     Reports true if a response has been received from the server for
@@ -237,10 +178,7 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse
         ///     for the specified message ID, otherwise false.
         /// </returns>
-        public virtual bool isResponseReceived(int msgid)
-        {
-            return agent.isResponseReceived(msgid);
-        }
+        public virtual bool IsResponseReceived(int msgid) => MessageAgent.IsResponseReceived(msgid);
 
         /// <summary>
         ///     Reports true if all results have been received for a particular
@@ -251,14 +189,6 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if there is no outstanding operation
         ///     for the message ID,
         /// </summary>
-        public virtual bool isComplete(int msgid)
-        {
-            return agent.isComplete(msgid);
-        }
-
-        static LdapMessageQueue()
-        {
-            nameLock = new object();
-        }
+        public virtual bool IsComplete(int msgid) => MessageAgent.IsComplete(msgid);
     }
 }

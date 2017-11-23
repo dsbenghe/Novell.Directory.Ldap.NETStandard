@@ -56,23 +56,21 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var addreq = (RfcAddRequest) Asn1Object.getRequest();
+                RfcAddRequest addreq = Asn1Object.Request as RfcAddRequest;
 
                 var attrs = new LdapAttributeSet();
 
                 // Build the list of attributes
-                var seqArray = addreq.Attributes.toArray();
-                for (var i = 0; i < seqArray.Length; i++)
+                var seqArray = addreq.Attributes;
+                foreach(RfcAttributeTypeAndValues seq in addreq.Attributes)
                 {
-                    var seq = (RfcAttributeTypeAndValues) seqArray[i];
-                    var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).stringValue());
+                    var attr = new LdapAttribute((seq[0] as Asn1OctetString).StringValue);
 
                     // Add the values to the attribute
-                    var set_Renamed = (Asn1SetOf) seq.get_Renamed(1);
-                    object[] setArray = set_Renamed.toArray();
-                    for (var j = 0; j < setArray.Length; j++)
+                    var set_Renamed = (Asn1SetOf)seq[1];
+                    foreach (var item in set_Renamed)
                     {
-                        attr.addValue(((Asn1OctetString) setArray[j]).byteValue());
+                        attr.AddValue((item as Asn1OctetString).ByteValue);
                     }
                     attrs.Add(attr);
                 }
@@ -92,7 +90,7 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         public LdapAddRequest(LdapEntry entry, LdapControl[] cont)
-            : base(ADD_REQUEST, new RfcAddRequest(new RfcLdapDN(entry.DN), makeRfcAttrList(entry)), cont)
+            : base(ADD_REQUEST, new RfcAddRequest(new RfcLdapDN(entry.DN), MakeRfcAttrList(entry)), cont)
         {
         }
 
@@ -102,22 +100,19 @@ namespace Novell.Directory.Ldap
         /// <param name="entry">
         ///     The LdapEntry associated with this add request.
         /// </param>
-        private static RfcAttributeList makeRfcAttrList(LdapEntry entry)
+        private static RfcAttributeList MakeRfcAttrList(LdapEntry entry)
         {
             // convert Java-API LdapEntry to RFC2251 AttributeList
-            var attrSet = entry.getAttributeSet();
+            var attrSet = entry.AttributeSet;
             var attrList = new RfcAttributeList(attrSet.Count);
-            var itr = attrSet.GetEnumerator();
-            while (itr.MoveNext())
+            foreach(LdapAttribute item in attrSet)
             {
-                var attr = (LdapAttribute) itr.Current;
-                var vals = new Asn1SetOf(attr.size());
-                var attrEnum = attr.ByteValues;
-                while (attrEnum.MoveNext())
+                var vals = new Asn1SetOf(item.Size);
+                foreach(byte[] info in item.ByteValues)
                 {
-                    vals.add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
+                    vals.Add(new RfcAttributeValue(info));
                 }
-                attrList.add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
+                attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(item.Name), vals));
             }
             return attrList;
         }
@@ -126,9 +121,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this add request.
         ///     #return an Asn1 representation of this object.
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString() => Asn1Object.ToString();
     }
 }

@@ -50,13 +50,8 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     String value specifying the identity returned by the server
         /// </returns>
-        public virtual string[] ReplicaList
-        {
-            get { return replicaList; }
-        }
+        public virtual string[] ReplicaList { get; }
 
-        // Identity returned by the server
-        private readonly string[] replicaList;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the list
@@ -74,7 +69,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             if (ResultCode != LdapException.SUCCESS)
             {
-                replicaList = new string[0];
+                ReplicaList = new string[0];
             }
             else
             {
@@ -85,29 +80,25 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.decode(returnedValue);
+                var returnedSequence = decoder.Decode(returnedValue) as Asn1Sequence;
                 if (returnedSequence == null)
                     throw new IOException("Decoding error");
 
-                // How many replicas were returned
-                var len = returnedSequence.size();
-                replicaList = new string[len];
+                ReplicaList = new string[returnedSequence.Count];
 
                 // Copy each one into our String array
-                for (var i = 0; i < len; i++)
+                for (var i = 0; i < returnedSequence.Count; i++)
                 {
                     // Get the next Asn1Octet String in the sequence
-                    var asn1_nextReplica = (Asn1OctetString) returnedSequence.get_Renamed(i);
+                    var asn1_nextReplica = returnedSequence[i] as Asn1OctetString;
                     if (asn1_nextReplica == null)
                         throw new IOException("Decoding error");
 
                     // Convert to a string
-                    replicaList[i] = asn1_nextReplica.stringValue();
-                    if ((object) replicaList[i] == null)
+                    ReplicaList[i] = asn1_nextReplica.StringValue;
+                    if (ReplicaList[i] == null)
                         throw new IOException("Decoding error");
                 }
             }

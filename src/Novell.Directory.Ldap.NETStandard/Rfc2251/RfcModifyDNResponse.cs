@@ -32,6 +32,7 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -47,9 +48,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         // Constructor for ModifyDNResponse
         //*************************************************************************
 
-        /// <summary> Create a ModifyDNResponse by decoding it from an InputStream</summary>
-        [CLSCompliant(false)]
-        public RfcModifyDNResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        /// <summary> 
+        /// Create a ModifyDNResponse by decoding it from an InputStream
+        /// </summary>
+        public RfcModifyDNResponse(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
         }
 
@@ -78,9 +80,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RDN_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.MODIFY_RDN_RESPONSE);
         }
     }
 }

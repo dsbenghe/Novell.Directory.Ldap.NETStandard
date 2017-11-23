@@ -29,8 +29,8 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         DelRequest ::= [APPLICATION 10] LdapDN
     ///     </pre>
     /// </summary>
-    public class RfcDelRequest : RfcLdapDN, RfcRequest
+    public class RfcDelRequest : RfcLdapDN, IRfcRequest
     {
         //*************************************************************************
         // Constructor for DelRequest
@@ -52,7 +52,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="dn">
         ///     The Distinguished Name of the entry to delete.
         /// </param>
-        public RfcDelRequest(string dn) : base(dn)
+        public RfcDelRequest(string dn)
+            : base(dn)
         {
         }
 
@@ -62,8 +63,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="dn">
         ///     The Distinguished Name of the entry to delete.
         /// </param>
-        [CLSCompliant(false)]
-        public RfcDelRequest(sbyte[] dn) : base(dn)
+        public RfcDelRequest(byte[] dn)
+            : base(dn)
         {
         }
 
@@ -73,23 +74,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     when this object is encoded.
         ///     Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.DEL_REQUEST);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, false, LdapMessage.DEL_REQUEST);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            if ((object) base_Renamed == null)
-            {
-                return new RfcDelRequest(byteValue());
-            }
-            return new RfcDelRequest(base_Renamed);
-        }
+        public IRfcRequest DupRequest(string @base, string filter, bool request) => @base == null ? new RfcDelRequest(ByteValue) : new RfcDelRequest(@base);
 
-        public string getRequestDN()
-        {
-            return stringValue();
-        }
+        public string RequestDN => StringValue;
     }
 }

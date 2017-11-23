@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to rename or move
         /// </returns>
-        public virtual string DN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
+        public virtual string DN => Asn1Object.RequestDN;
 
         /// <summary>
         ///     Returns the newRDN of the entry to rename or move in the directory
@@ -70,9 +67,9 @@ namespace Novell.Directory.Ldap
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var relDN = (RfcRelativeLdapDN) req.toArray()[1];
-                return relDN.stringValue();
+                var req = (RfcModifyDNRequest) Asn1Object.Request;
+                var relDN = (RfcRelativeLdapDN) req.ToArray()[1];
+                return relDN.StringValue;
             }
         }
 
@@ -88,9 +85,9 @@ namespace Novell.Directory.Ldap
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var delOld = (Asn1Boolean) req.toArray()[2];
-                return delOld.booleanValue();
+                var req = (RfcModifyDNRequest) Asn1Object.Request;
+                var delOld = (Asn1Boolean) req.ToArray()[2];
+                return delOld.BooleanValue;
             }
         }
 
@@ -106,14 +103,14 @@ namespace Novell.Directory.Ldap
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var seq = req.toArray();
+                var req = (RfcModifyDNRequest) Asn1Object.Request;
+                var seq = req.ToArray();
                 if (seq.Length < 4 || seq[3] == null)
                 {
                     return null;
                 }
-                var parentDN = (RfcLdapDN) req.toArray()[3];
-                return parentDN.stringValue();
+                var parentDN = (RfcLdapDN) req.ToArray()[3];
+                return parentDN.StringValue;
             }
         }
 
@@ -143,7 +140,7 @@ namespace Novell.Directory.Ldap
             : base(
                 MODIFY_RDN_REQUEST,
                 new RfcModifyDNRequest(new RfcLdapDN(dn), new RfcRelativeLdapDN(newRdn), new Asn1Boolean(deleteOldRdn),
-                    (object) newParentdn != null ? new RfcLdapDN(newParentdn) : null), cont)
+                    newParentdn != null ? new RfcLdapDN(newParentdn) : null), cont)
         {
         }
 
@@ -151,9 +148,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this mod DN request
         ///     #return an Asn1 representation of this object
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString() => Asn1Object.ToString();
     }
 }

@@ -37,10 +37,7 @@ namespace Novell.Directory.Ldap.Utilclass
     public class BindProperties
     {
         /// <summary> gets the protocol version</summary>
-        public virtual int ProtocolVersion
-        {
-            get { return version; }
-        }
+        public virtual int ProtocolVersion { get; }
 
         /// <summary>
         ///     Gets the authentication dn
@@ -48,10 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the authentication dn for this connection
         /// </returns>
-        public virtual string AuthenticationDN
-        {
-            get { return dn; }
-        }
+        public virtual string AuthenticationDN { get; }
 
         /// <summary>
         ///     Gets the authentication method
@@ -59,10 +53,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the authentication method for this connection
         /// </returns>
-        public virtual string AuthenticationMethod
-        {
-            get { return method; }
-        }
+        public virtual string AuthenticationMethod { get; }
 
         /// <summary>
         ///     Gets the SASL Bind properties
@@ -70,10 +61,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the sasl bind properties for this connection
         /// </returns>
-        public virtual Hashtable SaslBindProperties
-        {
-            get { return bindProperties; }
-        }
+        public virtual Hashtable SaslBindProperties { get; }
 
         /// <summary>
         ///     Gets the SASL callback handler
@@ -81,10 +69,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the sasl callback handler for this connection
         /// </returns>
-        public virtual object SaslCallbackHandler
-        {
-            get { return bindCallbackHandler; }
-        }
+        public virtual object SaslCallbackHandler { get; }
 
         /// <summary>
         ///     Indicates whether or not the bind properties specify an anonymous bind
@@ -92,27 +77,18 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if the bind properties specify an anonymous bind
         /// </returns>
-        public virtual bool Anonymous
-        {
-            get { return anonymous; }
-        }
+        public virtual bool Anonymous { get; }
 
-        private readonly int version = 3;
-        private readonly string dn;
-        private readonly string method;
-        private readonly bool anonymous;
-        private readonly Hashtable bindProperties;
-        private readonly object bindCallbackHandler;
 
         public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties,
             object bindCallbackHandler)
         {
-            this.version = version;
-            this.dn = dn;
-            this.method = method;
-            this.anonymous = anonymous;
-            this.bindProperties = bindProperties;
-            this.bindCallbackHandler = bindCallbackHandler;
+            ProtocolVersion = version;
+            AuthenticationDN = dn;
+            AuthenticationMethod = method;
+            Anonymous = anonymous;
+            SaslBindProperties = bindProperties;
+            SaslCallbackHandler = bindCallbackHandler;
         }
     }
 }

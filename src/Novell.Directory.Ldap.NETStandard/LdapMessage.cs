@@ -43,67 +43,28 @@ namespace Novell.Directory.Ldap
     public class LdapMessage
     {
         /// <summary> Returns the LdapMessage request associated with this response</summary>
-        internal virtual LdapMessage RequestingMessage
-        {
-            get { return message.RequestingMessage; }
-        }
+        internal virtual LdapMessage RequestingMessage => message.RequestingMessage;
 
         /// <summary> Returns any controls in the message.</summary>
         public virtual LdapControl[] Controls
         {
             get
             {
-/*				LdapControl[] controls = null;
-				RfcControls asn1Ctrls = message.Controls;
-				
-				if (asn1Ctrls != null)
-				{
-					controls = new LdapControl[asn1Ctrls.size()];
-					for (int i = 0; i < asn1Ctrls.size(); i++)
-					{
-						RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-						System.String oid = rfcCtl.ControlType.stringValue();
-						sbyte[] value_Renamed = rfcCtl.ControlValue.byteValue();
-						bool critical = rfcCtl.Criticality.booleanValue();
-						
-						controls[i] = controlFactory(oid, critical, value_Renamed);
-					}
-				}
-
-				return controls;
-*/
                 LdapControl[] controls = null;
                 var asn1Ctrls = message.Controls;
 
                 // convert from RFC 2251 Controls to LDAPControl[].
                 if (asn1Ctrls != null)
                 {
-                    controls = new LdapControl[asn1Ctrls.size()];
-                    for (var i = 0; i < asn1Ctrls.size(); i++)
+                    controls = new LdapControl[asn1Ctrls.Count];
+                    for (var i = 0; i < asn1Ctrls.Count; i++)
                     {
-                        /*
-                                                * At this point we have an RfcControl which needs to be
-                                                * converted to the appropriate Response Control.  This requires
-                                                * calling the constructor of a class that extends LDAPControl.
-                                                * The controlFactory method searches the list of registered
-                                                * controls and if a match is found calls the constructor
-                                                * for that child LDAPControl. Otherwise, it returns a regular
-                                                * LDAPControl object.
-                                                *
-                                                * Question: Why did we not call the controlFactory method when
-                                                * we were parsing the control. Answer: By the time the
-                                                * code realizes that we have a control it is already too late.
-                                                */
-                        var rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-                        var oid = rfcCtl.ControlType.stringValue();
-                        var value_Renamed = rfcCtl.ControlValue.byteValue();
-                        var critical = rfcCtl.Criticality.booleanValue();
+                        var rfcCtl = asn1Ctrls[i];
+                        var oid = rfcCtl.ControlType.StringValue;
+                        var value_Renamed = rfcCtl.ControlValue.ByteValue;
+                        var critical = rfcCtl.Criticality.BooleanValue;
 
-                        /* Return from this call should return either an LDAPControl
-                        * or a class extending LDAPControl that implements the
-                        * appropriate registered response control
-                        */
-                        controls[i] = controlFactory(oid, critical, value_Renamed);
+                        controls[i] = ControlFactory(oid, critical, value_Renamed);
                     }
                 }
                 return controls;
@@ -175,16 +136,10 @@ namespace Novell.Directory.Ldap
         ///     true if the message is a request, false if it is a response,
         ///     a search result, or a search result reference.
         /// </returns>
-        public virtual bool Request
-        {
-            get { return message.isRequest(); }
-        }
+        public virtual bool Request => message.IsRequest;
 
         /// <summary> Returns the RFC 2251 LdapMessage composed in this object.</summary>
-        internal virtual RfcLdapMessage Asn1Object
-        {
-            get { return message; }
-        }
+        internal virtual RfcLdapMessage Asn1Object => message;
 
         private string Name
         {
@@ -321,7 +276,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object) stringTag != null)
+                if (stringTag != null)
                 {
                     return stringTag;
                 }
@@ -330,11 +285,7 @@ namespace Novell.Directory.Ldap
                     return null;
                 }
                 var m = RequestingMessage;
-                if (m == null)
-                {
-                    return null;
-                }
-                return m.stringTag;
+                return m?.stringTag;
             }
 
             set { stringTag = value; }
@@ -503,7 +454,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="Type">
         /// </seealso>
         /*package*/
-        internal LdapMessage(int type, RfcRequest op, LdapControl[] controls)
+        internal LdapMessage(int type, IRfcRequest op, LdapControl[] controls)
         {
             // Get a unique number for this request message
 
@@ -516,7 +467,7 @@ namespace Novell.Directory.Ldap
                 for (var i = 0; i < controls.Length; i++)
                 {
 //					asn1Ctrls.add(null);
-                    asn1Ctrls.add(controls[i].Asn1Object);
+                    asn1Ctrls.Add(controls[i].Asn1Object);
                 }
             }
 
@@ -552,10 +503,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the object representing the new message
         /// </returns>
-        internal LdapMessage Clone(string dn, string filter, bool reference)
-        {
-            return new LdapMessage((RfcLdapMessage) message.dupMessage(dn, filter, reference));
-        }
+        public LdapMessage Clone(string dn, string filter, bool reference) => new LdapMessage((RfcLdapMessage)message.DupMessage(dn, filter, reference));
 
         /// <summary>
         ///     Instantiates an LdapControl.  We search through our list of
@@ -563,7 +511,7 @@ namespace Novell.Directory.Ldap
         ///     that control by calling its contructor.  Otherwise we default to
         ///     returning a regular LdapControl object
         /// </summary>
-        private LdapControl controlFactory(string oid, bool critical, sbyte[] value_Renamed)
+        private LdapControl ControlFactory(string oid, bool critical, byte[] value)
         {
 //			throw new NotImplementedException();
             var regControls = LdapControl.RegisteredControls;
@@ -573,15 +521,15 @@ namespace Novell.Directory.Ldap
                 * search through the registered extension list to find the
                 * response control class
                 */
-                var respCtlClass = regControls.findResponseControl(oid);
+                var respCtlClass = regControls.FindResponseControl(oid);
 
                 // Did not find a match so return default LDAPControl
                 if (respCtlClass == null)
-                    return new LdapControl(oid, critical, value_Renamed);
+                    return new LdapControl(oid, critical, value);
 
                 /* If found, get LDAPControl constructor */
                 Type[] argsClass = {typeof(string), typeof(bool), typeof(sbyte[])};
-                object[] args = {oid, critical, value_Renamed};
+                object[] args = {oid, critical, value};
                 Exception ex = null;
                 try
                 {
@@ -594,14 +542,6 @@ namespace Novell.Directory.Ldap
 //						ctl = ctlConstructor.newInstance(args);
                         ctl = ctlConstructor.Invoke(args);
                         return (LdapControl) ctl;
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        ex = e;
-                    }
-                    catch (TargetInvocationException e)
-                    {
-                        ex = e;
                     }
                     catch (Exception e)
                     {
@@ -626,7 +566,7 @@ namespace Novell.Directory.Ldap
             }
             // If we get here we did not have a registered response control
             // for this oid.  Return a default LDAPControl object.
-            return new LdapControl(oid, critical, value_Renamed);
+            return new LdapControl(oid, critical, value);
         }
 
         /// <summary>
@@ -635,9 +575,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a String representation for this LdapMessage
         /// </returns>
-        public override string ToString()
-        {
-            return Name + "(" + MessageID + "): " + message;
-        }
+        public override string ToString() => Name + "(" + MessageID + "): " + message;
     }
 }

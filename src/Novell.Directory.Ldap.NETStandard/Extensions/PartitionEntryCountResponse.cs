@@ -51,13 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     The count of the number of objects returned.
         /// </returns>
-        public virtual int Count
-        {
-            get { return count; }
-        }
-
-        //The count of the objects returned by the server is saved here
-        private readonly int count;
+        public virtual int Count { get; }
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -81,18 +75,16 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
-                var asn1_count = (Asn1Integer) decoder.decode(returnedValue);
+                var asn1_count = decoder.Decode(returnedValue) as Asn1Integer;
                 if (asn1_count == null)
                     throw new IOException("Decoding error");
 
-                count = asn1_count.intValue();
+                Count = asn1_count.IntValue;
             }
             else
             {
-                count = -1;
+                Count = -1;
             }
         }
     }

@@ -32,6 +32,7 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -46,16 +47,10 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcSearchResultEntry : Asn1Sequence
     {
         /// <summary> </summary>
-        public virtual Asn1OctetString ObjectName
-        {
-            get { return (Asn1OctetString) get_Renamed(0); }
-        }
+        public virtual Asn1OctetString ObjectName => (Asn1OctetString)this[0];
 
         /// <summary> </summary>
-        public virtual Asn1Sequence Attributes
-        {
-            get { return (Asn1Sequence) get_Renamed(1); }
-        }
+        public virtual Asn1Sequence Attributes => (Asn1Sequence)this[1];
 
         //*************************************************************************
         // Constructors for SearchResultEntry
@@ -65,8 +60,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a SearchResultEntry is when it is
         ///     decoding it from an InputStream
         /// </summary>
-        [CLSCompliant(false)]
-        public RfcSearchResultEntry(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcSearchResultEntry(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
             // Decode objectName
             //      set(0, new RfcLdapDN(((Asn1OctetString)get(0)).stringValue()));
@@ -81,9 +75,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.SEARCH_RESPONSE);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.SEARCH_RESPONSE);
         }
     }
 }

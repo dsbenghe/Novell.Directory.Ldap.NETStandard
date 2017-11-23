@@ -30,6 +30,7 @@
 //
 
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -41,18 +42,8 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         attributes      AttributeList }
     ///     </pre>
     /// </summary>
-    public class RfcAddRequest : Asn1Sequence, RfcRequest
+    public class RfcAddRequest : Asn1Sequence, IRfcRequest
     {
-        /// <summary> Gets the attributes of the entry</summary>
-        public virtual RfcAttributeList Attributes
-        {
-            get { return (RfcAttributeList) get_Renamed(1); }
-        }
-
-        //*************************************************************************
-        // Constructors for AddRequest
-        //*************************************************************************
-
         /// <summary>
         ///     Constructs an RFCAddRequest
         /// </summary>
@@ -62,10 +53,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="attributes">
         ///     the Attributes making up the Entry
         /// </param>
-        public RfcAddRequest(RfcLdapDN entry, RfcAttributeList attributes) : base(2)
+        public RfcAddRequest(RfcLdapDN entry, RfcAttributeList attributes)
+            : base(2)
         {
-            add(entry);
-            add(attributes);
+            Add(entry);
+            Add(attributes);
         }
 
         /// <summary>
@@ -77,12 +69,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="base">
         ///     if not null, replaces the dn of the original request
         /// </param>
-        internal RfcAddRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
+        internal RfcAddRequest(Asn1Object[] origRequest, string @base)
+            : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if (@base != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                this[0] = new RfcLdapDN(@base);
             }
         }
 
@@ -96,19 +89,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 8. (0x68)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.ADD_REQUEST);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.ADD_REQUEST);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            return new RfcAddRequest(toArray(), base_Renamed);
-        }
+        public IRfcRequest DupRequest(string @base, string filter, bool request) => new RfcAddRequest(ToArray(), @base);
 
-        public string getRequestDN()
-        {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
-        }
+        public string RequestDN => (this[0] as RfcLdapDN).StringValue;
+
+        /// <summary> 
+        /// Gets the attributes of the entry
+        /// </summary>
+        public virtual RfcAttributeList Attributes { get => this[1] as RfcAttributeList; }
     }
 }

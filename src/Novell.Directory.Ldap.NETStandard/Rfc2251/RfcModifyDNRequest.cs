@@ -30,6 +30,7 @@
 //
 
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         newSuperior     [0] LdapDN OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcModifyDNRequest : Asn1Sequence, RfcRequest
+    public class RfcModifyDNRequest : Asn1Sequence, IRfcRequest
     {
         //*************************************************************************
         // Constructors for ModifyDNRequest
@@ -59,13 +60,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcModifyDNRequest(RfcLdapDN entry, RfcRelativeLdapDN newrdn, Asn1Boolean deleteoldrdn,
             RfcLdapDN newSuperior) : base(4)
         {
-            add(entry);
-            add(newrdn);
-            add(deleteoldrdn);
+            Add(entry);
+            Add(newrdn);
+            Add(deleteoldrdn);
             if (newSuperior != null)
             {
-                newSuperior.setIdentifier(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0));
-                add(newSuperior);
+                newSuperior.Identifier = new Asn1Identifier(TagClass.CONTEXT, false, 0);
+                Add(newSuperior);
             }
         }
 
@@ -77,9 +78,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if (base_Renamed != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                this[0] = new RfcLdapDN(base_Renamed);
             }
         }
 
@@ -93,19 +94,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RDN_REQUEST);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.MODIFY_RDN_REQUEST);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            return new RfcModifyDNRequest(toArray(), base_Renamed);
-        }
+        public IRfcRequest DupRequest(string @base, string filter, bool request) => new RfcModifyDNRequest(ToArray(), @base);
 
-        public string getRequestDN()
-        {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
-        }
+        public string RequestDN => (this[0] as RfcLdapDN).StringValue;
     }
 }

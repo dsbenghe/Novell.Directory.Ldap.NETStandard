@@ -52,26 +52,17 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private class RegisteredControl
         {
-            private void InitBlock(RespControlVector enclosingInstance)
-            {
-                this.enclosingInstance = enclosingInstance;
-            }
 
-            private RespControlVector enclosingInstance;
+            public RespControlVector EnclosingInstance { get; }
 
-            public RespControlVector Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
-
-            public readonly string myOID;
-            public readonly Type myClass;
+            public string Oid { get; }
+            public Type ControlClass { get; }
 
             public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
             {
-                InitBlock(enclosingInstance);
-                myOID = oid;
-                myClass = controlClass;
+                EnclosingInstance = enclosingInstance;
+                Oid = oid;
+                ControlClass = controlClass;
             }
         }
 
@@ -79,7 +70,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         */
 
-        public void registerResponseControl(string oid, Type controlClass)
+        public void RegisterResponseControl(string oid, Type controlClass)
         {
             lock (this)
             {
@@ -92,7 +83,7 @@ namespace Novell.Directory.Ldap.Utilclass
         * Class name that was provided to us on registration.
         */
 
-        public Type findResponseControl(string searchOID)
+        public Type FindResponseControl(string searchOID)
         {
             lock (this)
             {
@@ -108,10 +99,10 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
 
                     /* Does the stored OID match with whate we are looking for */
-                    if (ctl.myOID.CompareTo(searchOID) == 0)
+                    if (ctl.Oid.CompareTo(searchOID) == 0)
                     {
                         /* Return the class name if we have match */
-                        return ctl.myClass;
+                        return ctl.ControlClass;
                     }
                 }
                 /* The requested control does not have a registered response class */

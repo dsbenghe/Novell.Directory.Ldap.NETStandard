@@ -74,10 +74,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute to modify.
         /// </returns>
-        public virtual LdapAttribute Attribute
-        {
-            get { return attr; }
-        }
+        public virtual LdapAttribute Attribute { get; }
 
         /// <summary>
         ///     Returns the type of modification specified by this object.
@@ -91,13 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The type of modification specified by this object.
         /// </returns>
-        public virtual int Op
-        {
-            get { return op; }
-        }
-
-        private readonly int op;
-        private readonly LdapAttribute attr;
+        public virtual int Op { get; }
 
         /// <summary>
         ///     Adds the listed values to the given attribute, creating
@@ -152,8 +143,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapModification(int op, LdapAttribute attr)
         {
-            this.op = op;
-            this.attr = attr;
+            Op = op;
+            Attribute = attr;
         }
     }
 }

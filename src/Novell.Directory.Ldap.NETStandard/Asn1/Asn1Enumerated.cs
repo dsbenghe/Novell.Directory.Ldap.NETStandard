@@ -29,13 +29,12 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the ASN.1 ENUMERATED type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Enumerated : Asn1Numeric
     {
         /// <summary> ASN.1 tag definition for ENUMERATED</summary>
@@ -46,7 +45,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        public static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, false, TAG);
 
         /* Constructors for Asn1Enumerated
                 */
@@ -59,7 +58,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The integer value to be contained in the
         ///     this Asn1Enumerated object
         /// </param>
-        public Asn1Enumerated(int content) : base(ID, content)
+        public Asn1Enumerated(int content) 
+            : base(ID, content)
         {
         }
 
@@ -71,7 +71,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The long value to be contained in the
         ///     this Asn1Enumerated object
         /// </param>
-        public Asn1Enumerated(long content) : base(ID, content)
+        public Asn1Enumerated(long content) 
+            : base(ID, content)
         {
         }
 
@@ -87,9 +88,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1Enumerated(Asn1Decoder dec, Stream in_Renamed, int len)
-            : base(ID, (long) dec.decodeNumeric(in_Renamed, len))
+        public Asn1Enumerated(IAsn1Decoder dec, Stream @in, int len)
+            : base(ID, (long) dec.DecodeNumeric(@in, len))
         {
         }
 
@@ -105,15 +105,12 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, @out);
         }
 
         /// <summary> Return a String representation of this Asn1Enumerated.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "ENUMERATED: " + longValue();
-        }
+        public override string ToString() => base.ToString() + "ENUMERATED: " + LongValue;
     }
 }

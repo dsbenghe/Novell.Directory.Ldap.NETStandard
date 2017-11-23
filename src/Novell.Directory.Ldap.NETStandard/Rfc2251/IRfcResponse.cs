@@ -21,7 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 //
-// Novell.Directory.Ldap.LdapReferralHandler.cs
+// Novell.Directory.Ldap.Rfc2251.RfcResponse.cs
 //
 // Author:
 //   Sunil Kumar (Sunilk@novell.com)
@@ -29,17 +29,28 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-namespace Novell.Directory.Ldap
+using Novell.Directory.Ldap.Asn1;
+
+namespace Novell.Directory.Ldap.Rfc2251
 {
     /// <summary>
-    ///     Shared ancestor to the two types of referral objects - LdapBindHandler and
-    ///     LdapAuthHandler.
+    ///     This interface represents RfcLdapMessages that contain a response from a
+    ///     server.
+    ///     If the protocol operation of the RfcLdapMessage is of this type,
+    ///     it contains at least an RfcLdapResult.
     /// </summary>
-    /// <seealso cref="LdapBindHandler">
-    /// </seealso>
-    /// <seealso cref="LdapAuthHandler">
-    /// </seealso>
-    public interface LdapReferralHandler
+    public interface IRfcResponse
     {
+        /// <summary> </summary>
+        Asn1Enumerated ResultCode { get; }
+
+        /// <summary> </summary>
+        RfcLdapDN MatchedDN { get; }
+
+        /// <summary> </summary>
+        RfcLdapString ErrorMessage { get; }
+
+        /// <summary> </summary>
+        RfcReferral Referral { get; }
     }
 }

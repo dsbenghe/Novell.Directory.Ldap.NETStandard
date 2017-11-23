@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapAuthHandler">
     /// </seealso>
-    /// <seealso cref="LdapBindHandler">
+    /// <seealso cref="ILdapBindHandler">
     /// </seealso>
     public class LdapAuthProvider
     {
@@ -52,10 +52,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name from the object.
         /// </returns>
-        public virtual string DN
-        {
-            get { return dn; }
-        }
+        public virtual string DN { get; }
 
         /// <summary>
         ///     Returns the password to be used for authentication on automatic
@@ -64,14 +61,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The byte[] value (UTF-8) of the password from the object.
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] Password
-        {
-            get { return password; }
-        }
+        public virtual byte[] Password { get; }
 
-        private readonly string dn;
-        private readonly sbyte[] password;
 
         /// <summary>
         ///     Constructs information that is used by the client for authentication
@@ -84,11 +75,10 @@ namespace Novell.Directory.Ldap
         /// <param name="password">
         ///     The password to use when authenticating to a server.
         /// </param>
-        [CLSCompliant(false)]
-        public LdapAuthProvider(string dn, sbyte[] password)
+        public LdapAuthProvider(string dn, byte[] password)
         {
-            this.dn = dn;
-            this.password = password;
+            DN = dn;
+            Password = password;
         }
     }
 }

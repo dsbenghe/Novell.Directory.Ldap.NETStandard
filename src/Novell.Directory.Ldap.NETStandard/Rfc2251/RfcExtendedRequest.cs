@@ -30,6 +30,7 @@
 //
 
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -41,7 +42,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         requestValue     [1] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcExtendedRequest : Asn1Sequence, RfcRequest
+    public class RfcExtendedRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> Context-specific TAG for optional requestName.</summary>
         public const int REQUEST_NAME = 0;
@@ -74,9 +75,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </param>
         public RfcExtendedRequest(RfcLdapOID requestName, Asn1OctetString requestValue) : base(2)
         {
-            add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REQUEST_NAME), requestName, false));
+            Add(new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, false, REQUEST_NAME), requestName, false));
             if (requestValue != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REQUEST_VALUE), requestValue, false));
+                Add(new Asn1Tagged(new Asn1Identifier(TagClass.CONTEXT, false, REQUEST_VALUE), requestValue, false));
         }
 
 
@@ -86,7 +87,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="origRequest">
         ///     Asn1Object of existing request
         /// </param>
-        public RfcExtendedRequest(Asn1Object[] origRequest) : base(origRequest, origRequest.Length)
+        public RfcExtendedRequest(Asn1Object[] origRequest)
+            : base(origRequest, origRequest.Length)
         {
         }
 
@@ -100,20 +102,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 23.
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.EXTENDED_REQUEST);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.EXTENDED_REQUEST);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            // Just dup the original request
-            return new RfcExtendedRequest(toArray());
-        }
+        public IRfcRequest DupRequest(string @base, string filter, bool request) => new RfcExtendedRequest(ToArray());
 
-        public string getRequestDN()
-        {
-            return null;
-        }
+        public string RequestDN => null;
     }
 }

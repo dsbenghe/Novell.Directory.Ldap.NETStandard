@@ -51,10 +51,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The server may not return a change number. In this case the return
         ///     value is -1
         /// </returns>
-        public virtual bool HasChangeNumber
-        {
-            get { return m_hasChangeNumber; }
-        }
+        public virtual bool HasChangeNumber { get; }
 
         /// <summary>
         ///     returns the record number of the change in the servers change log.
@@ -64,10 +61,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The server may not return a change number. In this case the return
         ///     value is -1
         /// </returns>
-        public virtual int ChangeNumber
-        {
-            get { return m_changeNumber; }
-        }
+        public virtual int ChangeNumber { get; }
 
         /// <summary>
         ///     Returns the type of change that occured
@@ -80,10 +74,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     LdapPersistSearchControl.MODIFY
         ///     LdapPersistSearchControl.MODDN.
         /// </returns>
-        public virtual int ChangeType
-        {
-            get { return m_changeType; }
-        }
+        public virtual int ChangeType { get; }
 
         /// <summary>
         ///     Returns the previous DN of the entry, if it was renamed.
@@ -92,15 +83,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     the previous DN of the entry if the entry was renamed (ie. if the
         ///     change type is LdapersistSearchControl.MODDN.
         /// </returns>
-        public virtual string PreviousDN
-        {
-            get { return m_previousDN; }
-        }
-
-        private readonly int m_changeType;
-        private readonly string m_previousDN;
-        private readonly bool m_hasChangeNumber;
-        private readonly int m_changeNumber;
+        public virtual string PreviousDN { get; }
 
         /// <summary>
         ///     This constructor is called by the SDK to create an
@@ -130,65 +113,60 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="value">
         ///     The control-specific data.
         /// </param>
-        [CLSCompliant(false)]
-        public LdapEntryChangeControl(string oid, bool critical, sbyte[] value_Renamed)
-            : base(oid, critical, value_Renamed)
+        public LdapEntryChangeControl(string oid, bool critical, byte[] value)
+            : base(oid, critical, value)
         {
-            // Create a decoder objet
-            var decoder = new LBERDecoder();
-            if (decoder == null)
-                throw new IOException("Decoding error.");
+            IAsn1Decoder decoder = new LBERDecoder();
 
             // We should get a sequence initially
-            var asnObj = decoder.decode(value_Renamed);
+            Asn1Object asnObj = decoder.Decode(value);
 
             if (asnObj == null || !(asnObj is Asn1Sequence))
                 throw new IOException("Decoding error.");
 
-            var sequence = (Asn1Sequence) asnObj;
+            Asn1Sequence sequence = asnObj as Asn1Sequence;
 
 
             // The first element in the sequence should be an enumerated type
-            var asn1Obj = sequence.get_Renamed(0);
+            Asn1Object asn1Obj = sequence[0];
             if (asn1Obj == null || !(asn1Obj is Asn1Enumerated))
                 throw new IOException("Decoding error.");
 
-            m_changeType = ((Asn1Enumerated) asn1Obj).intValue();
+            ChangeType = (asn1Obj as Asn1Enumerated).IntValue;
 
             //check for optional elements
-            if (sequence.size() > 1 && m_changeType == 8)
+            if (sequence.Count > 1 && ChangeType == 8)
                 //8 means modifyDN
             {
                 // get the previous DN - it is encoded as an octet string
-                asn1Obj = sequence.get_Renamed(1);
+                asn1Obj = sequence[1];
                 if (asn1Obj == null || !(asn1Obj is Asn1OctetString))
                     throw new IOException("Decoding error get previous DN");
 
-                m_previousDN = ((Asn1OctetString) asn1Obj).stringValue();
+                PreviousDN = (asn1Obj as Asn1OctetString).StringValue;
             }
             else
             {
-                m_previousDN = "";
+                PreviousDN = "";
             }
 
             //check for change number
-            if (sequence.size() == 3)
+            if (sequence.Count == 3)
             {
-                asn1Obj = sequence.get_Renamed(2);
+                asn1Obj = sequence[2];
                 if (asn1Obj == null || !(asn1Obj is Asn1Integer))
                     throw new IOException("Decoding error getting change number");
 
-                m_changeNumber = ((Asn1Integer) asn1Obj).intValue();
-                m_hasChangeNumber = true;
+                ChangeNumber = (asn1Obj as Asn1Integer).IntValue;
+                HasChangeNumber = true;
             }
             else
-                m_hasChangeNumber = false;
+                HasChangeNumber = false;
         }
 
-        /// <summary>  Returns a string representation of the control for debugging.</summary>
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-    } //end class LdapEntryChangeControl
+        /// <summary>  
+        /// Returns a string representation of the control for debugging.
+        /// </summary>
+        public override string ToString() => base.ToString();
+    } 
 }

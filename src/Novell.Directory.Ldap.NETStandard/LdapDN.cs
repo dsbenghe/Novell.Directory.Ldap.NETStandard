@@ -59,13 +59,7 @@ namespace Novell.Directory.Ldap
         ///     Returns true if the two strings correspond to the same DN; false
         ///     if the DNs are different.
         /// </returns>
-        [CLSCompliant(false)]
-        public static bool equals(string dn1, string dn2)
-        {
-            var dnA = new DN(dn1);
-            var dnB = new DN(dn2);
-            return dnA.Equals(dnB);
-        }
+        public static bool Equals(string dn1, string dn2) => new DN(dn1).Equals(new DN(dn2));
 
         /// <summary>
         ///     Returns the RDN after escaping the characters requiring escaping.
@@ -84,7 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The RDN with escaping characters.
         /// </returns>
-        public static string escapeRDN(string rdn)
+        public static string EscapeRDN(string rdn)
         {
             var escapedS = new StringBuilder(rdn);
             var i = 0;
@@ -143,11 +137,7 @@ namespace Novell.Directory.Ldap
         ///     An array of strings representing the individual components
         ///     of a DN, or null if the DN is not valid.
         /// </returns>
-        public static string[] explodeDN(string dn, bool noTypes)
-        {
-            var dnToExplode = new DN(dn);
-            return dnToExplode.explodeDN(noTypes);
-        }
+        public static string[] ExplodeDN(string dn, bool noTypes) => new DN(dn).ExplodeDN(noTypes);
 
         /// <summary>
         ///     Returns the individual components of a relative distinguished name
@@ -166,11 +156,7 @@ namespace Novell.Directory.Ldap
         ///     An array of strings representing the individual components
         ///     of an RDN, or null if the RDN is not a valid RDN.
         /// </returns>
-        public static string[] explodeRDN(string rdn, bool noTypes)
-        {
-            var rdnToExplode = new RDN(rdn);
-            return rdnToExplode.explodeRDN(noTypes);
-        }
+        public static string[] ExplodeRDN(string rdn, bool noTypes) => new RDN(rdn).ExplodeRDN(noTypes);
 
         /// <summary> Returns true if the string conforms to distinguished name syntax.</summary>
         /// <param name="dn">
@@ -179,7 +165,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if the dn is valid.
         /// </returns>
-        public static bool isValid(string dn)
+        public static bool IsValid(string dn)
         {
             try
             {
@@ -199,11 +185,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a normalized string
         /// </returns>
-        public static string normalize(string dn)
-        {
-            var testDN = new DN(dn);
-            return testDN.ToString();
-        }
+        public static string Normalize(string dn) => new DN(dn).ToString();
 
 
         /// <summary>
@@ -223,7 +205,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The RDN with the escaping characters removed.
         /// </returns>
-        public static string unescapeRDN(string rdn)
+        public static string UnescapeRDN(string rdn)
         {
             var unescaped = new StringBuilder();
             var i = 0;
@@ -266,5 +248,5 @@ namespace Novell.Directory.Ldap
             }
             return unescaped.ToString();
         }
-    } //end class LdapDN
+    }
 }

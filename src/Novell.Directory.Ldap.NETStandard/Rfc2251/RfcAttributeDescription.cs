@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
 
@@ -47,8 +46,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        [CLSCompliant(false)]
-        public RfcAttributeDescription(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcAttributeDescription(IAsn1Decoder dec, Stream @in, int len) 
+            : base(dec, @in, len)
         {
         }
     }

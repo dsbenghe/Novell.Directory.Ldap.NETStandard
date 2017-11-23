@@ -58,10 +58,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to modify
         /// </returns>
-        public virtual string DN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
+        public virtual string DN => Asn1Object.RequestDN;
 
         /// <summary>
         ///     Constructs the modifications associated with this request
@@ -74,38 +71,38 @@ namespace Novell.Directory.Ldap
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyRequest) Asn1Object.getRequest();
+                var req = (RfcModifyRequest)Asn1Object.Request;
                 // get beginning sequenceOf modifications
                 var seqof = req.Modifications;
-                var mods = seqof.toArray();
+                var mods = seqof.ToArray();
                 var modifications = new LdapModification[mods.Length];
                 // Process each modification
                 for (var m = 0; m < mods.Length; m++)
                 {
                     // Each modification consists of a mod type and a sequence
                     // containing the attr name and a set of values
-                    var opSeq = (Asn1Sequence) mods[m];
-                    if (opSeq.size() != 2)
+                    var opSeq = (Asn1Sequence)mods[m];
+                    if (opSeq.Count != 2)
                     {
-                        throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.size());
+                        throw new Exception($"LdapModifyRequest: modification {m}is wrong size: {opSeq.Count}");
                     }
                     // Contains operation and sequence for the attribute
-                    var opArray = opSeq.toArray();
-                    var asn1op = (Asn1Enumerated) opArray[0];
+                    var opArray = opSeq.ToArray();
+                    var asn1op = (Asn1Enumerated)opArray[0];
                     // get the operation
-                    var op = asn1op.intValue();
-                    var attrSeq = (Asn1Sequence) opArray[1];
-                    var attrArray = attrSeq.toArray();
-                    var aname = (RfcAttributeDescription) attrArray[0];
-                    var name = aname.stringValue();
-                    var avalue = (Asn1SetOf) attrArray[1];
-                    var valueArray = avalue.toArray();
+                    var op = asn1op.IntValue;
+                    var attrSeq = (Asn1Sequence)opArray[1];
+                    var attrArray = attrSeq.ToArray();
+                    var aname = (RfcAttributeDescription)attrArray[0];
+                    var name = aname.StringValue;
+                    var avalue = (Asn1SetOf)attrArray[1];
+                    var valueArray = avalue.ToArray();
                     var attr = new LdapAttribute(name);
 
                     for (var v = 0; v < valueArray.Length; v++)
                     {
-                        var rfcV = (RfcAttributeValue) valueArray[v];
-                        attr.addValue(rfcV.byteValue());
+                        var rfcV = (RfcAttributeValue)valueArray[v];
+                        attr.AddValue(rfcV.ByteValue);
                     }
 
                     modifications[m] = new LdapModification(op, attr);
@@ -128,7 +125,7 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         public LdapModifyRequest(string dn, LdapModification[] mods, LdapControl[] cont)
-            : base(MODIFY_REQUEST, new RfcModifyRequest(new RfcLdapDN(dn), encodeModifications(mods)), cont)
+            : base(MODIFY_REQUEST, new RfcModifyRequest(new RfcLdapDN(dn), EncodeModifications(mods)), cont)
         {
         }
 
@@ -141,7 +138,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an Asn1SequenceOf object containing the modifications.
         /// </returns>
-        private static Asn1SequenceOf encodeModifications(LdapModification[] mods)
+        private static Asn1SequenceOf EncodeModifications(LdapModification[] mods)
         {
             // Convert Java-API LdapModification[] to RFC2251 SEQUENCE OF SEQUENCE
             var rfcMods = new Asn1SequenceOf(mods.Length);
@@ -150,23 +147,24 @@ namespace Novell.Directory.Ldap
                 var attr = mods[i].Attribute;
 
                 // place modification attribute values in Asn1SetOf
-                var vals = new Asn1SetOf(attr.size());
-                if (attr.size() > 0)
-                {
-                    var attrEnum = attr.ByteValues;
-                    while (attrEnum.MoveNext())
+                var vals = new Asn1SetOf(attr.Size);
+                if (attr.Size > 0)
+                { 
+                    foreach(var attrEnum in attr.ByteValues)
                     {
-                        vals.add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
+                        vals.Add(new RfcAttributeValue(attrEnum));
                     }
                 }
 
                 // create SEQUENCE containing mod operation and attr type and vals
-                var rfcMod = new Asn1Sequence(2);
-                rfcMod.add(new Asn1Enumerated(mods[i].Op));
-                rfcMod.add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
+                var rfcMod = new Asn1Sequence(2)
+                {
+                    new Asn1Enumerated(mods[i].Op),
+                    new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals)
+                };
 
                 // place SEQUENCE into SEQUENCE OF
-                rfcMods.add(rfcMod);
+                rfcMods.Add(rfcMod);
             }
             return rfcMods;
         }
@@ -175,9 +173,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this modify request
         ///     #return an Asn1 representation of this object
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString() => Asn1Object.ToString();
     }
 }

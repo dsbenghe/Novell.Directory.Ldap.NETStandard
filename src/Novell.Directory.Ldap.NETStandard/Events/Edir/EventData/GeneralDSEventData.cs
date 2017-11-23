@@ -40,180 +40,122 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class GeneralDSEventData : BaseEdirEventData
     {
-        protected int ds_time;
-
-        public int DSTime
-        {
-            get { return ds_time; }
-        }
-
-        protected int milli_seconds;
-
-        public int MilliSeconds
-        {
-            get { return milli_seconds; }
-        }
-
-        protected int nVerb;
-
-        public int Verb
-        {
-            get { return nVerb; }
-        }
-
-        protected int current_process;
-
-        public int CurrentProcess
-        {
-            get { return current_process; }
-        }
-
-        protected string strPerpetratorDN;
-
-        public string PerpetratorDN
-        {
-            get { return strPerpetratorDN; }
-        }
-
-        protected int[] integer_values;
-
-        public int[] IntegerValues
-        {
-            get { return integer_values; }
-        }
-
-        protected string[] string_values;
-
-        public string[] StringValues
-        {
-            get { return string_values; }
-        }
+        public int DSTime { get; protected set; }
+        public int MilliSeconds { get; protected set; }
+        public int Verb { get; protected set; }
+        public int CurrentProcess { get; protected set; }
+        public string PerpetratorDN { get; protected set; }
+        public int[] IntegerValues { get; protected set; }
+        public string[] StringValues { get; protected set; }
 
         public GeneralDSEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            ds_time = getTaggedIntValue(
-                (Asn1Tagged) decoder.decode(decodedData, length),
-                GeneralEventField.EVT_TAG_GEN_DSTIME);
-            milli_seconds = getTaggedIntValue(
-                (Asn1Tagged) decoder.decode(decodedData, length),
-                GeneralEventField.EVT_TAG_GEN_MILLISEC);
+            DSTime = GetTaggedIntValue((Asn1Tagged)Decoder.Decode(DecodedData, length), GeneralEventField.EVT_TAG_GEN_DSTIME);
+            MilliSeconds = GetTaggedIntValue((Asn1Tagged)Decoder.Decode(DecodedData, length), GeneralEventField.EVT_TAG_GEN_MILLISEC);
 
-            nVerb = getTaggedIntValue(
-                (Asn1Tagged) decoder.decode(decodedData, length),
-                GeneralEventField.EVT_TAG_GEN_VERB);
-            current_process = getTaggedIntValue(
-                (Asn1Tagged) decoder.decode(decodedData, length),
-                GeneralEventField.EVT_TAG_GEN_CURRPROC);
+            Verb = GetTaggedIntValue((Asn1Tagged)Decoder.Decode(DecodedData, length), GeneralEventField.EVT_TAG_GEN_VERB);
+            CurrentProcess = GetTaggedIntValue((Asn1Tagged)Decoder.Decode(DecodedData, length), GeneralEventField.EVT_TAG_GEN_CURRPROC);
 
-            strPerpetratorDN = getTaggedStringValue(
-                (Asn1Tagged) decoder.decode(decodedData, length),
-                GeneralEventField.EVT_TAG_GEN_PERP);
+            PerpetratorDN = GetTaggedStringValue((Asn1Tagged)Decoder.Decode(DecodedData, length), GeneralEventField.EVT_TAG_GEN_PERP);
 
-            var temptaggedvalue =
-                (Asn1Tagged) decoder.decode(decodedData, length);
+            var temptaggedvalue = Decoder.Decode(DecodedData, length) as Asn1Tagged;
 
-            if (temptaggedvalue.getIdentifier().Tag
-                == (int) GeneralEventField.EVT_TAG_GEN_INTEGERS)
+            if (temptaggedvalue.Identifier.Tag == (int)GeneralEventField.EVT_TAG_GEN_INTEGERS)
             {
                 //Integer List.
-                var inteseq = getTaggedSequence(temptaggedvalue, GeneralEventField.EVT_TAG_GEN_INTEGERS);
-                var intobject = inteseq.toArray();
-                integer_values = new int[intobject.Length];
+                var inteseq = GetTaggedSequence(temptaggedvalue, GeneralEventField.EVT_TAG_GEN_INTEGERS);
+                var intobject = inteseq.ToArray();
+                IntegerValues = new int[intobject.Length];
 
                 for (var i = 0; i < intobject.Length; i++)
                 {
-                    integer_values[i] = ((Asn1Integer) intobject[i]).intValue();
+                    IntegerValues[i] = (intobject[i] as Asn1Integer).IntValue;
                 }
 
                 //second decoding for Strings.
-                temptaggedvalue = (Asn1Tagged) decoder.decode(decodedData, length);
+                temptaggedvalue = Decoder.Decode(DecodedData, length) as Asn1Tagged;
             }
             else
             {
-                integer_values = null;
+                IntegerValues = null;
             }
 
-            if (temptaggedvalue.getIdentifier().Tag
-                == (int) GeneralEventField.EVT_TAG_GEN_STRINGS
-                && temptaggedvalue.getIdentifier().Constructed)
+            if (temptaggedvalue.Identifier.Tag == (int)GeneralEventField.EVT_TAG_GEN_STRINGS
+                && temptaggedvalue.Identifier.Constructed)
             {
                 //String values.
-                var inteseq =
-                    getTaggedSequence(temptaggedvalue, GeneralEventField.EVT_TAG_GEN_STRINGS);
-                var stringobject = inteseq.toArray();
-                string_values = new string[stringobject.Length];
+                var inteseq = GetTaggedSequence(temptaggedvalue, GeneralEventField.EVT_TAG_GEN_STRINGS);
+                var stringobject = inteseq.ToArray();
+                StringValues = new string[stringobject.Length];
 
                 for (var i = 0; i < stringobject.Length; i++)
                 {
-                    string_values[i] =
-                        ((Asn1OctetString) stringobject[i]).stringValue();
+                    StringValues[i] = (stringobject[i] as Asn1OctetString).StringValue;
                 }
             }
             else
             {
-                string_values = null;
+                StringValues = null;
             }
 
             DataInitDone();
         }
 
-        protected int getTaggedIntValue(Asn1Tagged tagvalue, GeneralEventField tagid)
+        protected int GetTaggedIntValue(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
-            var obj = tagvalue.taggedValue();
+            var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.getIdentifier().Tag)
+            if ((int)tagid != tagvalue.Identifier.Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).byteValue());
-            var data = new MemoryStream(dbytes);
-
-            var dec = new LBERDecoder();
-
-            var length = dbytes.Length;
-
-            return (int) dec.decodeNumeric(data, length);
+            var dbytes = (obj as Asn1OctetString).ByteValue;
+            using (var data = new MemoryStream(dbytes))
+            {
+                var dec = new LBERDecoder();
+                var length = dbytes.Length;
+                return (int)dec.DecodeNumeric(data, length);
+            }
         }
 
-        protected string getTaggedStringValue(Asn1Tagged tagvalue, GeneralEventField tagid)
+        protected string GetTaggedStringValue(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
-            var obj = tagvalue.taggedValue();
+            var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.getIdentifier().Tag)
+            if ((int)tagid != tagvalue.Identifier.Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).byteValue());
-            var data = new MemoryStream(dbytes);
-
-            var dec = new LBERDecoder();
-
-            var length = dbytes.Length;
-
-            return (string) dec.decodeCharacterString(data, length);
+            var dbytes = (obj as Asn1OctetString).ByteValue;
+            using (var data = new MemoryStream(dbytes))
+            {
+                var dec = new LBERDecoder();
+                var length = dbytes.Length;
+                return dec.DecodeCharacterString(data, length);
+            }
         }
 
-        protected Asn1Sequence getTaggedSequence(Asn1Tagged tagvalue, GeneralEventField tagid)
+        protected Asn1Sequence GetTaggedSequence(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
-            var obj = tagvalue.taggedValue();
+            var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.getIdentifier().Tag)
+            if ((int)tagid != tagvalue.Identifier.Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).byteValue());
-            var data = new MemoryStream(dbytes);
-
-            var dec = new LBERDecoder();
-            var length = dbytes.Length;
-
-            return new Asn1Sequence(dec, data, length);
+            var dbytes = (obj as Asn1OctetString).ByteValue;
+            using (var data = new MemoryStream(dbytes))
+            {
+                var dec = new LBERDecoder();
+                var length = dbytes.Length;
+                return new Asn1Sequence(dec, data, length);
+            }
         }
 
         /// <summary>
@@ -224,13 +166,13 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var buf = new StringBuilder();
 
             buf.Append("[GeneralDSEventData");
-            buf.AppendFormat("(DSTime={0})", ds_time);
-            buf.AppendFormat("(MilliSeconds={0})", milli_seconds);
-            buf.AppendFormat("(verb={0})", nVerb);
-            buf.AppendFormat("(currentProcess={0})", current_process);
-            buf.AppendFormat("(PerpetartorDN={0})", strPerpetratorDN);
-            buf.AppendFormat("(Integer Values={0})", integer_values);
-            buf.AppendFormat("(String Values={0})", string_values);
+            buf.AppendFormat("(DSTime={0})", DSTime);
+            buf.AppendFormat("(MilliSeconds={0})", MilliSeconds);
+            buf.AppendFormat("(verb={0})", Verb);
+            buf.AppendFormat("(currentProcess={0})", CurrentProcess);
+            buf.AppendFormat("(PerpetartorDN={0})", PerpetratorDN);
+            buf.AppendFormat("(Integer Values={0})", IntegerValues);
+            buf.AppendFormat("(String Values={0})", StringValues);
             buf.Append("]");
 
             return buf.ToString();

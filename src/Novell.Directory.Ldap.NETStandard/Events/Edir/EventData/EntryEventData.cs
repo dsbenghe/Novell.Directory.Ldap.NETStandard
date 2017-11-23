@@ -39,72 +39,25 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class EntryEventData : BaseEdirEventData
     {
-        protected string strPerpetratorDN;
-
-        public string PerpetratorDN
-        {
-            get { return strPerpetratorDN; }
-        }
-
-        protected string strEntry;
-
-        public string Entry
-        {
-            get { return strEntry; }
-        }
-
-        protected string strNewDN;
-
-        public string NewDN
-        {
-            get { return strNewDN; }
-        }
-
-        protected string strClassId;
-
-        public string ClassId
-        {
-            get { return strClassId; }
-        }
-
-        protected int nVerb;
-
-        public int Verb
-        {
-            get { return nVerb; }
-        }
-
-        protected int nFlags;
-
-        public int Flags
-        {
-            get { return nFlags; }
-        }
-
-        protected DSETimeStamp timeStampObj;
-
-        public DSETimeStamp TimeStamp
-        {
-            get { return timeStampObj; }
-        }
+        public string PerpetratorDN { get; protected set; }
+        public string Entry { get; protected set; }
+        public string NewDN { get; protected set; }
+        public string ClassId { get; protected set; }
+        public int Verb { get; protected set; }
+        public int Flags { get; protected set; }
+        public DSETimeStamp TimeStamp { get; protected set; }
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
-            strPerpetratorDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strEntry =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strClassId =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-
-            timeStampObj =
-                new DSETimeStamp((Asn1Sequence) decoder.decode(decodedData, length));
-            nVerb = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            nFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strNewDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            PerpetratorDN = (Decoder.Decode(DecodedData, length) as Asn1OctetString).StringValue;
+            Entry = (Decoder.Decode(DecodedData, length) as Asn1OctetString).StringValue;
+            ClassId = (Decoder.Decode(DecodedData, length) as Asn1OctetString).StringValue;
+            TimeStamp = new DSETimeStamp(Decoder.Decode(DecodedData, length) as Asn1Sequence);
+            Verb = (Decoder.Decode(DecodedData, length) as Asn1Integer).IntValue;
+            Flags = (Decoder.Decode(DecodedData, length) as Asn1Integer).IntValue;
+            NewDN = (Decoder.Decode(DecodedData, length) as Asn1OctetString).StringValue;
 
             DataInitDone();
         }
@@ -116,13 +69,13 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("EntryEventData[");
-            buf.AppendFormat("(Entry={0})", strEntry);
-            buf.AppendFormat("(Prepetrator={0})", strPerpetratorDN);
-            buf.AppendFormat("(ClassId={0})", strClassId);
-            buf.AppendFormat("(Verb={0})", nVerb);
-            buf.AppendFormat("(Flags={0})", nFlags);
-            buf.AppendFormat("(NewDN={0})", strNewDN);
-            buf.AppendFormat("(TimeStamp={0})", timeStampObj);
+            buf.AppendFormat("(Entry={0})", Entry);
+            buf.AppendFormat("(Prepetrator={0})", PerpetratorDN);
+            buf.AppendFormat("(ClassId={0})", ClassId);
+            buf.AppendFormat("(Verb={0})", Verb);
+            buf.AppendFormat("(Flags={0})", Flags);
+            buf.AppendFormat("(NewDN={0})", NewDN);
+            buf.AppendFormat("(TimeStamp={0})", TimeStamp);
             buf.Append("]");
 
             return buf.ToString();

@@ -37,26 +37,9 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSpecifier
     {
-        private readonly EdirEventType event_type;
-
-        public EdirEventType EventType
-        {
-            get { return event_type; }
-        }
-
-        private readonly EdirEventResultType event_result_type;
-
-        public EdirEventResultType EventResultType
-        {
-            get { return event_result_type; }
-        }
-
-        private readonly string event_filter;
-
-        public string EventFilter
-        {
-            get { return event_filter; }
-        }
+        public EdirEventType EventType { get; }
+        public EdirEventResultType EventResultType { get; }
+        public string EventFilter { get; }
 
         public EdirEventSpecifier(EdirEventType eventType, EdirEventResultType eventResultType) :
             this(eventType, eventResultType, null)
@@ -65,9 +48,9 @@ namespace Novell.Directory.Ldap.Events.Edir
 
         public EdirEventSpecifier(EdirEventType eventType, EdirEventResultType eventResultType, string filter)
         {
-            event_type = eventType;
-            event_result_type = eventResultType;
-            event_filter = filter;
+            EventType = eventType;
+            EventResultType = eventResultType;
+            EventFilter = filter;
         }
     }
 }

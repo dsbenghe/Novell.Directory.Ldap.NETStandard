@@ -21,7 +21,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             });
 
             var modifiedEntry = LdapOps.GetEntry(existingEntry.DN);
-            Assert.Equal(value, modifiedEntry.getAttribute(attrName).StringValue);
+            Assert.Equal(value, modifiedEntry.AttributeSet[attrName].StringValue);
         }
 
         [Fact]
@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             });
 
             var modifiedEntry = LdapOps.GetEntry(existingEntry.DN);
-            Assert.Equal(value, modifiedEntry.getAttribute(attrName).StringValue);
+            Assert.Equal(value, modifiedEntry.AttributeSet[attrName].StringValue);
         }
 
         [Fact]

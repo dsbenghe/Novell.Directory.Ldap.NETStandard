@@ -49,10 +49,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to delete
         /// </returns>
-        public virtual string DN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
+        public virtual string DN => Asn1Object.RequestDN;
 
         /// <summary>
         ///     Constructs a request to delete an entry from the directory
@@ -64,7 +61,8 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the abandon request
         ///     or null if none.
         /// </param>
-        public LdapDeleteRequest(string dn, LdapControl[] cont) : base(DEL_REQUEST, new RfcDelRequest(dn), cont)
+        public LdapDeleteRequest(string dn, LdapControl[] cont) 
+            : base(DEL_REQUEST, new RfcDelRequest(dn), cont)
         {
         }
 
@@ -72,9 +70,6 @@ namespace Novell.Directory.Ldap
         ///     Return an Asn1 representation of this delete request
         ///     #return an Asn1 representation of this object
         /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        public override string ToString() => Asn1Object.ToString();
     }
 }

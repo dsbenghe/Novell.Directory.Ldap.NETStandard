@@ -46,8 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        [CLSCompliant(false)]
-        public RfcLdapOID(sbyte[] s) : base(s)
+        public RfcLdapOID(byte[] s) : base(s)
         {
         }
     }

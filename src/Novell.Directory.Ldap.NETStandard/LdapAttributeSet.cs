@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Novell.Directory.Ldap
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapEntry">
     /// </seealso>
-    public class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
+    public class LdapAttributeSet : ICollection<LdapAttribute>,  ICloneable
     {
         /// <summary>
         ///     Returns the number of attributes in this set.
@@ -57,10 +58,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     number of attributes in this set.
         /// </returns>
-        public override int Count
-        {
-            get { return map.Count; }
-        }
+        public int Count => map.Count;
+
+        public bool IsReadOnly => false;
 
         /// <summary>
         ///     This is the underlying data structure for this set.
@@ -69,13 +69,7 @@ namespace Novell.Directory.Ldap
         ///     as the values.  We also do not declare the map as transient, making the
         ///     map serializable.
         /// </summary>
-        private readonly Hashtable map;
-
-        /// <summary> Constructs an empty set of attributes.</summary>
-        public LdapAttributeSet()
-        {
-            map = new Hashtable();
-        }
+        private readonly IDictionary<string, LdapAttribute> map = new Dictionary<string, LdapAttribute>();
 
         // ---  methods not defined in Set ---
 
@@ -85,51 +79,18 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A deep copy of this attribute set.
         /// </returns>
-        public override object Clone()
+        public object Clone()
         {
-            try
-            {
-                var newObj = MemberwiseClone();
-                var i = GetEnumerator();
-                while (i.MoveNext())
-                {
-                    ((LdapAttributeSet) newObj).Add(((LdapAttribute) i.Current).Clone());
-                }
-                return newObj;
-            }
-            catch (Exception ce)
-            {
-                throw new Exception("Internal error, cannot create clone", ce);
-            }
+            var newObj = MemberwiseClone() as LdapAttributeSet;
+            foreach (var value in map.Values)
+                newObj.Add(value.Clone() as LdapAttribute);
+            return newObj;
         }
 
-        /// <summary>
-        ///     Returns the attribute matching the specified attrName.
-        ///     For example:
-        ///     <ul>
-        ///         <li><code>getAttribute("cn")</code>      returns only the "cn" attribute</li>
-        ///         <li>
-        ///             <code>getAttribute("cn;lang-en")</code> returns only the "cn;lang-en"
-        ///             attribute.
-        ///         </li>
-        ///     </ul>
-        ///     In both cases, <code>null</code> is returned if there is no exact match to
-        ///     the specified attrName.
-        ///     Note: Novell eDirectory does not currently support language subtypes.
-        ///     It does support the "binary" subtype.
-        /// </summary>
-        /// <param name="attrName">
-        ///     The name of an attribute to retrieve, with or without
-        ///     subtype specifications. For example, "cn", "cn;phonetic", and
-        ///     "cn;binary" are valid attribute names.
-        /// </param>
-        /// <returns>
-        ///     The attribute matching the specified attrName, or <code>null</code>
-        ///     if there is no exact match.
-        /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName)
+        public LdapAttribute this[string index]
         {
-            return (LdapAttribute) map[attrName.ToUpper()];
+            get => map[index.ToUpper()];
+            set => map[index.ToUpper()] = value;
         }
 
         /// <summary>
@@ -194,10 +155,9 @@ namespace Novell.Directory.Ldap
         ///     A single best-match <code>LdapAttribute</code>, or <code>null</code>
         ///     if no match is found in the entry.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName, string lang)
+        public virtual LdapAttribute GetAttribute(string attrName, string lang)
         {
-            var key = attrName + ";" + lang;
-            return (LdapAttribute) map[key.ToUpper()];
+            return map[$"{attrName};{lang}".ToUpper()] as LdapAttribute;
         }
 
         /// <summary>
@@ -237,21 +197,16 @@ namespace Novell.Directory.Ldap
         ///     An attribute set containing the attributes that match the
         ///     specified subtype.
         /// </returns>
-        public virtual LdapAttributeSet getSubset(string subtype)
+        public virtual LdapAttributeSet GetSubset(string subtype)
         {
             // Create a new tempAttributeSet
             var tempAttributeSet = new LdapAttributeSet();
-            var i = GetEnumerator();
-
-            // Cycle throught this.attributeSet
-            while (i.MoveNext())
+            foreach (var attr in map.Values)
             {
-                var attr = (LdapAttribute) i.Current;
-
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
-                if (attr.hasSubtype(subtype))
-                    tempAttributeSet.Add(attr.Clone());
+                if (attr.HasSubtype(subtype))
+                    tempAttributeSet.Add(attr.Clone() as LdapAttribute);
             }
             return tempAttributeSet;
         }
@@ -265,10 +220,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     iterator over the attributes in this set
         /// </returns>
-        public override IEnumerator GetEnumerator()
-        {
-            return map.Values.GetEnumerator();
-        }
+        public IEnumerator GetEnumerator() => map.Values.GetEnumerator();
 
         /// <summary>
         ///     Returns <code>true</code> if this set contains no elements
@@ -276,121 +228,12 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     <code>true</code> if this set contains no elements
         /// </returns>
-        public override bool IsEmpty()
-        {
-            return map.Count == 0;
-        }
+        public bool IsEmpty => map.Count == 0;
 
-        /// <summary>
-        ///     Returns <code>true</code> if this set contains an attribute of the same name
-        ///     as the specified attribute.
+        /// <summary> 
+        /// Removes all of the elements from this set.
         /// </summary>
-        /// <param name="attr">
-        ///     Object of type <code>LdapAttribute</code>
-        /// </param>
-        /// <returns>
-        ///     true if this set contains the specified attribute
-        ///     @throws ClassCastException occurs the specified Object
-        ///     is not of type LdapAttribute.
-        /// </returns>
-        public override bool Contains(object attr)
-        {
-            var attribute = (LdapAttribute) attr;
-            return map.ContainsKey(attribute.Name.ToUpper());
-        }
-
-        /// <summary>
-        ///     Adds the specified attribute to this set if it is not already present.
-        ///     If an attribute with the same name already exists in the set then the
-        ///     specified attribute will not be added.
-        /// </summary>
-        /// <param name="attr">
-        ///     Object of type <code>LdapAttribute</code>
-        /// </param>
-        /// <returns>
-        ///     true if the attribute was added.
-        ///     @throws ClassCastException occurs the specified Object
-        ///     is not of type <code>LdapAttribute</code>.
-        /// </returns>
-        public override bool Add(object attr)
-        {
-            //We must enforce that attr is an LdapAttribute
-            var attribute = (LdapAttribute) attr;
-            var name = attribute.Name.ToUpper();
-            if (map.ContainsKey(name))
-                return false;
-            SupportClass.PutElement(map, name, attribute);
-            return true;
-        }
-
-        /// <summary>
-        ///     Removes the specified object from this set if it is present.
-        ///     If the specified object is of type <code>LdapAttribute</code>, the
-        ///     specified attribute will be removed.  If the specified object is of type
-        ///     <code>String</code>, the attribute with a name that matches the string will
-        ///     be removed.
-        /// </summary>
-        /// <param name="object">
-        ///     LdapAttribute to be removed or <code>String</code> naming
-        ///     the attribute to be removed.
-        /// </param>
-        /// <returns>
-        ///     true if the object was removed.
-        ///     @throws ClassCastException occurs the specified Object
-        ///     is not of type <code>LdapAttribute</code> or of type <code>String</code>.
-        /// </returns>
-        public override bool Remove(object object_Renamed)
-        {
-            string attributeName; //the name is the key to object in the HashMap
-            if (object_Renamed is string)
-            {
-                attributeName = (string) object_Renamed;
-            }
-            else
-            {
-                attributeName = ((LdapAttribute) object_Renamed).Name;
-            }
-            if ((object) attributeName == null)
-            {
-                return false;
-            }
-            return SupportClass.HashtableRemove(map, attributeName.ToUpper()) != null;
-        }
-
-        /// <summary> Removes all of the elements from this set.</summary>
-        public override void Clear()
-        {
-            map.Clear();
-        }
-
-        /// <summary>
-        ///     Adds all <code>LdapAttribute</code> objects in the specified collection to
-        ///     this collection.
-        /// </summary>
-        /// <param name="c">
-        ///     Collection of <code>LdapAttribute</code> objects.
-        ///     @throws ClassCastException occurs when an element in the
-        ///     collection is not of type <code>LdapAttribute</code>.
-        /// </param>
-        /// <returns>
-        ///     true if this set changed as a result of the call.
-        /// </returns>
-        public override bool AddAll(ICollection c)
-        {
-            var setChanged = false;
-            var i = c.GetEnumerator();
-
-            while (i.MoveNext())
-            {
-                // we must enforce that everything in c is an LdapAttribute
-                // add will return true if the attribute was added
-                if (Add(i.Current))
-                {
-                    setChanged = true;
-                }
-            }
-            return setChanged;
-        }
+        public void Clear() => map.Clear();
 
         /// <summary>
         ///     Returns a string representation of this LdapAttributeSet
@@ -410,10 +253,84 @@ namespace Novell.Directory.Ldap
                     retValue.Append(" ");
                 }
                 first = false;
-                var attr = (LdapAttribute) attrs.Current;
+                var attr = (LdapAttribute)attrs.Current;
                 retValue.Append(attr);
             }
             return retValue.ToString();
         }
+
+        /// <summary>
+        ///     Adds the specified attribute to this set if it is not already present.
+        ///     If an attribute with the same name already exists in the set then the
+        ///     specified attribute will not be added.
+        /// </summary>
+        /// <param name="attr">
+        ///     Object of type <code>LdapAttribute</code>
+        /// </param>
+        /// <returns>
+        ///     true if the attribute was added.
+        ///     @throws ClassCastException occurs the specified Object
+        ///     is not of type <code>LdapAttribute</code>.
+        /// </returns>
+
+        public void Add(LdapAttribute item)
+        {
+            if (!map.ContainsKey(item.Name))
+                map.Add(item.Name.ToUpper(), item);
+        }
+
+        public void AddRange(IEnumerable<LdapAttribute> colletion)
+        {
+            foreach(var item in colletion)
+                Add(item);
+        }
+
+
+        /// <summary>
+        ///     Returns <code>true</code> if this set contains an attribute of the same name
+        ///     as the specified attribute.
+        /// </summary>
+        /// <param name="attr">
+        ///     Object of type <code>LdapAttribute</code>
+        /// </param>
+        /// <returns>
+        ///     true if this set contains the specified attribute
+        ///     is not of type LdapAttribute.
+        /// </returns>
+        public bool Contains(LdapAttribute item) => map.ContainsKey(item.Name.ToUpper());
+
+        public void CopyTo(LdapAttribute[] array, int arrayIndex) => map.Values.CopyTo(array, arrayIndex);
+
+        public bool Remove(LdapAttribute item) => map.Remove(item.Name.ToUpper());
+
+        /// <summary>
+        ///     Removes the specified object from this set if it is present.
+        ///     If the specified object is of type <code>LdapAttribute</code>, the
+        ///     specified attribute will be removed.  If the specified object is of type
+        ///     <code>String</code>, the attribute with a name that matches the string will
+        ///     be removed.
+        /// </summary>
+        /// <param name="object">
+        ///     LdapAttribute to be removed or <code>String</code> naming
+        ///     the attribute to be removed.
+        /// </param>
+        /// <returns>
+        ///     true if the object was removed.
+        ///     @throws ClassCastException occurs the specified Object
+        ///     is not of type <code>LdapAttribute</code> or of type <code>String</code>.
+        /// </returns>
+        public bool Remove(object @object)
+        {
+            if (@object is string name)
+            {
+                return Remove(this[name]);
+            }
+            else
+            {
+                return Remove(@object as LdapAttribute);
+            }
+        }
+
+        IEnumerator<LdapAttribute> IEnumerable<LdapAttribute>.GetEnumerator() => map.Values.GetEnumerator();
     }
 }

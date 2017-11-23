@@ -21,7 +21,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             Assert.Null(LdapOps.GetEntry(entry.DN));
             var renamedEntry = LdapOps.GetEntry(TestHelper.BuildDn(newCn));
             Assert.NotNull(renamedEntry);
-            entry.getAttributeSet().AssertSameAs(renamedEntry.getAttributeSet(), new List<string> {"cn"});
+            entry.AttributeSet.AssertSameAs(renamedEntry.AttributeSet, new List<string> {"cn"});
         }
     }
 }

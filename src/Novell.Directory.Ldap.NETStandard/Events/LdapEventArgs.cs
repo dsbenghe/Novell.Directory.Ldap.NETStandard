@@ -42,13 +42,7 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.SearchReferralEventArgs' />
     public class LdapEventArgs : DirectoryEventArgs
     {
-        protected LdapEventType eType;
-
-        public LdapEventType EventType
-        {
-            get { return eType; }
-            set { eType = value; }
-        }
+        public LdapEventType EventType { get; set; }
 
         public LdapEventArgs(
             LdapMessage sourceMessage,
@@ -56,7 +50,7 @@ namespace Novell.Directory.Ldap.Events
             LdapEventType aType)
             : base(sourceMessage, aClassification)
         {
-            eType = aType;
+            EventType = aType;
         }
 
         public override string ToString()
@@ -64,12 +58,12 @@ namespace Novell.Directory.Ldap.Events
             var buf = new StringBuilder();
             buf.Append("[");
             buf.AppendFormat("{0}:", GetType());
-            buf.AppendFormat("(Classification={0})", eClassification);
-            buf.AppendFormat("(Type={0})", eType);
-            buf.AppendFormat("(EventInformation:{0})", ldap_message);
+            buf.AppendFormat("(Classification={0})", EventClassification);
+            buf.AppendFormat("(Type={0})", EventType);
+            buf.AppendFormat("(EventInformation:{0})", ContianedEventInformation);
             buf.Append("]");
 
             return buf.ToString();
         }
-    } // end of class LdapEventArgs
+    }
 }

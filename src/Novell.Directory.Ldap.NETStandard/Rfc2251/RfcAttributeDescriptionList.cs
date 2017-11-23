@@ -50,7 +50,8 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeDescriptionList : Asn1SequenceOf
     {
         /// <summary> </summary>
-        public RfcAttributeDescriptionList(int size) : base(size)
+        public RfcAttributeDescriptionList(int size) 
+            : base(size)
         {
         }
 
@@ -58,21 +59,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Convenience constructor. This constructor will construct an
         ///     AttributeDescriptionList using the supplied array of Strings.
         /// </summary>
-        public RfcAttributeDescriptionList(string[] attrs) : base(attrs == null ? 0 : attrs.Length)
+        public RfcAttributeDescriptionList(string[] attrs) 
+            : base(attrs == null ? 0 : attrs.Length)
         {
             if (attrs != null)
             {
                 for (var i = 0; i < attrs.Length; i++)
                 {
-                    add(new RfcAttributeDescription(attrs[i]));
+                    Add(new RfcAttributeDescription(attrs[i]));
                 }
             }
         }
-
-        /*
-        * Override add() to only accept types of AttributeDescription
-        *
-        * @exception Asn1InvalidTypeException
-        */
     }
 }

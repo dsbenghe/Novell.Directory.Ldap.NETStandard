@@ -29,7 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -40,7 +39,6 @@ namespace Novell.Directory.Ldap.Asn1
     /// </summary>
     /* Can a CHOICE contain anything BUT a TAGGED Type?
     */
-    [CLSCompliant(true)]
     public class Asn1Choice : Asn1Object
     {
         /// <summary>
@@ -51,13 +49,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        [CLSCompliant(false)]
-        protected internal virtual Asn1Object ChoiceValue
-        {
-            set { content = value; }
-        }
+        public virtual Asn1Object ChoiceValue { get; protected internal set; }
 
-        private Asn1Object content;
 
         /* Constructors for Asn1Choice
         */
@@ -70,9 +63,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        public Asn1Choice(Asn1Object content) : base(null)
+        public Asn1Choice(Asn1Object content)
+            : base(null)
         {
-            this.content = content;
+            ChoiceValue = content;
         }
 
         /// <summary>
@@ -81,7 +75,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         protected internal Asn1Choice() : base(null)
         {
-            content = null;
+            ChoiceValue = null;
         }
 
         /* Asn1Object implementation
@@ -100,21 +94,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            content.encode(enc, out_Renamed);
-        }
-
-        /* Asn1Choice specific methods
-        */
-
-        /// <summary>
-        ///     Returns the CHOICE value stored in this Asn1Choice
-        ///     as an Asn1Object.
-        /// </summary>
-        public Asn1Object choiceValue()
-        {
-            return content;
+            ChoiceValue.Encode(enc, @out);
         }
 
         /// <summary>
@@ -123,26 +105,17 @@ namespace Novell.Directory.Ldap.Asn1
         ///     as the identifier of an Asn1Choice depends on the
         ///     type of the object encoded by this Asn1Choice.
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return content.getIdentifier();
-        }
-
-        /// <summary>
-        ///     Sets the identifier of the contained Asn1Object. We
-        ///     override the parent method as the identifier of
-        ///     an Asn1Choice depends on the type of the object
-        ///     encoded by this Asn1Choice.
-        /// </summary>
-        public override void setIdentifier(Asn1Identifier id)
-        {
-            content.setIdentifier(id);
+            get => ChoiceValue.Identifier;
+            set
+            {
+                if (ChoiceValue != null)
+                    ChoiceValue.Identifier = value;
+            }
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
-        public override string ToString()
-        {
-            return content.ToString();
-        }
+        public override string ToString() => ChoiceValue.ToString();
     }
 }

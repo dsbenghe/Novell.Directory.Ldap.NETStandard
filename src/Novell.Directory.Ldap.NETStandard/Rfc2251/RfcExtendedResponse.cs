@@ -32,6 +32,7 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -44,20 +45,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         response         [11] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcExtendedResponse : Asn1Sequence, RfcResponse
+    public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary> </summary>
-        public virtual RfcLdapOID ResponseName
-        {
-            get { return responseNameIndex != 0 ? (RfcLdapOID) get_Renamed(responseNameIndex) : null; }
-        }
+        public virtual RfcLdapOID ResponseName => responseNameIndex != 0 ? this[responseNameIndex] as RfcLdapOID : null;
 
         /// <summary> </summary>
-        [CLSCompliant(false)]
-        public virtual Asn1OctetString Response
-        {
-            get { return responseIndex != 0 ? (Asn1OctetString) get_Renamed(responseIndex) : null; }
-        }
+        public virtual Asn1OctetString Response => responseIndex != 0 ? this[responseIndex] as Asn1OctetString : null;
 
         /// <summary> Context-specific TAG for optional responseName.</summary>
         public const int RESPONSE_NAME = 10;
@@ -77,32 +71,31 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a ExtendedResponse is when it is
         ///     decoding it from an InputStream
         /// </summary>
-        [CLSCompliant(false)]
-        public RfcExtendedResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcExtendedResponse(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
             // decode optional tagged elements
-            if (size() > 3)
+            if (Count > 3)
             {
-                for (var i = 3; i < size(); i++)
+                for (var i = 3; i < Count; i++)
                 {
-                    var obj = (Asn1Tagged) get_Renamed(i);
-                    var id = obj.getIdentifier();
+                    var obj = this[i] as Asn1Tagged;
+                    var id = obj.Identifier;
                     switch (id.Tag)
                     {
                         case RfcLdapResult.REFERRAL:
-                            var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
-                            var bais = new MemoryStream(SupportClass.ToByteArray(content));
-                            set_Renamed(i, new RfcReferral(dec, bais, content.Length));
+                            var content = ((Asn1OctetString)obj.TaggedValue).ByteValue;
+                            using (var bais = new MemoryStream(content))
+                                this[i] = new RfcReferral(dec, bais, content.Length);
                             referralIndex = i;
                             break;
 
                         case RESPONSE_NAME:
-                            set_Renamed(i, new RfcLdapOID(((Asn1OctetString) obj.taggedValue()).byteValue()));
+                            this[i] = new RfcLdapOID((obj.TaggedValue as Asn1OctetString).ByteValue);
                             responseNameIndex = i;
                             break;
 
                         case RESPONSE:
-                            set_Renamed(i, obj.taggedValue());
+                            this[i] = obj.TaggedValue;
                             responseIndex = i;
                             break;
                     }
@@ -115,33 +108,22 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public Asn1Enumerated getResultCode()
-        {
-            return (Asn1Enumerated) get_Renamed(0);
-        }
+        public Asn1Enumerated ResultCode => this[0] as Asn1Enumerated;
 
         /// <summary> </summary>
-        public RfcLdapDN getMatchedDN()
-        {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
-        }
+        public RfcLdapDN MatchedDN => new RfcLdapDN((this[1] as Asn1OctetString).ByteValue);
 
         /// <summary> </summary>
-        public RfcLdapString getErrorMessage()
-        {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
-        }
+        public RfcLdapString ErrorMessage => new RfcLdapString((this[2] as Asn1OctetString).ByteValue);
 
         /// <summary> </summary>
-        public RfcReferral getReferral()
-        {
-            return referralIndex != 0 ? (RfcReferral) get_Renamed(referralIndex) : null;
-        }
+        public RfcReferral Referral => referralIndex != 0 ? this[referralIndex] as RfcReferral : null;
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.EXTENDED_RESPONSE);
+            set => base.Identifier = value;
+            get =>new Asn1Identifier(TagClass.APPLICATION, true, LdapMessage.EXTENDED_RESPONSE); 
         }
     }
 }

@@ -54,16 +54,12 @@ namespace Novell.Directory.Ldap
             get
             {
                 var respOID = ((RfcExtendedResponse) message.Response).ResponseName;
-                return respOID?.stringValue();
+                return respOID?.StringValue;
             }
         }
 
-        static LdapExtendedResponse()
-        {
-            registeredResponses = new RespExtensionSet();
-        }
 
-        public static RespExtensionSet RegisteredResponses => registeredResponses;
+        public static RespExtensionSet RegisteredResponses { get; } = new RespExtensionSet();
 
         /// <summary>
         ///     Returns the value part of the response in raw bytes.
@@ -71,17 +67,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The value of the response.
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] Value
+        public virtual byte[] Value
         {
             get
             {
                 var tempString = ((RfcExtendedResponse) message.Response).Response;
-                return tempString?.byteValue();
+                return tempString?.ByteValue;
             }
         }
-
-        private static readonly RespExtensionSet registeredResponses;
 
         /// <summary>
         ///     Creates an LdapExtendedResponse object which encapsulates
@@ -111,9 +104,6 @@ namespace Novell.Directory.Ldap
         ///     A class which can instantiate an
         ///     LDAPExtendedResponse.
         /// </param>
-        public static void register(string oid, Type extendedResponseClass)
-        {
-            registeredResponses.registerResponseExtension(oid, extendedResponseClass);
-        }
+        public static void Register(string oid, Type extendedResponseClass) => RegisteredResponses.Add(oid, extendedResponseClass);
     }
 }

@@ -32,6 +32,8 @@
 using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using System.Collections.Generic;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -55,19 +57,20 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     with the add() method to construct a set of Controls to send to the
         ///     server.
         /// </summary>
-        public RfcControls() : base(5)
+        public RfcControls()
+            : base(5)
         {
         }
 
-        /// <summary> Constructs a Controls object by decoding it from an InputStream.</summary>
-        [CLSCompliant(false)]
-        public RfcControls(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        /// <summary> 
+        /// Constructs a Controls object by decoding it from an InputStream.
+        /// </summary>
+        public RfcControls(IAsn1Decoder dec, Stream @in, int len) : base(dec, @in, len)
         {
             // Convert each SEQUENCE element to a Control
-            for (var i = 0; i < size(); i++)
+            for (var i = 0; i < Count; i++)
             {
-                var tempControl = new RfcControl((Asn1Sequence) get_Renamed(i));
-                set_Renamed(i, tempControl);
+                this[i] = new RfcControl(this[i] as Asn1Sequence);
             }
         }
 
@@ -75,16 +78,26 @@ namespace Novell.Directory.Ldap.Rfc2251
         // Mutators
         //*************************************************************************
 
-        /// <summary> Override add() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void add(RfcControl control)
+        /// <summary> 
+        /// Override add() of Asn1SequenceOf to only accept a Control type.
+        /// </summary>
+        public new void Add(RfcControl control)
         {
-            base.add(control);
+            base.Add(control);
         }
 
-        /// <summary> Override set() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void set_Renamed(int index, RfcControl control)
+        /// <summary> 
+        /// Override add() of Asn1SequenceOf to only accept a Control type.
+        /// </summary>
+        public new void AddRange(IEnumerable<RfcControl> controls)
         {
-            base.set_Renamed(index, control);
+            base.AddRange(controls);
+        }
+
+        public new RfcControl this[int index]
+        {
+            get => Content[index] as RfcControl;
+            set => Content[index] = value;
         }
 
         //*************************************************************************
@@ -92,9 +105,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return a context specific id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.CONTEXT, true, CONTROLS);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.CONTEXT, true, CONTROLS);
         }
     }
 }

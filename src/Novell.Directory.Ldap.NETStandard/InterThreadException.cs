@@ -42,17 +42,7 @@ namespace Novell.Directory.Ldap
         ///     the message ID.  Returns -1 if no message
         ///     is associated with this exception.
         /// </returns>
-        internal virtual int MessageID
-        {
-            get
-            {
-                if (request == null)
-                {
-                    return -1;
-                }
-                return request.MessageID;
-            }
-        }
+        internal virtual int MessageID => _request == null ? -1 : _request.MessageID;
 
         /// <summary>
         ///     Returns the message type expected as a reply to
@@ -66,11 +56,11 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (request == null)
+                if (_request == null)
                 {
                     return -1;
                 }
-                var reqType = request.MessageType;
+                var reqType = _request.MessageType;
                 var responseType = -1;
                 switch (reqType)
                 {
@@ -118,7 +108,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private readonly Message request;
+        private readonly Message _request;
 
         /// <summary>
         ///     Constructs a InterThreadException with its associated message.
@@ -135,7 +125,7 @@ namespace Novell.Directory.Ldap
         internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
             Message request) : base(message, arguments, resultCode, null, rootException)
         {
-            this.request = request;
+            _request = request;
         }
     }
 }

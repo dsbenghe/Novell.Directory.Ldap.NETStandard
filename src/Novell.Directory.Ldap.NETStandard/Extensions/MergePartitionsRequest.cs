@@ -71,19 +71,21 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) dn == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if (dn == null)
+                    throw new ArgumentNullException(nameof(dn));
 
-                var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                using (var encodedData = new MemoryStream())
+                {
+                    var encoder = new LBEREncoder();
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_dn = new Asn1OctetString(dn);
+                    var asn1_flags = new Asn1Integer(flags);
+                    var asn1_dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                    asn1_flags.Encode(encoder, encodedData);
+                    asn1_dn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    Value = encodedData.ToArray();
+                }
             }
             catch (IOException ioe)
             {

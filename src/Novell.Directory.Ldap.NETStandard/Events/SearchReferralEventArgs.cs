@@ -39,16 +39,13 @@ namespace Novell.Directory.Ldap.Events
     public class SearchReferralEventArgs : LdapEventArgs
     {
         public SearchReferralEventArgs(LdapMessage sourceMessage,
-            EventClassifiers aClassification,
-            LdapEventType aType)
+                                       EventClassifiers classification,
+                                       LdapEventType type)
             : base(sourceMessage, EventClassifiers.CLASSIFICATION_LDAP_PSEARCH,
                 LdapEventType.LDAP_PSEARCH_ANY) // TODO: why type is ANY..?
         {
         }
 
-        public string[] getUrls()
-        {
-            return ((LdapSearchResultReference) ldap_message).Referrals;
-        }
+        public string[] Urls => (ContianedEventInformation as LdapSearchResultReference).Referrals;
     }
 }

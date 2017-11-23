@@ -45,20 +45,22 @@ namespace Novell.Directory.Ldap.Asn1
     ///     If the type is to be encoded EXPLICITLY, the base type will be encoded as
     ///     usual after the Asn1Tagged identifier has been encoded.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Tagged : Asn1Object
     {
-        /// <summary> Sets the Asn1Object tagged value</summary>
-        [CLSCompliant(false)]
+        private Asn1Object _content;
+        /// <summary> 
+        /// Sets the Asn1Object tagged value
+        /// </summary>
         public virtual Asn1Object TaggedValue
         {
+            get => _content;
             set
             {
-                content = value;
-                if (!explicit_Renamed && value != null)
+                _content = value;
+                if (!Explicit && _content != null)
                 {
                     // replace object's id with new tag.
-                    value.setIdentifier(getIdentifier());
+                    _content.Identifier = Identifier;
                 }
             }
         }
@@ -67,13 +69,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Returns a boolean value indicating if this object uses
         ///     EXPLICIT tagging.
         /// </summary>
-        public virtual bool Explicit
-        {
-            get { return explicit_Renamed; }
-        }
+        public virtual bool Explicit { get; }
 
-        private readonly bool explicit_Renamed;
-        private Asn1Object content;
+
 
         /* Constructors for Asn1Tagged
         */
@@ -83,21 +81,22 @@ namespace Novell.Directory.Ldap.Asn1
         ///     AN1Identifier and the Asn1Object.
         ///     The explicit flag defaults to true as per the spec.
         /// </summary>
-        public Asn1Tagged(Asn1Identifier identifier, Asn1Object object_Renamed) : this(identifier, object_Renamed, true)
+        public Asn1Tagged(Asn1Identifier identifier, Asn1Object @object)
+            : this(identifier, @object, true)
         {
         }
 
         /// <summary> Constructs an Asn1Tagged object.</summary>
-        public Asn1Tagged(Asn1Identifier identifier, Asn1Object object_Renamed, bool explicit_Renamed)
+        public Asn1Tagged(Asn1Identifier identifier, Asn1Object @object, bool @explicit)
             : base(identifier)
         {
-            content = object_Renamed;
-            this.explicit_Renamed = explicit_Renamed;
+            _content = @object;
+            Explicit = @explicit;
 
-            if (!explicit_Renamed && content != null)
+            if (!@explicit && _content != null)
             {
                 // replace object's id with new tag.
-                content.setIdentifier(identifier);
+                _content.Identifier = identifier;
             }
         }
 
@@ -113,14 +112,14 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1Tagged(Asn1Decoder dec, Stream in_Renamed, int len, Asn1Identifier identifier) : base(identifier)
+        public Asn1Tagged(IAsn1Decoder dec, Stream @in, int len, Asn1Identifier identifier)
+            : base(identifier)
         {
             // If we are decoding an implicit tag, there is no way to know at this
             // low level what the base type really is. We can place the content
             // into an Asn1OctetString type and pass it back to the application who
             // will be able to create the appropriate ASN.1 type for this tag.
-            content = new Asn1OctetString(dec, in_Renamed, len);
+            _content = new Asn1OctetString(dec, @in, len);
         }
 
         /* Asn1Object implementation
@@ -137,29 +136,20 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, @out);
         }
 
         /* Asn1Tagged specific methods
         */
 
-        /// <summary> Returns the Asn1Object stored in this Asn1Tagged object</summary>
-        public Asn1Object taggedValue()
-        {
-            return content;
-        }
-
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            if (explicit_Renamed)
-            {
-                return base.ToString() + content;
-            }
-            // implicit tagging
-            return content.ToString();
+            if (Explicit)
+                return base.ToString() + _content;
+            return _content.ToString();
         }
     }
 }

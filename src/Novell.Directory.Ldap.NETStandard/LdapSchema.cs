@@ -342,7 +342,7 @@ namespace Novell.Directory.Ldap
         /// <param name="ent">
         ///     An LdapEntry containing schema information.
         /// </param>
-        public LdapSchema(LdapEntry ent) : base(ent.DN, ent.getAttributeSet())
+        public LdapSchema(LdapEntry ent) : base(ent.DN, ent.AttributeSet)
         {
             InitBlock();
             //reset all definitions
@@ -351,107 +351,107 @@ namespace Novell.Directory.Ldap
                 idTable[i] = new Hashtable();
                 nameTable[i] = new Hashtable();
             }
-            var itr = getAttributeSet().GetEnumerator();
+            var itr = AttributeSet.GetEnumerator();
             while (itr.MoveNext())
             {
                 var attr = (LdapAttribute) itr.Current;
-                string value_Renamed, attrName = attr.Name;
+                string value, attrName = attr.Name;
                 var enumString = attr.StringValues;
 
                 if (attrName.ToUpper().Equals(schemaTypeNames[OBJECT_CLASS].ToUpper()))
                 {
                     LdapObjectClassSchema classSchema;
-                    while (enumString.MoveNext())
+                    foreach(string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
+                        value = item;
                         try
                         {
-                            classSchema = new LdapObjectClassSchema(value_Renamed);
+                            classSchema = new LdapObjectClassSchema(value);
                         }
                         catch (Exception e)
                         {
                             Logger.Log.LogWarning("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
-                        addElement(OBJECT_CLASS, classSchema);
+                        AddElement(OBJECT_CLASS, classSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[ATTRIBUTE].ToUpper()))
                 {
                     LdapAttributeSchema attrSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
+                        value = item;
                         try
                         {
-                            attrSchema = new LdapAttributeSchema(value_Renamed);
+                            attrSchema = new LdapAttributeSchema(value);
                         }
                         catch (Exception e)
                         {
                             Logger.Log.LogWarning("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
-                        addElement(ATTRIBUTE, attrSchema);
+                        AddElement(ATTRIBUTE, attrSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[SYNTAX].ToUpper()))
                 {
                     LdapSyntaxSchema syntaxSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        syntaxSchema = new LdapSyntaxSchema(value_Renamed);
-                        addElement(SYNTAX, syntaxSchema);
+                        value = item;
+                        syntaxSchema = new LdapSyntaxSchema(value);
+                        AddElement(SYNTAX, syntaxSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[MATCHING].ToUpper()))
                 {
                     LdapMatchingRuleSchema matchingRuleSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        matchingRuleSchema = new LdapMatchingRuleSchema(value_Renamed, null);
-                        addElement(MATCHING, matchingRuleSchema);
+                        value = item;
+                        matchingRuleSchema = new LdapMatchingRuleSchema(value, null);
+                        AddElement(MATCHING, matchingRuleSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[MATCHING_USE].ToUpper()))
                 {
                     LdapMatchingRuleUseSchema matchingRuleUseSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        matchingRuleUseSchema = new LdapMatchingRuleUseSchema(value_Renamed);
-                        addElement(MATCHING_USE, matchingRuleUseSchema);
+                        value = item;
+                        matchingRuleUseSchema = new LdapMatchingRuleUseSchema(value);
+                        AddElement(MATCHING_USE, matchingRuleUseSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[DITCONTENT].ToUpper()))
                 {
                     LdapDITContentRuleSchema dITContentRuleSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        dITContentRuleSchema = new LdapDITContentRuleSchema(value_Renamed);
-                        addElement(DITCONTENT, dITContentRuleSchema);
+                        value = item;
+                        dITContentRuleSchema = new LdapDITContentRuleSchema(value);
+                        AddElement(DITCONTENT, dITContentRuleSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[DITSTRUCTURE].ToUpper()))
                 {
                     LdapDITStructureRuleSchema dITStructureRuleSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        dITStructureRuleSchema = new LdapDITStructureRuleSchema(value_Renamed);
-                        addElement(DITSTRUCTURE, dITStructureRuleSchema);
+                        value = item;
+                        dITStructureRuleSchema = new LdapDITStructureRuleSchema(value);
+                        AddElement(DITSTRUCTURE, dITStructureRuleSchema);
                     }
                 }
                 else if (attrName.ToUpper().Equals(schemaTypeNames[NAME_FORM].ToUpper()))
                 {
                     LdapNameFormSchema nameFormSchema;
-                    while (enumString.MoveNext())
+                    foreach (string item in attr.StringValues)
                     {
-                        value_Renamed = (string) enumString.Current;
-                        nameFormSchema = new LdapNameFormSchema(value_Renamed);
-                        addElement(NAME_FORM, nameFormSchema);
+                        value = item;
+                        nameFormSchema = new LdapNameFormSchema(value);
+                        AddElement(NAME_FORM, nameFormSchema);
                     }
                 }
                 //All non schema attributes are ignored.
@@ -474,9 +474,9 @@ namespace Novell.Directory.Ldap
         /// <param name="element">
         ///     Schema element definition.
         /// </param>
-        private void addElement(int schemaType, LdapSchemaElement element)
+        private void AddElement(int schemaType, LdapSchemaElement element)
         {
-            SupportClass.PutElement(idTable[schemaType], element.ID, element);
+            SupportClass.PutElement(idTable[schemaType], element.Id, element);
             var names = element.Names;
             for (var i = 0; i < names.Length; i++)
             {
@@ -506,9 +506,9 @@ namespace Novell.Directory.Ldap
         /// <param name="key">
         ///     The key can be either an OID or a name string.
         /// </param>
-        private LdapSchemaElement getSchemaElement(int schemaType, string key)
+        private LdapSchemaElement GetSchemaElement(int schemaType, string key)
         {
-            if ((object) key == null || key.ToUpper().Equals("".ToUpper()))
+            if (string.IsNullOrEmpty(key))
                 return null;
             var c = key[0];
             if (c >= '0' && c <= '9')
@@ -530,9 +530,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute definition, or null if not found.
         /// </returns>
-        public virtual LdapAttributeSchema getAttributeSchema(string name)
+        public virtual LdapAttributeSchema GetAttributeSchema(string name)
         {
-            return (LdapAttributeSchema) getSchemaElement(ATTRIBUTE, name);
+            return (LdapAttributeSchema) GetSchemaElement(ATTRIBUTE, name);
         }
 
         /// <summary>
@@ -545,9 +545,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT content rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDITContentRuleSchema getDITContentRuleSchema(string name)
+        public virtual LdapDITContentRuleSchema GetDITContentRuleSchema(string name)
         {
-            return (LdapDITContentRuleSchema) getSchemaElement(DITCONTENT, name);
+            return (LdapDITContentRuleSchema) GetSchemaElement(DITCONTENT, name);
         }
 
         /// <summary>
@@ -560,9 +560,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT structure rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDITStructureRuleSchema getDITStructureRuleSchema(string name)
+        public virtual LdapDITStructureRuleSchema GetDITStructureRuleSchema(string name)
         {
-            return (LdapDITStructureRuleSchema) getSchemaElement(DITSTRUCTURE, name);
+            return (LdapDITStructureRuleSchema) GetSchemaElement(DITSTRUCTURE, name);
         }
 
         /// <summary>
@@ -575,7 +575,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT structure rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDITStructureRuleSchema getDITStructureRuleSchema(int ID)
+        public virtual LdapDITStructureRuleSchema GetDITStructureRuleSchema(int ID)
         {
             var IDKey = ID;
             return (LdapDITStructureRuleSchema) idTable[DITSTRUCTURE][IDKey];
@@ -591,9 +591,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The matching rule definition, or null if not found.
         /// </returns>
-        public virtual LdapMatchingRuleSchema getMatchingRuleSchema(string name)
+        public virtual LdapMatchingRuleSchema GetMatchingRuleSchema(string name)
         {
-            return (LdapMatchingRuleSchema) getSchemaElement(MATCHING, name);
+            return (LdapMatchingRuleSchema) GetSchemaElement(MATCHING, name);
         }
 
         /// <summary>
@@ -606,9 +606,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The matching rule use definition, or null if not found.
         /// </returns>
-        public virtual LdapMatchingRuleUseSchema getMatchingRuleUseSchema(string name)
+        public virtual LdapMatchingRuleUseSchema GetMatchingRuleUseSchema(string name)
         {
-            return (LdapMatchingRuleUseSchema) getSchemaElement(MATCHING_USE, name);
+            return (LdapMatchingRuleUseSchema) GetSchemaElement(MATCHING_USE, name);
         }
 
         /// <summary>
@@ -621,9 +621,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name form definition, or null if not found.
         /// </returns>
-        public virtual LdapNameFormSchema getNameFormSchema(string name)
+        public virtual LdapNameFormSchema GetNameFormSchema(string name)
         {
-            return (LdapNameFormSchema) getSchemaElement(NAME_FORM, name);
+            return (LdapNameFormSchema) GetSchemaElement(NAME_FORM, name);
         }
 
         /// <summary>
@@ -636,9 +636,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object class definition, or null if not found.
         /// </returns>
-        public virtual LdapObjectClassSchema getObjectClassSchema(string name)
+        public virtual LdapObjectClassSchema GetObjectClassSchema(string name)
         {
-            return (LdapObjectClassSchema) getSchemaElement(OBJECT_CLASS, name);
+            return (LdapObjectClassSchema) GetSchemaElement(OBJECT_CLASS, name);
         }
 
         /// <summary>
@@ -651,9 +651,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The syntax definition, or null if not found.
         /// </returns>
-        public virtual LdapSyntaxSchema getSyntaxSchema(string oid)
+        public virtual LdapSyntaxSchema GetSyntaxSchema(string oid)
         {
-            return (LdapSyntaxSchema) getSchemaElement(SYNTAX, oid);
+            return (LdapSyntaxSchema) GetSchemaElement(SYNTAX, oid);
         }
 
         // ########################################################################
@@ -679,23 +679,23 @@ namespace Novell.Directory.Ldap
         ///     ATTRIBUTE, OBJECT_CLASS, SYNTAX, NAME_FORM,
         ///     DITCONTENT, DITSTRUCTURE, MATCHING, MATCHING_USE
         /// </returns>
-        private int getType(LdapSchemaElement element)
+        private int GetType(LdapSchemaElement element)
         {
             if (element is LdapAttributeSchema)
                 return ATTRIBUTE;
-            if (element is LdapObjectClassSchema)
+            else if (element is LdapObjectClassSchema)
                 return OBJECT_CLASS;
-            if (element is LdapSyntaxSchema)
+            else if (element is LdapSyntaxSchema)
                 return SYNTAX;
-            if (element is LdapNameFormSchema)
+            else if (element is LdapNameFormSchema)
                 return NAME_FORM;
-            if (element is LdapMatchingRuleSchema)
+            else if (element is LdapMatchingRuleSchema)
                 return MATCHING;
-            if (element is LdapMatchingRuleUseSchema)
+            else if (element is LdapMatchingRuleUseSchema)
                 return MATCHING_USE;
-            if (element is LdapDITContentRuleSchema)
+            else if (element is LdapDITContentRuleSchema)
                 return DITCONTENT;
-            if (element is LdapDITStructureRuleSchema)
+            else if (element is LdapDITStructureRuleSchema)
                 return DITSTRUCTURE;
             throw new ArgumentException("The specified schema element type is not recognized");
         }

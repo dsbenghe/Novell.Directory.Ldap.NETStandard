@@ -43,91 +43,81 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugParameter
     {
-        protected DebugParameterType debug_type;
-
-        public DebugParameterType DebugType
-        {
-            get { return debug_type; }
-        }
-
-        protected object objData;
-
-        public object Data
-        {
-            get { return objData; }
-        }
+        public DebugParameterType DebugType { get; protected set; }
+        public object Data { get; protected set; }
 
         public DebugParameter(Asn1Tagged dseObject)
         {
-            switch ((DebugParameterType) dseObject.getIdentifier().Tag)
+            switch ((DebugParameterType)dseObject.Identifier.Tag)
             {
                 case DebugParameterType.ENTRYID:
                 case DebugParameterType.INTEGER:
-                    objData = getTaggedIntValue(dseObject);
+                    Data = GetTaggedIntValue(dseObject);
                     break;
 
                 case DebugParameterType.BINARY:
-                    objData = ((Asn1OctetString) dseObject.taggedValue()).byteValue();
+                    Data = (dseObject.TaggedValue as Asn1OctetString).ByteValue;
                     break;
 
                 case DebugParameterType.STRING:
-                    objData = ((Asn1OctetString) dseObject.taggedValue()).stringValue();
+                    Data = (dseObject.TaggedValue as Asn1OctetString).StringValue;
                     break;
 
                 case DebugParameterType.TIMESTAMP:
-                    objData = new DSETimeStamp(getTaggedSequence(dseObject));
+                    Data = new DSETimeStamp(GetTaggedSequence(dseObject));
                     break;
 
                 case DebugParameterType.TIMEVECTOR:
                     var timeVector = new ArrayList();
-                    var seq = getTaggedSequence(dseObject);
-                    var count = ((Asn1Integer) seq.get_Renamed(0)).intValue();
+                    var seq = GetTaggedSequence(dseObject);
+                    var count = (seq[0] as Asn1Integer).IntValue;
                     if (count > 0)
                     {
-                        var timeSeq = (Asn1Sequence) seq.get_Renamed(1);
+                        var timeSeq = seq[1] as Asn1Sequence;
 
                         for (var i = 0; i < count; i++)
                         {
-                            timeVector.Add(new DSETimeStamp((Asn1Sequence) timeSeq.get_Renamed(i)));
+                            timeVector.Add(new DSETimeStamp(timeSeq[i] as Asn1Sequence));
                         }
                     }
 
-                    objData = timeVector;
+                    Data = timeVector;
                     break;
 
                 case DebugParameterType.ADDRESS:
-                    objData = new ReferralAddress(getTaggedSequence(dseObject));
+                    Data = new ReferralAddress(GetTaggedSequence(dseObject));
                     break;
 
                 default:
                     throw new IOException("Unknown Tag in DebugParameter..");
             }
 
-            debug_type = (DebugParameterType) dseObject.getIdentifier().Tag;
+            DebugType = (DebugParameterType)dseObject.Identifier.Tag;
         }
 
-        protected int getTaggedIntValue(Asn1Tagged tagVal)
+        protected int GetTaggedIntValue(Asn1Tagged tagVal)
         {
-            var obj = tagVal.taggedValue();
-            var dataBytes = SupportClass.ToByteArray(((Asn1OctetString) obj).byteValue());
+            var obj = tagVal.TaggedValue;
+            var dataBytes = (obj as Asn1OctetString).ByteValue;
 
-            var decodedData = new MemoryStream(dataBytes);
-            var decoder = new LBERDecoder();
+            using (var decodedData = new MemoryStream(dataBytes))
+            {
+                var decoder = new LBERDecoder();
 
-            return (int) decoder.decodeNumeric(
-                decodedData,
-                dataBytes.Length);
+                return (int)decoder.DecodeNumeric(decodedData, dataBytes.Length);
+            }
         }
 
-        protected Asn1Sequence getTaggedSequence(Asn1Tagged tagVal)
+        protected Asn1Sequence GetTaggedSequence(Asn1Tagged tagVal)
         {
-            var obj = tagVal.taggedValue();
-            var dataBytes = SupportClass.ToByteArray(((Asn1OctetString) obj).byteValue());
+            var obj = tagVal.TaggedValue;
+            var dataBytes = (obj as Asn1OctetString).ByteValue;
 
-            var decodedData = new MemoryStream(dataBytes);
-            var decoder = new LBERDecoder();
-
-            return new Asn1Sequence(decoder, decodedData, dataBytes.Length);
+            using (var decodedData = new MemoryStream(dataBytes))
+            {
+                var decoder = new LBERDecoder();
+                return new Asn1Sequence(decoder, decodedData, dataBytes.Length);
+            }
         }
 
         /// <summary>
@@ -137,10 +127,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[DebugParameter");
-            if (Enum.IsDefined(debug_type.GetType(), debug_type))
+            if (Enum.IsDefined(DebugType.GetType(), DebugType))
             {
-                buf.AppendFormat("(type={0},", debug_type);
-                buf.AppendFormat("value={0})", objData);
+                buf.AppendFormat("(type={0},", DebugType);
+                buf.AppendFormat("value={0})", Data);
             }
             else
             {

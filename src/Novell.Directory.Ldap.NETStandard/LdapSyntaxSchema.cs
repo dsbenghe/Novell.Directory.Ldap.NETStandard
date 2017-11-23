@@ -29,9 +29,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
-using System.Collections;
-using System.IO;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -64,9 +61,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string oid, string description) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
         {
-            this.oid = oid;
-            this.description = description;
-            Value = formatString();
+            Id = oid;
+            Description = description;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -79,27 +76,17 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
         {
-            try
-            {
-                var parser = new SchemaParser(raw);
+            var parser = new SchemaParser(raw);
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
-                if ((object) parser.Description != null)
-                    description = parser.Description;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
-                {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
-                }
-                Value = formatString();
-            }
-            catch (IOException e)
+            if (parser.Id != null)
+                Id = parser.Id;
+            if (parser.Description != null)
+                Description = parser.Description;
+            foreach (AttributeQualifier attrQualifier in parser.Qualifiers)
             {
-                throw new Exception(e.ToString());
+                SetQualifier(attrQualifier.Name, attrQualifier.Values);
             }
+            Value = FormatString();
         }
 
         /// <summary>
@@ -109,31 +96,28 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the syntax's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = ID) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach (var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                         {

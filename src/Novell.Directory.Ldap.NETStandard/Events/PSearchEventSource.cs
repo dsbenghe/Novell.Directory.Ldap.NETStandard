@@ -40,221 +40,181 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class PSearchEventSource : LdapEventSource
     {
-        protected SearchResultEventHandler search_result_event;
+        protected EventHandler<SearchResultEventArgs> _SearchResultEvent;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
         ///     corresponding Ldap search result event.
         /// </summary>
-        public event SearchResultEventHandler SearchResultEvent
+        public event EventHandler<SearchResultEventArgs> SearchResultEvent
         {
             add
             {
-                search_result_event += value;
+                _SearchResultEvent += value;
                 ListenerAdded();
             }
             remove
             {
-                search_result_event -= value;
+                _SearchResultEvent -= value;
                 ListenerRemoved();
             }
         }
 
-        protected SearchReferralEventHandler search_referral_event;
+        protected EventHandler<SearchReferralEventArgs> _searchReferralEvent;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
         ///     corresponding Ldap search reference event.
         /// </summary>
-        public event SearchReferralEventHandler SearchReferralEvent
+        public event EventHandler<SearchReferralEventArgs> SearchReferralEvent
         {
             add
             {
-                search_referral_event += value;
+                _searchReferralEvent += value;
                 ListenerAdded();
             }
             remove
             {
-                search_referral_event -= value;
+                _searchReferralEvent -= value;
                 ListenerRemoved();
             }
         }
 
-        /// <summary>
-        ///     SearchResultEventHandler is the delegate definition for SearchResultEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get corresponding Ldap events.
-        /// </summary>
-        public delegate
-            void SearchResultEventHandler(
-                object source,
-                SearchResultEventArgs objArgs
-            );
-
-        /// <summary>
-        ///     SearchReferralEventHandler is the delegate definition for SearchReferralEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get corresponding Ldap events.
-        /// </summary>
-        public delegate
-            void SearchReferralEventHandler(
-                object source,
-                SearchReferralEventArgs objArgs
-            );
-
         protected override int GetListeners()
         {
             var nListeners = 0;
-            if (null != search_result_event)
-                nListeners = search_result_event.GetInvocationList().Length;
+            if (null != _SearchResultEvent)
+                nListeners = _SearchResultEvent.GetInvocationList().Length;
 
-            if (null != search_referral_event)
-                nListeners += search_referral_event.GetInvocationList().Length;
+            if (null != _searchReferralEvent)
+                nListeners += _searchReferralEvent.GetInvocationList().Length;
 
             return nListeners;
         }
 
-        protected LdapConnection mConnection;
-        protected string mSearchBase;
-        protected int mScope;
-        protected string[] mAttrs;
-        protected string mFilter;
-        protected bool mTypesOnly;
-        protected LdapSearchConstraints mSearchConstraints;
-        protected LdapEventType mEventChangeType;
-
-        protected LdapSearchQueue mQueue;
+        protected LdapConnection Connection { get; set; }
+        protected string SearchBase { get; set; }
+        protected int Scope { get; set; }
+        protected string[] Attrs { get; set; }
+        protected string Filter { get; set; }
+        protected bool TypesOnly { get; set; }
+        protected LdapSearchConstraints SearchConstraints { get; set; }
+        protected LdapEventType EventChangeType { get; set; }
+        protected LdapSearchQueue Queue { get; set; }
 
         // Constructor
-        public PSearchEventSource(
-            LdapConnection conn,
-            string searchBase,
-            int scope,
-            string filter,
-            string[] attrs,
-            bool typesOnly,
-            LdapSearchConstraints constraints,
-            LdapEventType eventchangetype,
-            bool changeonly
-        )
+        public PSearchEventSource(LdapConnection conn,
+                                  string searchBase,
+                                  int scope,
+                                  string filter,
+                                  string[] attrs,
+                                  bool typesOnly,
+                                  LdapSearchConstraints constraints,
+                                  LdapEventType eventchangetype,
+                                  bool changeonly)
         {
-            // validate the input arguments
-            if (conn == null
-                || searchBase == null
-                || filter == null
-                || attrs == null)
-            {
-                throw new ArgumentException("Null argument specified");
-            }
-
-            mConnection = conn;
-            mSearchBase = searchBase;
-            mScope = scope;
-            mFilter = filter;
-            mAttrs = attrs;
-            mTypesOnly = typesOnly;
-            mEventChangeType = eventchangetype;
+            Connection = conn ?? throw new ArgumentNullException(nameof(conn));
+            SearchBase = searchBase ?? throw new ArgumentNullException(nameof(searchBase));
+            Filter = filter ?? throw new ArgumentNullException(nameof(filter));
+            Attrs = attrs ?? throw new ArgumentNullException(nameof(attrs));
+            TypesOnly = typesOnly;
+            Scope = scope;
+            EventChangeType = eventchangetype;
 
             // make things ready for starting a search operation
             if (constraints == null)
             {
-                mSearchConstraints = new LdapSearchConstraints();
+                SearchConstraints = new LdapSearchConstraints();
             }
             else
             {
-                mSearchConstraints = constraints;
+                SearchConstraints = constraints;
             }
 
             //Create the persistent search control
-            var psCtrl =
-                new LdapPersistSearchControl((int) eventchangetype, // any change
-                    changeonly, //only get changes
-                    true, //return entry change controls
-                    true); //control is critcal
+            var psCtrl = new LdapPersistSearchControl((int)eventchangetype, // any change 
+                            changeonly, //only get changes
+                            true, //return entry change controls
+                            true); //control is critcal
 
             // add the persistent search control to the search constraints
-            mSearchConstraints.setControls(psCtrl);
-        } // end of Constructor
+            SearchConstraints.Controls = new LdapControl[] { psCtrl };
+        }
 
         protected override void StartSearchAndPolling()
         {
             // perform the search with no attributes returned
-            mQueue =
-                mConnection.Search(mSearchBase, // container to search
-                    mScope, // search container's subtree
-                    mFilter, // search filter, all objects
-                    mAttrs, // don't return attributes
-                    mTypesOnly, // return attrs and values or attrs only.
-                    null, // use default search queue
-                    mSearchConstraints); // use default search constraints
+            Queue = Connection.Search(SearchBase, // container to search
+                                      Scope, // search container's subtree
+                                      Filter, // search filter, all objects
+                                      Attrs, // don't return attributes
+                                      TypesOnly, // return attrs and values or attrs only.
+                                      null, // use default search queue
+                                      SearchConstraints); // use default search constraints
 
-            var ids = mQueue.MessageIDs;
+            int[] ids = Queue.MessageIDs;
 
             if (ids.Length != 1)
             {
-                throw new LdapException(
-                    null,
-                    LdapException.LOCAL_ERROR,
-                    "Unable to Obtain Message Id"
-                );
+                throw new LdapException(null, LdapException.LOCAL_ERROR, "Unable to Obtain Message Id");
             }
 
-            StartEventPolling(mQueue, mConnection, ids[0]);
+            StartEventPolling(Queue, Connection, ids[0]);
         }
 
         protected override void StopSearchAndPolling()
         {
-            mConnection.Abandon(mQueue);
+            Connection.Abandon(Queue);
             StopEventPolling();
         }
 
         protected override bool NotifyEventListeners(LdapMessage sourceMessage,
-            EventClassifiers aClassification,
+            EventClassifiers classification,
             int nType)
         {
-            var bListenersNotified = false;
-            if (null == sourceMessage)
+            bool listenersNotified = false;
+            if (sourceMessage == null)
             {
-                return bListenersNotified;
+                return listenersNotified;
             }
 
             switch (sourceMessage.Type)
             {
                 case LdapMessage.SEARCH_RESULT_REFERENCE:
-                    if (null != search_referral_event)
+                    if (_searchReferralEvent != null)
                     {
-                        search_referral_event(this,
+                        _searchReferralEvent(this,
                             new SearchReferralEventArgs(
                                 sourceMessage,
-                                aClassification,
-                                (LdapEventType) nType)
+                                classification,
+                                (LdapEventType)nType)
                         );
-                        bListenersNotified = true;
+                        listenersNotified = true;
                     }
                     break;
 
                 case LdapMessage.SEARCH_RESPONSE:
-                    if (null != search_result_event)
+                    if (_SearchResultEvent != null)
                     {
-                        var changeType = LdapEventType.TYPE_UNKNOWN;
+                        LdapEventType changeType = LdapEventType.TYPE_UNKNOWN;
                         var controls = sourceMessage.Controls;
                         foreach (var control in controls)
                         {
-                            if (control is LdapEntryChangeControl)
+                            if (control is LdapEntryChangeControl con)
                             {
-                                changeType = (LdapEventType) ((LdapEntryChangeControl) control).ChangeType;
+                                changeType = (LdapEventType)con.ChangeType;
                                 // TODO: Why is this continue here..? (from Java code..)
                                 // TODO: Why are we interested only in the last changeType..?
                             }
                         }
                         // if no changeType then value is TYPE_UNKNOWN
-                        search_result_event(this,
+                        _SearchResultEvent(this,
                             new SearchResultEventArgs(
                                 sourceMessage,
-                                aClassification,
+                                classification,
                                 changeType)
                         );
-                        bListenersNotified = true;
+                        listenersNotified = true;
                     }
                     break;
 
@@ -264,7 +224,7 @@ namespace Novell.Directory.Ldap.Events
                     NotifyDirectoryListeners(new LdapEventArgs(sourceMessage,
                         EventClassifiers.CLASSIFICATION_LDAP_PSEARCH,
                         LdapEventType.LDAP_PSEARCH_ANY));
-                    bListenersNotified = true;
+                    listenersNotified = true;
                     break;
 
                 default:
@@ -273,7 +233,7 @@ namespace Novell.Directory.Ldap.Events
                     break;
             }
 
-            return bListenersNotified;
+            return listenersNotified;
         }
-    } // end of class PSearchEventSource
+    }
 }

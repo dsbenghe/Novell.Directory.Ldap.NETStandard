@@ -31,6 +31,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
@@ -42,7 +43,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.Constraints">
     /// </seealso>
-    public class LdapConstraints
+    public class LdapConstraints : ICloneable
     {
         /// <summary>
         ///     Returns the maximum number of referrals to follow during automatic
@@ -74,12 +75,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapException.REFERRAL_LIMIT_EXCEEDED">
         /// </seealso>
-        public virtual int HopLimit
-        {
-            get { return hopLimit; }
-
-            set { hopLimit = value; }
-        }
+        public virtual int HopLimit { get; set; }
 
         /// <summary>
         ///     Gets all the properties of the constraints object which has been
@@ -88,7 +84,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <seealso cref="object">
         /// </seealso>
-        /// <seealso cref="LdapConnection.getProperty">
+        /// <seealso cref="LdapConnection.GetProperty">
         /// </seealso>
         /// <summary>
         ///     Sets all the properties of the constraints object.
@@ -96,13 +92,7 @@ namespace Novell.Directory.Ldap
         /// <param name="props">
         ///     the properties represented by the Hashtable object to set.
         /// </param>
-        internal virtual Hashtable Properties
-        {
-            get { return properties; }
-
-
-            set { properties = (Hashtable) value.Clone(); }
-        }
+        internal virtual Hashtable Properties { get; set; }
 
         /// <summary>
         ///     Specified whether or not referrals are followed automatically.
@@ -124,12 +114,7 @@ namespace Novell.Directory.Ldap
         ///     False to throw an LdapReferralException if
         ///     the server returns a referral.
         /// </param>
-        public virtual bool ReferralFollowing
-        {
-            get { return doReferrals; }
-
-            set { doReferrals = value; }
-        }
+        public virtual bool ReferralFollowing { get; set; }
 
         /// <summary>
         ///     Returns the maximum number of milliseconds to wait for any operation
@@ -162,22 +147,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapException.Ldap_TIMEOUT">
         /// </seealso>
-        public virtual int TimeLimit
-        {
-            get { return msLimit; }
-
-            set { msLimit = value; }
-        }
-
-        private int msLimit;
-        private int hopLimit = 10;
-        private bool doReferrals;
-        private LdapReferralHandler refHandler;
-        private LdapControl[] controls;
-        private static object nameLock; // protect agentNum
-        private static int lConsNum = 0; // Debug, LdapConstraints num
-        private string name; // String name for debug
-        private Hashtable properties; // Properties
+        public virtual int TimeLimit { get; set; }
+        private static object nameLock = new object(); // protect agentNum
 
         /// <summary>
         ///     Constructs a new LdapConstraints object that specifies the default
@@ -241,16 +212,16 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapReferralException">
         /// </seealso>
-        /// <seealso cref="LdapBindHandler">
+        /// <seealso cref="ILdapBindHandler">
         /// </seealso>
         /// <seealso cref="LdapAuthHandler">
         /// </seealso>
-        public LdapConstraints(int msLimit, bool doReferrals, LdapReferralHandler handler, int hop_limit)
+        public LdapConstraints(int msLimit, bool doReferrals, ILdapReferralHandler handler, int hop_limit)
         {
-            this.msLimit = msLimit;
-            this.doReferrals = doReferrals;
-            refHandler = handler;
-            hopLimit = hop_limit;
+            TimeLimit = msLimit;
+            ReferralFollowing = doReferrals;
+            ReferralHandler = handler;
+            HopLimit = hop_limit;
             // Get a unique constraints name for debug
         }
 
@@ -262,10 +233,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="Controls">
         /// </seealso>
-        public virtual LdapControl[] getControls()
-        {
-            return controls;
-        }
+        public virtual LdapControl[] Controls { get; set; }
 
         /// <summary>
         ///     Gets a property of the constraints object which has been
@@ -280,15 +248,15 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="object">
         /// </seealso>
-        /// <seealso cref="LdapConnection.getProperty(string)">
+        /// <seealso cref="LdapConnection.GetProperty(string)">
         /// </seealso>
-        public virtual object getProperty(string name)
+        public virtual object GetProperty(string name)
         {
-            if (properties == null)
+            if (Properties == null)
             {
                 return null; // Requested property not available.
             }
-            return properties[name];
+            return Properties[name];
         }
 
         /// <summary>
@@ -300,74 +268,6 @@ namespace Novell.Directory.Ldap
         ///     An LdapReferralHandler object that can process authentication.
         /// </returns>
         /*package*/
-        internal virtual LdapReferralHandler getReferralHandler()
-        {
-            return refHandler;
-        }
-
-        /// <summary>
-        ///     Sets a single control to be sent to the server.
-        /// </summary>
-        /// <param name="control">
-        ///     A single control to be sent to the server or
-        ///     null if none.
-        /// </param>
-        public virtual void setControls(LdapControl control)
-        {
-            if (control == null)
-            {
-                controls = null;
-                return;
-            }
-            controls = new LdapControl[1];
-            controls[0] = (LdapControl) control.Clone();
-        }
-
-        /// <summary>
-        ///     Sets controls to be sent to the server.
-        /// </summary>
-        /// <param name="controls">
-        ///     An array of controls to be sent to the server or
-        ///     null if none.
-        /// </param>
-        public virtual void setControls(LdapControl[] controls)
-        {
-            if (controls == null || controls.Length == 0)
-            {
-                this.controls = null;
-                return;
-            }
-            this.controls = new LdapControl[controls.Length];
-            for (var i = 0; i < controls.Length; i++)
-            {
-                this.controls[i] = (LdapControl) controls[i].Clone();
-            }
-        }
-
-        /// <summary>
-        ///     Sets a property of the constraints object.
-        ///     No property names have been defined at this time, but the
-        ///     mechanism is in place in order to support revisional as well as
-        ///     dynamic and proprietary extensions to operation modifiers.
-        /// </summary>
-        /// <param name="name">
-        ///     Name of the property to set.
-        /// </param>
-        /// <param name="value">
-        ///     Value to assign to the property.
-        ///     property is not supported.
-        ///     @throws NullPointerException if name or value are null
-        /// </param>
-        /// <seealso cref="LdapConnection.getProperty">
-        /// </seealso>
-        public virtual void setProperty(string name, object value_Renamed)
-        {
-            if (properties == null)
-            {
-                properties = new Hashtable();
-            }
-            SupportClass.PutElement(properties, name, value_Renamed);
-        }
 
         /// <summary>
         ///     Specifies the object that will process authentication requests
@@ -380,12 +280,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapAuthHandler">
         /// </seealso>
-        /// <seealso cref="LdapBindHandler">
+        /// <seealso cref="ILdapBindHandler">
         /// </seealso>
-        public virtual void setReferralHandler(LdapReferralHandler handler)
-        {
-            refHandler = handler;
-        }
+        public virtual ILdapReferralHandler ReferralHandler { get; set; }
 
         /// <summary>
         ///     Clones an LdapConstraints object.
@@ -395,29 +292,17 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public object Clone()
         {
-            try
+            var newObj = MemberwiseClone() as LdapConstraints;
+            if (Controls != null)
             {
-                var newObj = MemberwiseClone();
-                if (controls != null)
-                {
-                    ((LdapConstraints) newObj).controls = new LdapControl[controls.Length];
-                    controls.CopyTo(((LdapConstraints) newObj).controls, 0);
-                }
-                if (properties != null)
-                {
-                    ((LdapConstraints) newObj).properties = (Hashtable) properties.Clone();
-                }
-                return newObj;
+                newObj.Controls = new LdapControl[Controls.Length];
+                Controls.CopyTo(newObj.Controls, 0);
             }
-            catch (Exception ce)
+            if (Properties != null)
             {
-                throw new Exception("Internal error, cannot create clone", ce);
+                newObj.Properties = (Hashtable)Properties.Clone();
             }
-        }
-
-        static LdapConstraints()
-        {
-            nameLock = new object();
+            return newObj;
         }
     }
 }

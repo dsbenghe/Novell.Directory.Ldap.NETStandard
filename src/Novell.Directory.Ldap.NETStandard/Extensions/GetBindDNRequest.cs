@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Extensions
             * Register the extendedresponse class which is returned by the
             * server in response to a ListReplicasRequest
             */
-            LdapExtendedResponse.register(ReplicationConstants.GET_IDENTITY_NAME_RES, typeof(GetBindDNResponse));
+            LdapExtendedResponse.Register(ReplicationConstants.GET_IDENTITY_NAME_RES, typeof(GetBindDNResponse));
         }
 
         /// <summary>

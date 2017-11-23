@@ -59,10 +59,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OIDs of the attributes to which this matching rule applies.
         /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return attributes; }
-        }
+        public virtual string[] Attributes { get; }
 
         /// <summary>
         ///     Returns the OID of the syntax that this matching rule is valid for.
@@ -70,13 +67,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the syntax that this matching rule is valid for.
         /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
-
-        private readonly string syntaxString;
-        private readonly string[] attributes;
+        public virtual string SyntaxString { get; }
 
         /// <summary>
         ///     Constructs a matching rule definition for adding to or deleting from
@@ -107,15 +98,15 @@ namespace Novell.Directory.Ldap
         public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes, bool obsolete,
             string syntaxString) : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.attributes = new string[attributes.Length];
-            attributes.CopyTo(this.attributes, 0);
-            this.syntaxString = syntaxString;
-            Value = formatString();
+            this.Names = new string[names.Length];
+            names.CopyTo(this.Names, 0);
+            this.Id = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
+            SyntaxString = syntaxString;
+            Value = FormatString();
         }
 
 
@@ -138,18 +129,18 @@ namespace Novell.Directory.Ldap
             try
             {
                 var matchParser = new SchemaParser(rawMatchingRule);
-                names = new string[matchParser.Names.Length];
-                matchParser.Names.CopyTo(names, 0);
-                oid = matchParser.ID;
-                description = matchParser.Description;
-                obsolete = matchParser.Obsolete;
-                syntaxString = matchParser.Syntax;
-                if ((object) rawMatchingRuleUse != null)
+                Names = new string[matchParser.Names.Length];
+                matchParser.Names.CopyTo(Names, 0);
+                Id = matchParser.Id;
+                Description = matchParser.Description;
+                Obsolete = matchParser.Obsolete;
+                SyntaxString = matchParser.Syntax;
+                if (rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
-                    attributes = matchUseParser.Applies;
+                    Attributes = matchUseParser.Applies;
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -164,13 +155,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -193,7 +184,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -202,7 +193,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = SyntaxString) != null)
+            if ((token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);

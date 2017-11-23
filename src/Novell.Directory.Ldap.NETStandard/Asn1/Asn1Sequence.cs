@@ -29,7 +29,7 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -40,7 +40,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     This class inherits from the Asn1Structured class which
     ///     provides functionality to hold multiple Asn1 components.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Sequence : Asn1Structured
     {
         /// <summary> ASN.1 SEQUENCE tag definition.</summary>
@@ -50,16 +49,14 @@ namespace Novell.Directory.Ldap.Asn1
         ///     ID is added for Optimization.
         ///     id needs only be one Value for every instance Thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, true, TAG);
-
-        /* Constructors for Asn1Sequence
-                */
+        private static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, true, TAG);
 
         /// <summary>
         ///     Constructs an Asn1Sequence object with no actual Asn1Objects in it.
         ///     Assumes a default size of 10 elements.
         /// </summary>
-        public Asn1Sequence() : base(ID, 10)
+        public Asn1Sequence() 
+            : base(ID, 10)
         {
         }
 
@@ -72,7 +69,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1Sequence(int size) : base(ID, size)
+        public Asn1Sequence(int size) 
+            : base(ID, size)
         {
         }
 
@@ -86,7 +84,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the number of items in the array
         /// </param>
-        public Asn1Sequence(Asn1Object[] newContent, int size) : base(ID, newContent, size)
+        public Asn1Sequence(Asn1Object[] newContent, int size) 
+            : base(ID, newContent, size)
         {
         }
 
@@ -102,20 +101,18 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1Sequence(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1Sequence(IAsn1Decoder dec, Stream @in, int len) 
+            : base(ID)
         {
-            decodeStructured(dec, in_Renamed, len);
+            DecodeStructured(dec, @in, len);
         }
 
         /* Asn1Sequence specific methods
         */
 
-        /// <summary> Return a String representation of this Asn1Sequence.</summary>
-        [CLSCompliant(false)]
-        public override string ToString()
-        {
-            return ToString("SEQUENCE: { ");
-        }
+        /// <summary> 
+        /// Return a String representation of this Asn1Sequence.
+        /// </summary>
+        //public override string ToString() => base.ToString("SEQUENCE: { ");
     }
 }

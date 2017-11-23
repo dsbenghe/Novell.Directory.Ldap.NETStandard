@@ -52,13 +52,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     A flag which is a combination of zero or more privilege flags as
         ///     returned by the server.
         /// </returns>
-        public virtual int Privileges
-        {
-            get { return privileges; }
-        }
-
-        // Identity returned by the server
-        private readonly int privileges;
+        public virtual int Privileges { get;}
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the effective
@@ -82,18 +76,16 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Create a decoder object
                 var decoder = new LBERDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
-                var asn1_privileges = (Asn1Integer) decoder.decode(returnedValue);
+                var asn1_privileges = decoder.Decode(returnedValue) as Asn1Integer;
                 if (asn1_privileges == null)
                     throw new IOException("Decoding error");
 
-                privileges = asn1_privileges.intValue();
+                Privileges = asn1_privileges.IntValue;
             }
             else
             {
-                privileges = 0;
+                Privileges = 0;
             }
         }
     }

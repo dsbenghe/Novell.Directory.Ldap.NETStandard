@@ -65,19 +65,7 @@ namespace Novell.Directory.Ldap
                 {
                     return exception.LdapErrorMessage;
                 }
-
-/*				RfcResponse resp=(RfcResponse)( message.Response);
-				if(resp == null)
-					Console.WriteLine(" Response is null");
-				else
-					Console.WriteLine(" Response is non null");
-				string str=resp.getErrorMessage().stringValue();
-				if( str==null)
-					 Console.WriteLine("str is null..");
-				Console.WriteLine(" Response is non null" + str);
-				return str;
-*/
-                return ((RfcResponse) message.Response).getErrorMessage().stringValue();
+                return ((IRfcResponse)message.Response).ErrorMessage.StringValue;
             }
         }
 
@@ -96,7 +84,7 @@ namespace Novell.Directory.Ldap
                 {
                     return exception.MatchedDN;
                 }
-                return ((RfcResponse) message.Response).getMatchedDN().stringValue();
+                return ((IRfcResponse)message.Response).MatchedDN.StringValue;
             }
         }
 
@@ -111,7 +99,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 string[] referrals = null;
-                var ref_Renamed = ((RfcResponse) message.Response).getReferral();
+                var ref_Renamed = ((IRfcResponse)message.Response).Referral;
 
                 if (ref_Renamed == null)
                 {
@@ -120,22 +108,22 @@ namespace Novell.Directory.Ldap
                 else
                 {
                     // convert RFC 2251 Referral to String[]
-                    var size = ref_Renamed.size();
+                    var size = ref_Renamed.Count;
                     referrals = new string[size];
                     for (var i = 0; i < size; i++)
                     {
-                        var aRef = ((Asn1OctetString) ref_Renamed.get_Renamed(i)).stringValue();
+                        var aRef = ((Asn1OctetString)ref_Renamed[i]).StringValue;
                         try
                         {
                             // get the referral URL
                             var urlRef = new LdapUrl(aRef);
-                            if ((object) urlRef.getDN() == null)
+                            if (urlRef.DN== null)
                             {
                                 var origMsg = Asn1Object.RequestingMessage.Asn1Object;
                                 string dn;
-                                if ((object) (dn = origMsg.RequestDN) != null)
+                                if ((dn = origMsg.RequestDN) != null)
                                 {
-                                    urlRef.setDN(dn);
+                                    urlRef.DN = dn;
                                     aRef = urlRef.ToString();
                                 }
                             }
@@ -169,9 +157,9 @@ namespace Novell.Directory.Ldap
                 {
                     return exception.ResultCode;
                 }
-                if ((RfcResponse) message.Response is RfcIntermediateResponse)
+                if ((IRfcResponse)message.Response is RfcIntermediateResponse)
                     return 0;
-                return ((RfcResponse) message.Response).getResultCode().intValue();
+                return ((IRfcResponse)message.Response).ResultCode.IntValue;
             }
         }
 
@@ -195,11 +183,11 @@ namespace Novell.Directory.Ldap
                         var refs = Referrals;
                         ex = new LdapReferralException("Automatic referral following not enabled",
                             LdapException.REFERRAL, ErrorMessage);
-                        ((LdapReferralException) ex).setReferrals(refs);
+                        ((LdapReferralException)ex).Referrals = refs;
                         break;
 
                     default:
-                        ex = new LdapException(LdapException.resultCodeToString(ResultCode), ResultCode, ErrorMessage,
+                        ex = new LdapException(LdapException.ResultCodeToString(ResultCode), ResultCode, ErrorMessage,
                             MatchedDN);
                         break;
                 }
@@ -267,11 +255,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an embedded exception if any
         /// </returns>
-        internal virtual LdapException Exception
-        {
-            /*package*/
-            get { return exception; }
-        }
+        internal virtual LdapException Exception => exception;
 
         /// <summary>
         ///     Indicates the referral instance being followed if the
@@ -280,14 +264,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the referral being followed
         /// </returns>
-        internal virtual ReferralInfo ActiveReferral
-        {
-            /*package*/
-            get { return activeReferral; }
-        }
+        internal virtual ReferralInfo ActiveReferral { get; }
 
         private readonly InterThreadException exception;
-        private readonly ReferralInfo activeReferral;
 
         /// <summary>
         ///     Creates an LdapResponse using an LdapException.
@@ -307,7 +286,7 @@ namespace Novell.Directory.Ldap
         public LdapResponse(InterThreadException ex, ReferralInfo activeReferral)
         {
             exception = ex;
-            this.activeReferral = activeReferral;
+            ActiveReferral = activeReferral;
         }
 
         /// <summary>
@@ -380,9 +359,9 @@ namespace Novell.Directory.Ldap
         {
             Asn1Sequence ret;
 
-            if ((object) matchedDN == null)
+            if (matchedDN == null)
                 matchedDN = "";
-            if ((object) serverMessage == null)
+            if (serverMessage == null)
                 serverMessage = "";
 
             switch (type)
@@ -446,7 +425,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal virtual void chkResultCode()
+        internal virtual void ChkResultCode()
         {
             if (exception != null)
             {
@@ -468,9 +447,6 @@ namespace Novell.Directory.Ldap
         ///     true if contains an embedded Ldapexception
         /// </returns>
         /*package*/
-        internal virtual bool hasException()
-        {
-            return exception != null;
-        }
+        internal virtual bool HasException => exception != null;
     }
 }

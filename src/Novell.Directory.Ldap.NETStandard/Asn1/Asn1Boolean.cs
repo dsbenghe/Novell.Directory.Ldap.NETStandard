@@ -29,16 +29,18 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the ASN.1 BOOLEAN type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Boolean : Asn1Object
     {
-        private readonly bool content;
+        /// <summary> 
+        /// Returns the content of this Asn1Boolean as a boolean.
+        /// </summary>
+        public bool BooleanValue { get; }
 
         /// <summary> ASN.1 BOOLEAN tag definition.</summary>
         public const int TAG = 0x01;
@@ -48,7 +50,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        public static readonly Asn1Identifier ID = new Asn1Identifier(TagClass.UNIVERSAL, false, TAG);
 
         /* Constructors for Asn1Boolean
                 */
@@ -61,9 +63,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The boolean value to be contained in the
         ///     this Asn1Boolean object
         /// </param>
-        public Asn1Boolean(bool content) : base(ID)
+        public Asn1Boolean(bool content) 
+            : base(ID)
         {
-            this.content = content;
+            BooleanValue = content;
         }
 
         /// <summary>
@@ -78,10 +81,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
-        [CLSCompliant(false)]
-        public Asn1Boolean(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1Boolean(IAsn1Decoder dec, Stream @in, int len) 
+            : base(ID)
         {
-            content = (bool) dec.decodeBoolean(in_Renamed, len);
+            BooleanValue = dec.DecodeBoolean(@in, len);
         }
 
         /* Asn1Object implementation
@@ -98,24 +101,15 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream @out)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, @out);
         }
 
         /* Asn1Boolean specific methods
         */
 
-        /// <summary> Returns the content of this Asn1Boolean as a boolean.</summary>
-        public bool booleanValue()
-        {
-            return content;
-        }
-
         /// <summary> Returns a String representation of this Asn1Boolean object.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "BOOLEAN: " + content;
-        }
+        public override string ToString() => base.ToString() + "BOOLEAN: " + BooleanValue;
     }
 }

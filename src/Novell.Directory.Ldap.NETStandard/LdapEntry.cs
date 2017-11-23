@@ -54,17 +54,12 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name of the entry.
         /// </returns>
-        [CLSCompliant(false)]
-        public virtual string DN
-        {
-            get { return dn; }
-        }
-
-        protected internal string dn;
+        public virtual string DN { get; protected internal set; }
         protected internal LdapAttributeSet attrs;
 
         /// <summary> Constructs an empty entry.</summary>
-        public LdapEntry() : this(null, null)
+        public LdapEntry()
+            : this(null, null)
         {
         }
 
@@ -77,7 +72,8 @@ namespace Novell.Directory.Ldap
         ///     value is not validated. An invalid distinguished
         ///     name will cause operations using this entry to fail.
         /// </param>
-        public LdapEntry(string dn) : this(dn, null)
+        public LdapEntry(string dn)
+            : this(dn, null)
         {
         }
 
@@ -96,7 +92,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapEntry(string dn, LdapAttributeSet attrs)
         {
-            if ((object) dn == null)
+            if (dn == null)
             {
                 dn = "";
             }
@@ -104,7 +100,7 @@ namespace Novell.Directory.Ldap
             {
                 attrs = new LdapAttributeSet();
             }
-            this.dn = dn;
+            DN = dn;
             this.attrs = attrs;
         }
 
@@ -117,10 +113,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of LdapAttribute objects.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName)
-        {
-            return attrs.getAttribute(attrName);
-        }
+        public virtual LdapAttribute GetAttribute(string attrName) => attrs[attrName];
 
         /// <summary>
         ///     Returns the attribute set of the entry.
@@ -131,10 +124,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute set of the entry.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet()
-        {
-            return attrs;
-        }
+        public virtual LdapAttributeSet AttributeSet => attrs;
 
 
         /// <summary>
@@ -159,10 +149,7 @@ namespace Novell.Directory.Ldap
         ///     match the specified subtypes or an empty set if no attributes
         ///     match.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet(string subtype)
-        {
-            return attrs.getSubset(subtype);
-        }
+        public virtual LdapAttributeSet GetAttributeSet(string subtype) => attrs.GetSubset(subtype);
 
         /// <summary>
         ///     Compares this object with the specified object for order.
@@ -178,10 +165,7 @@ namespace Novell.Directory.Ldap
         ///     A negative integer, zero, or a positive integer as this
         ///     object is less than, equal to, or greater than the specified object.
         /// </returns>
-        public virtual int CompareTo(object entry)
-        {
-            return LdapDN.normalize(dn).CompareTo(LdapDN.normalize(((LdapEntry) entry).dn));
-        }
+        public virtual int CompareTo(object entry) => LdapDN.Normalize(DN).CompareTo(LdapDN.Normalize(((LdapEntry)entry).DN));
 
         /// <summary>
         ///     Returns a string representation of this LdapEntry
@@ -192,9 +176,9 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             var result = new StringBuilder("LdapEntry: ");
-            if ((object) dn != null)
+            if (DN != null)
             {
-                result.Append(dn + "; ");
+                result.Append(DN).Append("; ");
             }
             if (attrs != null)
             {

@@ -32,6 +32,9 @@
 using System.Collections;
 using System.Globalization;
 using Novell.Directory.Ldap.Utilclass;
+using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace Novell.Directory.Ldap
 {
@@ -51,9 +54,9 @@ namespace Novell.Directory.Ldap
     {
         private void InitBlock()
         {
-//			location = Locale.getDefault();
-            location = CultureInfo.CurrentCulture;
-            collator = CultureInfo.CurrentCulture.CompareInfo;
+            //			location = Locale.getDefault();
+            _location = CultureInfo.CurrentCulture;
+            _collator = CultureInfo.CurrentCulture.CompareInfo;
         }
 
         /// <summary>
@@ -76,20 +79,19 @@ namespace Novell.Directory.Ldap
             get
             {
                 //currently supports only English local.
-                return location;
+                return _location;
             }
 
             set
             {
-                collator = value.CompareInfo;
-                location = value;
+                _collator = value.CompareInfo;
+                _location = value;
             }
         }
 
-        private readonly string[] sortByNames; //names to to sort by.
-        private readonly bool[] sortAscending; //true if sorting ascending
-        private CultureInfo location;
-        private CompareInfo collator;
+        private readonly IList<(string Name, bool Asceding)> _infos = new List<(string Name, bool Asceding)>();
+        private CultureInfo _location;
+        private CompareInfo _collator;
 
         /// <summary>
         ///     Constructs an object that sorts results by a single attribute, in
@@ -99,12 +101,9 @@ namespace Novell.Directory.Ldap
         ///     Name of an attribute by which to sort.
         /// </param>
         public LdapCompareAttrNames(string attrName)
+            : this(attrName, true)
         {
-            InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = true;
+
         }
 
         /// <summary>
@@ -121,10 +120,7 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string attrName, bool ascendingFlag)
         {
             InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = ascendingFlag;
+            _infos.Add((attrName, ascendingFlag));
         }
 
 
@@ -138,16 +134,11 @@ namespace Novell.Directory.Ldap
         /// <param name="attrNames">
         ///     Array of names of attributes to sort by.
         /// </param>
-        public LdapCompareAttrNames(string[] attrNames)
+        public LdapCompareAttrNames(IEnumerable<string> attrNames)
         {
             InitBlock();
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[attrNames.Length];
-            for (var i = 0; i < attrNames.Length; i++)
-            {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = true;
-            }
+            foreach (var name in attrNames)
+                _infos.Add((name, true));
         }
 
         /// <summary>
@@ -172,21 +163,51 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapCompareAttrNames(string[] attrNames, bool[] ascendingFlags)
+        public LdapCompareAttrNames(IEnumerable<string> attrNames, IEnumerable<bool> ascendingFlags)
         {
             InitBlock();
-            if (attrNames.Length != ascendingFlags.Length)
+            string[] names = attrNames.ToArray();
+            bool[] ascending = ascendingFlags.ToArray();
+            if (names.Length != ascending.Length)
             {
                 throw new LdapException(ExceptionMessages.UNEQUAL_LENGTHS, LdapException.INAPPROPRIATE_MATCHING, null);
-                //"Length of attribute Name array does not equal length of Flags array"
             }
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[ascendingFlags.Length];
-            for (var i = 0; i < attrNames.Length; i++)
+
+            for (var i = 0; i < names.Length; i++)
             {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = ascendingFlags[i];
+                _infos.Add((names[i], ascending[i]));
             }
+        }
+
+
+        /// <summary>
+        ///     Constructs an object that sorts by one or more attributes, in the
+        ///     order provided, in either ascending or descending order for each
+        ///     attribute.
+        ///     Note: Novell eDirectory supports only ascending sort order (A,B,C ...)
+        ///     and allows sorting only by one attribute. The directory server must be
+        ///     configured to index this attribute.
+        /// </summary>
+        /// <param name="attrNames">
+        ///     Array of names of attributes to sort by.
+        /// </param>
+        /// <param name="ascendingFlags">
+        ///     Array of flags, one for each attrName, where
+        ///     true specifies ascending order and false specifies
+        ///     descending order. An LdapException is thrown if
+        ///     the length of ascendingFlags is not greater than
+        ///     or equal to the length of attrNames.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapCompareAttrNames(IEnumerable<(string, bool)> infos)
+        {
+            InitBlock();
+
+            foreach (var info in infos)
+                _infos.Add(info);
         }
 
         /// <summary>
@@ -208,28 +229,26 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int Compare(object object1, object object2)
         {
-            var entry1 = (LdapEntry) object1;
-            var entry2 = (LdapEntry) object2;
-            LdapAttribute one, two;
+            LdapEntry entry1 = object1 as LdapEntry;
+            LdapEntry entry2 = object2 as LdapEntry;
             string[] first; //multivalued attributes are ignored.
             string[] second; //we just use the first element
-            int compare, i = 0;
-            if (collator == null)
+            int compare = 0, i =0;
+            if (_collator == null)
             {
                 //using default locale
-                collator = CultureInfo.CurrentCulture.CompareInfo;
+                _collator = CultureInfo.CurrentCulture.CompareInfo;
             }
-
-            do
+            for (i = 0; compare == 0 && i < _infos.Count; i++)
             {
-                //while first and second are equal
-                one = entry1.getAttribute(sortByNames[i]);
-                two = entry2.getAttribute(sortByNames[i]);
+
+                LdapAttribute one = entry1.GetAttribute(_infos[i].Name);
+                LdapAttribute two = entry2.GetAttribute(_infos[i].Name);
                 if (one != null && two != null)
                 {
                     first = one.StringValueArray;
                     second = two.StringValueArray;
-                    compare = collator.Compare(first[0], second[0]);
+                    compare = _collator.Compare(first[0], second[0]);
                 }
                 //We could also use the other multivalued attributes to break ties.
                 //one of the entries was null
@@ -244,11 +263,9 @@ namespace Novell.Directory.Ldap
                     else
                         compare = 0; //tie - break it with the next attribute name
                 }
+            }
 
-                i++;
-            } while (compare == 0 && i < sortByNames.Length);
-
-            if (sortAscending[i - 1])
+            if (_infos[i - 1].Asceding)
             {
                 // return the normal ascending comparison.
                 return compare;
@@ -272,20 +289,18 @@ namespace Novell.Directory.Ldap
             {
                 return false;
             }
-            var comp = (LdapCompareAttrNames) comparator;
+            LdapCompareAttrNames comp = comparator as LdapCompareAttrNames;
 
             // Test to see if the attribute to compare are the same length
-            if (comp.sortByNames.Length != sortByNames.Length || comp.sortAscending.Length != sortAscending.Length)
-            {
+            if (comp._infos.Count != _infos.Count)
                 return false;
-            }
 
             // Test to see if the attribute names and sorting orders are the same.
-            for (var i = 0; i < sortByNames.Length; i++)
+            for (var i = 0; i < _infos.Count; i++)
             {
-                if (comp.sortAscending[i] != sortAscending[i])
+                if (comp._infos[i].Asceding != _infos[i].Asceding)
                     return false;
-                if (!comp.sortByNames[i].ToUpper().Equals(sortByNames[i].ToUpper()))
+                if (comp._infos[i].Name.Equals(_infos[i].Name, StringComparison.InvariantCultureIgnoreCase))
                     return false;
             }
             return true;

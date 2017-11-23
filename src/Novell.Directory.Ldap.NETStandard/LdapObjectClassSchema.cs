@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object classes superior to this class.
         /// </returns>
-        public virtual string[] Superiors
-        {
-            get { return superiors; }
-        }
+        public virtual string[] Superiors { get; internal set; }
 
         /// <summary>
         ///     Returns a list of attributes required for an entry with this object
@@ -66,10 +63,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required attributes defined for this class.
         /// </returns>
-        public virtual string[] RequiredAttributes
-        {
-            get { return required; }
-        }
+        public virtual string[] RequiredAttributes { get; internal set; }
 
         /// <summary>
         ///     Returns a list of optional attributes but not required of an entry
@@ -78,10 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of optional attributes defined for this class.
         /// </returns>
-        public virtual string[] OptionalAttributes
-        {
-            get { return optional; }
-        }
+        public virtual string[] OptionalAttributes { get; internal set; }
 
         /// <summary>
         ///     Returns the type of object class.
@@ -98,15 +89,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The type of object class.
         /// </returns>
-        public virtual int Type
-        {
-            get { return type; }
-        }
-
-        internal string[] superiors;
-        internal string[] required;
-        internal string[] optional;
-        internal int type = -1;
+        public virtual int Type { get; internal set; }
 
         /// <summary>
         ///     This class definition defines an abstract schema class.
@@ -161,28 +144,28 @@ namespace Novell.Directory.Ldap
             string[] required, string[] optional, int type, bool obsolete)
             : base(LdapSchema.schemaTypeNames[LdapSchema.OBJECT_CLASS])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.type = type;
-            this.obsolete = obsolete;
+            this.Names = new string[names.Length];
+            names.CopyTo(this.Names, 0);
+            this.Id = oid;
+            this.Description = description;
+            Type = type;
+            this.Obsolete = obsolete;
             if (superiors != null)
             {
-                this.superiors = new string[superiors.Length];
-                superiors.CopyTo(this.superiors, 0);
+                Superiors = new string[superiors.Length];
+                superiors.CopyTo(Superiors, 0);
             }
             if (required != null)
             {
-                this.required = new string[required.Length];
-                required.CopyTo(this.required, 0);
+                RequiredAttributes = new string[required.Length];
+                required.CopyTo(RequiredAttributes, 0);
             }
             if (optional != null)
             {
-                this.optional = new string[optional.Length];
-                optional.CopyTo(this.optional, 0);
+                OptionalAttributes = new string[optional.Length];
+                optional.CopyTo(OptionalAttributes, 0);
             }
-            Value = formatString();
+            Value = FormatString();
         }
 
 
@@ -202,39 +185,36 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
-                if ((object) parser.Description != null)
-                    description = parser.Description;
-                obsolete = parser.Obsolete;
+                if (parser.Id != null)
+                    Id = parser.Id;
+                if (parser.Description != null)
+                    Description = parser.Description;
+                Obsolete = parser.Obsolete;
                 if (parser.Required != null)
                 {
-                    required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(required, 0);
+                    RequiredAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredAttributes, 0);
                 }
                 if (parser.Optional != null)
                 {
-                    optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(optional, 0);
+                    OptionalAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalAttributes, 0);
                 }
                 if (parser.Superiors != null)
                 {
-                    superiors = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(superiors, 0);
+                    Superiors = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(Superiors, 0);
                 }
-                type = parser.Type;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
+                Type = parser.Type;
+                foreach (var attrQualifier in parser.Qualifiers)
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -249,13 +229,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -278,7 +258,7 @@ namespace Novell.Directory.Ldap
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -338,16 +318,14 @@ namespace Novell.Directory.Ldap
                 if (strArray.Length > 1)
                     valueBuffer.Append(" )");
             }
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+
+            if (QualifierNames != null)
             {
-                string qualName;
                 string[] qualValue;
-                while (en.MoveNext())
+                foreach (var qualName in QualifierNames)
                 {
-                    qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");

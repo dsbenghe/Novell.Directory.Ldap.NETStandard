@@ -30,6 +30,7 @@
 //
 
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.NETStandard.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap.Rfc2251
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         AbandonRequest ::= [APPLICATION 16] MessageID
     ///     </pre>
     /// </summary>
-    internal class RfcAbandonRequest : RfcMessageID, RfcRequest
+    internal class RfcAbandonRequest : RfcMessageID, IRfcRequest
     {
         //*************************************************************************
         // Constructor for AbandonRequest
@@ -61,20 +62,17 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier Identifier
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.ABANDON_REQUEST);
+            set => base.Identifier = value;
+            get => new Asn1Identifier(TagClass.APPLICATION, false, LdapMessage.ABANDON_REQUEST);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool reference)
+        public IRfcRequest DupRequest(string @base, string filter, bool reference)
         {
-            throw new LdapException(ExceptionMessages.NO_DUP_REQUEST, new object[] {"Abandon"},
-                LdapException.Ldap_NOT_SUPPORTED, null);
+            throw new LdapException(ExceptionMessages.NO_DUP_REQUEST, new object[] { "Abandon" }, LdapException.Ldap_NOT_SUPPORTED, null);
         }
 
-        public string getRequestDN()
-        {
-            return null;
-        }
+        public string RequestDN => null;
     }
 }
