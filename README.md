@@ -1,6 +1,8 @@
-# LDAP client library for .NET Standard 1.3
+# LDAP client library for .NET Standard 2.0
 
-Supported on the .NET Standard 1.3 (https://docs.microsoft.com/en-us/dotnet/articles/standard/library) compatible .NET runtimes: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin.
+Supported on the .NET Standard 2.0 (https://docs.microsoft.com/en-us/dotnet/articles/standard/library) compatible .NET runtimes: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin.
+
+This fork was made to enable development on Visual Studio 2017 with .NET Standard 2.0 because these are breaking changes to the solution structure of the origianl project. There are no other additions or changes to core functionality other than the fact that you can build it oit in 2017 against .NET Standard 2.0.
 
 It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
 
