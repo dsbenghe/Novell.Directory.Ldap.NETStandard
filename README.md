@@ -6,9 +6,7 @@ This fork was made to enable development on Visual Studio 2017 with .NET Standar
 
 It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
 
-[![Build status](https://ci.appveyor.com/api/projects/status/nabbc061vlumiivs/branch/master?svg=true)](https://ci.appveyor.com/project/dsbenghe/novell-directory-ldap-netstandard/branch/master) - Windows Build<br />
-[![Build Status](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard.svg?branch=master)](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard) - Linux Build (includes functional tests & stress tests running against OpenLDAP) <br />
-[![NuGet](https://img.shields.io/nuget/v/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/)
+The Nuget Package for this fork is * html: https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard2_0/
 
 The library is originaly coming from Novell (https://www.novell.com/developer/ndk/ldap_libraries_for_c_sharp.html) - really old code base - looks like a tool-based conversion from Java - this is the original java code repo http://www.openldap.org/devel/gitweb.cgi?p=openldap-jldap.git;a=summary (first commit in that repo is from 2000 :)) - which explains some of the weirdness of the code base.
 
