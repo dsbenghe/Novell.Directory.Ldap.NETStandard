@@ -1,12 +1,16 @@
 # LDAP client library for .NET Standard 2.0
 
-Supported on the .NET Standard 2.0 (https://docs.microsoft.com/en-us/dotnet/articles/standard/library) compatible .NET runtimes: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin.
+Notes from this fork maintainer:
 
-This fork was made to enable development on Visual Studio 2017 with .NET Standard 2.0 because these are breaking changes to the solution structure of the origianl project. There are no other additions or changes to core functionality other than the fact that you can build it oit in 2017 against .NET Standard 2.0.
-
-It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
+This fork was made to enable development on Visual Studio 2017 with .NET Standard 2.0 because these are breaking changes to the solution structure of the origianl project. There are no other additions or changes to core functionality other than the fact that you can build it in VS 2017 against .NET Standard 2.0.
 
 The Nuget Package for this fork is at https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard2_0/
+
+Supported on the .NET Standard 2.0 (https://docs.microsoft.com/en-us/dotnet/articles/standard/library) compatible .NET runtimes: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin.
+
+From dsbenghe (minus the nuget build info):
+
+It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
 
 The library is originaly coming from Novell (https://www.novell.com/developer/ndk/ldap_libraries_for_c_sharp.html) - really old code base - looks like a tool-based conversion from Java - this is the original java code repo http://www.openldap.org/devel/gitweb.cgi?p=openldap-jldap.git;a=summary (first commit in that repo is from 2000 :)) - which explains some of the weirdness of the code base.
 
