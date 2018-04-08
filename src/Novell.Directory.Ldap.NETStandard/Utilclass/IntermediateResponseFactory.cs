@@ -31,7 +31,6 @@
 
 using System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass

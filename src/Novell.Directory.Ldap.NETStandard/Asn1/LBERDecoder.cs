@@ -32,7 +32,6 @@
 using System;
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
 
 namespace Novell.Directory.Ldap.Asn1
 {

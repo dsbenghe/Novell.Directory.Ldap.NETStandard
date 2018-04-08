@@ -32,7 +32,6 @@
 using System.Collections;
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap

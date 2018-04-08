@@ -30,7 +30,6 @@
 //
 
 using System;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Controls
