@@ -3013,14 +3013,8 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            try
-            {
-                agent.sendMessage(conn, request, cons.TimeLimit, myqueue, null);
-            }
-            catch (LdapException lex)
-            {
-                throw lex;
-            }
+            agent.sendMessage(conn, request, cons.TimeLimit, myqueue, null);
+            
             return myqueue;
         }
 
