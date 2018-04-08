@@ -2707,96 +2707,21 @@ namespace Novell.Directory.Ldap
         // search methods
         //*************************************************************************
 
-        /// <summary>
-        ///     Synchronously performs the search specified by the parameters.
-        /// </summary>
-        /// <param name="base">
-        ///     The base distinguished name to search from.
-        /// </param>
-        /// <param name="scope">
-        ///     The scope of the entries to search. The following
-        ///     are the valid options:
-        ///     <ul>
-        ///         <li>SCOPE_BASE - searches only the base DN</li>
-        ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
-        ///         <li>
-        ///             SCOPE_SUB - searches the base DN and all entries
-        ///             within its subtree
-        ///         </li>
-        ///     </ul>
-        /// </param>
-        /// <param name="filter">
-        ///     Search filter specifying the search criteria.
-        /// </param>
-        /// <param name="attrs">
-        ///     Names of attributes to retrieve.
-        /// </param>
-        /// <param name="typesOnly">
-        ///     If true, returns the names but not the values of
-        ///     the attributes found. If false, returns the
-        ///     names and values for attributes found.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public virtual LdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly)
+        /// <inheritdoc />
+        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly)
         {
             return Search(@base, scope, filter, attrs, typesOnly, defSearchCons);
         }
 
-        /// <summary>
-        ///     Synchronously performs the search specified by the parameters,
-        ///     using the specified search constraints (such as the
-        ///     maximum number of entries to find or the maximum time to wait for
-        ///     search results).
-        ///     As part of the search constraints, the method allows specifying
-        ///     whether or not the results are to be delivered all at once or in
-        ///     smaller batches. If specified that the results are to be delivered in
-        ///     smaller batches, each iteration blocks only until the next batch of
-        ///     results is returned.
-        /// </summary>
-        /// <param name="base">
-        ///     The base distinguished name to search from.
-        /// </param>
-        /// <param name="scope">
-        ///     The scope of the entries to search. The following
-        ///     are the valid options:
-        ///     <ul>
-        ///         <li>SCOPE_BASE - searches only the base DN</li>
-        ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
-        ///         <li>
-        ///             SCOPE_SUB - searches the base DN and all entries
-        ///             within its subtree
-        ///         </li>
-        ///     </ul>
-        /// </param>
-        /// <param name="filter">
-        ///     The search filter specifying the search criteria.
-        /// </param>
-        /// <param name="attrs">
-        ///     The names of attributes to retrieve.
-        /// </param>
-        /// <param name="typesOnly">
-        ///     If true, returns the names but not the values of
-        ///     the attributes found.  If false, returns the
-        ///     names and values for attributes found.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the search.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public virtual LdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+        /// <inheritdoc />
+        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchConstraints cons)
         {
             var queue = Search(@base, scope, filter, attrs, typesOnly, null, cons);
 
             if (cons == null)
                 cons = defSearchCons;
-            return new LdapSearchResults(this, queue, cons);
+            return new LdapSearchResults(queue, cons);
         }
 
         /// <summary>
@@ -2930,7 +2855,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public static LdapSearchResults Search(LdapUrl toGet)
+        public static ILdapSearchResults Search(LdapUrl toGet)
         {
             // Get a clone of default search constraints, method alters batchSize
             return Search(toGet, null);
@@ -2964,24 +2889,27 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public static LdapSearchResults Search(LdapUrl toGet, LdapSearchConstraints cons)
+        public static ILdapSearchResults Search(LdapUrl toGet, LdapSearchConstraints cons)
         {
-            var lconn = new LdapConnection();
-            lconn.Connect(toGet.Host, toGet.Port);
-            if (cons == null)
+            using (var lconn = new LdapConnection())
             {
-                // This is a clone, so we already have our own copy
-                cons = lconn.SearchConstraints;
+                lconn.Connect(toGet.Host, toGet.Port);
+                if (cons == null)
+                {
+                    // This is a clone, so we already have our own copy
+                    cons = lconn.SearchConstraints;
+                }
+                else
+                {
+                    // get our own copy of user's constraints because we modify it
+                    cons = (LdapSearchConstraints) cons.Clone();
+                }
+
+                cons.BatchSize = 0; // Must wait until all results arrive
+                var toReturn = lconn.Search(toGet.getDN(), toGet.Scope, toGet.Filter, toGet.AttributeArray, false,
+                    cons);
+                return toReturn;
             }
-            else
-            {
-                // get our own copy of user's constraints because we modify it
-                cons = (LdapSearchConstraints) cons.Clone();
-            }
-            cons.BatchSize = 0; // Must wait until all results arrive
-            var toReturn = lconn.Search(toGet.getDN(), toGet.Scope, toGet.Filter, toGet.AttributeArray, false, cons);
-            lconn.Disconnect();
-            return toReturn;
         }
 
         /// <summary>

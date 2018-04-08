@@ -36,14 +36,15 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
+    /// <inheritdoc />
     /// <summary>
     ///     An LdapSearchResults object is returned from a synchronous search
     ///     operation. It provides access to all results received during the
     ///     operation (entries and exceptions).
     /// </summary>
-    /// <seealso cref="LdapConnection.Search">
+    /// <seealso cref="!:LdapConnection.Search">
     /// </seealso>
-    public class LdapSearchResults : IEnumerable<LdapEntry>
+    public class LdapSearchResults : ILdapSearchResults
     {
         /// <summary>
         ///     Returns a count of the items in the search result.
@@ -202,16 +203,13 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs a queue object for search results.
         /// </summary>
-        /// <param name="conn">
-        ///     The LdapConnection which initiated the search
-        /// </param>
         /// <param name="queue">
         ///     The queue for the search results.
         /// </param>
         /// <param name="cons">
         ///     The LdapSearchConstraints associated with this search
         /// </param>
-        internal LdapSearchResults(LdapConnection conn, LdapSearchQueue queue, LdapSearchConstraints cons)
+        internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             // setup entry Vector
             this.cons = cons;

@@ -690,7 +690,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly);
+        ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly);
 
         /// <summary>
         ///     Synchronously performs the search specified by the parameters,
@@ -736,7 +736,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+        ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchConstraints cons);
     }
 }
