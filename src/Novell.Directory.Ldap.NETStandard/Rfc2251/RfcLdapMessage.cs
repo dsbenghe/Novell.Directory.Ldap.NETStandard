@@ -124,16 +124,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="msg">
         ///     the original request for this response
         /// </param>
-        public virtual LdapMessage RequestingMessage
-        {
-            get { return requestMessage; }
-
-            set { requestMessage = value; }
-        }
+        public virtual LdapMessage RequestingMessage { get; set; }
 
         private readonly Asn1Object op;
         private RfcControls controls;
-        private LdapMessage requestMessage;
 
         /// <summary>
         ///     Create an RfcLdapMessage by copying the content array

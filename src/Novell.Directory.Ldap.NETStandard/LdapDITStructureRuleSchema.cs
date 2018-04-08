@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The rule ID for this structure rule.
         /// </returns>
-        public virtual int RuleID
-        {
-            get { return ruleID; }
-        }
+        public virtual int RuleID { get; }
 
         /// <summary>
         ///     Returns the NameForm that this structure rule controls.
@@ -67,10 +64,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The NameForm that this structure rule controls.
         /// </returns>
-        public virtual string NameForm
-        {
-            get { return nameForm; }
-        }
+        public virtual string NameForm { get; } = "";
 
         /// <summary>
         ///     Returns a list of all structure rules that are superior to this
@@ -87,8 +81,6 @@ namespace Novell.Directory.Ldap
             get { return superiorIDs; }
         }
 
-        private readonly int ruleID;
-        private readonly string nameForm = "";
         private readonly string[] superiorIDs = {""};
 
         /// <summary>
@@ -128,10 +120,10 @@ namespace Novell.Directory.Ldap
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.ruleID = ruleID;
+            this.RuleID = ruleID;
             this.description = description;
             this.obsolete = obsolete;
-            this.nameForm = nameForm;
+            this.NameForm = nameForm;
             this.superiorIDs = superiorIDs;
             Value = formatString();
         }
@@ -158,7 +150,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 if ((object) parser.ID != null)
-                    ruleID = int.Parse(parser.ID);
+                    RuleID = int.Parse(parser.ID);
                 if ((object) parser.Description != null)
                     description = parser.Description;
                 if (parser.Superiors != null)
@@ -167,7 +159,7 @@ namespace Novell.Directory.Ldap
                     parser.Superiors.CopyTo(superiorIDs, 0);
                 }
                 if ((object) parser.NameForm != null)
-                    nameForm = parser.NameForm;
+                    NameForm = parser.NameForm;
                 obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;

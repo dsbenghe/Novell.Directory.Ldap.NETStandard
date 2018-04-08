@@ -54,15 +54,10 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             private void InitBlock(RespControlVector enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
 
-            private RespControlVector enclosingInstance;
-
-            public RespControlVector Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public RespControlVector Enclosing_Instance { get; private set; }
 
             public readonly string myOID;
             public readonly Type myClass;

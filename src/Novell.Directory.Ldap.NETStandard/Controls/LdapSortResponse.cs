@@ -45,19 +45,10 @@ namespace Novell.Directory.Ldap.Controls
         ///     If not null, this returns the attribute that caused the sort
         ///     operation to fail.
         /// </summary>
-        public virtual string FailedAttribute
-        {
-            get { return failedAttribute; }
-        }
+        public virtual string FailedAttribute { get; }
 
         /// <summary> Returns the result code from the sort</summary>
-        public virtual int ResultCode
-        {
-            get { return resultCode; }
-        }
-
-        private readonly string failedAttribute;
-        private readonly int resultCode;
+        public virtual int ResultCode { get; }
 
         /// <summary>
         ///     This constructor is usually called by the SDK to instantiate an
@@ -121,14 +112,14 @@ namespace Novell.Directory.Ldap.Controls
 
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(0);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                resultCode = ((Asn1Enumerated) asn1Enum).intValue();
+                ResultCode = ((Asn1Enumerated) asn1Enum).intValue();
 
             // Second element is the attributeType
             if (((Asn1Sequence) asnObj).size() > 1)
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(1);
                 if (asn1String != null && asn1String is Asn1OctetString)
-                    failedAttribute = ((Asn1OctetString) asn1String).stringValue();
+                    FailedAttribute = ((Asn1OctetString) asn1String).stringValue();
             }
         }
     }

@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap
         ///     The server controls returned with the search request, or null
         ///     if none were returned.
         /// </returns>
-        public LdapControl[] ResponseControls => controls;
+        public LdapControl[] ResponseControls { get; private set; }
 
         /// <summary>
         ///     Collects batchSize elements from an LdapSearchQueue message
@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap
                             var ctls = msg.Controls;
                             if (ctls != null)
                             {
-                                controls = ctls;
+                                ResponseControls = ctls;
                             }
 
                             if (msg is LdapSearchResult)
@@ -188,7 +188,6 @@ namespace Novell.Directory.Ldap
         private int referenceIndex; // Current position in vector
         private readonly int batchSize; // Application specified batch size
         private bool completed; // All entries received
-        private LdapControl[] controls; // Last set of controls
         private readonly LdapSearchQueue queue;
         private readonly LdapSearchConstraints cons; // LdapSearchConstraints for search
         //private ArrayList referralConn = null; // Referral Connections

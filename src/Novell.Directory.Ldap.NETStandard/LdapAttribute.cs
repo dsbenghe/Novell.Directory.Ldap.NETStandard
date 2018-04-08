@@ -58,15 +58,10 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(LdapAttribute enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
 
-            private LdapAttribute enclosingInstance;
-
-            public LdapAttribute Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public LdapAttribute Enclosing_Instance { get; private set; }
 
             private readonly int length;
             private readonly sbyte[] data;

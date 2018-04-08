@@ -417,10 +417,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Connection object name
         /// </returns>
-        internal virtual string ConnectionName
-        {
-            get { return name; }
-        }
+        internal virtual string ConnectionName { get; }
 
         private LdapSearchConstraints defSearchCons;
         private LdapControl[] responseCtls;
@@ -432,7 +429,6 @@ namespace Novell.Directory.Ldap
 
         private static object nameLock; // protect agentNum
         private static int lConnNum = 0; // Debug, LdapConnection number
-        private string name; // String name for debug
 
         /// <summary>
         ///     Used with search to specify that the scope of entrys to search is to

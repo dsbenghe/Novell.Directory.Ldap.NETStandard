@@ -282,11 +282,10 @@ namespace Novell.Directory.Ldap
         internal virtual ReferralInfo ActiveReferral
         {
             /*package*/
-            get { return activeReferral; }
+            get;
         }
 
         private readonly InterThreadException exception;
-        private readonly ReferralInfo activeReferral;
 
         /// <summary>
         ///     Creates an LdapResponse using an LdapException.
@@ -306,7 +305,7 @@ namespace Novell.Directory.Ldap
         public LdapResponse(InterThreadException ex, ReferralInfo activeReferral)
         {
             exception = ex;
-            this.activeReferral = activeReferral;
+            this.ActiveReferral = activeReferral;
         }
 
         /// <summary>

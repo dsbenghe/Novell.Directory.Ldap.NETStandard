@@ -492,15 +492,10 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(Message enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
 
-            private Message enclosingInstance;
-
-            public Message Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public Message Enclosing_Instance { get; private set; }
 
             private readonly int timeToWait;
             private readonly Message message;

@@ -113,39 +113,25 @@ namespace Novell.Directory.Ldap
         }
 
 
-        internal bool Ssl
-        {
-            get { return ssl; }
-            set { ssl = value; }
-        }
+        internal bool Ssl { get; set; }
 
         /// <summary> gets the host used for this connection</summary>
-        internal string Host
-        {
-            get { return host; }
-        }
+        internal string Host { get; private set; }
 
         /// <summary> gets the port used for this connection</summary>
-        internal int Port
-        {
-            get { return port; }
-        }
+        internal int Port { get; private set; }
 
-        internal int ConnectionTimeout
-        {
-            get { return connectionTimeout; }
-            set { connectionTimeout = value; }
-        }
+        internal int ConnectionTimeout { get; set; } = 0;
 
         /// <summary> gets the writeSemaphore id used for active bind operation</summary>
-        internal int BindSemId => bindSemaphoreId;
+        internal int BindSemId { get; private set; }
 
         /// <summary> checks if the writeSemaphore id used for active bind operation is clear</summary>
         internal bool BindSemIdClear
         {
             get
             {
-                if (bindSemaphoreId == 0)
+                if (BindSemId == 0)
                 {
                     return true;
                 }
@@ -161,10 +147,10 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (bindProperties != null)
+                if (BindProperties != null)
                 {
                     // Bound if not anonymous
-                    return !bindProperties.Anonymous;
+                    return !BindProperties.Anonymous;
                 }
                 return false;
             }
@@ -190,13 +176,7 @@ namespace Novell.Directory.Ldap
         /// <param name="bindProps">
         ///     The BindProperties object to set.
         /// </param>
-        internal BindProperties BindProperties
-        {
-            get { return bindProperties; }
-
-
-            set { bindProperties = value; }
-        }
+        internal BindProperties BindProperties { get; set; }
 
         /// <summary>
         ///     Gets the current referral active on this connection if created to
@@ -209,12 +189,7 @@ namespace Novell.Directory.Ldap
         ///     Sets the current referral active on this connection if created to
         ///     follow referrals.
         /// </summary>
-        internal ReferralInfo ActiveReferral
-        {
-            get { return activeReferral; }
-
-            set { activeReferral = value; }
-        }
+        internal ReferralInfo ActiveReferral { get; set; }
 
         /// <summary>
         ///     Returns the name of this Connection, used for debug only
@@ -222,10 +197,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the name of this connection
         /// </returns>
-        internal string ConnectionName
-        {
-            get { return name; }
-        }
+        internal string ConnectionName { get; } = "";
 
         private object writeSemaphore;
         private int writeSemaphoreOwner;
@@ -234,8 +206,6 @@ namespace Novell.Directory.Ldap
         // We need a message number for disconnect to grab the semaphore,
         // but may not have one, so we invent a unique one.
         private int ephemeralId = -1;
-        private BindProperties bindProperties;
-        private int bindSemaphoreId; // 0 is never used by to lock a semaphore
 
         private ReaderThread readerThreadEnclosure;
         private Thread reader; // New thread that reads data from the server.
@@ -260,9 +230,6 @@ namespace Novell.Directory.Ldap
         // When set to true the client connection is up and running
         private bool clientActive = true;
 
-        private bool ssl;
-        private int connectionTimeout = 0;
-
         // Indicates we have received a server shutdown unsolicited notification
         private bool unsolSvrShutDnNotification;
 
@@ -281,7 +248,6 @@ namespace Novell.Directory.Ldap
         private MessageVector messages;
 
         // Connection created to follow referral
-        private ReferralInfo activeReferral;
 
         // Place to save unsolicited message listeners
         private ArrayList unsolicitedListeners;
@@ -290,13 +256,10 @@ namespace Novell.Directory.Ldap
         //		private static LdapSocketFactory socketFactory = null;
         // The LdapSocketFactory used for this connection
         //		private LdapSocketFactory mySocketFactory;
-        private string host;
-        private int port;
         // Number of clones in addition to original LdapConnection using this
         // connection.
         private int cloneCount;
         // Connection number & name used only for debug
-        private readonly string name = "";
 
         // These attributes can be retreived using the getProperty
         // method in LdapConnection.  Future releases might require
@@ -338,8 +301,8 @@ namespace Novell.Directory.Ldap
         {
             var c = new Connection
             {
-                host = host,
-                port = port
+                Host = Host,
+                Port = Port
             };
             return c;
         }
@@ -582,8 +545,8 @@ namespace Novell.Directory.Ldap
                     {
                         if (Ssl)
                         {
-                            this.host = host;
-                            this.port = port;
+                            this.Host = host;
+                            this.Port = port;
                             sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
                             var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
                             var hostadd = ipAddresses.First(ip => ip.AddressFamily == AddressFamily.InterNetwork);
@@ -596,14 +559,14 @@ namespace Novell.Directory.Ldap
                                 false,
                                 RemoteCertificateValidationCallback
                             );
-                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(connectionTimeout);
+                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
                             in_Renamed = sslstream;
                             out_Renamed = sslstream;
                         }
                         else
                         {
                             socket = new TcpClient();
-                            socket.ConnectAsync(host, port).WaitAndUnwrap(connectionTimeout);
+                            socket.ConnectAsync(host, port).WaitAndUnwrap(ConnectionTimeout);
                             in_Renamed = socket.GetStream();
                             out_Renamed = socket.GetStream();
                         }
@@ -629,8 +592,8 @@ namespace Novell.Directory.Ldap
                         LdapException.CONNECT_ERROR, null, ioe);
                 }
                 // Set host and port
-                this.host = host;
-                this.port = port;
+                this.Host = host;
+                this.Port = port;
                 // start the reader thread
                 startReader();
                 clientActive = true; // Client is up
@@ -726,7 +689,7 @@ namespace Novell.Directory.Ldap
         /// <summary> clears the writeSemaphore id used for active bind operation</summary>
         internal void clearBindSemId()
         {
-            bindSemaphoreId = 0;
+            BindSemId = 0;
         }
 
         /// <summary>
@@ -739,9 +702,9 @@ namespace Novell.Directory.Ldap
         {
             messages.Add(info);
             // For bind requests, if not connected, attempt to reconnect
-            if (info.BindRequest && Connected == false && (object) host != null)
+            if (info.BindRequest && Connected == false && (object) Host != null)
             {
-                connect(host, port, info.MessageID);
+                connect(Host, Port, info.MessageID);
             }
             if (Connected)
             {
@@ -750,7 +713,7 @@ namespace Novell.Directory.Ldap
             }
             else
             {
-                throw new LdapException(ExceptionMessages.CONNECTION_CLOSED, new object[] {host, port},
+                throw new LdapException(ExceptionMessages.CONNECTION_CLOSED, new object[] {Host, Port},
                     LdapException.CONNECT_ERROR, null);
             }
         }
@@ -766,7 +729,7 @@ namespace Novell.Directory.Ldap
         {
             int id;
             // Get the correct semaphore id for bind operations
-            if (bindSemaphoreId == 0)
+            if (BindSemId == 0)
             {
                 // Semaphore id for normal operations
                 id = msg.MessageID;
@@ -774,7 +737,7 @@ namespace Novell.Directory.Ldap
             else
             {
                 // Semaphore id for sasl bind operations
-                id = bindSemaphoreId;
+                id = BindSemId;
             }
             var myOut = out_Renamed;
 
@@ -795,10 +758,10 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ioe)
             {
-                if (msg.Type == LdapMessage.BIND_REQUEST && ssl)
+                if (msg.Type == LdapMessage.BIND_REQUEST && Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] {host, port}, LdapException.SSL_HANDSHAKE_FAILED, null, ioe);
+                    throw new LdapException(strMsg, new object[] {Host, Port}, LdapException.SSL_HANDSHAKE_FAILED, null, ioe);
                 }
                 /*
                 * IOException could be due to a server shutdown notification which
@@ -815,12 +778,12 @@ namespace Novell.Directory.Ldap
                     if (unsolSvrShutDnNotification)
                     {
                         // got server shutdown
-                        throw new LdapException(ExceptionMessages.SERVER_SHUTDOWN_REQ, new object[] {host, port},
+                        throw new LdapException(ExceptionMessages.SERVER_SHUTDOWN_REQ, new object[] {Host, Port},
                             LdapException.CONNECT_ERROR, null, ioe);
                     }
 
                     // Other I/O Exceptions on host:port are reported as is
-                    throw new LdapException(ExceptionMessages.IO_EXCEPTION, new object[] {host, port},
+                    throw new LdapException(ExceptionMessages.IO_EXCEPTION, new object[] {Host, Port},
                         LdapException.CONNECT_ERROR, null, ioe);
                 }
             }
@@ -862,7 +825,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 // Now send unbind if socket not closed
-                if (bindProperties != null && out_Renamed != null && out_Renamed.CanWrite && !bindProperties.Anonymous)
+                if (BindProperties != null && out_Renamed != null && out_Renamed.CanWrite && !BindProperties.Anonymous)
                 {
                     try
                     {
@@ -876,7 +839,7 @@ namespace Novell.Directory.Ldap
                         ; // don't worry about error
                     }
                 }
-                bindProperties = null;
+                BindProperties = null;
                 if (socket != null || sock != null)
                 {
                     // Just before closing the sockets, abort the reader thread
@@ -936,7 +899,7 @@ namespace Novell.Directory.Ldap
             var length = leftMessages.Length;
 
             // Check if SASL bind in progress
-            if (bindSemaphoreId != 0)
+            if (BindSemId != 0)
             {
                 return false;
             }
@@ -1011,7 +974,7 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback
                 );
-                sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(connectionTimeout);
+                sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
                 in_Renamed = sslstream;
                 out_Renamed = sslstream;
                 startReader();
@@ -1198,7 +1161,7 @@ namespace Novell.Directory.Ldap
                                 if (enclosingInstance.unsolSvrShutDnNotification)
                                 {
                                     notify = new InterThreadException(ExceptionMessages.SERVER_SHUTDOWN_REQ,
-                                        new object[] {enclosingInstance.host, enclosingInstance.port},
+                                        new object[] {enclosingInstance.Host, enclosingInstance.Port},
                                         LdapException.CONNECT_ERROR, null, null);
 
                                     return;
@@ -1220,7 +1183,7 @@ namespace Novell.Directory.Ldap
                     {
                         // Connection lost waiting for results from host:port
                         notify = new InterThreadException(ExceptionMessages.CONNECTION_WAIT,
-                            new object[] {enclosingInstance.host, enclosingInstance.port}, LdapException.CONNECT_ERROR,
+                            new object[] {enclosingInstance.Host, enclosingInstance.Port}, LdapException.CONNECT_ERROR,
                             ex, info);
                     }
                     // The connection is no good, don't use it any more
@@ -1293,15 +1256,10 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(Connection enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
 
-            private Connection enclosingInstance;
-
-            public Connection Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public Connection Enclosing_Instance { get; private set; }
 
             private readonly LdapUnsolicitedNotificationListener listenerObj;
             private readonly LdapExtendedResponse unsolicitedMsg;

@@ -63,10 +63,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object identifer of the attribute's syntax.
         /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
+        public virtual string SyntaxString { get; }
 
         /// <summary>
         ///     Returns the name of the attribute type which this attribute derives
@@ -75,10 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute's superior attribute, or null if there is none.
         /// </returns>
-        public virtual string Superior
-        {
-            get { return superior; }
-        }
+        public virtual string Superior { get; }
 
         /// <summary>
         ///     Returns true if the attribute is single-valued.
@@ -87,10 +81,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is single-valued; false if the attribute
         ///     is multi-valued.
         /// </returns>
-        public virtual bool SingleValued
-        {
-            get { return single; }
-        }
+        public virtual bool SingleValued { get; }
 
         /// <summary>
         ///     Returns the matching rule for this attribute.
@@ -99,10 +90,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's equality matching rule; null if it has no equality
         ///     matching rule.
         /// </returns>
-        public virtual string EqualityMatchingRule
-        {
-            get { return equality; }
-        }
+        public virtual string EqualityMatchingRule { get; }
 
         /// <summary>
         ///     Returns the ordering matching rule for this attribute.
@@ -111,10 +99,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's ordering matching rule; null if it has no ordering
         ///     matching rule.
         /// </returns>
-        public virtual string OrderingMatchingRule
-        {
-            get { return ordering; }
-        }
+        public virtual string OrderingMatchingRule { get; }
 
         /// <summary>
         ///     Returns the substring matching rule for this attribute.
@@ -123,10 +108,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's substring matching rule; null if it has no substring
         ///     matching rule.
         /// </returns>
-        public virtual string SubstringMatchingRule
-        {
-            get { return substring; }
-        }
+        public virtual string SubstringMatchingRule { get; }
 
         /// <summary>
         ///     Returns true if the attribute is a collective attribute.
@@ -135,10 +117,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is a collective; false if the attribute
         ///     is not a collective attribute.
         /// </returns>
-        public virtual bool Collective
-        {
-            get { return collective; }
-        }
+        public virtual bool Collective { get; }
 
         /// <summary>
         ///     Returns false if the attribute is read-only.
@@ -147,10 +126,7 @@ namespace Novell.Directory.Ldap
         ///     False if the attribute is read-only; true if the attribute
         ///     is read-write.
         /// </returns>
-        public virtual bool UserModifiable
-        {
-            get { return userMod; }
-        }
+        public virtual bool UserModifiable { get; } = true;
 
         /// <summary>
         ///     Returns the usage of the attribute.
@@ -165,14 +141,6 @@ namespace Novell.Directory.Ldap
             get { return usage; }
         }
 
-        private readonly string syntaxString;
-        private readonly bool single;
-        private readonly string superior;
-        private readonly string equality;
-        private readonly string ordering;
-        private readonly string substring;
-        private readonly bool collective;
-        private readonly bool userMod = true;
         private int usage;
 
         /// <summary>
@@ -262,15 +230,15 @@ namespace Novell.Directory.Ldap
             this.oid = oid;
             this.description = description;
             this.obsolete = obsolete;
-            this.syntaxString = syntaxString;
-            this.single = single;
-            this.equality = equality;
-            this.ordering = ordering;
-            this.substring = substring;
-            this.collective = collective;
-            userMod = isUserModifiable;
+            this.SyntaxString = syntaxString;
+            this.SingleValued = single;
+            this.EqualityMatchingRule = equality;
+            this.OrderingMatchingRule = ordering;
+            this.SubstringMatchingRule = substring;
+            this.Collective = collective;
+            UserModifiable = isUserModifiable;
             this.usage = usage;
-            this.superior = superior;
+            this.Superior = superior;
             Value = formatString();
         }
 
@@ -297,10 +265,10 @@ namespace Novell.Directory.Ldap
                 if ((object) parser.Description != null)
                     description = parser.Description;
                 if ((object) parser.Syntax != null)
-                    syntaxString = parser.Syntax;
+                    SyntaxString = parser.Syntax;
                 if ((object) parser.Superior != null)
-                    superior = parser.Superior;
-                single = parser.Single;
+                    Superior = parser.Superior;
+                SingleValued = parser.Single;
                 obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;

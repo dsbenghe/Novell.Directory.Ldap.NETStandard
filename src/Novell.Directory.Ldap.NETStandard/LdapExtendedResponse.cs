@@ -60,10 +60,10 @@ namespace Novell.Directory.Ldap
 
         static LdapExtendedResponse()
         {
-            registeredResponses = new RespExtensionSet();
+            RegisteredResponses = new RespExtensionSet();
         }
 
-        public static RespExtensionSet RegisteredResponses => registeredResponses;
+        public static RespExtensionSet RegisteredResponses { get; }
 
         /// <summary>
         ///     Returns the value part of the response in raw bytes.
@@ -80,8 +80,6 @@ namespace Novell.Directory.Ldap
                 return tempString?.byteValue();
             }
         }
-
-        private static readonly RespExtensionSet registeredResponses;
 
         /// <summary>
         ///     Creates an LdapExtendedResponse object which encapsulates
@@ -113,7 +111,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public static void register(string oid, Type extendedResponseClass)
         {
-            registeredResponses.registerResponseExtension(oid, extendedResponseClass);
+            RegisteredResponses.registerResponseExtension(oid, extendedResponseClass);
         }
     }
 }

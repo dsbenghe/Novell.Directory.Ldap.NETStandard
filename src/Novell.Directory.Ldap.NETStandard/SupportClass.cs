@@ -60,18 +60,12 @@ public interface IThreadRunnable
 
 public class Integer32 : object
 {
-    private int _wintv;
-
     public Integer32(int ival)
     {
-        _wintv = ival;
+        intValue = ival;
     }
 
-    public int intValue
-    {
-        get { return _wintv; }
-        set { _wintv = value; }
-    }
+    public int intValue { get; set; }
 }
 
 /// <summary>
@@ -586,8 +580,6 @@ public class SupportClass
         /// </summary>
         private Thread threadField;
 
-        private bool isStopping;
-
         /// <summary>
         ///     Initializes a new instance of the ThreadClass class
         /// </summary>
@@ -652,7 +644,7 @@ public class SupportClass
 
         public virtual void Stop()
         {
-            isStopping = true;
+            IsStopping = true;
         }
 
         /// <summary>
@@ -694,10 +686,7 @@ public class SupportClass
             set { threadField.IsBackground = value; }
         }
 
-        public bool IsStopping
-        {
-            get { return isStopping; }
-        }
+        public bool IsStopping { get; private set; }
 
         /// <summary>
         ///     Blocks the calling thread until a thread terminates
@@ -1708,36 +1697,22 @@ public class SupportClass
     /// </summary>
     public class MessageDigestSupport
     {
-        private HashAlgorithm algorithm;
-        private byte[] data;
         private int position;
-        private string algorithmName;
 
         /// <summary>
         ///     The HashAlgorithm instance that provide the cryptographic hash algorithm
         /// </summary>
-        public HashAlgorithm Algorithm
-        {
-            get { return algorithm; }
-            set { algorithm = value; }
-        }
+        public HashAlgorithm Algorithm { get; set; }
 
         /// <summary>
         ///     The digest data
         /// </summary>
-        public byte[] Data
-        {
-            get { return data; }
-            set { data = value; }
-        }
+        public byte[] Data { get; set; }
 
         /// <summary>
         ///     The name of the cryptographic hash algorithm used in the instance
         /// </summary>
-        public string AlgorithmName
-        {
-            get { return algorithmName; }
-        }
+        public string AlgorithmName { get; }
 
         /// <summary>
         ///     Computes the hash value for the internal data digest.
@@ -1746,7 +1721,7 @@ public class SupportClass
         [CLSCompliant(false)]
         public sbyte[] DigestData()
         {
-            var result = ToSByteArray(Algorithm.ComputeHash(data));
+            var result = ToSByteArray(Algorithm.ComputeHash(Data));
             Reset();
             return result;
         }
@@ -1817,7 +1792,7 @@ public class SupportClass
         /// </summary>
         public void Reset()
         {
-            data = null;
+            Data = null;
             position = 0;
         }
 

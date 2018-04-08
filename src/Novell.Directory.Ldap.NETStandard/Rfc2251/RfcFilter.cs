@@ -1041,10 +1041,8 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             private void InitBlock(RfcFilter enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
-
-            private RfcFilter enclosingInstance;
 
             /// <summary>
             ///     Returns filter identifiers and components of a filter.
@@ -1143,7 +1141,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             {
                                 index = 0;
                             }
-                            toReturn = new FilterIterator(enclosingInstance,
+                            toReturn = new FilterIterator(Enclosing_Instance,
                                 (Asn1Tagged) set_Renamed.get_Renamed(index++));
                             if (index >= set_Renamed.size())
                             {
@@ -1153,7 +1151,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         else if (asn1 is Asn1Tagged)
                         {
                             //NOT nested component.
-                            toReturn = new FilterIterator(enclosingInstance, (Asn1Tagged) asn1);
+                            toReturn = new FilterIterator(Enclosing_Instance, (Asn1Tagged) asn1);
                             hasMore = false;
                         }
                     }
@@ -1161,10 +1159,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 }
             }
 
-            public RfcFilter Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public RfcFilter Enclosing_Instance { get; private set; }
 
             internal readonly Asn1Tagged root;
 
@@ -1198,10 +1193,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             private void InitBlock(RfcFilter enclosingInstance)
             {
-                this.enclosingInstance = enclosingInstance;
+                this.Enclosing_Instance = enclosingInstance;
             }
-
-            private RfcFilter enclosingInstance;
 
             /// <summary>
             ///     Reads either an operator, or an attribute, whichever is
@@ -1378,10 +1371,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 get { return attr; }
             }
 
-            public RfcFilter Enclosing_Instance
-            {
-                get { return enclosingInstance; }
-            }
+            public RfcFilter Enclosing_Instance { get; private set; }
 
             //*************************************************************************
             // Private variables

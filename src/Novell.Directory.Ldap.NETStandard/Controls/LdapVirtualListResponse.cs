@@ -55,10 +55,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     Returns the size of the virtual search results list.  This integer as
         ///     the servers current estimate of what the search result size.
         /// </summary>
-        public virtual int ContentCount
-        {
-            get { return m_ContentCount; }
-        }
+        public virtual int ContentCount { get; }
 
         /// <summary>
         ///     Returns the index of the first entry in the returned list.  The server uses
@@ -66,34 +63,21 @@ namespace Novell.Directory.Ldap.Controls
         ///     list to estimate what list of entries the client is requesting.  This integer
         ///     is the index into the search results that is returned to the client.
         /// </summary>
-        public virtual int FirstPosition
-        {
-            get { return m_firstPosition; }
-        }
+        public virtual int FirstPosition { get; }
 
         /// <summary> Returns the result code for the virtual list search request.</summary>
-        public virtual int ResultCode
-        {
-            get { return m_resultCode; }
-        }
+        public virtual int ResultCode { get; }
 
         /// <summary>
         ///     Returns the cookie used by some servers to optimize the processing of
         ///     virtual list requests. Subsequent VLV requests to the same server
         ///     should return this String to the server.
         /// </summary>
-        public virtual string Context
-        {
-            get { return m_context; }
-        }
+        public virtual string Context { get; }
 
         /* The parsed fields are stored in these private variables */
-        private readonly int m_firstPosition;
-        private readonly int m_ContentCount;
-        private readonly int m_resultCode;
 
         /* The context field if one was returned by the server */
-        private readonly string m_context;
 
         /// <summary>
         ///     This constructor is usually called by the SDK to instantiate an
@@ -152,7 +136,7 @@ namespace Novell.Directory.Ldap.Controls
             */
             var asn1firstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
             if (asn1firstPosition != null && asn1firstPosition is Asn1Integer)
-                m_firstPosition = ((Asn1Integer) asn1firstPosition).intValue();
+                FirstPosition = ((Asn1Integer) asn1firstPosition).intValue();
             else
                 throw new IOException("Decoding error");
 
@@ -161,14 +145,14 @@ namespace Novell.Directory.Ldap.Controls
             */
             var asn1ContentCount = ((Asn1Sequence) asnObj).get_Renamed(1);
             if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
-                m_ContentCount = ((Asn1Integer) asn1ContentCount).intValue();
+                ContentCount = ((Asn1Integer) asn1ContentCount).intValue();
             else
                 throw new IOException("Decoding error");
 
             /* The 3rd element is an enum containing the errorcode */
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(2);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                m_resultCode = ((Asn1Enumerated) asn1Enum).intValue();
+                ResultCode = ((Asn1Enumerated) asn1Enum).intValue();
             else
                 throw new IOException("Decoding error");
 
@@ -179,7 +163,7 @@ namespace Novell.Directory.Ldap.Controls
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(3);
                 if (asn1String != null && asn1String is Asn1OctetString)
-                    m_context = ((Asn1OctetString) asn1String).stringValue();
+                    Context = ((Asn1OctetString) asn1String).stringValue();
             }
         }
     }

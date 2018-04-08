@@ -51,13 +51,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     The count of the number of objects returned.
         /// </returns>
-        public virtual int Count
-        {
-            get { return count; }
-        }
+        public virtual int Count { get; }
 
         //The count of the objects returned by the server is saved here
-        private readonly int count;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -88,11 +84,11 @@ namespace Novell.Directory.Ldap.Extensions
                 if (asn1_count == null)
                     throw new IOException("Decoding error");
 
-                count = asn1_count.intValue();
+                Count = asn1_count.intValue();
             }
             else
             {
-                count = -1;
+                Count = -1;
             }
         }
     }

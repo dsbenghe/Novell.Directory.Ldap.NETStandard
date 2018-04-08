@@ -76,10 +76,7 @@ namespace Novell.Directory.Ldap
             get { return control.Criticality.booleanValue(); }
         }
 
-        internal static RespControlVector RegisteredControls
-        {
-            get { return registeredControls; }
-        }
+        internal static RespControlVector RegisteredControls { get; }
 
         /// <summary>
         ///     Returns the RFC 2251 Control object.
@@ -92,8 +89,6 @@ namespace Novell.Directory.Ldap
             /*package*/
             get { return control; }
         }
-
-        private static readonly RespControlVector registeredControls;
 
         private RfcControl control; // An RFC 2251 Control
 
@@ -213,12 +208,12 @@ namespace Novell.Directory.Ldap
         /// </param>
         public static void register(string oid, Type controlClass)
         {
-            registeredControls.registerResponseControl(oid, controlClass);
+            RegisteredControls.registerResponseControl(oid, controlClass);
         }
 
         static LdapControl()
         {
-            registeredControls = new RespControlVector(5, 5);
+            RegisteredControls = new RespControlVector(5, 5);
         }
     }
 }

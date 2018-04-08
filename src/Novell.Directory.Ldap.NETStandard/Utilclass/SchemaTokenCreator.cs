@@ -44,7 +44,6 @@ namespace Novell.Directory.Ldap.Utilclass
         private bool pushedback;
         private int peekchar;
         private sbyte[] ctype;
-        private int linenumber = 1;
         private int ichar = 1;
         private char[] buf;
 
@@ -106,10 +105,7 @@ namespace Novell.Directory.Ldap.Utilclass
             pushedback = true;
         }
 
-        public int CurrentLine
-        {
-            get { return linenumber; }
-        }
+        public int CurrentLine { get; private set; } = 1;
 
         public string ToStringValue()
         {
@@ -267,7 +263,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 if (curc == '\r')
                 {
-                    linenumber++;
+                    CurrentLine++;
                     if (iseolsig)
                     {
                         peekchar = int.MaxValue - 1;
@@ -281,7 +277,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     if (curc == '\n')
                     {
-                        linenumber++;
+                        CurrentLine++;
                         if (iseolsig)
                         {
                             return lastttype = (int) TokenTypes.EOL;
@@ -461,7 +457,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         if (curc == '\r')
                         {
-                            linenumber++;
+                            CurrentLine++;
                             curc = read();
                             if (curc == '\n')
                             {
@@ -472,7 +468,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         {
                             if (curc == '\n')
                             {
-                                linenumber++;
+                                CurrentLine++;
                                 curc = read();
                             }
                         }

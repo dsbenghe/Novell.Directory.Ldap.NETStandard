@@ -69,12 +69,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the syntax that this matching rule is valid for.
         /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
+        public virtual string SyntaxString { get; }
 
-        private readonly string syntaxString;
         private readonly string[] attributes;
 
         /// <summary>
@@ -113,7 +109,7 @@ namespace Novell.Directory.Ldap
             this.obsolete = obsolete;
             this.attributes = new string[attributes.Length];
             attributes.CopyTo(this.attributes, 0);
-            this.syntaxString = syntaxString;
+            this.SyntaxString = syntaxString;
             Value = formatString();
         }
 
@@ -142,7 +138,7 @@ namespace Novell.Directory.Ldap
                 oid = matchParser.ID;
                 description = matchParser.Description;
                 obsolete = matchParser.Obsolete;
-                syntaxString = matchParser.Syntax;
+                SyntaxString = matchParser.Syntax;
                 if ((object) rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);

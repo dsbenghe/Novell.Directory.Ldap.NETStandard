@@ -280,16 +280,10 @@ namespace Novell.Directory.Ldap.Events
             private LdapConnection ldapconnection;
             private volatile bool isrunning = true;
 
-            private int sleep_time;
-
             /// <summary>
             ///     SleepTime controls the duration after which event polling is repeated.
             /// </summary>
-            public int SleepTime
-            {
-                get { return sleep_time; }
-                set { sleep_time = value; }
-            }
+            public int SleepTime { get; set; }
 
 
             public EventsGenerator(LdapEventSource objEventSource,
@@ -301,7 +295,7 @@ namespace Novell.Directory.Ldap.Events
                 searchqueue = queue;
                 ldapconnection = conn;
                 messageid = msgid;
-                sleep_time = DEFAULT_SLEEP_TIME;
+                SleepTime = DEFAULT_SLEEP_TIME;
             } // end of Constructor
 
             protected void Run()
@@ -314,7 +308,7 @@ namespace Novell.Directory.Ldap.Events
                         while (isrunning
                                && !searchqueue.isResponseReceived(messageid))
                         {
-                            Thread.Sleep(sleep_time);
+                            Thread.Sleep(SleepTime);
                         }
 
                         if (isrunning)

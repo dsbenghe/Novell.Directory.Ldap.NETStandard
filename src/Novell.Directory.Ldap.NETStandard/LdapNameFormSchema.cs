@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name of the object class.
         /// </returns>
-        public virtual string ObjectClass
-        {
-            get { return objectClass; }
-        }
+        public virtual string ObjectClass { get; }
 
         /// <summary>
         ///     Returns the list of required naming attributes for an entry
@@ -83,7 +80,6 @@ namespace Novell.Directory.Ldap
             get { return optional; }
         }
 
-        private readonly string objectClass;
         private readonly string[] required;
         private readonly string[] optional;
 
@@ -128,7 +124,7 @@ namespace Novell.Directory.Ldap
             this.oid = oid;
             this.description = description;
             this.obsolete = obsolete;
-            this.objectClass = objectClass;
+            this.ObjectClass = objectClass;
             this.required = new string[required.Length];
             required.CopyTo(this.required, 0);
             this.optional = new string[optional.Length];
@@ -174,7 +170,7 @@ namespace Novell.Directory.Ldap
                     parser.Optional.CopyTo(optional, 0);
                 }
                 if ((object) parser.ObjectClass != null)
-                    objectClass = parser.ObjectClass;
+                    ObjectClass = parser.ObjectClass;
                 obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;

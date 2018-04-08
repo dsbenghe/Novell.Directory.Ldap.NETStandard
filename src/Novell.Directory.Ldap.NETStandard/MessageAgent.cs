@@ -82,7 +82,7 @@ namespace Novell.Directory.Ldap
         internal virtual string AgentName
         {
             /*packge*/
-            get { return name; }
+            get;
         }
 
         /// <summary> Get a count of all messages queued</summary>
@@ -105,7 +105,6 @@ namespace Novell.Directory.Ldap
         private int indexLastRead;
         private static object nameLock; // protect agentNum
         private static int agentNum = 0; // Debug, agent number
-        private string name; // String name for debug
 
 
         internal MessageAgent()

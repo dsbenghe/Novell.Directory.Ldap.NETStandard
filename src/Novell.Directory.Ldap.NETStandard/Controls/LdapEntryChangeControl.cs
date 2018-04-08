@@ -51,10 +51,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The server may not return a change number. In this case the return
         ///     value is -1
         /// </returns>
-        public virtual bool HasChangeNumber
-        {
-            get { return m_hasChangeNumber; }
-        }
+        public virtual bool HasChangeNumber { get; }
 
         /// <summary>
         ///     returns the record number of the change in the servers change log.
@@ -64,10 +61,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The server may not return a change number. In this case the return
         ///     value is -1
         /// </returns>
-        public virtual int ChangeNumber
-        {
-            get { return m_changeNumber; }
-        }
+        public virtual int ChangeNumber { get; }
 
         /// <summary>
         ///     Returns the type of change that occured
@@ -92,15 +86,9 @@ namespace Novell.Directory.Ldap.Controls
         ///     the previous DN of the entry if the entry was renamed (ie. if the
         ///     change type is LdapersistSearchControl.MODDN.
         /// </returns>
-        public virtual string PreviousDN
-        {
-            get { return m_previousDN; }
-        }
+        public virtual string PreviousDN { get; }
 
         private readonly int m_changeType;
-        private readonly string m_previousDN;
-        private readonly bool m_hasChangeNumber;
-        private readonly int m_changeNumber;
 
         /// <summary>
         ///     This constructor is called by the SDK to create an
@@ -164,11 +152,11 @@ namespace Novell.Directory.Ldap.Controls
                 if (asn1Obj == null || !(asn1Obj is Asn1OctetString))
                     throw new IOException("Decoding error get previous DN");
 
-                m_previousDN = ((Asn1OctetString) asn1Obj).stringValue();
+                PreviousDN = ((Asn1OctetString) asn1Obj).stringValue();
             }
             else
             {
-                m_previousDN = "";
+                PreviousDN = "";
             }
 
             //check for change number
@@ -178,11 +166,11 @@ namespace Novell.Directory.Ldap.Controls
                 if (asn1Obj == null || !(asn1Obj is Asn1Integer))
                     throw new IOException("Decoding error getting change number");
 
-                m_changeNumber = ((Asn1Integer) asn1Obj).intValue();
-                m_hasChangeNumber = true;
+                ChangeNumber = ((Asn1Integer) asn1Obj).intValue();
+                HasChangeNumber = true;
             }
             else
-                m_hasChangeNumber = false;
+                HasChangeNumber = false;
         }
 
         /// <summary>  Returns a string representation of the control for debugging.</summary>
