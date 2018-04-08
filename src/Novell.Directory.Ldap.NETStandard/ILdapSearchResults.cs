@@ -3,8 +3,12 @@ using System.Collections.Generic;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// Represent the results returned by a search operaiton 
+    ///     An ILdapSearchResults interface is returned from a synchronous search
+    ///     operation. It provides access to all results received during the
+    ///     operation (entries and exceptions).
     /// </summary>
+    /// <seealso cref="!:LdapConnection.Search">
+    /// </seealso>
     public interface ILdapSearchResults : IEnumerable<LdapEntry>
     {
         /// <summary>

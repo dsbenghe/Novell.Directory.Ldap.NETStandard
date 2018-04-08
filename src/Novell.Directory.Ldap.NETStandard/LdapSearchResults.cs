@@ -36,14 +36,7 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    /// <inheritdoc />
-    /// <summary>
-    ///     An LdapSearchResults object is returned from a synchronous search
-    ///     operation. It provides access to all results received during the
-    ///     operation (entries and exceptions).
-    /// </summary>
-    /// <seealso cref="!:LdapConnection.Search">
-    /// </seealso>
+    /// <inheritdoc />    
     public class LdapSearchResults : ILdapSearchResults
     {
         /// <summary>
