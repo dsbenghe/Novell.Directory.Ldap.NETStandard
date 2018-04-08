@@ -2,6 +2,9 @@
 
 namespace Novell.Directory.Ldap
 {
+    /// <summary>
+    /// Interface for all the minimal operations
+    /// </summary>
     public interface ILdapConnection : IDisposable
     {
         /// <summary>
