@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class PSearchEventSource : LdapEventSource
     {
-        protected SearchResultEventHandler search_result_event;
+        private SearchResultEventHandler search_result_event;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Events
             }
         }
 
-        protected SearchReferralEventHandler search_referral_event;
+        private SearchReferralEventHandler search_referral_event;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -114,16 +114,16 @@ namespace Novell.Directory.Ldap.Events
             return nListeners;
         }
 
-        protected LdapConnection mConnection;
-        protected string mSearchBase;
-        protected int mScope;
-        protected string[] mAttrs;
-        protected string mFilter;
-        protected bool mTypesOnly;
-        protected LdapSearchConstraints mSearchConstraints;
-        protected LdapEventType mEventChangeType;
+        private LdapConnection mConnection;
+        private string mSearchBase;
+        private int mScope;
+        private string[] mAttrs;
+        private string mFilter;
+        private bool mTypesOnly;
+        private LdapSearchConstraints mSearchConstraints;
+        private LdapEventType mEventChangeType;
 
-        protected LdapSearchQueue mQueue;
+        private LdapSearchQueue mQueue;
 
         // Constructor
         public PSearchEventSource(

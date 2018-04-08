@@ -40,35 +40,35 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class SecurityEquivalenceEventData : BaseEdirEventData
     {
-        protected string strEntryDN;
+        private string strEntryDN;
 
         public string EntryDN
         {
             get { return strEntryDN; }
         }
 
-        protected int retry_count;
+        private int retry_count;
 
         public int RetryCount
         {
             get { return retry_count; }
         }
 
-        protected string strValueDN;
+        private string strValueDN;
 
         public string ValueDN
         {
             get { return strValueDN; }
         }
 
-        protected int referral_count;
+        private int referral_count;
 
         public int ReferralCount
         {
             get { return referral_count; }
         }
 
-        protected ArrayList referral_list;
+        private ArrayList referral_list;
 
         public ArrayList ReferralList
         {

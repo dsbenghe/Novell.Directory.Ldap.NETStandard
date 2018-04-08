@@ -117,7 +117,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="UNIVERSAL">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool Universal
+        public virtual bool IsUniversal
         {
             get { return tagClass == UNIVERSAL; }
         }
@@ -129,7 +129,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="APPLICATION">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool Application
+        public virtual bool IsApplication
         {
             get { return tagClass == APPLICATION; }
         }
@@ -141,7 +141,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="CONTEXT">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool Context
+        public virtual bool IsContext
         {
             get { return tagClass == CONTEXT; }
         }
@@ -152,37 +152,37 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="PRIVATE"></seealso>
         [CLSCompliant(false)]
-        public virtual bool Private
+        public virtual bool IsPrivate
         {
             get { return tagClass == PRIVATE; }
         }
 
         /// <summary>
-        ///     Universal tag class.
+        ///     IsUniversal tag class.
         ///     UNIVERSAL = 0
         /// </summary>
         public const int UNIVERSAL = 0;
 
         /// <summary>
-        ///     Application-wide tag class.
+        ///     IsApplication-wide tag class.
         ///     APPLICATION = 1
         /// </summary>
         public const int APPLICATION = 1;
 
         /// <summary>
-        ///     Context-specific tag class.
+        ///     IsContext-specific tag class.
         ///     CONTEXT = 2
         /// </summary>
         public const int CONTEXT = 2;
 
         /// <summary>
-        ///     Private-use tag class.
+        ///     IsPrivate-use tag class.
         ///     PRIVATE = 3
         /// </summary>
-        public const int PRIVATE = 3;
+        private const int PRIVATE = 3;
 
 
-        /* Private variables
+        /* IsPrivate variables
         */
 
         private int tagClass;

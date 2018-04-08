@@ -40,49 +40,49 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugEventData : BaseEdirEventData
     {
-        protected int ds_time;
+        private int ds_time;
 
         public int DSTime
         {
             get { return ds_time; }
         }
 
-        protected int milli_seconds;
+        private int milli_seconds;
 
         public int MilliSeconds
         {
             get { return milli_seconds; }
         }
 
-        protected string strPerpetratorDN;
+        private string strPerpetratorDN;
 
         public string PerpetratorDN
         {
             get { return strPerpetratorDN; }
         }
 
-        protected string strFormatString;
+        private string strFormatString;
 
         public string FormatString
         {
             get { return strFormatString; }
         }
 
-        protected int nVerb;
+        private int nVerb;
 
         public int Verb
         {
             get { return nVerb; }
         }
 
-        protected int parameter_count;
+        private int parameter_count;
 
         public int ParameterCount
         {
             get { return parameter_count; }
         }
 
-        protected ArrayList parameter_collection;
+        private ArrayList parameter_collection;
 
         public ArrayList Parameters
         {

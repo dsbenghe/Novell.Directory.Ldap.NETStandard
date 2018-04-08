@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ReferralAddress
     {
-        protected int address_type;
+        private int address_type;
 
         public int AddressType
         {

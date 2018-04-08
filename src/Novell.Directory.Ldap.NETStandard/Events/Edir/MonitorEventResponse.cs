@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class MonitorEventResponse : LdapExtendedResponse
     {
-        protected EdirEventSpecifier[] specifier_list;
+        private EdirEventSpecifier[] specifier_list;
 
         public EdirEventSpecifier[] SpecifierList
         {

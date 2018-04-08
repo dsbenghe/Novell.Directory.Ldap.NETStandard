@@ -102,10 +102,10 @@ namespace Novell.Directory.Ldap
             get { return type; }
         }
 
-        internal string[] superiors;
-        internal string[] required;
-        internal string[] optional;
-        internal int type = -1;
+        private string[] superiors;
+        private string[] required;
+        private string[] optional;
+        private int type = -1;
 
         /// <summary>
         ///     This class definition defines an abstract schema class.

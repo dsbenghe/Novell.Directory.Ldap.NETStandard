@@ -39,28 +39,28 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ConnectionStateEventData : BaseEdirEventData
     {
-        protected string strConnectionDN;
+        private string strConnectionDN;
 
         public string ConnectionDN
         {
             get { return strConnectionDN; }
         }
 
-        protected int old_flags;
+        private int old_flags;
 
         public int OldFlags
         {
             get { return old_flags; }
         }
 
-        protected int new_flags;
+        private int new_flags;
 
         public int NewFlags
         {
             get { return new_flags; }
         }
 
-        protected string source_module;
+        private string source_module;
 
         public string SourceModule
         {

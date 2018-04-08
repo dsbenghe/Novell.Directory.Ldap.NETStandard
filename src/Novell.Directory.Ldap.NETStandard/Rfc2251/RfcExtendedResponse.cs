@@ -60,10 +60,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Context-specific TAG for optional responseName.</summary>
-        public const int RESPONSE_NAME = 10;
+        public const int ResponseNameTag = 10;
 
         /// <summary> Context-specific TAG for optional response.</summary>
-        public const int RESPONSE = 11;
+        public const int ResponseTag = 11;
 
         private readonly int referralIndex;
         private readonly int responseNameIndex;
@@ -96,12 +96,12 @@ namespace Novell.Directory.Ldap.Rfc2251
                             referralIndex = i;
                             break;
 
-                        case RESPONSE_NAME:
+                        case ResponseNameTag:
                             set_Renamed(i, new RfcLdapOID(((Asn1OctetString) obj.taggedValue()).byteValue()));
                             responseNameIndex = i;
                             break;
 
-                        case RESPONSE:
+                        case ResponseTag:
                             set_Renamed(i, obj.taggedValue());
                             responseIndex = i;
                             break;

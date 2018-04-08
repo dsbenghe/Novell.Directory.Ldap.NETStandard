@@ -563,7 +563,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 filterStack = new Stack();
             }
-            if (choiceValue() == null)
+            if (ChoiceValue == null)
             {
                 //ChoiceValue is the root Asn1 node
                 ChoiceValue = current;
@@ -842,7 +842,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public virtual IEnumerator getFilterIterator()
         {
-            return new FilterIterator(this, (Asn1Tagged) choiceValue());
+            return new FilterIterator(this, (Asn1Tagged) ChoiceValue);
         }
 
         /// <summary> Creates and returns a String representation of this filter.</summary>

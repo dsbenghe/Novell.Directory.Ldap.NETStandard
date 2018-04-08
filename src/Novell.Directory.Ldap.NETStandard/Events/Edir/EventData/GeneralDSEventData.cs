@@ -40,49 +40,49 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class GeneralDSEventData : BaseEdirEventData
     {
-        protected int ds_time;
+        private int ds_time;
 
         public int DSTime
         {
             get { return ds_time; }
         }
 
-        protected int milli_seconds;
+        private int milli_seconds;
 
         public int MilliSeconds
         {
             get { return milli_seconds; }
         }
 
-        protected int nVerb;
+        private int nVerb;
 
         public int Verb
         {
             get { return nVerb; }
         }
 
-        protected int current_process;
+        private int current_process;
 
         public int CurrentProcess
         {
             get { return current_process; }
         }
 
-        protected string strPerpetratorDN;
+        private string strPerpetratorDN;
 
         public string PerpetratorDN
         {
             get { return strPerpetratorDN; }
         }
 
-        protected int[] integer_values;
+        private int[] integer_values;
 
         public int[] IntegerValues
         {
             get { return integer_values; }
         }
 
-        protected string[] string_values;
+        private string[] string_values;
 
         public string[] StringValues
         {

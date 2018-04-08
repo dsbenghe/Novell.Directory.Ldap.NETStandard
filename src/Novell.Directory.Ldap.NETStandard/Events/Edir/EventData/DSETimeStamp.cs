@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             get { return nSeconds; }
         }
 
-        protected int replica_number;
+        private int replica_number;
 
         public int ReplicaNumber
         {

@@ -165,31 +165,31 @@ namespace Novell.Directory.Ldap.Utilclass
             get { return nameForm; }
         }
 
-        internal string rawString;
-        internal string[] names;
-        internal string id;
-        internal string description;
-        internal string syntax;
-        internal string superior;
-        internal string nameForm;
-        internal string objectClass;
-        internal string[] superiors;
-        internal string[] required;
-        internal string[] optional;
-        internal string[] auxiliary;
-        internal string[] precluded;
-        internal string[] applies;
-        internal bool single;
-        internal bool obsolete;
-        internal string equality;
-        internal string ordering;
-        internal string substring;
-        internal bool collective;
-        internal bool userMod = true;
-        internal int usage;
-        internal int type = -1;
-        internal int result;
-        internal ArrayList qualifiers;
+        private string rawString;
+        private string[] names;
+        private string id;
+        private string description;
+        private string syntax;
+        private string superior;
+        private string nameForm;
+        private string objectClass;
+        private string[] superiors;
+        private string[] required;
+        private string[] optional;
+        private string[] auxiliary;
+        private string[] precluded;
+        private string[] applies;
+        private bool single;
+        private bool obsolete;
+        private string equality;
+        private string ordering;
+        private string substring;
+        private bool collective;
+        private bool userMod = true;
+        private int usage;
+        private int type = -1;
+        private int result;
+        private ArrayList qualifiers;
 
         public SchemaParser(string aString)
         {

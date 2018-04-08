@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventIntermediateResponse : LdapIntermediateResponse
     {
-        protected EdirEventType event_type;
+        private EdirEventType event_type;
 
         /// <summary>
         ///     Type of Edir event.
@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             get { return event_type; }
         }
 
-        protected EdirEventResultType event_result_type;
+        private EdirEventResultType event_result_type;
 
         /// <summary>
         ///     Type of Edir event result.
@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             get { return event_result_type; }
         }
 
-        protected BaseEdirEventData event_response_data;
+        private BaseEdirEventData event_response_data;
 
         /// <summary>
         ///     The response data object associated with Edir event.
@@ -85,8 +85,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             ProcessMessage(SupportClass.ToSByteArray(message));
         }
 
-        [CLSCompliant(false)]
-        protected void ProcessMessage(sbyte[] returnedValue)
+        private void ProcessMessage(sbyte[] returnedValue)
         {
             var decoder = new LBERDecoder();
             var sequence = (Asn1Sequence) decoder.decode(returnedValue);

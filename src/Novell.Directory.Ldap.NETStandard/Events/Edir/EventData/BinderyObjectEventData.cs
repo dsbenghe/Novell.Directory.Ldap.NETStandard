@@ -39,35 +39,35 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class BinderyObjectEventData : BaseEdirEventData
     {
-        protected string strEntryDN;
+        private string strEntryDN;
 
         public string EntryDN
         {
             get { return strEntryDN; }
         }
 
-        protected int nType;
+        private int nType;
 
         public int ValueType
         {
             get { return nType; }
         }
 
-        protected int nEmuObjFlags;
+        private int nEmuObjFlags;
 
         public int EmuObjFlags
         {
             get { return nEmuObjFlags; }
         }
 
-        protected int nSecurity;
+        private int nSecurity;
 
         public int Security
         {
             get { return nSecurity; }
         }
 
-        protected string strName;
+        private string strName;
 
         public string Name
         {

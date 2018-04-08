@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventArgs' />
     public class DirectoryExceptionEventArgs : BaseEventArgs
     {
-        protected LdapException ldap_exception_object;
+        private LdapException ldap_exception_object;
 
         public LdapException LdapExceptionObject
         {

@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Utilclass
         private readonly Stream input;
 
         public string StringValue;
-        public double NumberValue;
+        private double NumberValue;
         public int lastttype;
 
         private void Initialise()

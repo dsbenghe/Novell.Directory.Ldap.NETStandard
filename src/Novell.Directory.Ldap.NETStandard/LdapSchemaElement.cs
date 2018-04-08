@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
         ///     An array of names for the element, or null if none
         ///     is found.
         /// </returns>
-        public virtual string[] Names
+        public string[] Names
         {
             get
             {
@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The description of the element.
         /// </returns>
-        public virtual string Description
+        public string Description
         {
             get { return description; }
         }
@@ -97,7 +97,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the element.
         /// </returns>
-        public virtual string ID
+        public string ID
         {
             get { return oid; }
         }
@@ -109,7 +109,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public virtual IEnumerator QualifierNames
+        public IEnumerator QualifierNames
         {
             get { return new EnumeratedIterator(new SupportClass.SetSupport(hashQualifier.Keys).GetEnumerator()); }
         }
@@ -122,7 +122,7 @@ namespace Novell.Directory.Ldap
         ///     True if the Ldap definition contains the OBSOLETE qualifier;
         ///     false if OBSOLETE qualifier is not present.
         /// </returns>
-        public virtual bool Obsolete
+        public bool Obsolete
         {
             get { return obsolete; }
         }
@@ -149,16 +149,16 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)] protected internal string[] names = {""};
 
         /// <summary> The OID for the schema element.</summary>
-        protected internal string oid = "";
+        protected string oid = "";
 
         /// <summary> The description for the schema element.</summary>
-        [CLSCompliant(false)] protected internal string description = "";
+        [CLSCompliant(false)] protected string description = "";
 
         /// <summary>
         ///     If present, indicates that the element is obsolete, no longer in use in
         ///     the directory.
         /// </summary>
-        [CLSCompliant(false)] protected internal bool obsolete = false;
+        [CLSCompliant(false)] protected bool obsolete = false;
 
         /// <summary>
         ///     A string array of optional, or vendor-specific, qualifiers for the
@@ -166,13 +166,13 @@ namespace Novell.Directory.Ldap
         ///     These optional qualifiers begin with "X-"; the Novell eDirectory
         ///     specific qualifiers begin with "X-NDS".
         /// </summary>
-        protected internal string[] qualifier = {""};
+        private string[] qualifier = {""};
 
         /// <summary>
         ///     A hash table that contains the vendor-specific qualifiers (for example,
         ///     the X-NDS flags).
         /// </summary>
-        protected internal Hashtable hashQualifier;
+        private Hashtable hashQualifier;
 
         /// <summary>
         ///     Returns an array of all values of a specified optional or non-
@@ -186,7 +186,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of values for the specified non-standard qualifier.
         /// </returns>
-        public virtual string[] getQualifier(string name)
+        public string[] getQualifier(string name)
         {
             var attr = (AttributeQualifier) hashQualifier[name];
             if (attr != null)
@@ -229,7 +229,7 @@ namespace Novell.Directory.Ldap
         /// <param name="values">
         ///     The values to set for the qualifier.
         /// </param>
-        public virtual void setQualifier(string name, string[] values)
+        public void setQualifier(string name, string[] values)
         {
             var attrQualifier = new AttributeQualifier(name, values);
             SupportClass.PutElement(hashQualifier, name, attrQualifier);
@@ -258,7 +258,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only
         /// </summary>
-        public virtual void addValue(byte[] value_Renamed)
+        public void addValue(byte[] value_Renamed)
         {
             throw new NotSupportedException("addValue is not supported by LdapSchemaElement");
         }
@@ -280,7 +280,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only
         /// </summary>
-        public virtual void removeValue(byte[] value_Renamed)
+        public void removeValue(byte[] value_Renamed)
         {
             throw new NotSupportedException("removeValue is not supported by LdapSchemaElement");
         }

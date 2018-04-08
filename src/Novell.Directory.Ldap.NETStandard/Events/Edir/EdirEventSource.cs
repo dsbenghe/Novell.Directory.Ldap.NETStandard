@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSource : LdapEventSource
     {
-        protected EdirEventHandler edir_event;
+        private EdirEventHandler edir_event;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -77,9 +77,9 @@ namespace Novell.Directory.Ldap.Events.Edir
             return nListeners;
         }
 
-        protected LdapConnection mConnection;
-        protected MonitorEventRequest mRequestOperation;
-        protected LdapResponseQueue mQueue;
+        private LdapConnection mConnection;
+        private MonitorEventRequest mRequestOperation;
+        private LdapResponseQueue mQueue;
 
         public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
         {

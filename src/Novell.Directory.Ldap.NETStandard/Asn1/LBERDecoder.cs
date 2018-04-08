@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap.Asn1
             var length = asn1Len.Length;
             len[0] = asn1ID.EncodedLength + asn1Len.EncodedLength + length;
 
-            if (asn1ID.Universal)
+            if (asn1ID.IsUniversal)
             {
                 switch (asn1ID.Tag)
                 {

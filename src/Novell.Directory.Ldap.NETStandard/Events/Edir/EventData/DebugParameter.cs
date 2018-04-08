@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugParameter
     {
-        protected DebugParameterType debug_type;
+        private DebugParameterType debug_type;
 
         public DebugParameterType DebugType
         {

@@ -4,7 +4,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class TestHelper
     {
-        public enum TransportSecurity
+        private enum TransportSecurity
         {
             Off,
             Ssl,

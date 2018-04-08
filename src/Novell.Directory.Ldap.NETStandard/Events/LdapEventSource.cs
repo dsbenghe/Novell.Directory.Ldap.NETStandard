@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Events
         protected internal const int EVENT_TYPE_UNKNOWN = -1;
         protected const int DEFAULT_SLEEP_TIME = 1000;
 
-        protected int sleep_interval = DEFAULT_SLEEP_TIME;
+        private int sleep_interval = DEFAULT_SLEEP_TIME;
 
         /// <summary>
         ///     SleepInterval controls the duration after which event polling is repeated.
@@ -134,7 +134,7 @@ namespace Novell.Directory.Ldap.Events
         protected abstract void StartSearchAndPolling();
         protected abstract void StopSearchAndPolling();
 
-        protected DirectoryEventHandler directory_event;
+        private DirectoryEventHandler directory_event;
 
         /// <summary>
         ///     DirectoryEvent represents a generic Directory event.
@@ -163,7 +163,7 @@ namespace Novell.Directory.Ldap.Events
         /// </summary>
         public delegate void DirectoryEventHandler(object source, DirectoryEventArgs objDirectoryEventArgs);
 
-        protected DirectoryExceptionEventHandler directory_exception_event;
+        private DirectoryExceptionEventHandler directory_exception_event;
 
         /// <summary>
         ///     DirectoryEvent represents a generic Directory exception event.
