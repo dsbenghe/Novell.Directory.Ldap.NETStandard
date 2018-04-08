@@ -21,6 +21,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>Novell.Directory.Ldap</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoWarn>1701;1702;1705;CS1570;CS1571;CS1572;CS1573;CS1591;CS0419</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.2" />
