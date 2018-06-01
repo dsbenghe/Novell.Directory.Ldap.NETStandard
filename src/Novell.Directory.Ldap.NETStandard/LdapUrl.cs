@@ -89,11 +89,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of attribute names in the URL.
         /// </returns>
-        public virtual string[] AttributeArray
-
-        {
-            get { return _attrs; }
-        }
+        public virtual string[] AttributeArray => _attrs;
 
         /// <summary>
         ///     Returns an enumerator for the attribute names specified in the URL.
@@ -101,11 +97,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public virtual IEnumerator Attributes
-
-        {
-            get { return new ArrayEnumeration(_attrs); }
-        }
+        public virtual IEnumerator Attributes => new ArrayEnumeration(_attrs);
 
         /// <summary>
         ///     Returns any Ldap URL extensions specified, or null if none are
@@ -116,11 +108,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     string array of extensions.
         /// </returns>
-        public virtual string[] Extensions
-
-        {
-            get { return _extensions; }
-        }
+        public virtual string[] Extensions => _extensions;
 
         /// <summary>
         ///     Returns the search filter or <code>null</code> if none was specified.
@@ -128,11 +116,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The search filter.
         /// </returns>
-        public virtual string Filter
-
-        {
-            get { return _filter; }
-        }
+        public virtual string Filter => _filter;
 
         /// <summary>
         ///     Returns the name of the Ldap server in the URL.
@@ -140,11 +124,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The host name specified in the URL.
         /// </returns>
-        public virtual string Host
-
-        {
-            get { return _host; }
-        }
+        public virtual string Host => _host;
 
         /// <summary>
         ///     Returns the port number of the Ldap server in the URL.
@@ -175,11 +155,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The search scope.
         /// </returns>
-        public virtual int Scope
-
-        {
-            get { return _scope; }
-        }
+        public virtual int Scope => _scope;
 
         /// <summary>
         ///     Returns true if the URL is of the type ldaps (Ldap over SSL, a predecessor
@@ -188,11 +164,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     whether this is a secure Ldap url or not.
         /// </returns>
-        public virtual bool Secure
-
-        {
-            get { return _secure; }
-        }
+        public virtual bool Secure => _secure;
 
         private static readonly int DefaultScope = LdapConnection.ScopeBase;
 

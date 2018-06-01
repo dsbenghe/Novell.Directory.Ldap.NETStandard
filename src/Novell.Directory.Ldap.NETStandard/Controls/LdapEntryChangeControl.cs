@@ -74,10 +74,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     LdapPersistSearchControl.MODIFY
         ///     LdapPersistSearchControl.MODDN.
         /// </returns>
-        public virtual int ChangeType
-        {
-            get { return _mChangeType; }
-        }
+        public virtual int ChangeType => _mChangeType;
 
         /// <summary>
         ///     Returns the previous DN of the entry, if it was renamed.

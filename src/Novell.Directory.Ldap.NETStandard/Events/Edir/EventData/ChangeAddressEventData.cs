@@ -41,45 +41,27 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private int _nFlags;
 
-        public int Flags
-        {
-            get { return _nFlags; }
-        }
+        public int Flags => _nFlags;
 
         private int _nProto;
 
-        public int Proto
-        {
-            get { return _nProto; }
-        }
+        public int Proto => _nProto;
 
         private int _addressFamily;
 
-        public int AddressFamily
-        {
-            get { return _addressFamily; }
-        }
+        public int AddressFamily => _addressFamily;
 
         private string _strAddress;
 
-        public string Address
-        {
-            get { return _strAddress; }
-        }
+        public string Address => _strAddress;
 
         private string _pstkName;
 
-        public string PstkName
-        {
-            get { return _pstkName; }
-        }
+        public string PstkName => _pstkName;
 
         private string _sourceModule;
 
-        public string SourceModule
-        {
-            get { return _sourceModule; }
-        }
+        public string SourceModule => _sourceModule;
 
         public ChangeAddressEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

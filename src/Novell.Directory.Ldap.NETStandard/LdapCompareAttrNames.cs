@@ -73,11 +73,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public virtual CultureInfo Locale
         {
-            get
-            {
-                //currently supports only English local.
-                return _location;
-            }
+            get => _location;
 
             set
             {

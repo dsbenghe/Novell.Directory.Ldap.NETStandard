@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         protected Asn1Object ChoiceValue
         {
-            set { _content = value; }
+            set => _content = value;
             get { return _content; }
         }
 

@@ -83,10 +83,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to compare
         /// </returns>
-        public virtual string Dn
-        {
-            get { return Asn1Object.RequestDn; }
-        }
+        public virtual string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Constructs an LdapCompareRequest Object.

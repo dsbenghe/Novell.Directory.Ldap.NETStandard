@@ -57,10 +57,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     number of attributes in this set.
         /// </returns>
-        public override int Count
-        {
-            get { return _map.Count; }
-        }
+        public override int Count => _map.Count;
 
         /// <summary>
         ///     This is the underlying data structure for this set.

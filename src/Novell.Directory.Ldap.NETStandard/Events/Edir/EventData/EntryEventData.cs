@@ -41,52 +41,31 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         protected string StrPerpetratorDn;
 
-        public string PerpetratorDn
-        {
-            get { return StrPerpetratorDn; }
-        }
+        public string PerpetratorDn => StrPerpetratorDn;
 
         protected string StrEntry;
 
-        public string Entry
-        {
-            get { return StrEntry; }
-        }
+        public string Entry => StrEntry;
 
         protected string StrNewDn;
 
-        public string NewDn
-        {
-            get { return StrNewDn; }
-        }
+        public string NewDn => StrNewDn;
 
         protected string StrClassId;
 
-        public string ClassId
-        {
-            get { return StrClassId; }
-        }
+        public string ClassId => StrClassId;
 
         protected int NVerb;
 
-        public int Verb
-        {
-            get { return NVerb; }
-        }
+        public int Verb => NVerb;
 
         protected int NFlags;
 
-        public int Flags
-        {
-            get { return NFlags; }
-        }
+        public int Flags => NFlags;
 
         protected DseTimeStamp TimeStampObj;
 
-        public DseTimeStamp TimeStamp
-        {
-            get { return TimeStampObj; }
-        }
+        public DseTimeStamp TimeStamp => TimeStampObj;
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

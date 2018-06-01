@@ -14,7 +14,7 @@ namespace Novell.Directory.Ldap
 
         public static ILoggerFactory Factory
         {
-            get { return _loggerFactory; }
+            get => _loggerFactory;
             set
             {
                 _loggerFactory = value;

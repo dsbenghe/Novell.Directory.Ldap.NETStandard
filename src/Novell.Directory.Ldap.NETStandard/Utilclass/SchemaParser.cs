@@ -45,125 +45,56 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public virtual string RawString
         {
-            get { return _rawString; }
+            get => _rawString;
 
             set { _rawString = value; }
         }
 
-        public virtual string[] Names
-        {
-            get { return _names; }
-        }
+        public virtual string[] Names => _names;
 
-        public virtual IEnumerator Qualifiers
-        {
-            get { return new ArrayEnumeration(_qualifiers.ToArray()); }
-        }
+        public virtual IEnumerator Qualifiers => new ArrayEnumeration(_qualifiers.ToArray());
 
-        public virtual string Id
-        {
-            get { return _id; }
-        }
+        public virtual string Id => _id;
 
-        public virtual string Description
-        {
-            get { return _description; }
-        }
+        public virtual string Description => _description;
 
-        public virtual string Syntax
-        {
-            get { return _syntax; }
-        }
+        public virtual string Syntax => _syntax;
 
-        public virtual string Superior
-        {
-            get { return _superior; }
-        }
+        public virtual string Superior => _superior;
 
-        public virtual bool Single
-        {
-            get { return _single; }
-        }
+        public virtual bool Single => _single;
 
-        public virtual bool Obsolete
-        {
-            get { return _obsolete; }
-        }
+        public virtual bool Obsolete => _obsolete;
 
-        public virtual string Equality
-        {
-            get { return _equality; }
-        }
+        public virtual string Equality => _equality;
 
-        public virtual string Ordering
-        {
-            get { return _ordering; }
-        }
+        public virtual string Ordering => _ordering;
 
-        public virtual string Substring
-        {
-            get { return _substring; }
-        }
+        public virtual string Substring => _substring;
 
-        public virtual bool Collective
-        {
-            get { return _collective; }
-        }
+        public virtual bool Collective => _collective;
 
-        public virtual bool UserMod
-        {
-            get { return _userMod; }
-        }
+        public virtual bool UserMod => _userMod;
 
-        public virtual int Usage
-        {
-            get { return _usage; }
-        }
+        public virtual int Usage => _usage;
 
-        public virtual int Type
-        {
-            get { return _type; }
-        }
+        public virtual int Type => _type;
 
-        public virtual string[] Superiors
-        {
-            get { return _superiors; }
-        }
+        public virtual string[] Superiors => _superiors;
 
-        public virtual string[] Required
-        {
-            get { return _required; }
-        }
+        public virtual string[] Required => _required;
 
-        public virtual string[] Optional
-        {
-            get { return _optional; }
-        }
+        public virtual string[] Optional => _optional;
 
-        public virtual string[] Auxiliary
-        {
-            get { return _auxiliary; }
-        }
+        public virtual string[] Auxiliary => _auxiliary;
 
-        public virtual string[] Precluded
-        {
-            get { return _precluded; }
-        }
+        public virtual string[] Precluded => _precluded;
 
-        public virtual string[] Applies
-        {
-            get { return _applies; }
-        }
+        public virtual string[] Applies => _applies;
 
-        public virtual string NameForm
-        {
-            get { return _nameForm; }
-        }
+        public virtual string NameForm => _nameForm;
 
-        public virtual string ObjectClass
-        {
-            get { return _nameForm; }
-        }
+        public virtual string ObjectClass => _nameForm;
 
         private string _rawString;
         private string[] _names;

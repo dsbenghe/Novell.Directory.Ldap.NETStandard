@@ -42,38 +42,23 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private string _strEntryDn;
 
-        public string EntryDn
-        {
-            get { return _strEntryDn; }
-        }
+        public string EntryDn => _strEntryDn;
 
         private int _retryCount;
 
-        public int RetryCount
-        {
-            get { return _retryCount; }
-        }
+        public int RetryCount => _retryCount;
 
         private string _strValueDn;
 
-        public string ValueDn
-        {
-            get { return _strValueDn; }
-        }
+        public string ValueDn => _strValueDn;
 
         private int _referralCount;
 
-        public int ReferralCount
-        {
-            get { return _referralCount; }
-        }
+        public int ReferralCount => _referralCount;
 
         private ArrayList _referralList;
 
-        public ArrayList ReferralList
-        {
-            get { return _referralList; }
-        }
+        public ArrayList ReferralList => _referralList;
 
         public SecurityEquivalenceEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

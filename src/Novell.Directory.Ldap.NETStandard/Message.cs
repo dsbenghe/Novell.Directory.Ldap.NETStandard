@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap
         /// <summary> sets the agent for this message</summary>
         internal virtual MessageAgent Agent
         {
-            set { _agent = value; }
+            set => _agent = value;
         }
 
         /// <summary>
@@ -96,10 +96,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal virtual int MessageId
-        {
-            get { return _msgId; }
-        }
+        internal virtual int MessageId => _msgId;
 
         /// <summary>
         ///     gets the operation complete status for this message
@@ -108,10 +105,7 @@ namespace Novell.Directory.Ldap
         ///     the true if the operation is complete, i.e.
         ///     the LdapResult has been received.
         /// </returns>
-        internal virtual bool Complete
-        {
-            get { return _complete; }
-        }
+        internal virtual bool Complete => _complete;
 
         /// <summary>
         ///     Gets the next reply from the reply queue or waits until one is there
@@ -209,17 +203,10 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the LdapMessage request associated with this message
         /// </returns>
-        internal virtual LdapMessage Request
-        {
-            /*package*/
-            get { return _msg; }
-        }
+        internal virtual LdapMessage Request => _msg;
 
 
-        internal virtual bool BindRequest
-        {
-            get { return _bindprops != null; }
-        }
+        internal virtual bool BindRequest => _bindprops != null;
 
 
         /// <summary>
@@ -228,10 +215,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the MessageAgent associated with this message
         /// </returns>
-        internal virtual MessageAgent MessageAgent
-        {
-            get { return _agent; }
-        }
+        internal virtual MessageAgent MessageAgent => _agent;
 
         private readonly string _stackTraceCreation;
         private string _stackTraceCleanup;

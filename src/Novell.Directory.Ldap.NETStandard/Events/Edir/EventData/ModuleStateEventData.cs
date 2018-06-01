@@ -41,38 +41,23 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         protected string StrConnectionDn;
 
-        public string ConnectionDn
-        {
-            get { return StrConnectionDn; }
-        }
+        public string ConnectionDn => StrConnectionDn;
 
         protected int NFlags;
 
-        public int Flags
-        {
-            get { return NFlags; }
-        }
+        public int Flags => NFlags;
 
         protected string StrName;
 
-        public string Name
-        {
-            get { return StrName; }
-        }
+        public string Name => StrName;
 
         protected string StrDescription;
 
-        public string Description
-        {
-            get { return StrDescription; }
-        }
+        public string Description => StrDescription;
 
         protected string StrSource;
 
-        public string Source
-        {
-            get { return StrSource; }
-        }
+        public string Source => StrSource;
 
         public ModuleStateEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

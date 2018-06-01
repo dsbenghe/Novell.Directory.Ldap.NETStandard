@@ -349,10 +349,7 @@ public class SupportClass
         /// <summary>
         ///     Current token count for the source string
         /// </summary>
-        public int Count
-        {
-            get { return _elements.Count; }
-        }
+        public int Count => _elements.Count;
 
         /// <summary>
         ///     Determines if there are more tokens to return from the source string
@@ -652,7 +649,7 @@ public class SupportClass
         /// </summary>
         public Thread Instance
         {
-            get { return _threadField; }
+            get => _threadField;
             set { _threadField = value; }
         }
 
@@ -661,7 +658,7 @@ public class SupportClass
         /// </summary>
         public string Name
         {
-            get { return _threadField.Name; }
+            get => _threadField.Name;
             set
             {
                 if (_threadField.Name == null)
@@ -672,17 +669,14 @@ public class SupportClass
         /// <summary>
         ///     Gets a value indicating the execution status of the current thread
         /// </summary>
-        public bool IsAlive
-        {
-            get { return _threadField.IsAlive; }
-        }
+        public bool IsAlive => _threadField.IsAlive;
 
         /// <summary>
         ///     Gets or sets a value indicating whether or not a thread is a background thread.
         /// </summary>
         public bool IsBackground
         {
-            get { return _threadField.IsBackground; }
+            get => _threadField.IsBackground;
             set { _threadField.IsBackground = value; }
         }
 

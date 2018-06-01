@@ -58,10 +58,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OIDs of the attributes to which this matching rule applies.
         /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return _attributes; }
-        }
+        public virtual string[] Attributes => _attributes;
 
         /// <summary>
         ///     Returns the OID of the syntax that this matching rule is valid for.

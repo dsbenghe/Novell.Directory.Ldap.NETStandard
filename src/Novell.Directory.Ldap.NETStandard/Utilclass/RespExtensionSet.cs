@@ -47,10 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     number of extensions in this set.
         /// </returns>
-        public override int Count
-        {
-            get { return _map.Count; }
-        }
+        public override int Count => _map.Count;
 
         private readonly Hashtable _map;
 

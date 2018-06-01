@@ -55,10 +55,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The raw string
         /// </returns>
-        protected internal virtual string RawValue
-        {
-            get { return _rawValue; }
-        }
+        protected internal virtual string RawValue => _rawValue;
 
         /// <summary>
         ///     Returns the type of this RDN.  This method assumes that only one value
@@ -68,10 +65,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute
         /// </returns>
-        public virtual string Type
-        {
-            get { return (string) _types[0]; }
-        }
+        public virtual string Type => (string) _types[0];
 
         /// <summary> Returns all the types for this RDN.</summary>
         /// <returns>
@@ -95,10 +89,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute
         /// </returns>
-        public virtual string Value
-        {
-            get { return (string) _values[0]; }
-        }
+        public virtual string Value => (string) _values[0];
 
         /// <summary> Returns all the types for this RDN.</summary>
         /// <returns>
@@ -119,10 +110,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if this RDN is multivalued
         /// </returns>
-        public virtual bool Multivalued
-        {
-            get { return _values.Count > 1 ? true : false; }
-        }
+        public virtual bool Multivalued => _values.Count > 1 ? true : false;
 
         private readonly ArrayList _types; //list of Type strings
         private readonly ArrayList _values; //list of Value strings

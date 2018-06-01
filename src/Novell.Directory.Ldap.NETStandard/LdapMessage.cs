@@ -42,10 +42,7 @@ namespace Novell.Directory.Ldap
     public class LdapMessage
     {
         /// <summary> Returns the LdapMessage request associated with this response</summary>
-        internal virtual LdapMessage RequestingMessage
-        {
-            get { return Message.RequestingMessage; }
-        }
+        internal virtual LdapMessage RequestingMessage => Message.RequestingMessage;
 
         /// <summary> Returns any controls in the message.</summary>
         public virtual LdapControl[] Controls
@@ -174,16 +171,10 @@ namespace Novell.Directory.Ldap
         ///     true if the message is a request, false if it is a response,
         ///     a search result, or a search result reference.
         /// </returns>
-        public virtual bool Request
-        {
-            get { return Message.IsRequest(); }
-        }
+        public virtual bool Request => Message.IsRequest();
 
         /// <summary> Returns the RFC 2251 LdapMessage composed in this object.</summary>
-        internal virtual RfcLdapMessage Asn1Object
-        {
-            get { return Message; }
-        }
+        internal virtual RfcLdapMessage Asn1Object => Message;
 
         private string Name
         {
@@ -336,7 +327,7 @@ namespace Novell.Directory.Ldap
                 return m._stringTag;
             }
 
-            set { _stringTag = value; }
+            set => _stringTag = value;
         }
 
         /// <summary>

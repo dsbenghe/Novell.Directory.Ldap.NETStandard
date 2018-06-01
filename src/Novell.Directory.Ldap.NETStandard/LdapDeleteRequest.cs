@@ -49,10 +49,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to delete
         /// </returns>
-        public virtual string Dn
-        {
-            get { return Asn1Object.RequestDn; }
-        }
+        public virtual string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Constructs a request to delete an entry from the directory

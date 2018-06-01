@@ -42,52 +42,31 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private int _dsTime;
 
-        public int DsTime
-        {
-            get { return _dsTime; }
-        }
+        public int DsTime => _dsTime;
 
         private int _milliSeconds;
 
-        public int MilliSeconds
-        {
-            get { return _milliSeconds; }
-        }
+        public int MilliSeconds => _milliSeconds;
 
         private string _strPerpetratorDn;
 
-        public string PerpetratorDn
-        {
-            get { return _strPerpetratorDn; }
-        }
+        public string PerpetratorDn => _strPerpetratorDn;
 
         private string _strFormatString;
 
-        public string FormatString
-        {
-            get { return _strFormatString; }
-        }
+        public string FormatString => _strFormatString;
 
         private int _nVerb;
 
-        public int Verb
-        {
-            get { return _nVerb; }
-        }
+        public int Verb => _nVerb;
 
         private int _parameterCount;
 
-        public int ParameterCount
-        {
-            get { return _parameterCount; }
-        }
+        public int ParameterCount => _parameterCount;
 
         private ArrayList _parameterCollection;
 
-        public ArrayList Parameters
-        {
-            get { return _parameterCollection; }
-        }
+        public ArrayList Parameters => _parameterCollection;
 
         public DebugEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

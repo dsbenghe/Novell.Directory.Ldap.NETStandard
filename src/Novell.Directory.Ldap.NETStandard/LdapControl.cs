@@ -58,10 +58,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object ID of the control.
         /// </returns>
-        public virtual string Id
-        {
-            get { return new StringBuilder(_control.ControlType.StringValue()).ToString(); }
-        }
+        public virtual string Id => new StringBuilder(_control.ControlType.StringValue()).ToString();
 
         /// <summary>
         ///     Returns whether the control is critical for the operation.
@@ -71,10 +68,7 @@ namespace Novell.Directory.Ldap
         ///     operation to be executed, and false if the control is not required for
         ///     the operation.
         /// </returns>
-        public virtual bool Critical
-        {
-            get { return _control.Criticality.BooleanValue(); }
-        }
+        public virtual bool Critical => _control.Criticality.BooleanValue();
 
         internal static RespControlVector RegisteredControls { get; }
 
@@ -84,11 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An ASN.1 RFC 2251 Control.
         /// </returns>
-        internal virtual RfcControl Asn1Object
-        {
-            /*package*/
-            get { return _control; }
-        }
+        internal virtual RfcControl Asn1Object => _control;
 
         private RfcControl _control; // An RFC 2251 Control
 

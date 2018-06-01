@@ -66,10 +66,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the base DN for a search request
         /// </returns>
-        public virtual string Dn
-        {
-            get { return Asn1Object.RequestDn; }
-        }
+        public virtual string Dn => Asn1Object.RequestDn;
 
         /// <summary> Retrieves the scope of a search request.</summary>
         /// <returns>
@@ -81,14 +78,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
-        public virtual int Scope
-        {
-            get
-            {
-                //element number one stores the scope
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
-            }
-        }
+        public virtual int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
 
         /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
         /// <returns>
@@ -102,14 +92,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
-        public virtual int Dereference
-        {
-            get
-            {
-                //element number two stores the dereference
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
-            }
-        }
+        public virtual int Dereference => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
 
         /// <summary>
         ///     Retrieves the maximum number of entries to be returned on a search.
@@ -117,14 +100,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     Maximum number of search entries.
         /// </returns>
-        public virtual int MaxResults
-        {
-            get
-            {
-                //element number three stores the max results
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
-            }
-        }
+        public virtual int MaxResults => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
 
         /// <summary>
         ///     Retrieves the server time limit for a search request.
@@ -132,14 +108,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     server time limit in nanoseconds.
         /// </returns>
-        public virtual int ServerTimeLimit
-        {
-            get
-            {
-                //element number four stores the server time limit
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
-            }
-        }
+        public virtual int ServerTimeLimit => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
 
         /// <summary>
         ///     Retrieves whether attribute values or only attribute types(names) should
@@ -149,14 +118,7 @@ namespace Novell.Directory.Ldap
         ///     true if only attribute types (names) are returned, false if
         ///     attributes types and values are to be returned.
         /// </returns>
-        public virtual bool TypesOnly
-        {
-            get
-            {
-                //element number five stores types value
-                return ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
-            }
-        }
+        public virtual bool TypesOnly => ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
 
         /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
         /// <returns>
@@ -181,19 +143,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     filter string for this search request
         /// </returns>
-        public virtual string StringFilter
-        {
-            get { return RfcFilter.FilterToString(); }
-        }
+        public virtual string StringFilter => RfcFilter.FilterToString();
 
         /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
         /// <returns>
         ///     filter object for a search request.
         /// </returns>
-        private RfcFilter RfcFilter
-        {
-            get { return (RfcFilter) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(6); }
-        }
+        private RfcFilter RfcFilter => (RfcFilter) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(6);
 
         /// <summary>
         ///     Retrieves an Iterator object representing the parsed filter for
@@ -243,10 +199,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     Iterator representing filter components
         /// </returns>
-        public virtual IEnumerator SearchFilter
-        {
-            get { return RfcFilter.GetFilterIterator(); }
-        }
+        public virtual IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
 
         //*************************************************************************
         // Public variables for Filter

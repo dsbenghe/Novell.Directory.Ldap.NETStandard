@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the modifications for this request.
         /// </returns>
-        public virtual Asn1SequenceOf Modifications
-        {
-            get { return (Asn1SequenceOf) get_Renamed(1); }
-        }
+        public virtual Asn1SequenceOf Modifications => (Asn1SequenceOf) get_Renamed(1);
 
         //*************************************************************************
         // Constructor for ModifyRequest

@@ -50,10 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     A string value specifying the bind dn returned by the server.
         /// </returns>
-        public virtual string Identity
-        {
-            get { return _identity; }
-        }
+        public virtual string Identity => _identity;
 
         // Identity returned by the server
         private readonly string _identity;

@@ -59,10 +59,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of all the attributes which this matching rule applies to.
         /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return _attributes; }
-        }
+        public virtual string[] Attributes => _attributes;
 
         private readonly string[] _attributes;
 

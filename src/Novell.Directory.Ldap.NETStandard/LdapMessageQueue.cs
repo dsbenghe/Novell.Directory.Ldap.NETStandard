@@ -47,10 +47,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     name of object instance used for debug
         /// </returns>
-        internal virtual string DebugName
-        {
-            get { return Name; }
-        }
+        internal virtual string DebugName => Name;
 
         /// <summary>
         ///     Returns the internal client message agent
@@ -58,10 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The internal client message agent
         /// </returns>
-        internal virtual MessageAgent MessageAgent
-        {
-            get { return Agent; }
-        }
+        internal virtual MessageAgent MessageAgent => Agent;
 
         /// <summary>
         ///     Returns the message IDs for all outstanding requests. These are requests
@@ -73,10 +67,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message IDs for all outstanding requests.
         /// </returns>
-        public virtual int[] MessageIDs
-        {
-            get { return Agent.MessageIDs; }
-        }
+        public virtual int[] MessageIDs => Agent.MessageIDs;
 
         /// <summary> The message agent object associated with this queue</summary>
         internal MessageAgent Agent;

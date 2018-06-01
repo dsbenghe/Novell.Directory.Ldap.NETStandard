@@ -49,10 +49,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         ///     The value for this attribute allows the caller to identify the
         ///     type of the data object.
         /// </summary>
-        public EdirEventDataType EventDataType
-        {
-            get { return _eventDataType; }
-        }
+        public EdirEventDataType EventDataType => _eventDataType;
 
         public BaseEdirEventData(EdirEventDataType eventDataType, Asn1Object message)
         {

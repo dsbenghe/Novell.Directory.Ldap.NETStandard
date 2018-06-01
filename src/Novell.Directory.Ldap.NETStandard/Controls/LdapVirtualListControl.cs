@@ -64,19 +64,13 @@ namespace Novell.Directory.Ldap.Controls
         ///     Returns the number of entries after the top/center one to return per
         ///     page of results.
         /// </summary>
-        public virtual int AfterCount
-        {
-            get { return _mAfterCount; }
-        }
+        public virtual int AfterCount => _mAfterCount;
 
         /// <summary>
         ///     Returns the number of entries before the top/center one to return per
         ///     page of results.
         /// </summary>
-        public virtual int BeforeCount
-        {
-            get { return _mBeforeCount; }
-        }
+        public virtual int BeforeCount => _mBeforeCount;
 
         /// <summary>
         ///     Returns the size of the virtual search results list. For a newly
@@ -90,7 +84,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </summary>
         public virtual int ListSize
         {
-            get { return _mContentCount; }
+            get => _mContentCount;
 
             set
             {
@@ -120,7 +114,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </summary>
         public virtual string Context
         {
-            get { return _mContext; }
+            get => _mContext;
 
             set
             {

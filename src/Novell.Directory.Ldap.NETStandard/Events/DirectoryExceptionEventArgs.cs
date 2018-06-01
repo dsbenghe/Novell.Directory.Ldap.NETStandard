@@ -41,10 +41,7 @@ namespace Novell.Directory.Ldap.Events
     {
         private LdapException _ldapExceptionObject;
 
-        public LdapException LdapExceptionObject
-        {
-            get { return _ldapExceptionObject; }
-        }
+        public LdapException LdapExceptionObject => _ldapExceptionObject;
 
         public DirectoryExceptionEventArgs(LdapMessage message, LdapException ldapException)
             : base(message)

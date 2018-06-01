@@ -50,10 +50,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the attribute description
         /// </returns>
-        public virtual string AttributeDescription
-        {
-            get { return ((RfcAttributeDescription) get_Renamed(0)).StringValue(); }
-        }
+        public virtual string AttributeDescription => ((RfcAttributeDescription) get_Renamed(0)).StringValue();
 
         /// <summary>
         ///     Returns the assertion value.
@@ -62,10 +59,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     the assertion value.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] AssertionValue
-        {
-            get { return ((RfcAssertionValue) get_Renamed(1)).ByteValue(); }
-        }
+        public virtual sbyte[] AssertionValue => ((RfcAssertionValue) get_Renamed(1)).ByteValue();
 
         /// <summary>
         ///     Creates an Attribute Value Assertion.

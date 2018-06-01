@@ -207,7 +207,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual LdapConstraints Constraints
         {
-            get { return (LdapConstraints) _defSearchCons.Clone(); }
+            get => (LdapConstraints) _defSearchCons.Clone();
 
             set
             {
@@ -247,10 +247,7 @@ namespace Novell.Directory.Ldap
         ///     The host name of the Ldap server to which the object last
         ///     connected or null if the object has never connected.
         /// </returns>
-        public virtual string Host
-        {
-            get { return _conn.Host; }
-        }
+        public virtual string Host => _conn.Host;
 
         /// <summary>
         ///     Returns the port number of the Ldap server to which the object is or
@@ -260,10 +257,7 @@ namespace Novell.Directory.Ldap
         ///     The port number of the Ldap server to which the object last
         ///     connected or -1 if the object has never connected.
         /// </returns>
-        public virtual int Port
-        {
-            get { return _conn.Port; }
-        }
+        public virtual int Port => _conn.Port;
 
         /// <summary>
         ///     Returns a copy of the set of search constraints associated with this
@@ -279,10 +273,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapSearchConstraints">
         /// </seealso>
-        public virtual LdapSearchConstraints SearchConstraints
-        {
-            get { return (LdapSearchConstraints) _defSearchCons.Clone(); }
-        }
+        public virtual LdapSearchConstraints SearchConstraints => (LdapSearchConstraints) _defSearchCons.Clone();
 
 
         /// <summary>
@@ -294,7 +285,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool SecureSocketLayer
         {
-            get { return _conn.Ssl; }
+            get => _conn.Ssl;
             set { _conn.Ssl = value; }
         }
 
@@ -307,7 +298,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public int ConnectionTimeout
         {
-            get { return _conn.ConnectionTimeout; }
+            get => _conn.ConnectionTimeout;
             set { _conn.ConnectionTimeout = value; }
         }
 
@@ -319,10 +310,7 @@ namespace Novell.Directory.Ldap
         ///     True if the object has authenticated; false if it has not
         ///     authenticated.
         /// </returns>
-        public virtual bool Bound
-        {
-            get { return _conn.Bound; }
-        }
+        public virtual bool Bound => _conn.Bound;
 
         /// <summary>
         ///     Indicates whether the connection represented by this object is open
@@ -331,10 +319,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     True if connection is open; false if the connection is closed.
         /// </returns>
-        public virtual bool Connected
-        {
-            get { return _conn.Connected; }
-        }
+        public virtual bool Connected => _conn.Connected;
 
         /// <summary>
         ///     Indicatates if the connection is protected by TLS.
@@ -346,10 +331,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     True if the connection is protected by TLS.
         /// </returns>
-        public virtual bool Tls
-        {
-            get { return _conn.Tls; }
-        }
+        public virtual bool Tls => _conn.Tls;
 
 
         /// <summary>
@@ -406,10 +388,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Connection object
         /// </returns>
-        internal virtual Connection Connection
-        {
-            get { return _conn; }
-        }
+        internal virtual Connection Connection => _conn;
 
         /// <summary>
         ///     Return the Connection object name associated with this LdapConnection
@@ -531,7 +510,7 @@ namespace Novell.Directory.Ldap
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
         {
-            add { _conn.OnCertificateValidation += value; }
+            add => _conn.OnCertificateValidation += value;
 
             remove { _conn.OnCertificateValidation -= value; }
         }

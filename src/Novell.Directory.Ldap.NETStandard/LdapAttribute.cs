@@ -92,10 +92,7 @@ namespace Novell.Directory.Ldap
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );
         /// </returns>
-        public virtual IEnumerator ByteValues
-        {
-            get { return new ArrayEnumeration(ByteValueArray); }
-        }
+        public virtual IEnumerator ByteValues => new ArrayEnumeration(ByteValueArray);
 
         /// <summary>
         ///     Returns an enumerator for the string values of an attribute.
@@ -103,10 +100,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public virtual IEnumerator StringValues
-        {
-            get { return new ArrayEnumeration(StringValueArray); }
-        }
+        public virtual IEnumerator StringValues => new ArrayEnumeration(StringValueArray);
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -264,10 +258,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name of the attribute.
         /// </returns>
-        public virtual string Name
-        {
-            get { return _name; }
-        }
+        public virtual string Name => _name;
 
         /// <summary>
         ///     Replaces all values with the specified value. This protected method is

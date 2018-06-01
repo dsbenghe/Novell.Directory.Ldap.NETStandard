@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int BatchSize
         {
-            get { return _batchSize; }
+            get => _batchSize;
 
             set { _batchSize = value; }
         }
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int Dereference
         {
-            get { return _dereference; }
+            get => _dereference;
 
             set { _dereference = value; }
         }
@@ -161,7 +161,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int MaxResults
         {
-            get { return _maxResults; }
+            get => _maxResults;
 
             set { _maxResults = value; }
         }
@@ -198,7 +198,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int ServerTimeLimit
         {
-            get { return _serverTimeLimit; }
+            get => _serverTimeLimit;
 
             set { _serverTimeLimit = value; }
         }

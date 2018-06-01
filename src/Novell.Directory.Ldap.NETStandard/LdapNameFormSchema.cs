@@ -63,10 +63,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required naming attributes.
         /// </returns>
-        public virtual string[] RequiredNamingAttributes
-        {
-            get { return _required; }
-        }
+        public virtual string[] RequiredNamingAttributes => _required;
 
         /// <summary>
         ///     Returns the list of optional naming attributes for an entry
@@ -75,10 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of the optional naming attributes.
         /// </returns>
-        public virtual string[] OptionalNamingAttributes
-        {
-            get { return _optional; }
-        }
+        public virtual string[] OptionalNamingAttributes => _optional;
 
         private readonly string[] _required;
         private readonly string[] _optional;

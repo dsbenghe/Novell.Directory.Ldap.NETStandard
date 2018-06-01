@@ -40,17 +40,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class AttributeQualifier
     {
-        public virtual string Name
-        {
-            /*
-            public void addValue( String value )
-            {
-            values.add( value );
-            return;
-            }
-            */
-            get { return _name; }
-        }
+        public virtual string Name => _name;
 
         public virtual string[] Values
         {

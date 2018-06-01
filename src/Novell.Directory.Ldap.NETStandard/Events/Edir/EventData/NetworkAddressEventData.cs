@@ -41,17 +41,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         protected int NType;
 
-        public int ValueType
-        {
-            get { return NType; }
-        }
+        public int ValueType => NType;
 
         protected string StrData;
 
-        public string Data
-        {
-            get { return StrData; }
-        }
+        public string Data => StrData;
 
         public NetworkAddressEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

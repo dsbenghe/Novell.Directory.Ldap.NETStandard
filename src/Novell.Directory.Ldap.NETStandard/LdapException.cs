@@ -308,10 +308,7 @@ namespace Novell.Directory.Ldap
         ///     For example, an IOException with additional information may be returned
         ///     on a CONNECT_ERROR failure.
         /// </summary>
-        public virtual Exception Cause
-        {
-            get { return _rootException; }
-        }
+        public virtual Exception Cause => _rootException;
 
         /// <summary>
         ///     Returns the result code from the exception.
@@ -321,10 +318,7 @@ namespace Novell.Directory.Ldap
         ///     code will be one of those defined for the class. Otherwise, a local error
         ///     code is returned.
         /// </summary>
-        public virtual int ResultCode
-        {
-            get { return _resultCode; }
-        }
+        public virtual int ResultCode => _resultCode;
 
         /// <summary>
         ///     Returns the part of a submitted distinguished name which could be
@@ -344,15 +338,9 @@ namespace Novell.Directory.Ldap
         ///     The part of a submitted distinguished name which could be
         ///     matched by the server or null if the error is a local error.
         /// </returns>
-        public virtual string MatchedDn
-        {
-            get { return _matchedDn; }
-        }
+        public virtual string MatchedDn => _matchedDn;
 
-        public override string Message
-        {
-            get { return ResultCodeToString(); }
-        }
+        public override string Message => ResultCodeToString();
 
         /*	public override System.String Message
                 {

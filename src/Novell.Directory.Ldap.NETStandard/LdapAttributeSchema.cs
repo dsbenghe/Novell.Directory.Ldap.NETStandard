@@ -136,10 +136,7 @@ namespace Novell.Directory.Ldap
         ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
         ///     DSA_OPERATION.
         /// </returns>
-        public virtual int Usage
-        {
-            get { return _usage; }
-        }
+        public virtual int Usage => _usage;
 
         private int _usage;
 

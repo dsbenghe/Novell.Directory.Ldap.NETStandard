@@ -48,30 +48,21 @@ namespace Novell.Directory.Ldap.Events.Edir
         /// <summary>
         ///     Type of Edir event.
         /// </summary>
-        public EdirEventType EventType
-        {
-            get { return _eventType; }
-        }
+        public EdirEventType EventType => _eventType;
 
         private EdirEventResultType _eventResultType;
 
         /// <summary>
         ///     Type of Edir event result.
         /// </summary>
-        public EdirEventResultType EventResultType
-        {
-            get { return _eventResultType; }
-        }
+        public EdirEventResultType EventResultType => _eventResultType;
 
         private BaseEdirEventData _eventResponseData;
 
         /// <summary>
         ///     The response data object associated with Edir event.
         /// </summary>
-        public BaseEdirEventData EventResponseDataObject
-        {
-            get { return _eventResponseData; }
-        }
+        public BaseEdirEventData EventResponseDataObject => _eventResponseData;
 
         public EdirEventIntermediateResponse(RfcLdapMessage message)
             : base(message)

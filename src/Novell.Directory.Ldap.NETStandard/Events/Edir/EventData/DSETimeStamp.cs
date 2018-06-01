@@ -42,24 +42,15 @@ namespace Novell.Directory.Ldap.Events.Edir
     {
         protected int NSeconds;
 
-        public int Seconds
-        {
-            get { return NSeconds; }
-        }
+        public int Seconds => NSeconds;
 
         private int _replicaNumber;
 
-        public int ReplicaNumber
-        {
-            get { return _replicaNumber; }
-        }
+        public int ReplicaNumber => _replicaNumber;
 
         protected int NEvent;
 
-        public int Event
-        {
-            get { return NEvent; }
-        }
+        public int Event => NEvent;
 
         public DseTimeStamp(Asn1Sequence dseObject)
         {

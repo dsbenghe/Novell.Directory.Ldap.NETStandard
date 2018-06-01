@@ -53,10 +53,7 @@ namespace Novell.Directory.Ldap.Utilclass
             _tempAuxObj = null;
         }
 
-        public virtual object Current
-        {
-            get { return _tempAuxObj; }
-        }
+        public virtual object Current => _tempAuxObj;
 
         private readonly object[] _eArray;
         private int _index;

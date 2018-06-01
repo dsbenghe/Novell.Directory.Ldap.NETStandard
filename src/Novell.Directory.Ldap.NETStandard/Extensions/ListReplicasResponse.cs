@@ -50,10 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     String value specifying the identity returned by the server
         /// </returns>
-        public virtual string[] ReplicaList
-        {
-            get { return _replicaList; }
-        }
+        public virtual string[] ReplicaList => _replicaList;
 
         // Identity returned by the server
         private readonly string[] _replicaList;

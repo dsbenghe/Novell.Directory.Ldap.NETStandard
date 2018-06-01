@@ -43,10 +43,7 @@ namespace Novell.Directory.Ldap.Events
     {
         protected LdapMessage LdapMessage;
 
-        public LdapMessage ContianedEventInformation
-        {
-            get { return LdapMessage; }
-        }
+        public LdapMessage ContianedEventInformation => LdapMessage;
 
         public BaseEventArgs(LdapMessage message)
         {

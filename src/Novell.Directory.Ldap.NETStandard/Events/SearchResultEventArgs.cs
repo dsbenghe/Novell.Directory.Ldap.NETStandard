@@ -46,10 +46,7 @@ namespace Novell.Directory.Ldap.Events
         {
         }
 
-        public LdapEntry Entry
-        {
-            get { return ((LdapSearchResult) LdapMessage).Entry; }
-        }
+        public LdapEntry Entry => ((LdapSearchResult) LdapMessage).Entry;
 
         public override string ToString()
         {

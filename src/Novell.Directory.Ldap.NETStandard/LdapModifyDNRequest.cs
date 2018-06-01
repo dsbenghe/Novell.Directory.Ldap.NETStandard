@@ -54,10 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to rename or move
         /// </returns>
-        public virtual string Dn
-        {
-            get { return Asn1Object.RequestDn; }
-        }
+        public virtual string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Returns the newRDN of the entry to rename or move in the directory

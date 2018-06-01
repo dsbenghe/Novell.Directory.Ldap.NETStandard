@@ -76,7 +76,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int HopLimit
         {
-            get { return _hopLimit; }
+            get => _hopLimit;
 
             set { _hopLimit = value; }
         }
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal virtual Hashtable Properties
         {
-            get { return _properties; }
+            get => _properties;
 
 
             set { _properties = (Hashtable) value.Clone(); }
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public virtual bool ReferralFollowing
         {
-            get { return _doReferrals; }
+            get => _doReferrals;
 
             set { _doReferrals = value; }
         }
@@ -164,7 +164,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public virtual int TimeLimit
         {
-            get { return _msLimit; }
+            get => _msLimit;
 
             set { _msLimit = value; }
         }

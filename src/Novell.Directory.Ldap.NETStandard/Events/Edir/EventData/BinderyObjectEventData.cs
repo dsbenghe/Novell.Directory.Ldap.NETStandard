@@ -41,38 +41,23 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private string _strEntryDn;
 
-        public string EntryDn
-        {
-            get { return _strEntryDn; }
-        }
+        public string EntryDn => _strEntryDn;
 
         private int _nType;
 
-        public int ValueType
-        {
-            get { return _nType; }
-        }
+        public int ValueType => _nType;
 
         private int _nEmuObjFlags;
 
-        public int EmuObjFlags
-        {
-            get { return _nEmuObjFlags; }
-        }
+        public int EmuObjFlags => _nEmuObjFlags;
 
         private int _nSecurity;
 
-        public int Security
-        {
-            get { return _nSecurity; }
-        }
+        public int Security => _nSecurity;
 
         private string _strName;
 
-        public string Name
-        {
-            get { return _strName; }
-        }
+        public string Name => _strName;
 
         public BinderyObjectEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

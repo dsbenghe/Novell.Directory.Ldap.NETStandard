@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Events
 
         public EventClassifiers EventClassification
         {
-            get { return EClassification; }
+            get => EClassification;
             set { EClassification = value; }
         }
 

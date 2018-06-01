@@ -266,11 +266,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an embedded exception if any
         /// </returns>
-        internal virtual LdapException Exception
-        {
-            /*package*/
-            get { return _exception; }
-        }
+        internal virtual LdapException Exception => _exception;
 
         /// <summary>
         ///     Indicates the referral instance being followed if the

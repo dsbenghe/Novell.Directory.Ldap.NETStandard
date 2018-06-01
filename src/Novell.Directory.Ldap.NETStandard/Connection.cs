@@ -107,10 +107,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if clones exist, false otherwise.
         /// </returns>
-        internal bool Cloned
-        {
-            get { return _cloneCount > 0; }
-        }
+        internal bool Cloned => _cloneCount > 0;
 
 
         internal bool Ssl { get; set; }
@@ -157,10 +154,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Return whether a connection has been made</summary>
-        internal bool Connected
-        {
-            get { return _inRenamed != null; }
-        }
+        internal bool Connected => _inRenamed != null;
 
         /// <summary>
         ///     Sets the authentication credentials in the object
@@ -947,10 +941,7 @@ namespace Novell.Directory.Ldap
         ///     Indicates if the conenction is using TLS protection
         ///     Return true if using TLS protection
         /// </summary>
-        internal bool Tls
-        {
-            get { return _nonTlsBackup != null; }
-        }
+        internal bool Tls => _nonTlsBackup != null;
 
         /// <summary>
         ///     StartsTLS, in this package, assumes the caller has:

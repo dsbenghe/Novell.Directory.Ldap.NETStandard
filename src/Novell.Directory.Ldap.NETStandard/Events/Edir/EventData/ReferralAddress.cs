@@ -41,17 +41,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private int _addressType;
 
-        public int AddressType
-        {
-            get { return _addressType; }
-        }
+        public int AddressType => _addressType;
 
         protected string StrAddress;
 
-        public string Address
-        {
-            get { return StrAddress; }
-        }
+        public string Address => StrAddress;
 
         /// <summary>
         ///     Returns a string representation of the object.

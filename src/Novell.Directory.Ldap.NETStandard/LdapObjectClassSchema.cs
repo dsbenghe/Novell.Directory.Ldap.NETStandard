@@ -53,10 +53,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object classes superior to this class.
         /// </returns>
-        public virtual string[] Superiors
-        {
-            get { return _superiors; }
-        }
+        public virtual string[] Superiors => _superiors;
 
         /// <summary>
         ///     Returns a list of attributes required for an entry with this object
@@ -65,10 +62,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required attributes defined for this class.
         /// </returns>
-        public virtual string[] RequiredAttributes
-        {
-            get { return _required; }
-        }
+        public virtual string[] RequiredAttributes => _required;
 
         /// <summary>
         ///     Returns a list of optional attributes but not required of an entry
@@ -77,10 +71,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of optional attributes defined for this class.
         /// </returns>
-        public virtual string[] OptionalAttributes
-        {
-            get { return _optional; }
-        }
+        public virtual string[] OptionalAttributes => _optional;
 
         /// <summary>
         ///     Returns the type of object class.
@@ -97,10 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The type of object class.
         /// </returns>
-        public virtual int Type
-        {
-            get { return _type; }
-        }
+        public virtual int Type => _type;
 
         private string[] _superiors;
         private string[] _required;

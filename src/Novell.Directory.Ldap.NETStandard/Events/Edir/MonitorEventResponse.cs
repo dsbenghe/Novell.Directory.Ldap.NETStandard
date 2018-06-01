@@ -43,10 +43,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     {
         private EdirEventSpecifier[] _specifierList;
 
-        public EdirEventSpecifier[] SpecifierList
-        {
-            get { return _specifierList; }
-        }
+        public EdirEventSpecifier[] SpecifierList => _specifierList;
 
         public MonitorEventResponse(RfcLdapMessage message)
             : base(message)

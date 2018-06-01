@@ -45,17 +45,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         private DebugParameterType _debugType;
 
-        public DebugParameterType DebugType
-        {
-            get { return _debugType; }
-        }
+        public DebugParameterType DebugType => _debugType;
 
         protected object ObjData;
 
-        public object Data
-        {
-            get { return ObjData; }
-        }
+        public object Data => ObjData;
 
         public DebugParameter(Asn1Tagged dseObject)
         {

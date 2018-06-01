@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Events
         /// </summary>
         public int SleepInterval
         {
-            get { return _sleepInterval; }
+            get => _sleepInterval;
             set
             {
                 if (value <= 0)

@@ -47,10 +47,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcControl : Asn1Sequence
     {
         /// <summary> </summary>
-        public virtual Asn1OctetString ControlType
-        {
-            get { return (Asn1OctetString) get_Renamed(0); }
-        }
+        public virtual Asn1OctetString ControlType => (Asn1OctetString) get_Renamed(0);
 
         /// <summary>
         ///     Returns criticality.

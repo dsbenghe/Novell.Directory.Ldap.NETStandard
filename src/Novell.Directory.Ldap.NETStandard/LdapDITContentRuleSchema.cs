@@ -51,10 +51,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public virtual string[] AuxiliaryClasses
-        {
-            get { return _auxiliary; }
-        }
+        public virtual string[] AuxiliaryClasses => _auxiliary;
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -63,10 +60,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public virtual string[] RequiredAttributes
-        {
-            get { return _required; }
-        }
+        public virtual string[] RequiredAttributes => _required;
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -75,10 +69,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public virtual string[] OptionalAttributes
-        {
-            get { return _optional; }
-        }
+        public virtual string[] OptionalAttributes => _optional;
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -87,10 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public virtual string[] PrecludedAttributes
-        {
-            get { return _precluded; }
-        }
+        public virtual string[] PrecludedAttributes => _precluded;
 
         private readonly string[] _auxiliary = {""};
         private readonly string[] _required = {""};

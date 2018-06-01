@@ -51,10 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     String array contining a two dimensional array of strings.  The first
         ///     element of each array is the class name the others are the attribute names
         /// </returns>
-        public virtual string[][] ReplicationFilter
-        {
-            get { return ReturnedFilter; }
-        }
+        public virtual string[][] ReplicationFilter => ReturnedFilter;
 
 
         // Replication filter returned by the server goes here

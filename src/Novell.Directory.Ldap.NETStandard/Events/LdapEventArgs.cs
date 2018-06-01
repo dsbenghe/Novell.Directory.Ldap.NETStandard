@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Events
 
         public LdapEventType EventType
         {
-            get { return EType; }
+            get => EType;
             set { EType = value; }
         }
 

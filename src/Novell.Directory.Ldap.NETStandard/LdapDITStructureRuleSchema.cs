@@ -76,10 +76,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public virtual string[] Superiors
-        {
-            get { return _superiorIDs; }
-        }
+        public virtual string[] Superiors => _superiorIDs;
 
         private readonly string[] _superiorIDs = {""};
 

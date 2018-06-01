@@ -1366,10 +1366,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
 
             /// <summary> Returns the current attribute identifier.</summary>
-            public virtual string Attr
-            {
-                get { return _attr; }
-            }
+            public virtual string Attr => _attr;
 
             public RfcFilter EnclosingInstance { get; private set; }
 

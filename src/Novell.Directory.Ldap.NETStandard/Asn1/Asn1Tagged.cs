@@ -61,17 +61,14 @@ namespace Novell.Directory.Ldap.Asn1
                     value.SetIdentifier(GetIdentifier());
                 }
             }
-            get { return _content; }
+            get => _content;
         }
 
         /// <summary>
         ///     Returns a boolean value indicating if this object uses
         ///     EXPLICIT tagging.
         /// </summary>
-        public virtual bool Explicit
-        {
-            get { return _explicitRenamed; }
-        }
+        public virtual bool Explicit => _explicitRenamed;
 
         private readonly bool _explicitRenamed;
         private Asn1Object _content;

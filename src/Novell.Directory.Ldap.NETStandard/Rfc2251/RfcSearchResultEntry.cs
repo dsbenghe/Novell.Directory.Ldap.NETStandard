@@ -46,16 +46,10 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcSearchResultEntry : Asn1Sequence
     {
         /// <summary> </summary>
-        public virtual Asn1OctetString ObjectName
-        {
-            get { return (Asn1OctetString) get_Renamed(0); }
-        }
+        public virtual Asn1OctetString ObjectName => (Asn1OctetString) get_Renamed(0);
 
         /// <summary> </summary>
-        public virtual Asn1Sequence Attributes
-        {
-            get { return (Asn1Sequence) get_Renamed(1); }
-        }
+        public virtual Asn1Sequence Attributes => (Asn1Sequence) get_Renamed(1);
 
         //*************************************************************************
         // Constructors for SearchResultEntry

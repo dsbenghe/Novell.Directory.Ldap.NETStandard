@@ -94,10 +94,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the element.
         /// </returns>
-        public string Id
-        {
-            get { return Oid; }
-        }
+        public string Id => Oid;
 
         /// <summary>
         ///     Returns an enumeration of all qualifiers of the element which are
@@ -106,10 +103,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames
-        {
-            get { return new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator()); }
-        }
+        public IEnumerator QualifierNames => new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier

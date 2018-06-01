@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </summary>
         public virtual int ChangeTypes
         {
-            get { return _mChangeTypes; }
+            get => _mChangeTypes;
 
             set
             {
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ReturnControls
         {
-            get { return _mReturnControls; }
+            get => _mReturnControls;
 
             set
             {
@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ChangesOnly
         {
-            get { return _mChangesOnly; }
+            get => _mChangesOnly;
 
             set
             {

@@ -73,16 +73,10 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcLdapMessage : Asn1Sequence
     {
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
-        public virtual int MessageId
-        {
-            get { return ((Asn1Integer) get_Renamed(0)).IntValue(); }
-        }
+        public virtual int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();
 
         /// <summary> Returns this RfcLdapMessage's message type</summary>
-        public virtual int Type
-        {
-            get { return get_Renamed(1).GetIdentifier().Tag; }
-        }
+        public virtual int Type => get_Renamed(1).GetIdentifier().Tag;
 
         /// <summary>
         ///     Returns the response associated with this RfcLdapMessage.
@@ -90,10 +84,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     all which extend RfcResponse. It can also be
         ///     RfcSearchResultEntry, or RfcSearchResultReference
         /// </summary>
-        public virtual Asn1Object Response
-        {
-            get { return get_Renamed(1); }
-        }
+        public virtual Asn1Object Response => get_Renamed(1);
 
         /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
         public virtual RfcControls Controls
@@ -107,10 +98,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Returns the dn of the request, may be null</summary>
-        public virtual string RequestDn
-        {
-            get { return ((IRfcRequest) _op).GetRequestDn(); }
-        }
+        public virtual string RequestDn => ((IRfcRequest) _op).GetRequestDn();
 
         /// <summary>
         ///     returns the original request in this message
