@@ -30,17 +30,17 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     class of this returned object depends on the operation being
         ///     performed.
         /// </returns>
-        public static LdapExtendedResponse convertToExtendedResponse(RfcLdapMessage inResponse)
+        public static LdapExtendedResponse ConvertToExtendedResponse(RfcLdapMessage inResponse)
         {
             var tempResponse = new LdapExtendedResponse(inResponse);
             // Get the oid stored in the Extended response
-            var inOID = tempResponse.ID;
-            if(inOID == null) return tempResponse;
+            var inOid = tempResponse.Id;
+            if(inOid == null) return tempResponse;
 
             var regExtResponses = LdapExtendedResponse.RegisteredResponses;
             try
             {
-                var extRespClass = regExtResponses.findResponseExtension(inOID);
+                var extRespClass = regExtResponses.FindResponseExtension(inOid);
                 if (extRespClass == null)
                 {
                     return tempResponse;

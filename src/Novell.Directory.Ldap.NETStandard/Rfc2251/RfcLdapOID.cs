@@ -38,16 +38,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         * Represents an LdapOID.
         */
 
-    public class RfcLdapOID : Asn1OctetString
+    public class RfcLdapOid : Asn1OctetString
     {
         /// <summary> </summary>
-        public RfcLdapOID(string s) : base(s)
+        public RfcLdapOid(string s) : base(s)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcLdapOID(sbyte[] s) : base(s)
+        public RfcLdapOid(sbyte[] s) : base(s)
         {
         }
     }

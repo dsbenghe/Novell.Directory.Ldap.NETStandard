@@ -45,9 +45,9 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     following could be represented by an RDN: 'cn=john + l=US', or
     ///     'cn=juan + l=ES'
     /// </summary>
-    /// <seealso cref="DN">
+    /// <seealso cref="Dn">
     /// </seealso>
-    public class RDN : object
+    public class Rdn : object
     {
         /// <summary>
         ///     Returns the actually Raw String before Normalization
@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         protected internal virtual string RawValue
         {
-            get { return rawValue; }
+            get { return _rawValue; }
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public virtual string Type
         {
-            get { return (string) types[0]; }
+            get { return (string) _types[0]; }
         }
 
         /// <summary> Returns all the types for this RDN.</summary>
@@ -81,9 +81,9 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             get
             {
-                var toReturn = new string[types.Count];
-                for (var i = 0; i < types.Count; i++)
-                    toReturn[i] = (string) types[i];
+                var toReturn = new string[_types.Count];
+                for (var i = 0; i < _types.Count; i++)
+                    toReturn[i] = (string) _types[i];
                 return toReturn;
             }
         }
@@ -97,7 +97,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public virtual string Value
         {
-            get { return (string) values[0]; }
+            get { return (string) _values[0]; }
         }
 
         /// <summary> Returns all the types for this RDN.</summary>
@@ -108,9 +108,9 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             get
             {
-                var toReturn = new string[values.Count];
-                for (var i = 0; i < values.Count; i++)
-                    toReturn[i] = (string) values[i];
+                var toReturn = new string[_values.Count];
+                for (var i = 0; i < _values.Count; i++)
+                    toReturn[i] = (string) _values[i];
                 return toReturn;
             }
         }
@@ -121,12 +121,12 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public virtual bool Multivalued
         {
-            get { return values.Count > 1 ? true : false; }
+            get { return _values.Count > 1 ? true : false; }
         }
 
-        private readonly ArrayList types; //list of Type strings
-        private readonly ArrayList values; //list of Value strings
-        private string rawValue; //the unnormalized value
+        private readonly ArrayList _types; //list of Type strings
+        private readonly ArrayList _values; //list of Value strings
+        private string _rawValue; //the unnormalized value
 
         /// <summary>
         ///     Creates an RDN object from the DN component specified in the string RDN
@@ -134,25 +134,25 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rdn">
         ///     the DN component
         /// </param>
-        public RDN(string rdn)
+        public Rdn(string rdn)
         {
-            rawValue = rdn;
-            var dn = new DN(rdn);
-            var rdns = dn.RDNs;
+            _rawValue = rdn;
+            var dn = new Dn(rdn);
+            var rdns = dn.RdNs;
             //there should only be one rdn
             if (rdns.Count != 1)
                 throw new ArgumentException("Invalid RDN: see API " + "documentation");
-            var thisRDN = (RDN) rdns[0];
-            types = thisRDN.types;
-            values = thisRDN.values;
-            rawValue = thisRDN.rawValue;
+            var thisRdn = (Rdn) rdns[0];
+            _types = thisRdn._types;
+            _values = thisRdn._values;
+            _rawValue = thisRdn._rawValue;
         }
 
-        public RDN()
+        public Rdn()
         {
-            types = new ArrayList();
-            values = new ArrayList();
-            rawValue = "";
+            _types = new ArrayList();
+            _values = new ArrayList();
+            _rawValue = "";
         }
 
         /// <summary>
@@ -165,25 +165,25 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     with an OID.
         /// </param>
         [CLSCompliant(false)]
-        public virtual bool equals(RDN rdn)
+        public virtual bool Equals(Rdn rdn)
         {
-            if (values.Count != rdn.values.Count)
+            if (_values.Count != rdn._values.Count)
             {
                 return false;
             }
             int j, i;
-            for (i = 0; i < values.Count; i++)
+            for (i = 0; i < _values.Count; i++)
             {
                 //verify that the current value and type exists in the other list
                 j = 0;
                 //May need a more intellegent compare
-                while (j < values.Count &&
-                       (!((string) values[i]).ToUpper().Equals(((string) rdn.values[j]).ToUpper()) ||
-                        !equalAttrType((string) types[i], (string) rdn.types[j])))
+                while (j < _values.Count &&
+                       (!((string) _values[i]).ToUpper().Equals(((string) rdn._values[j]).ToUpper()) ||
+                        !EqualAttrType((string) _types[i], (string) rdn._types[j])))
                 {
                     j++;
                 }
-                if (j >= rdn.values.Count)
+                if (j >= rdn._values.Count)
                     //couldn't find first value
                     return false;
             }
@@ -198,7 +198,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     thrown, either one or the other must used.  In the future an OID to name
         ///     translation can be used.
         /// </summary>
-        private bool equalAttrType(string attr1, string attr2)
+        private bool EqualAttrType(string attr1, string attr2)
         {
             if (char.IsDigit(attr1[0]) ^ char.IsDigit(attr2[0]))
                 //isDigit tests if it is an OID
@@ -220,11 +220,11 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rawValue">
         ///     or text before normalization, can be Null
         /// </param>
-        public virtual void add(string attrType, string attrValue, string rawValue)
+        public virtual void Add(string attrType, string attrValue, string rawValue)
         {
-            types.Add(attrType);
-            values.Add(attrValue);
-            this.rawValue += rawValue;
+            _types.Add(attrType);
+            _values.Add(attrValue);
+            this._rawValue += rawValue;
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public override string ToString()
         {
-            return toString(false);
+            return ToString(false);
         }
 
         /// <summary>
@@ -249,26 +249,26 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     An RDN string
         /// </returns>
         [CLSCompliant(false)]
-        public virtual string toString(bool noTypes)
+        public virtual string ToString(bool noTypes)
         {
-            var length = types.Count;
+            var length = _types.Count;
             var toReturn = "";
             if (length < 1)
                 return null;
             if (!noTypes)
             {
-                toReturn = types[0] + "=";
+                toReturn = _types[0] + "=";
             }
-            toReturn += values[0];
+            toReturn += _values[0];
 
             for (var i = 1; i < length; i++)
             {
                 toReturn += "+";
                 if (!noTypes)
                 {
-                    toReturn += types[i] + "=";
+                    toReturn += _types[i] + "=";
                 }
-                toReturn += values[i];
+                toReturn += _values[i];
             }
             return toReturn;
         }
@@ -283,26 +283,26 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     List of multivalued Attributes
         /// </returns>
-        public virtual string[] explodeRDN(bool noTypes)
+        public virtual string[] ExplodeRdn(bool noTypes)
         {
-            var length = types.Count;
+            var length = _types.Count;
             if (length < 1)
                 return null;
-            var toReturn = new string[types.Count];
+            var toReturn = new string[_types.Count];
 
             if (!noTypes)
             {
-                toReturn[0] = types[0] + "=";
+                toReturn[0] = _types[0] + "=";
             }
-            toReturn[0] += values[0];
+            toReturn[0] += _values[0];
 
             for (var i = 1; i < length; i++)
             {
                 if (!noTypes)
                 {
-                    toReturn[i] += types[i] + "=";
+                    toReturn[i] += _types[i] + "=";
                 }
-                toReturn[i] += values[i];
+                toReturn[i] += _values[i];
             }
 
             return toReturn;

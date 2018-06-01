@@ -42,13 +42,13 @@ namespace Novell.Directory.Ldap.Events
         public SearchResultEventArgs(LdapMessage sourceMessage,
             EventClassifiers aClassification,
             LdapEventType aType)
-            : base(sourceMessage, EventClassifiers.CLASSIFICATION_LDAP_PSEARCH, aType)
+            : base(sourceMessage, EventClassifiers.ClassificationLdapPsearch, aType)
         {
         }
 
         public LdapEntry Entry
         {
-            get { return ((LdapSearchResult) ldap_message).Entry; }
+            get { return ((LdapSearchResult) LdapMessage).Entry; }
         }
 
         public override string ToString()
@@ -56,18 +56,18 @@ namespace Novell.Directory.Ldap.Events
             var buf = new StringBuilder();
 
             buf.AppendFormat("[{0}:", GetType());
-            buf.AppendFormat("(Classification={0})", eClassification);
-            buf.AppendFormat("(Type={0})", getChangeTypeString());
-            buf.AppendFormat("(EventInformation:{0})", getStringRepresentaionOfEventInformation());
+            buf.AppendFormat("(Classification={0})", EClassification);
+            buf.AppendFormat("(Type={0})", GetChangeTypeString());
+            buf.AppendFormat("(EventInformation:{0})", GetStringRepresentaionOfEventInformation());
             buf.Append("]");
 
             return buf.ToString();
         }
 
-        private string getStringRepresentaionOfEventInformation()
+        private string GetStringRepresentaionOfEventInformation()
         {
             var buf = new StringBuilder();
-            var result = (LdapSearchResult) ldap_message;
+            var result = (LdapSearchResult) LdapMessage;
 
             buf.AppendFormat("(Entry={0})", result.Entry);
             var controls = result.Controls;
@@ -86,24 +86,24 @@ namespace Novell.Directory.Ldap.Events
             return buf.ToString();
         }
 
-        private string getChangeTypeString()
+        private string GetChangeTypeString()
         {
-            switch (eType)
+            switch (EType)
             {
-                case LdapEventType.LDAP_PSEARCH_ADD:
+                case LdapEventType.LdapPsearchAdd:
                     return "ADD";
 
-                case LdapEventType.LDAP_PSEARCH_DELETE:
+                case LdapEventType.LdapPsearchDelete:
                     return "DELETE";
 
-                case LdapEventType.LDAP_PSEARCH_MODIFY:
+                case LdapEventType.LdapPsearchModify:
                     return "MODIFY";
 
-                case LdapEventType.LDAP_PSEARCH_MODDN:
+                case LdapEventType.LdapPsearchModdn:
                     return "MODDN";
 
                 default:
-                    return "No change type: " + eType;
+                    return "No change type: " + EType;
             }
         }
     } // end of class SearchResultEventArgs

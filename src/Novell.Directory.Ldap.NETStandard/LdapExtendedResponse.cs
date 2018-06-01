@@ -49,12 +49,12 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     OID of the response.
         /// </returns>
-        public virtual string ID
+        public virtual string Id
         {
             get
             {
-                var respOID = ((RfcExtendedResponse) message.Response).ResponseName;
-                return respOID?.stringValue();
+                var respOid = ((RfcExtendedResponse) Message.Response).ResponseName;
+                return respOid?.StringValue();
             }
         }
 
@@ -76,8 +76,8 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var tempString = ((RfcExtendedResponse) message.Response).Response;
-                return tempString?.byteValue();
+                var tempString = ((RfcExtendedResponse) Message.Response).Response;
+                return tempString?.ByteValue();
             }
         }
 
@@ -109,9 +109,9 @@ namespace Novell.Directory.Ldap
         ///     A class which can instantiate an
         ///     LDAPExtendedResponse.
         /// </param>
-        public static void register(string oid, Type extendedResponseClass)
+        public static void Register(string oid, Type extendedResponseClass)
         {
-            RegisteredResponses.registerResponseExtension(oid, extendedResponseClass);
+            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
         }
     }
 }

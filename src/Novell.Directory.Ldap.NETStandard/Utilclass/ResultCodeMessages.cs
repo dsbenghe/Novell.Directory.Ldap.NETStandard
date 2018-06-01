@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ResultCodeMessages //:System.Resources.ResourceManager
     {
-        private static readonly Dictionary<string, string> errorCodes = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> ErrorCodes = new Dictionary<string, string>
         {
             {"0", "Success"},
             {"1", "Operations Error"},
@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public static string GetResultCode(string code)
         {
-            return errorCodes[code];
+            return ErrorCodes[code];
         }
     } //End ResultCodeMessages
 }

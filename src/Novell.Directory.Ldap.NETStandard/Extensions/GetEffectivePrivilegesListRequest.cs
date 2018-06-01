@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </summary>
         static GetEffectivePrivilegesListRequest()
         {
-            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES,
+            LdapExtendedResponse.Register(ReplicationConstants.GetEffectiveListPrivilegesRes,
                 typeof(GetEffectivePrivilegesListResponse));
         }
 
@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the entry whose attribute is
         ///     being checked.
         /// </param>
-        /// <param name="trusteeDN">
+        /// <param name="trusteeDn">
         ///     The distinguished name of the entry whose trustee rights
         ///     are being returned
         /// </param>
@@ -79,34 +79,34 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetEffectivePrivilegesListRequest(string dn, string trusteeDN, string[] attrName)
-            : base(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_REQ, null)
+        public GetEffectivePrivilegesListRequest(string dn, string trusteeDn, string[] attrName)
+            : base(ReplicationConstants.GetEffectiveListPrivilegesReq, null)
         {
             try
             {
                 if ((object) dn == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_trusteeDN = new Asn1OctetString(trusteeDN);
-                var asn1_dn = new Asn1OctetString(dn);
-                asn1_trusteeDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                var asn1TrusteeDn = new Asn1OctetString(trusteeDn);
+                var asn1Dn = new Asn1OctetString(dn);
+                asn1TrusteeDn.Encode(encoder, encodedData);
+                asn1Dn.Encode(encoder, encodedData);
 
-                var asn1_seqattr = new Asn1Sequence();
+                var asn1Seqattr = new Asn1Sequence();
                 for (var i = 0; attrName[i] != null; i++)
                 {
-                    var asn1_attrName = new Asn1OctetString(attrName[i]);
-                    asn1_seqattr.add(asn1_attrName);
+                    var asn1AttrName = new Asn1OctetString(attrName[i]);
+                    asn1Seqattr.Add(asn1AttrName);
                 }
-                asn1_seqattr.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                asn1Seqattr.Encode(encoder, encodedData);
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

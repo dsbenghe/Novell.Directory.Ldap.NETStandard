@@ -39,18 +39,18 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ReferralAddress
     {
-        private int address_type;
+        private int _addressType;
 
         public int AddressType
         {
-            get { return address_type; }
+            get { return _addressType; }
         }
 
-        protected string strAddress;
+        protected string StrAddress;
 
         public string Address
         {
-            get { return strAddress; }
+            get { return StrAddress; }
         }
 
         /// <summary>
@@ -58,8 +58,8 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         /// </summary>
         public ReferralAddress(Asn1Sequence dseObject)
         {
-            address_type = ((Asn1Integer) dseObject.get_Renamed(0)).intValue();
-            strAddress = ((Asn1OctetString) dseObject.get_Renamed(1)).stringValue();
+            _addressType = ((Asn1Integer) dseObject.get_Renamed(0)).IntValue();
+            StrAddress = ((Asn1OctetString) dseObject.get_Renamed(1)).StringValue();
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] Superiors
         {
-            get { return superiors; }
+            get { return _superiors; }
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] RequiredAttributes
         {
-            get { return required; }
+            get { return _required; }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] OptionalAttributes
         {
-            get { return optional; }
+            get { return _optional; }
         }
 
         /// <summary>
@@ -99,30 +99,30 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int Type
         {
-            get { return type; }
+            get { return _type; }
         }
 
-        private string[] superiors;
-        private string[] required;
-        private string[] optional;
-        private int type = -1;
+        private string[] _superiors;
+        private string[] _required;
+        private string[] _optional;
+        private int _type = -1;
 
         /// <summary>
         ///     This class definition defines an abstract schema class.
         ///     This is equivalent to setting the Novell eDirectory effective class
         ///     flag to true.
         /// </summary>
-        public const int ABSTRACT = 0;
+        public const int Abstract = 0;
 
         /// <summary>
         ///     This class definition defines a structural schema class.
         ///     This is equivalent to setting the Novell eDirectory effective class
         ///     flag to true.
         /// </summary>
-        public const int STRUCTURAL = 1;
+        public const int Structural = 1;
 
         /// <summary> This class definition defines an auxiliary schema class.</summary>
-        public const int AUXILIARY = 2;
+        public const int Auxiliary = 2;
 
         /// <summary>
         ///     Constructs an object class definition for adding to or deleting from
@@ -158,30 +158,30 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapObjectClassSchema(string[] names, string oid, string[] superiors, string description,
             string[] required, string[] optional, int type, bool obsolete)
-            : base(LdapSchema.schemaTypeNames[LdapSchema.OBJECT_CLASS])
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.ObjectClass])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.type = type;
-            this.obsolete = obsolete;
+            this.Oid = oid;
+            this.Description = description;
+            this._type = type;
+            this.Obsolete = obsolete;
             if (superiors != null)
             {
-                this.superiors = new string[superiors.Length];
-                superiors.CopyTo(this.superiors, 0);
+                this._superiors = new string[superiors.Length];
+                superiors.CopyTo(this._superiors, 0);
             }
             if (required != null)
             {
-                this.required = new string[required.Length];
-                required.CopyTo(this.required, 0);
+                this._required = new string[required.Length];
+                required.CopyTo(this._required, 0);
             }
             if (optional != null)
             {
-                this.optional = new string[optional.Length];
-                optional.CopyTo(this.optional, 0);
+                this._optional = new string[optional.Length];
+                optional.CopyTo(this._optional, 0);
             }
-            Value = formatString();
+            Value = FormatString();
         }
 
 
@@ -193,7 +193,7 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a directory
         ///     query for "objectClasses".
         /// </param>
-        public LdapObjectClassSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.OBJECT_CLASS])
+        public LdapObjectClassSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.ObjectClass])
         {
             try
             {
@@ -205,35 +205,35 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
+                if ((object) parser.Id != null)
+                    Oid = parser.Id;
                 if ((object) parser.Description != null)
-                    description = parser.Description;
-                obsolete = parser.Obsolete;
+                    Description = parser.Description;
+                Obsolete = parser.Obsolete;
                 if (parser.Required != null)
                 {
-                    required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(required, 0);
+                    _required = new string[parser.Required.Length];
+                    parser.Required.CopyTo(_required, 0);
                 }
                 if (parser.Optional != null)
                 {
-                    optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(optional, 0);
+                    _optional = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(_optional, 0);
                 }
                 if (parser.Superiors != null)
                 {
-                    superiors = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(superiors, 0);
+                    _superiors = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(_superiors, 0);
                 }
-                type = parser.Type;
+                _type = parser.Type;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -248,13 +248,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -302,11 +302,11 @@ namespace Novell.Directory.Ldap
             }
             if (Type != -1)
             {
-                if (Type == ABSTRACT)
+                if (Type == Abstract)
                     valueBuffer.Append(" ABSTRACT");
-                else if (Type == AUXILIARY)
+                else if (Type == Auxiliary)
                     valueBuffer.Append(" AUXILIARY");
-                else if (Type == STRUCTURAL)
+                else if (Type == Structural)
                     valueBuffer.Append(" STRUCTURAL");
             }
             if ((strArray = RequiredAttributes) != null)
@@ -346,7 +346,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");

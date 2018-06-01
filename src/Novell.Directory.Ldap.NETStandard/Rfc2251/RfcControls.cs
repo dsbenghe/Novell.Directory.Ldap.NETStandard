@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcControls : Asn1SequenceOf
     {
         /// <summary> Controls context specific tag</summary>
-        public const int CONTROLS = 0;
+        public const int Controls = 0;
 
         //*************************************************************************
         // Constructors for Controls
@@ -61,10 +61,10 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> Constructs a Controls object by decoding it from an InputStream.</summary>
         [CLSCompliant(false)]
-        public RfcControls(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcControls(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
         {
             // Convert each SEQUENCE element to a Control
-            for (var i = 0; i < size(); i++)
+            for (var i = 0; i < Size(); i++)
             {
                 var tempControl = new RfcControl((Asn1Sequence) get_Renamed(i));
                 set_Renamed(i, tempControl);
@@ -76,9 +76,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override add() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void add(RfcControl control)
+        public void Add(RfcControl control)
         {
-            base.add(control);
+            base.Add(control);
         }
 
         /// <summary> Override set() of Asn1SequenceOf to only accept a Control type.</summary>
@@ -92,9 +92,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return a context specific id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.CONTEXT, true, CONTROLS);
+            return new Asn1Identifier(Asn1Identifier.Context, true, Controls);
         }
     }
 }

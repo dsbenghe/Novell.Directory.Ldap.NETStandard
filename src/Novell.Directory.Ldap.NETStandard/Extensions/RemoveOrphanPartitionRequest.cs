@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <summary>
         ///     Constructs an extended operation object for deleting an orphan partition.
         /// </summary>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The distinguished name of the server
         ///     on which the orphan partition resides.
         /// </param>
@@ -65,28 +65,28 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public RemoveOrphanPartitionRequest(string serverDN, string contextName)
-            : base(ReplicationConstants.REMOVE_ORPHAN_NAMING_CONTEXT_REQ, null)
+        public RemoveOrphanPartitionRequest(string serverDn, string contextName)
+            : base(ReplicationConstants.RemoveOrphanNamingContextReq, null)
         {
             try
             {
-                if ((object) serverDN == null || (object) contextName == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) serverDn == null || (object) contextName == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_contextName = new Asn1OctetString(contextName);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
+                var asn1ContextName = new Asn1OctetString(contextName);
 
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_contextName.encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
+                asn1ContextName.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

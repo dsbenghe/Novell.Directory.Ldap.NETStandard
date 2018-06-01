@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <summary>
         ///     Constructs an extended operation object for aborting a partition operation.
         /// </summary>
-        /// <param name="partitionDN">
+        /// <param name="partitionDn">
         ///     The distinguished name of the replica's
         ///     partition root.
         /// </param>
@@ -65,29 +65,29 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public AbortPartitionOperationRequest(string partitionDN, int flags)
-            : base(ReplicationConstants.ABORT_NAMING_CONTEXT_OP_REQ, null)
+        public AbortPartitionOperationRequest(string partitionDn, int flags)
+            : base(ReplicationConstants.AbortNamingContextOpReq, null)
         {
             try
             {
-                if ((object) partitionDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) partitionDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_partitionDN = new Asn1OctetString(partitionDN);
+                var asn1Flags = new Asn1Integer(flags);
+                var asn1PartitionDn = new Asn1OctetString(partitionDn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_partitionDN.encode(encoder, encodedData);
+                asn1Flags.Encode(encoder, encodedData);
+                asn1PartitionDn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

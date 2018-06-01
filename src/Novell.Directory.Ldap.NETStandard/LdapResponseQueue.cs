@@ -64,10 +64,10 @@ namespace Novell.Directory.Ldap
         ///     Ldap request, after which it will receive responses
         ///     for that request..
         /// </param>
-        public virtual void merge(LdapMessageQueue queue2)
+        public virtual void Merge(LdapMessageQueue queue2)
         {
             var q = (LdapResponseQueue) queue2;
-            agent.merge(q.MessageAgent);
+            Agent.Merge(q.MessageAgent);
         }
     }
 }

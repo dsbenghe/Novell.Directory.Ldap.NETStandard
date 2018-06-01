@@ -59,44 +59,44 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICA_INFO_RES, typeof(GetReplicaInfoResponse));
+            LdapExtendedResponse.Register(ReplicationConstants.GetReplicaInfoRes, typeof(GetReplicaInfoResponse));
         }
 
         /// <summary>
         ///     Constructs an extended operations object for reading replica information.
         /// </summary>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The server on which the replica resides.
         /// </param>
-        /// <param name="partitionDN">
+        /// <param name="partitionDn">
         ///     The distinguished name of the replica to be read.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetReplicaInfoRequest(string serverDN, string partitionDN)
-            : base(ReplicationConstants.GET_REPLICA_INFO_REQ, null)
+        public GetReplicaInfoRequest(string serverDn, string partitionDn)
+            : base(ReplicationConstants.GetReplicaInfoReq, null)
         {
             try
             {
-                if ((object) serverDN == null || (object) partitionDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) serverDn == null || (object) partitionDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_partitionDN = new Asn1OctetString(partitionDN);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
+                var asn1PartitionDn = new Asn1OctetString(partitionDn);
 
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_partitionDN.encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
+                asn1PartitionDn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

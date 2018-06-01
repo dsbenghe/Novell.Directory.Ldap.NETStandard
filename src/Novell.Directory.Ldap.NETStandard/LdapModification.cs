@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap
         ///     the attribute if it does not already exist.
         ///     ADD = 0
         /// </summary>
-        public const int ADD = 0;
+        public const int Add = 0;
 
         /// <summary>
         ///     Deletes the listed values from the given attribute,
@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap
         ///     deletion.
         ///     DELETE = 1
         /// </summary>
-        public const int DELETE = 1;
+        public const int Delete = 1;
 
         /// <summary>
         ///     Replaces all existing values of the given attribute
@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap
         ///     exists, and is ignored if the attribute does not exist.
         ///     REPLACE = 2
         /// </summary>
-        public const int REPLACE = 2;
+        public const int Replace = 2;
 
         /// <summary>
         ///     Specifies a modification to be made to an attribute.

@@ -55,55 +55,55 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Constants used to refer to different Novell eDirectory
         ///     background processes
         /// </summary>
-        public const int Ldap_BK_PROCESS_BKLINKER = 1;
+        public const int LdapBkProcessBklinker = 1;
 
-        public const int Ldap_BK_PROCESS_JANITOR = 2;
-        public const int Ldap_BK_PROCESS_LIMBER = 3;
-        public const int Ldap_BK_PROCESS_SKULKER = 4;
-        public const int Ldap_BK_PROCESS_SCHEMA_SYNC = 5;
-        public const int Ldap_BK_PROCESS_PART_PURGE = 6;
+        public const int LdapBkProcessJanitor = 2;
+        public const int LdapBkProcessLimber = 3;
+        public const int LdapBkProcessSkulker = 4;
+        public const int LdapBkProcessSchemaSync = 5;
+        public const int LdapBkProcessPartPurge = 6;
 
         /// <summary>
         ///     Based on the process ID specified this constructer cosntructs an
         ///     LdapExtendedOperation object with the apppropriate OID.
         /// </summary>
-        /// <param name="processID">
+        /// <param name="processId">
         ///     This id identifies the background process to be triggerd.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public TriggerBackgroundProcessRequest(int processID) : base(null, null)
+        public TriggerBackgroundProcessRequest(int processId) : base(null, null)
         {
-            switch (processID)
+            switch (processId)
             {
-                case Ldap_BK_PROCESS_BKLINKER:
-                    setID(ReplicationConstants.TRIGGER_BKLINKER_REQ);
+                case LdapBkProcessBklinker:
+                    SetId(ReplicationConstants.TriggerBklinkerReq);
                     break;
 
-                case Ldap_BK_PROCESS_JANITOR:
-                    setID(ReplicationConstants.TRIGGER_JANITOR_REQ);
+                case LdapBkProcessJanitor:
+                    SetId(ReplicationConstants.TriggerJanitorReq);
                     break;
 
-                case Ldap_BK_PROCESS_LIMBER:
-                    setID(ReplicationConstants.TRIGGER_LIMBER_REQ);
+                case LdapBkProcessLimber:
+                    SetId(ReplicationConstants.TriggerLimberReq);
                     break;
 
-                case Ldap_BK_PROCESS_SKULKER:
-                    setID(ReplicationConstants.TRIGGER_SKULKER_REQ);
+                case LdapBkProcessSkulker:
+                    SetId(ReplicationConstants.TriggerSkulkerReq);
                     break;
 
-                case Ldap_BK_PROCESS_SCHEMA_SYNC:
-                    setID(ReplicationConstants.TRIGGER_SCHEMA_SYNC_REQ);
+                case LdapBkProcessSchemaSync:
+                    SetId(ReplicationConstants.TriggerSchemaSyncReq);
                     break;
 
-                case Ldap_BK_PROCESS_PART_PURGE:
-                    setID(ReplicationConstants.TRIGGER_PART_PURGE_REQ);
+                case LdapBkProcessPartPurge:
+                    SetId(ReplicationConstants.TriggerPartPurgeReq);
                     break;
 
                 default:
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
             }
         }
     }

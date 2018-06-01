@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the replica's
         ///     partition root.
         /// </param>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The distinguished name of server from which the replica
         ///     will be removed.
         /// </param>
@@ -72,30 +72,30 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public RemoveReplicaRequest(string dn, string serverDN, int flags)
-            : base(ReplicationConstants.DELETE_REPLICA_REQ, null)
+        public RemoveReplicaRequest(string dn, string serverDn, int flags)
+            : base(ReplicationConstants.DeleteReplicaReq, null)
         {
             try
             {
-                if ((object) dn == null || (object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) dn == null || (object) serverDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_dn = new Asn1OctetString(dn);
+                var asn1Flags = new Asn1Integer(flags);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
+                var asn1Dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                asn1Flags.Encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
+                asn1Dn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

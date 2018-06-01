@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
      *               deleteoldrdn    BOOLEAN,
      *               newSuperior     [0] LdapDN OPTIONAL }
      */
-    public class LdapModifyDNRequest : LdapMessage
+    public class LdapModifyDnRequest : LdapMessage
     {
         /// <summary>
         ///     Returns the dn of the entry to rename or move in the directory
@@ -54,9 +54,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to rename or move
         /// </returns>
-        public virtual string DN
+        public virtual string Dn
         {
-            get { return Asn1Object.RequestDN; }
+            get { return Asn1Object.RequestDn; }
         }
 
         /// <summary>
@@ -65,14 +65,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the newRDN of the entry to rename or move
         /// </returns>
-        public virtual string NewRDN
+        public virtual string NewRdn
         {
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var relDN = (RfcRelativeLdapDN) req.toArray()[1];
-                return relDN.stringValue();
+                var req = (RfcModifyDnRequest) Asn1Object.GetRequest();
+                var relDn = (RfcRelativeLdapDn) req.ToArray()[1];
+                return relDn.StringValue();
             }
         }
 
@@ -83,14 +83,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the DeleteOldRDN flag for the entry to rename or move
         /// </returns>
-        public virtual bool DeleteOldRDN
+        public virtual bool DeleteOldRdn
         {
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var delOld = (Asn1Boolean) req.toArray()[2];
-                return delOld.booleanValue();
+                var req = (RfcModifyDnRequest) Asn1Object.GetRequest();
+                var delOld = (Asn1Boolean) req.ToArray()[2];
+                return delOld.BooleanValue();
             }
         }
 
@@ -101,19 +101,19 @@ namespace Novell.Directory.Ldap
         ///     the ParentDN for the entry to move, or <dd>null</dd>
         ///     if the request is not a move.
         /// </returns>
-        public virtual string ParentDN
+        public virtual string ParentDn
         {
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var seq = req.toArray();
+                var req = (RfcModifyDnRequest) Asn1Object.GetRequest();
+                var seq = req.ToArray();
                 if (seq.Length < 4 || seq[3] == null)
                 {
                     return null;
                 }
-                var parentDN = (RfcLdapDN) req.toArray()[3];
-                return parentDN.stringValue();
+                var parentDn = (RfcLdapDn) req.ToArray()[3];
+                return parentDn.StringValue();
             }
         }
 
@@ -139,11 +139,11 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the modifyDN request,
         ///     or null if none.
         /// </param>
-        public LdapModifyDNRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
+        public LdapModifyDnRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
             : base(
-                MODIFY_RDN_REQUEST,
-                new RfcModifyDNRequest(new RfcLdapDN(dn), new RfcRelativeLdapDN(newRdn), new Asn1Boolean(deleteOldRdn),
-                    (object) newParentdn != null ? new RfcLdapDN(newParentdn) : null), cont)
+                ModifyRdnRequest,
+                new RfcModifyDnRequest(new RfcLdapDn(dn), new RfcRelativeLdapDn(newRdn), new Asn1Boolean(deleteOldRdn),
+                    (object) newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
         {
         }
 

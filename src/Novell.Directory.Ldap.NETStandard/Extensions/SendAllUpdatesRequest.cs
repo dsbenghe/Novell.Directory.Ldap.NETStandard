@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the replica
         ///     that will be updated.
         /// </param>
-        /// <param name="origServerDN">
+        /// <param name="origServerDn">
         ///     The distinguished name of the server that sends the
         ///     updates to the replica ring.
         /// </param>
@@ -63,27 +63,27 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public SendAllUpdatesRequest(string partitionRoot, string origServerDN)
-            : base(ReplicationConstants.SEND_ALL_UPDATES_REQ, null)
+        public SendAllUpdatesRequest(string partitionRoot, string origServerDn)
+            : base(ReplicationConstants.SendAllUpdatesReq, null)
         {
             try
             {
-                if ((object) partitionRoot == null || (object) origServerDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) partitionRoot == null || (object) origServerDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
-                var asn1_origServerDN = new Asn1OctetString(origServerDN);
+                var asn1PartitionRoot = new Asn1OctetString(partitionRoot);
+                var asn1OrigServerDn = new Asn1OctetString(origServerDn);
 
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_origServerDN.encode(encoder, encodedData);
+                asn1PartitionRoot.Encode(encoder, encodedData);
+                asn1OrigServerDn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

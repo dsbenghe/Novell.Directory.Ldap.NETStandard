@@ -40,19 +40,19 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventArgs' />
     public class DirectoryEventArgs : BaseEventArgs
     {
-        protected EventClassifiers eClassification;
+        protected EventClassifiers EClassification;
 
         public EventClassifiers EventClassification
         {
-            get { return eClassification; }
-            set { eClassification = value; }
+            get { return EClassification; }
+            set { EClassification = value; }
         }
 
         public DirectoryEventArgs(LdapMessage sourceMessage,
             EventClassifiers aClassification)
             : base(sourceMessage)
         {
-            eClassification = aClassification;
+            EClassification = aClassification;
         }
     }
 }

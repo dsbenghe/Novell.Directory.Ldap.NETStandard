@@ -39,68 +39,68 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ValueEventData : BaseEdirEventData
     {
-        protected string strAttribute;
+        protected string StrAttribute;
 
         public string Attribute
         {
-            get { return strAttribute; }
+            get { return StrAttribute; }
         }
 
-        protected string strClassId;
+        protected string StrClassId;
 
         public string ClassId
         {
-            get { return strClassId; }
+            get { return StrClassId; }
         }
 
-        protected string strData;
+        protected string StrData;
 
         public string Data
         {
-            get { return strData; }
+            get { return StrData; }
         }
 
-        protected byte[] binData;
+        protected byte[] BinData;
 
         public byte[] BinaryData
         {
-            get { return binData; }
+            get { return BinData; }
         }
 
-        protected string strEntry;
+        protected string StrEntry;
 
         public string Entry
         {
-            get { return strEntry; }
+            get { return StrEntry; }
         }
 
-        protected string strPerpetratorDN;
+        protected string StrPerpetratorDn;
 
-        public string PerpetratorDN
+        public string PerpetratorDn
         {
-            get { return strPerpetratorDN; }
+            get { return StrPerpetratorDn; }
         }
 
         // syntax
-        protected string strSyntax;
+        protected string StrSyntax;
 
         public string Syntax
         {
-            get { return strSyntax; }
+            get { return StrSyntax; }
         }
 
-        protected DSETimeStamp timeStampObj;
+        protected DseTimeStamp TimeStampObj;
 
-        public DSETimeStamp TimeStamp
+        public DseTimeStamp TimeStamp
         {
-            get { return timeStampObj; }
+            get { return TimeStampObj; }
         }
 
-        protected int nVerb;
+        protected int NVerb;
 
         public int Verb
         {
-            get { return nVerb; }
+            get { return NVerb; }
         }
 
         public ValueEventData(EdirEventDataType eventDataType, Asn1Object message)
@@ -109,26 +109,26 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var length = new int[1];
             Asn1OctetString octData;
 
-            strPerpetratorDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strEntry =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strAttribute =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strSyntax =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            StrPerpetratorDn =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            StrEntry =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            StrAttribute =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            StrSyntax =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
-            strClassId =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            StrClassId =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
-            timeStampObj =
-                new DSETimeStamp((Asn1Sequence) decoder.decode(decodedData, length));
+            TimeStampObj =
+                new DseTimeStamp((Asn1Sequence) Decoder.Decode(DecodedData, length));
 
-            octData = (Asn1OctetString) decoder.decode(decodedData, length);
-            strData = octData.stringValue();
-            binData = SupportClass.ToByteArray(octData.byteValue());
+            octData = (Asn1OctetString) Decoder.Decode(DecodedData, length);
+            StrData = octData.StringValue();
+            BinData = SupportClass.ToByteArray(octData.ByteValue());
 
-            nVerb = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
+            NVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
 
             DataInitDone();
         }
@@ -141,15 +141,15 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var buf = new StringBuilder();
 
             buf.Append("[ValueEventData");
-            buf.AppendFormat("(Attribute={0})", strAttribute);
-            buf.AppendFormat("(Classid={0})", strClassId);
-            buf.AppendFormat("(Data={0})", strData);
-            buf.AppendFormat("(Data={0})", binData);
-            buf.AppendFormat("(Entry={0})", strEntry);
-            buf.AppendFormat("(Perpetrator={0})", strPerpetratorDN);
-            buf.AppendFormat("(Syntax={0})", strSyntax);
-            buf.AppendFormat("(TimeStamp={0})", timeStampObj);
-            buf.AppendFormat("(Verb={0})", nVerb);
+            buf.AppendFormat("(Attribute={0})", StrAttribute);
+            buf.AppendFormat("(Classid={0})", StrClassId);
+            buf.AppendFormat("(Data={0})", StrData);
+            buf.AppendFormat("(Data={0})", BinData);
+            buf.AppendFormat("(Entry={0})", StrEntry);
+            buf.AppendFormat("(Perpetrator={0})", StrPerpetratorDn);
+            buf.AppendFormat("(Syntax={0})", StrSyntax);
+            buf.AppendFormat("(TimeStamp={0})", TimeStampObj);
+            buf.AppendFormat("(Verb={0})", NVerb);
             buf.Append("]");
 
             return buf.ToString();

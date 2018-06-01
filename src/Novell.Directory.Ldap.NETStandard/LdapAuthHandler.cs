@@ -42,11 +42,11 @@ namespace Novell.Directory.Ldap
     ///     referral URL other than ldap://something) are not chased automatically
     ///     by the API on automatic following.
     /// </summary>
-    /// <seealso cref="LdapBindHandler">
+    /// <seealso cref="ILdapBindHandler">
     /// </seealso>
     /// <seealso cref="LdapConstraints.ReferralFollowing">
     /// </seealso>
-    public interface LdapAuthHandler : LdapReferralHandler
+    public interface ILdapAuthHandler : ILdapReferralHandler
     {
         /// <summary>
         ///     Returns an object which can provide credentials for authenticating to
@@ -63,6 +63,6 @@ namespace Novell.Directory.Ldap
         ///     An object with authentication credentials to the specified
         ///     host and port.
         /// </returns>
-        LdapAuthProvider getAuthProvider(string host, int port);
+        LdapAuthProvider GetAuthProvider(string host, int port);
     }
 }

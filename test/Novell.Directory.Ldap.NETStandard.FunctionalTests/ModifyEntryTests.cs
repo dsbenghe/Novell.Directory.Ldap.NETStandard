@@ -16,12 +16,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
             {
                 var newAttribute = new LdapAttribute(attrName, value);
-                var modification = new LdapModification(LdapModification.ADD, newAttribute);
-                ldapConnection.Modify(existingEntry.DN, modification);
+                var modification = new LdapModification(LdapModification.Add, newAttribute);
+                ldapConnection.Modify(existingEntry.Dn, modification);
             });
 
-            var modifiedEntry = LdapOps.GetEntry(existingEntry.DN);
-            Assert.Equal(value, modifiedEntry.getAttribute(attrName).StringValue);
+            var modifiedEntry = LdapOps.GetEntry(existingEntry.Dn);
+            Assert.Equal(value, modifiedEntry.GetAttribute(attrName).StringValue);
         }
 
         [Fact]
@@ -34,12 +34,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
             {
                 var modifiedAttribute = new LdapAttribute(attrName, value);
-                var modification = new LdapModification(LdapModification.REPLACE, modifiedAttribute);
-                ldapConnection.Modify(existingEntry.DN, modification);
+                var modification = new LdapModification(LdapModification.Replace, modifiedAttribute);
+                ldapConnection.Modify(existingEntry.Dn, modification);
             });
 
-            var modifiedEntry = LdapOps.GetEntry(existingEntry.DN);
-            Assert.Equal(value, modifiedEntry.getAttribute(attrName).StringValue);
+            var modifiedEntry = LdapOps.GetEntry(existingEntry.Dn);
+            Assert.Equal(value, modifiedEntry.GetAttribute(attrName).StringValue);
         }
 
         [Fact]
@@ -51,12 +51,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
                 {
                     var newAttribute = new LdapAttribute("givenName", "blah");
-                    var modification = new LdapModification(LdapModification.REPLACE, newAttribute);
-                    ldapConnection.Modify(ldapEntry.DN, modification);
+                    var modification = new LdapModification(LdapModification.Replace, newAttribute);
+                    ldapConnection.Modify(ldapEntry.Dn, modification);
                 })
             );
 
-            Assert.Equal(LdapException.NO_SUCH_OBJECT, ldapException.ResultCode);
+            Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
         }
     }
 }

@@ -60,13 +60,13 @@ namespace Novell.Directory.Ldap.Controls
         /// </summary>
         public virtual int ChangeTypes
         {
-            get { return m_changeTypes; }
+            get { return _mChangeTypes; }
 
             set
             {
-                m_changeTypes = value;
-                m_sequence.set_Renamed(CHANGETYPES_INDEX, new Asn1Integer(m_changeTypes));
-                setValue();
+                _mChangeTypes = value;
+                _mSequence.set_Renamed(ChangetypesIndex, new Asn1Integer(_mChangeTypes));
+                SetValue();
             }
         }
 
@@ -87,13 +87,13 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ReturnControls
         {
-            get { return m_returnControls; }
+            get { return _mReturnControls; }
 
             set
             {
-                m_returnControls = value;
-                m_sequence.set_Renamed(RETURNCONTROLS_INDEX, new Asn1Boolean(m_returnControls));
-                setValue();
+                _mReturnControls = value;
+                _mSequence.set_Renamed(ReturncontrolsIndex, new Asn1Boolean(_mReturnControls));
+                SetValue();
             }
         }
 
@@ -113,65 +113,65 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public virtual bool ChangesOnly
         {
-            get { return m_changesOnly; }
+            get { return _mChangesOnly; }
 
             set
             {
-                m_changesOnly = value;
-                m_sequence.set_Renamed(CHANGESONLY_INDEX, new Asn1Boolean(m_changesOnly));
-                setValue();
+                _mChangesOnly = value;
+                _mSequence.set_Renamed(ChangesonlyIndex, new Asn1Boolean(_mChangesOnly));
+                SetValue();
             }
         }
 
         /* private data members */
-        private static readonly int SEQUENCE_SIZE = 3;
+        private static readonly int SequenceSize = 3;
 
-        private static readonly int CHANGETYPES_INDEX = 0;
-        private static readonly int CHANGESONLY_INDEX = 1;
-        private static readonly int RETURNCONTROLS_INDEX = 2;
+        private static readonly int ChangetypesIndex = 0;
+        private static readonly int ChangesonlyIndex = 1;
+        private static readonly int ReturncontrolsIndex = 2;
 
-        private static readonly LBEREncoder s_encoder;
+        private static readonly LberEncoder SEncoder;
 
-        private int m_changeTypes;
-        private bool m_changesOnly;
-        private bool m_returnControls;
-        private readonly Asn1Sequence m_sequence;
+        private int _mChangeTypes;
+        private bool _mChangesOnly;
+        private bool _mReturnControls;
+        private readonly Asn1Sequence _mSequence;
 
         /// <summary> The requestOID of the persistent search control</summary>
-        private static readonly string requestOID = "2.16.840.1.113730.3.4.3";
+        private static readonly string RequestOid = "2.16.840.1.113730.3.4.3";
 
         /// <summary> The responseOID of the psersistent search - entry change control</summary>
-        private static readonly string responseOID = "2.16.840.1.113730.3.4.7";
+        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.7";
 
         /// <summary>
         ///     Change type specifying that you want to track additions of new entries
         ///     to the directory.
         /// </summary>
-        public const int ADD = 1;
+        public const int Add = 1;
 
         /// <summary>
         ///     Change type specifying that you want to track removals of entries from
         ///     the directory.
         /// </summary>
-        public const int DELETE = 2;
+        public const int Delete = 2;
 
         /// <summary>
         ///     Change type specifying that you want to track modifications of entries
         ///     in the directory.
         /// </summary>
-        public const int MODIFY = 4;
+        public const int Modify = 4;
 
         /// <summary>
         ///     Change type specifying that you want to track modifications of the DNs
         ///     of entries in the directory.
         /// </summary>
-        public const int MODDN = 8;
+        public const int Moddn = 8;
 
         /// <summary>
         ///     Change type specifying that you want to track any of the above
         ///     modifications.
         /// </summary>
-        public static readonly int ANY = ADD | DELETE | MODIFY | MODDN;
+        public static readonly int Any = Add | Delete | Modify | Moddn;
 
         /* public constructors */
 
@@ -180,7 +180,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     isCritical equal to true, changesOnly equal to true, and
         ///     returnControls equal to true
         /// </summary>
-        public LdapPersistSearchControl() : this(ANY, true, true, true)
+        public LdapPersistSearchControl() : this(Any, true, true, true)
         {
         }
 
@@ -217,24 +217,24 @@ namespace Novell.Directory.Ldap.Controls
         ///     the server will not perform the search at all.
         /// </param>
         public LdapPersistSearchControl(int changeTypes, bool changesOnly, bool returnControls, bool isCritical)
-            : base(requestOID, isCritical, null)
+            : base(RequestOid, isCritical, null)
         {
-            m_changeTypes = changeTypes;
-            m_changesOnly = changesOnly;
-            m_returnControls = returnControls;
+            _mChangeTypes = changeTypes;
+            _mChangesOnly = changesOnly;
+            _mReturnControls = returnControls;
 
-            m_sequence = new Asn1Sequence(SEQUENCE_SIZE);
+            _mSequence = new Asn1Sequence(SequenceSize);
 
-            m_sequence.add(new Asn1Integer(m_changeTypes));
-            m_sequence.add(new Asn1Boolean(m_changesOnly));
-            m_sequence.add(new Asn1Boolean(m_returnControls));
+            _mSequence.Add(new Asn1Integer(_mChangeTypes));
+            _mSequence.Add(new Asn1Boolean(_mChangesOnly));
+            _mSequence.Add(new Asn1Boolean(_mReturnControls));
 
-            setValue();
+            SetValue();
         }
 
         public override string ToString()
         {
-            var data = m_sequence.getEncoding(s_encoder);
+            var data = _mSequence.GetEncoding(SEncoder);
 
             var buf = new StringBuilder(data.Length);
 
@@ -249,14 +249,14 @@ namespace Novell.Directory.Ldap.Controls
         }
 
         /// <summary>  Sets the encoded value of the LdapControlClass</summary>
-        private void setValue()
+        private void SetValue()
         {
-            base.setValue(m_sequence.getEncoding(s_encoder));
+            base.SetValue(_mSequence.GetEncoding(SEncoder));
         }
 
         static LdapPersistSearchControl()
         {
-            s_encoder = new LBEREncoder();
+            SEncoder = new LberEncoder();
             /*
             * This is where we register the control response
             */
@@ -264,7 +264,7 @@ namespace Novell.Directory.Ldap.Controls
                 /* Register the Entry Change control class which is returned by the
                 * server in response to a persistent search request
                 */
-                register(responseOID, typeof(LdapEntryChangeControl));
+                Register(ResponseOid, typeof(LdapEntryChangeControl));
             }
         }
     } // end class LdapPersistentSearchControl

@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The GetBindDNResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.32
     /// </summary>
-    public class GetBindDNResponse : LdapExtendedResponse
+    public class GetBindDnResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the identity of the object.
@@ -52,11 +52,11 @@ namespace Novell.Directory.Ldap.Extensions
         /// </returns>
         public virtual string Identity
         {
-            get { return identity; }
+            get { return _identity; }
         }
 
         // Identity returned by the server
-        private readonly string identity;
+        private readonly string _identity;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the bind dn.
@@ -68,9 +68,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <exception>
         ///     IOException The return value could not be decoded.
         /// </exception>
-        public GetBindDNResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public GetBindDnResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
         {
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
@@ -78,23 +78,23 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("No returned value");
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
                 // The only parameter returned should be an octet string
-                var asn1_identity = (Asn1OctetString) decoder.decode(returnedValue);
-                if (asn1_identity == null)
+                var asn1Identity = (Asn1OctetString) decoder.Decode(returnedValue);
+                if (asn1Identity == null)
                     throw new IOException("Decoding error");
 
                 // Convert to normal string object
-                identity = asn1_identity.stringValue();
-                if ((object) identity == null)
+                _identity = asn1Identity.StringValue();
+                if ((object) _identity == null)
                     throw new IOException("Decoding error");
             }
             else
             {
-                identity = "";
+                _identity = "";
             }
         }
     }

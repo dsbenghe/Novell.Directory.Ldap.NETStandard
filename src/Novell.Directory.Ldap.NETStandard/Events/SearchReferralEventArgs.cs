@@ -41,14 +41,14 @@ namespace Novell.Directory.Ldap.Events
         public SearchReferralEventArgs(LdapMessage sourceMessage,
             EventClassifiers aClassification,
             LdapEventType aType)
-            : base(sourceMessage, EventClassifiers.CLASSIFICATION_LDAP_PSEARCH,
-                LdapEventType.LDAP_PSEARCH_ANY) // TODO: why type is ANY..?
+            : base(sourceMessage, EventClassifiers.ClassificationLdapPsearch,
+                LdapEventType.LdapPsearchAny) // TODO: why type is ANY..?
         {
         }
 
-        public string[] getUrls()
+        public string[] GetUrls()
         {
-            return ((LdapSearchResultReference) ldap_message).Referrals;
+            return ((LdapSearchResultReference) LdapMessage).Referrals;
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *                                                encoded      original
         *                                                character    binary value
         */
-        private static readonly char[] emap =
+        private static readonly char[] Emap =
         {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
             'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         * Note: about half of the values in the table are only place holders
         */
-        private static readonly sbyte[] dmap =
+        private static readonly sbyte[] Dmap =
         {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -110,14 +110,14 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the encoded value of the input.
         /// </returns>
-        public static string encode(string inputString)
+        public static string Encode(string inputString)
         {
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(inputString);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
-                return encode(sbytes);
+                return Encode(sbytes);
             }
             catch (IOException ue)
             {
@@ -136,7 +136,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     a String containing the base64 encoded data
         /// </returns>
         [CLSCompliant(false)]
-        public static string encode(sbyte[] inputBytes)
+        public static string Encode(sbyte[] inputBytes)
         {
             int i, j, k;
             int t, t1, t2;
@@ -198,31 +198,31 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // build encodedChars[j]
                 t = 0x00ff & inputBytes[i];
-                encodedChars[j] = emap[t >> 2];
+                encodedChars[j] = Emap[t >> 2];
 
                 // build encodedChars[j+1]
                 if (k == ntb && twoPaddings)
                 {
-                    encodedChars[j + 1] = emap[(t & 0x03) << 4];
+                    encodedChars[j + 1] = Emap[(t & 0x03) << 4];
                     encodedChars[j + 2] = '=';
                     encodedChars[j + 3] = '=';
                     break;
                 }
                 t1 = 0x00ff & inputBytes[i + 1];
-                encodedChars[j + 1] = emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
+                encodedChars[j + 1] = Emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
 
                 // build encodedChars[j+2]
                 if (k == ntb && onePadding)
                 {
-                    encodedChars[j + 2] = emap[(t1 & 0x0f) << 2];
+                    encodedChars[j + 2] = Emap[(t1 & 0x0f) << 2];
                     encodedChars[j + 3] = '=';
                     break;
                 }
                 t2 = 0x00ff & inputBytes[i + 2];
-                encodedChars[j + 2] = emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
+                encodedChars[j + 2] = Emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
 
                 // build encodedChars[j+3]
-                encodedChars[j + 3] = emap[t2 & 0x3f];
+                encodedChars[j + 3] = Emap[t2 & 0x3f];
             }
             return new string(encodedChars);
         }
@@ -239,11 +239,11 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     The decoded byte array.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(string encodedString)
+        public static sbyte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
             SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
-            return decode(c);
+            return Decode(c);
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     A byte array object containing decoded bytes.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(char[] encodedChars)
+        public static sbyte[] Decode(char[] encodedChars)
         {
             int i, j, k;
             var ecLen = encodedChars.Length; // length of encodedChars
@@ -325,7 +325,7 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < ecLen; i += 4, j += 3, k++)
             {
                 // build decodedBytes[j].
-                decodedBytes[j] = (sbyte) ((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
+                decodedBytes[j] = (sbyte) ((Dmap[encodedChars[i]] << 2) | ((Dmap[encodedChars[i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -333,7 +333,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 1] =
-                    (sbyte) (((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
+                    (sbyte) (((Dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((Dmap[encodedChars[i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
@@ -341,7 +341,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
                 decodedBytes[j + 2] =
-                    (sbyte) (((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
+                    (sbyte) (((Dmap[encodedChars[i + 2]] & 0x03) << 6) | (Dmap[encodedChars[i + 3]] & 0x3f));
             }
             return decodedBytes;
         }
@@ -366,7 +366,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     The decoded byte array
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(StringBuilder encodedSBuf, int start, int end)
+        public static sbyte[] Decode(StringBuilder encodedSBuf, int start, int end)
         {
             int i, j, k;
             var esbLen = end - start; // length of the encoded part
@@ -434,7 +434,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // build decodedBytes[j].
                 decodedBytes[j] =
-                    (sbyte) ((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
+                    (sbyte) ((Dmap[encodedSBuf[start + i]] << 2) | ((Dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
@@ -443,7 +443,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
                 decodedBytes[j + 1] =
                     (sbyte)
-                    (((dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) | ((dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
+                    (((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) | ((Dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
@@ -452,7 +452,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
                 decodedBytes[j + 2] =
                     (sbyte)
-                    (((dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (dmap[encodedSBuf[start + i + 3]] & 0x3f));
+                    (((Dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (Dmap[encodedSBuf[start + i + 3]] & 0x3f));
             }
             return decodedBytes;
         }
@@ -491,7 +491,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     true if encoding not required for LDIF
         /// </returns>
         [CLSCompliant(false)]
-        public static bool isLDIFSafe(sbyte[] bytes)
+        public static bool IsLdifSafe(sbyte[] bytes)
         {
             var len = bytes.Length;
             if (len > 0)
@@ -557,14 +557,14 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF
         /// </returns>
-        public static bool isLDIFSafe(string str)
+        public static bool IsLdifSafe(string str)
         {
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(str);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
-                return isLDIFSafe(sbytes);
+                return IsLdifSafe(sbytes);
             }
             catch (IOException ue)
             {
@@ -616,7 +616,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the number of additional bytes in a UTF-8 character sequence.
         /// </returns>
-        private static int getByteCount(sbyte b)
+        private static int GetByteCount(sbyte b)
         {
             if (b > 0)
                 return 0;
@@ -653,7 +653,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the array is one less than the number of bytes in a sequence.
         ///     A validity test for this could be:
         /// </summary>
-        private static readonly sbyte[][] lowerBoundMask =
+        private static readonly sbyte[][] LowerBoundMask =
         {
             new sbyte[] {0, 0}, new[] {(sbyte) 0x1E, (sbyte) 0x00},
             new[] {(sbyte) 0x0F, (sbyte) 0x20}, new[] {(sbyte) 0x07, (sbyte) 0x30}, new[] {(sbyte) 0x02, (sbyte) 0x38},
@@ -661,10 +661,10 @@ namespace Novell.Directory.Ldap.Utilclass
         };
 
         /// <summary>mask to AND with a continuation byte: should equal continuationResult </summary>
-        private static readonly sbyte continuationMask = (sbyte) SupportClass.Identity(0xC0);
+        private static readonly sbyte ContinuationMask = (sbyte) SupportClass.Identity(0xC0);
 
         /// <summary>expected result of ANDing a continuation byte with continuationMask </summary>
-        private static readonly sbyte continuationResult = (sbyte) SupportClass.Identity(0x80);
+        private static readonly sbyte ContinuationResult = (sbyte) SupportClass.Identity(0x80);
 
         /// <summary>
         ///     Determines if an array of bytes contains only valid UTF-8 characters.
@@ -682,7 +682,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     An array of bytes that are to be tested for valid UTF-8
         ///     encoding.
         /// </param>
-        /// <param name="isUCS2Only">
+        /// <param name="isUcs2Only">
         ///     true if the UTF-8 values must be restricted to fit
         ///     within UCS2 encoding (2 bytes)
         /// </param>
@@ -694,12 +694,12 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     represented as a UCS2 character (Java String)
         /// </returns>
         [CLSCompliant(false)]
-        public static bool isValidUTF8(sbyte[] array, bool isUCS2Only)
+        public static bool IsValidUtf8(sbyte[] array, bool isUcs2Only)
         {
             var index = 0;
             while (index < array.Length)
             {
-                var count = getByteCount(array[index]);
+                var count = GetByteCount(array[index]);
                 if (count == 0)
                 {
                     //anything that qualifies as count=0 is valid UTF-8
@@ -707,7 +707,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     continue;
                 }
 
-                if (count == -1 || index + count >= array.Length || isUCS2Only && count >= 3)
+                if (count == -1 || index + count >= array.Length || isUcs2Only && count >= 3)
                 {
                     /* Any count that puts us out of bounds for the index is
                     * invalid.  Valid UCS2 characters can only have 2 additional
@@ -716,7 +716,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 /* Tests if the first and second byte are below the minimum bound */
-                if ((lowerBoundMask[count][0] & array[index]) == 0 && (lowerBoundMask[count][1] & array[index + 1]) == 0)
+                if ((LowerBoundMask[count][0] & array[index]) == 0 && (LowerBoundMask[count][1] & array[index + 1]) == 0)
                 {
                     return false;
                 }
@@ -724,7 +724,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 /* testing continuation on the second and following bytes */
                 for (var i = 1; i <= count; i++)
                 {
-                    if ((array[index + i] & continuationMask) != continuationResult)
+                    if ((array[index + i] & ContinuationMask) != ContinuationResult)
                     {
                         return false;
                     }

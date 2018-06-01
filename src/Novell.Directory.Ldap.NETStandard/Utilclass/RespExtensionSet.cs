@@ -49,14 +49,14 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public override int Count
         {
-            get { return map.Count; }
+            get { return _map.Count; }
         }
 
-        private readonly Hashtable map;
+        private readonly Hashtable _map;
 
         public RespExtensionSet()
         {
-            map = new Hashtable();
+            _map = new Hashtable();
         }
 
 
@@ -64,13 +64,13 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         */
 
-        public void registerResponseExtension(string oid, Type extClass)
+        public void RegisterResponseExtension(string oid, Type extClass)
         {
             lock (this)
             {
-                if (!map.ContainsKey(oid))
+                if (!_map.ContainsKey(oid))
                 {
-                    map.Add(oid, extClass);
+                    _map.Add(oid, extClass);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public override IEnumerator GetEnumerator()
         {
-            return map.Values.GetEnumerator();
+            return _map.Values.GetEnumerator();
         }
 
         /* Searches the list of registered responses for a mathcing response.  We
@@ -92,13 +92,13 @@ namespace Novell.Directory.Ldap.Utilclass
         * Class name that was provided to us on registration.
         */
 
-        public Type findResponseExtension(string searchOID)
+        public Type FindResponseExtension(string searchOid)
         {
             lock (this)
             {
-                if (map.ContainsKey(searchOID))
+                if (_map.ContainsKey(searchOid))
                 {
-                    return (Type) map[searchOID];
+                    return (Type) _map[searchOid];
                 }
                 /* The requested extension does not have a registered response class */
                 return null;

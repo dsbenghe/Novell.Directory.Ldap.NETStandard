@@ -295,11 +295,11 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object) serverMessage != null && serverMessage.Length == 0)
+                if ((object) _serverMessage != null && _serverMessage.Length == 0)
                 {
                     return null;
                 }
-                return serverMessage;
+                return _serverMessage;
             }
         }
 
@@ -310,7 +310,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public virtual Exception Cause
         {
-            get { return rootException; }
+            get { return _rootException; }
         }
 
         /// <summary>
@@ -323,7 +323,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public virtual int ResultCode
         {
-            get { return resultCode; }
+            get { return _resultCode; }
         }
 
         /// <summary>
@@ -344,14 +344,14 @@ namespace Novell.Directory.Ldap
         ///     The part of a submitted distinguished name which could be
         ///     matched by the server or null if the error is a local error.
         /// </returns>
-        public virtual string MatchedDN
+        public virtual string MatchedDn
         {
-            get { return matchedDN; }
+            get { return _matchedDn; }
         }
 
         public override string Message
         {
-            get { return resultCodeToString(); }
+            get { return ResultCodeToString(); }
         }
 
         /*	public override System.String Message
@@ -364,23 +364,23 @@ namespace Novell.Directory.Ldap
                 }
             */
         // The Result Code
-        private readonly int resultCode;
+        private readonly int _resultCode;
         // The localized message
-        private string messageOrKey;
+        private string _messageOrKey;
         // The arguments associated with the localized message
-        private object[] arguments;
+        private object[] _arguments;
         // The Matched DN
-        private readonly string matchedDN;
+        private readonly string _matchedDn;
         // The Root Cause
-        private readonly Exception rootException;
+        private readonly Exception _rootException;
         // A message from the server
-        private readonly string serverMessage;
+        private readonly string _serverMessage;
 
         /// <summary>
         ///     Indicates the requested client operation completed successfully.
         ///     SUCCESS = 0<p />
         /// </summary>
-        public const int SUCCESS = 0;
+        public const int Success = 0;
 
         /// <summary>
         ///     Indicates an internal error.
@@ -389,14 +389,14 @@ namespace Novell.Directory.Ldap
         ///     that the client has sent an erroneous message.
         ///     OPERATIONS_ERROR = 1
         /// </summary>
-        public const int OPERATIONS_ERROR = 1;
+        public const int OperationsError = 1;
 
         /// <summary>
         ///     Indicates that the server has received an invalid or malformed request
         ///     from the client.
         ///     PROTOCOL_ERROR = 2
         /// </summary>
-        public const int PROTOCOL_ERROR = 2;
+        public const int ProtocolError = 2;
 
         /// <summary>
         ///     Indicates that the operation's time limit specified by either the
@@ -404,7 +404,7 @@ namespace Novell.Directory.Ldap
         ///     On search operations, incomplete results are returned.
         ///     TIME_LIMIT_EXCEEDED = 3
         /// </summary>
-        public const int TIME_LIMIT_EXCEEDED = 3;
+        public const int TimeLimitExceeded = 3;
 
         /// <summary>
         ///     Indicates that in a search operation, the size limit specified by
@@ -412,28 +412,28 @@ namespace Novell.Directory.Ldap
         ///     returned.
         ///     SIZE_LIMIT_EXCEEDED = 4
         /// </summary>
-        public const int SIZE_LIMIT_EXCEEDED = 4;
+        public const int SizeLimitExceeded = 4;
 
         /// <summary>
         ///     Does not indicate an error condition. Indicates that the results of
         ///     a compare operation are false.
         ///     COMPARE_FALSE = 5
         /// </summary>
-        public const int COMPARE_FALSE = 5;
+        public const int CompareFalse = 5;
 
         /// <summary>
         ///     Does not indicate an error condition. Indicates that the results of a
         ///     compare operation are true.
         ///     COMPARE_TRUE = 6
         /// </summary>
-        public const int COMPARE_TRUE = 6;
+        public const int CompareTrue = 6;
 
         /// <summary>
         ///     Indicates that during a bind operation the client requested an
         ///     authentication method not supported by the Ldap server.
         ///     AUTH_METHOD_NOT_SUPPORTED = 7
         /// </summary>
-        public const int AUTH_METHOD_NOT_SUPPORTED = 7;
+        public const int AuthMethodNotSupported = 7;
 
         /// <summary>
         ///     Indicates a problem with the level of authentication.
@@ -455,14 +455,14 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     STRONG_AUTH_REQUIRED = 8
         /// </summary>
-        public const int STRONG_AUTH_REQUIRED = 8;
+        public const int StrongAuthRequired = 8;
 
         /// <summary>
         ///     Returned by some Ldap servers to Ldapv2 clients to indicate that a referral
         ///     has been returned in the error string.
         ///     Ldap_PARTIAL_RESULTS = 9
         /// </summary>
-        public const int Ldap_PARTIAL_RESULTS = 9;
+        public const int LdapPartialResults = 9;
 
         /// <summary>
         ///     Does not indicate an error condition. In Ldapv3, indicates that the server
@@ -470,14 +470,14 @@ namespace Novell.Directory.Ldap
         ///     referral field may.
         ///     REFERRAL = 10
         /// </summary>
-        public const int REFERRAL = 10;
+        public const int Referral = 10;
 
         /// <summary>
         ///     Indicates that an Ldap server limit set by an administrative authority
         ///     has been exceeded.
         ///     ADMIN_LIMIT_EXCEEDED = 11
         /// </summary>
-        public const int ADMIN_LIMIT_EXCEEDED = 11;
+        public const int AdminLimitExceeded = 11;
 
         /// <summary>
         ///     Indicates that the Ldap server was unable to satisfy a request because
@@ -486,14 +486,14 @@ namespace Novell.Directory.Ldap
         ///     appropriate for the operation type.
         ///     UNAVAILABLE_CRITICAL_EXTENSION = 12
         /// </summary>
-        public const int UNAVAILABLE_CRITICAL_EXTENSION = 12;
+        public const int UnavailableCriticalExtension = 12;
 
         /// <summary>
         ///     Indicates that the session is not protected by a protocol such as
         ///     Transport Layer Security (TLS), which provides session confidentiality.
         ///     CONFIDENTIALITY_REQUIRED = 13
         /// </summary>
-        public const int CONFIDENTIALITY_REQUIRED = 13;
+        public const int ConfidentialityRequired = 13;
 
         /// <summary>
         ///     Does not indicate an error condition, but indicates that the server is
@@ -501,28 +501,28 @@ namespace Novell.Directory.Ldap
         ///     the same SASL mechanism to continue the process.
         ///     SASL_BIND_IN_PROGRESS = 14
         /// </summary>
-        public const int SASL_BIND_IN_PROGRESS = 14;
+        public const int SaslBindInProgress = 14;
 
         /// <summary>
         ///     Indicates that the attribute specified in the modify or compare
         ///     operation does not exist in the entry.
         ///     NO_SUCH_ATTRIBUTE = 16
         /// </summary>
-        public const int NO_SUCH_ATTRIBUTE = 16;
+        public const int NoSuchAttribute = 16;
 
         /// <summary>
         ///     Indicates that the attribute specified in the modify or add operation
         ///     does not exist in the Ldap server's schema.
         ///     UNDEFINED_ATTRIBUTE_TYPE = 17
         /// </summary>
-        public const int UNDEFINED_ATTRIBUTE_TYPE = 17;
+        public const int UndefinedAttributeType = 17;
 
         /// <summary>
         ///     Indicates that the matching rule specified in the search filter does
         ///     not match a rule defined for the attribute's syntax.
         ///     INAPPROPRIATE_MATCHING = 18
         /// </summary>
-        public const int INAPPROPRIATE_MATCHING = 18;
+        public const int InappropriateMatching = 18;
 
         /// <summary>
         ///     Indicates that the attribute value specified in a modify, add, or
@@ -531,21 +531,21 @@ namespace Novell.Directory.Ldap
         ///     no binary data).
         ///     CONSTRAINT_VIOLATION = 19
         /// </summary>
-        public const int CONSTRAINT_VIOLATION = 19;
+        public const int ConstraintViolation = 19;
 
         /// <summary>
         ///     Indicates that the attribute value specified in a modify or add
         ///     operation already exists as a value for that attribute.
         ///     ATTRIBUTE_OR_VALUE_EXISTS = 20
         /// </summary>
-        public const int ATTRIBUTE_OR_VALUE_EXISTS = 20;
+        public const int AttributeOrValueExists = 20;
 
         /// <summary>
         ///     Indicates that the attribute value specified in an add, compare, or
         ///     modify operation is an unrecognized or invalid syntax for the attribute.
         ///     INVALID_ATTRIBUTE_SYNTAX = 21
         /// </summary>
-        public const int INVALID_ATTRIBUTE_SYNTAX = 21;
+        public const int InvalidAttributeSyntax = 21;
 
         /// <summary>
         ///     Indicates the target object cannot be found.
@@ -559,13 +559,13 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     NO_SUCH_OBJECT = 32
         /// </summary>
-        public const int NO_SUCH_OBJECT = 32;
+        public const int NoSuchObject = 32;
 
         /// <summary>
         ///     Indicates that an error occurred when an alias was dereferenced.
         ///     ALIAS_PROBLEM = 33
         /// </summary>
-        public const int ALIAS_PROBLEM = 33;
+        public const int AliasProblem = 33;
 
         /// <summary>
         ///     Indicates that the syntax of the DN is incorrect.
@@ -574,7 +574,7 @@ namespace Novell.Directory.Ldap
         ///     Ldap_UNWILLING_TO_PERFORM.
         ///     INVALID_DN_SYNTAX = 34
         /// </summary>
-        public const int INVALID_DN_SYNTAX = 34;
+        public const int InvalidDnSyntax = 34;
 
         /// <summary>
         ///     Indicates that the specified operation cannot be performed on a
@@ -583,7 +583,7 @@ namespace Novell.Directory.Ldap
         ///     reserved for this constant.
         ///     IS_LEAF = 35
         /// </summary>
-        public const int IS_LEAF = 35;
+        public const int IsLeaf = 35;
 
         /// <summary>
         ///     Indicates that during a search operation, either the client does not
@@ -591,7 +591,7 @@ namespace Novell.Directory.Ldap
         ///     is not allowed.
         ///     ALIAS_DEREFERENCING_PROBLEM = 36
         /// </summary>
-        public const int ALIAS_DEREFERENCING_PROBLEM = 36;
+        public const int AliasDereferencingProblem = 36;
 
         /// <summary>
         ///     Indicates that during a bind operation, the client is attempting to use
@@ -609,7 +609,7 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     INAPPROPRIATE_AUTHENTICATION = 48
         /// </summary>
-        public const int INAPPROPRIATE_AUTHENTICATION = 48;
+        public const int InappropriateAuthentication = 48;
 
         /// <summary>
         ///     Indicates that invalid information was passed during a bind operation.
@@ -623,14 +623,14 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     INVALID_CREDENTIALS = 49
         /// </summary>
-        public const int INVALID_CREDENTIALS = 49;
+        public const int InvalidCredentials = 49;
 
         /// <summary>
         ///     Indicates that the caller does not have sufficient rights to perform
         ///     the requested operation.
         ///     INSUFFICIENT_ACCESS_RIGHTS = 50
         /// </summary>
-        public const int INSUFFICIENT_ACCESS_RIGHTS = 50;
+        public const int InsufficientAccessRights = 50;
 
         /// <summary>
         ///     Indicates that the Ldap server is too busy to process the client request
@@ -638,14 +638,14 @@ namespace Novell.Directory.Ldap
         ///     server may be able to process it then.
         ///     BUSY = 51
         /// </summary>
-        public const int BUSY = 51;
+        public const int Busy = 51;
 
         /// <summary>
         ///     Indicates that the Ldap server cannot process the client's bind
         ///     request, usually because it is shutting down.
         ///     UNAVAILABLE = 52
         /// </summary>
-        public const int UNAVAILABLE = 52;
+        public const int Unavailable = 52;
 
         /// <summary>
         ///     Indicates that the Ldap server cannot process the request because of
@@ -660,14 +660,14 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     UNWILLING_TO_PERFORM = 53
         /// </summary>
-        public const int UNWILLING_TO_PERFORM = 53;
+        public const int UnwillingToPerform = 53;
 
         /// <summary>
         ///     Indicates that the client discovered an alias or referral loop,
         ///     and is thus unable to complete this request.
         ///     LOOP_DETECT = 54
         /// </summary>
-        public const int LOOP_DETECT = 54;
+        public const int LoopDetect = 54;
 
         /// <summary>
         ///     Indicates that the add or modify DN operation violates the schema's
@@ -683,7 +683,7 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     NAMING_VIOLATION = 64
         /// </summary>
-        public const int NAMING_VIOLATION = 64;
+        public const int NamingViolation = 64;
 
         /// <summary>
         ///     Indicates that the add, modify, or modify DN operation violates the
@@ -705,7 +705,7 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     OBJECT_CLASS_VIOLATION = 65
         /// </summary>
-        public const int OBJECT_CLASS_VIOLATION = 65;
+        public const int ObjectClassViolation = 65;
 
         /// <summary>
         ///     Indicates that the requested operation is permitted only on leaf entries.
@@ -716,14 +716,14 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         ///     NOT_ALLOWED_ON_NONLEAF = 66
         /// </summary>
-        public const int NOT_ALLOWED_ON_NONLEAF = 66;
+        public const int NotAllowedOnNonleaf = 66;
 
         /// <summary>
         ///     Indicates that the modify operation attempted to remove an attribute
         ///     value that forms the entry's relative distinguished name.
         ///     NOT_ALLOWED_ON_RDN = 67
         /// </summary>
-        public const int NOT_ALLOWED_ON_RDN = 67;
+        public const int NotAllowedOnRdn = 67;
 
         /// <summary>
         ///     Indicates that the add operation attempted to add an entry that already
@@ -731,27 +731,27 @@ namespace Novell.Directory.Ldap
         ///     name of an entry that already exists.
         ///     ENTRY_ALREADY_EXISTS = 68
         /// </summary>
-        public const int ENTRY_ALREADY_EXISTS = 68;
+        public const int EntryAlreadyExists = 68;
 
         /// <summary>
         ///     Indicates that the modify operation attempted to modify the structure
         ///     rules of an object class.
         ///     OBJECT_CLASS_MODS_PROHIBITED = 69
         /// </summary>
-        public const int OBJECT_CLASS_MODS_PROHIBITED = 69;
+        public const int ObjectClassModsProhibited = 69;
 
         /// <summary>
         ///     Indicates that the modify DN operation moves the entry from one Ldap
         ///     server to another and thus requires more than one Ldap server.
         ///     AFFECTS_MULTIPLE_DSAS = 71
         /// </summary>
-        public const int AFFECTS_MULTIPLE_DSAS = 71;
+        public const int AffectsMultipleDsas = 71;
 
         /// <summary>
         ///     Indicates an unknown error condition.
         ///     OTHER = 80
         /// </summary>
-        public const int OTHER = 80;
+        public const int Other = 80;
 
         /////////////////////////////////////////////////////////////////////////////
         // Local Errors, resulting from actions other than an operation on a server
@@ -763,55 +763,55 @@ namespace Novell.Directory.Ldap
         ///     host name or port number is incorrect.
         ///     SERVER_DOWN = 81
         /// </summary>
-        public const int SERVER_DOWN = 81;
+        public const int ServerDown = 81;
 
         /// <summary>
         ///     Indicates that the Ldap client has an error. This is usually a failed
         ///     dynamic memory allocation error.
         ///     LOCAL_ERROR = 82
         /// </summary>
-        public const int LOCAL_ERROR = 82;
+        public const int LocalError = 82;
 
         /// <summary>
         ///     Indicates that the Ldap client encountered errors when encoding an
         ///     Ldap request intended for the Ldap server.
         ///     ENCODING_ERROR = 83
         /// </summary>
-        public const int ENCODING_ERROR = 83;
+        public const int EncodingError = 83;
 
         /// <summary>
         ///     Indicates that the Ldap client encountered errors when decoding an
         ///     Ldap response from the Ldap server.
         ///     DECODING_ERROR = 84
         /// </summary>
-        public const int DECODING_ERROR = 84;
+        public const int DecodingError = 84;
 
         /// <summary>
         ///     Indicates that the time limit of the Ldap client was exceeded while
         ///     waiting for a result.
         ///     Ldap_TIMEOUT = 85
         /// </summary>
-        public const int Ldap_TIMEOUT = 85;
+        public const int LdapTimeout = 85;
 
         /// <summary>
         ///     Indicates that a bind method was called with an unknown
         ///     authentication method.
         ///     AUTH_UNKNOWN = 86
         /// </summary>
-        public const int AUTH_UNKNOWN = 86;
+        public const int AuthUnknown = 86;
 
         /// <summary>
         ///     Indicates that the search method was called with an invalid
         ///     search filter.
         ///     FILTER_ERROR = 87
         /// </summary>
-        public const int FILTER_ERROR = 87;
+        public const int FilterError = 87;
 
         /// <summary>
         ///     Indicates that the user cancelled the Ldap operation.
         ///     USER_CANCELLED = 88
         /// </summary>
-        public const int USER_CANCELLED = 88;
+        public const int UserCancelled = 88;
 
 
         /// <summary>
@@ -819,14 +819,14 @@ namespace Novell.Directory.Ldap
         ///     an Ldap method.
         ///     NO_MEMORY = 90
         /// </summary>
-        public const int NO_MEMORY = 90;
+        public const int NoMemory = 90;
 
         /// <summary>
         ///     Indicates that the Ldap client has lost either its connection or
         ///     cannot establish a connection to the Ldap server.
         ///     CONNECT_ERROR = 91
         /// </summary>
-        public const int CONNECT_ERROR = 91;
+        public const int ConnectError = 91;
 
         /// <summary>
         ///     Indicates that the requested functionality is not supported by the
@@ -835,33 +835,33 @@ namespace Novell.Directory.Ldap
         ///     Ldapv3 functionality.
         ///     Ldap_NOT_SUPPORTED = 92
         /// </summary>
-        public const int Ldap_NOT_SUPPORTED = 92;
+        public const int LdapNotSupported = 92;
 
         /// <summary>
         ///     Indicates that the client requested a control that the libraries
         ///     cannot find in the list of supported controls sent by the Ldap server.
         ///     CONTROL_NOT_FOUND = 93
         /// </summary>
-        public const int CONTROL_NOT_FOUND = 93;
+        public const int ControlNotFound = 93;
 
         /// <summary>
         ///     Indicates that the Ldap server sent no results.
         ///     NO_RESULTS_RETURNED = 94
         /// </summary>
-        public const int NO_RESULTS_RETURNED = 94;
+        public const int NoResultsReturned = 94;
 
         /// <summary>
         ///     Indicates that more results are chained in the result message.
         ///     MORE_RESULTS_TO_RETURN = 95
         /// </summary>
-        public const int MORE_RESULTS_TO_RETURN = 95;
+        public const int MoreResultsToReturn = 95;
 
         /// <summary>
         ///     Indicates the Ldap libraries detected a loop. Usually this happens
         ///     when following referrals.
         ///     CLIENT_LOOP = 96
         /// </summary>
-        public const int CLIENT_LOOP = 96;
+        public const int ClientLoop = 96;
 
         /// <summary>
         ///     Indicates that the referral exceeds the hop limit. The default hop
@@ -880,37 +880,37 @@ namespace Novell.Directory.Ldap
         ///     libraries set this code.
         ///     REFERRAL_LIMIT_EXCEEDED = 97
         /// </summary>
-        public const int REFERRAL_LIMIT_EXCEEDED = 97;
+        public const int ReferralLimitExceeded = 97;
 
         /// <summary>
         ///     Indicates that the server response to a request is invalid.
         ///     INVALID_RESPONSE = 100
         /// </summary>
-        public const int INVALID_RESPONSE = 100;
+        public const int InvalidResponse = 100;
 
         /// <summary>
         ///     Indicates that the server response to a request is ambiguous.
         ///     AMBIGUOUS_RESPONSE = 101
         /// </summary>
-        public const int AMBIGUOUS_RESPONSE = 101;
+        public const int AmbiguousResponse = 101;
 
         /// <summary>
         ///     Indicates that TLS is not supported on the server.
         ///     TLS_NOT_SUPPORTED = 112
         /// </summary>
-        public const int TLS_NOT_SUPPORTED = 112;
+        public const int TlsNotSupported = 112;
 
         /// <summary>
         ///     Indicates that SSL Handshake could not succeed.
         ///     SSL_HANDSHAKE_FAILED = 113
         /// </summary>
-        public const int SSL_HANDSHAKE_FAILED = 113;
+        public const int SslHandshakeFailed = 113;
 
         /// <summary>
         ///     Indicates that SSL Provider could not be found.
         ///     SSL_PROVIDER_NOT_FOUND = 114
         /// </summary>
-        public const int SSL_PROVIDER_NOT_FOUND = 114;
+        public const int SslProviderNotFound = 114;
 
         /*
                 * Note: Error strings have been pulled out into
@@ -1066,12 +1066,12 @@ namespace Novell.Directory.Ldap
         ///     Error message specifying additional information
         ///     from the server
         /// </param>
-        /// <param name="matchedDN">
+        /// <param name="matchedDn">
         ///     The maximal subset of a specified DN which could
         ///     be matched by the server on a search operation.
         /// </param>
-        public LdapException(string messageOrKey, int resultCode, string serverMsg, string matchedDN)
-            : this(messageOrKey, null, resultCode, serverMsg, matchedDN, null)
+        public LdapException(string messageOrKey, int resultCode, string serverMsg, string matchedDn)
+            : this(messageOrKey, null, resultCode, serverMsg, matchedDn, null)
         {
         }
 
@@ -1102,12 +1102,12 @@ namespace Novell.Directory.Ldap
         ///     Error message specifying additional information
         ///     from the server
         /// </param>
-        /// <param name="matchedDN">
+        /// <param name="matchedDn">
         ///     The maximal subset of a specified DN which could
         ///     be matched by the server on a search operation.
         /// </param>
-        public LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg, string matchedDN)
-            : this(messageOrKey, arguments, resultCode, serverMsg, matchedDN, null)
+        public LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg, string matchedDn)
+            : this(messageOrKey, arguments, resultCode, serverMsg, matchedDn, null)
         {
         }
 
@@ -1144,20 +1144,20 @@ namespace Novell.Directory.Ldap
         ///     A throwable which is the underlying cause
         ///     of the LdapException.
         /// </param>
-        /// <param name="matchedDN">
+        /// <param name="matchedDn">
         ///     The maximal subset of a specified DN which could
         ///     be matched by the server on a search operation.
         /// </param>
         internal LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg,
-            string matchedDN, Exception rootException)
-            : base(ResourcesHandler.getMessage(messageOrKey, arguments))
+            string matchedDn, Exception rootException)
+            : base(ResourcesHandler.GetMessage(messageOrKey, arguments))
         {
-            this.messageOrKey = messageOrKey;
-            this.arguments = arguments;
-            this.resultCode = resultCode;
-            this.rootException = rootException;
-            this.matchedDN = matchedDN;
-            serverMessage = serverMsg;
+            this._messageOrKey = messageOrKey;
+            this._arguments = arguments;
+            this._resultCode = resultCode;
+            this._rootException = rootException;
+            this._matchedDn = matchedDn;
+            _serverMessage = serverMsg;
         }
 
         /// <summary>
@@ -1167,9 +1167,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message for the result code in the LdapException object.
         /// </returns>
-        public virtual string resultCodeToString()
+        public virtual string ResultCodeToString()
         {
-            return ResourcesHandler.getResultString(resultCode);
+            return ResourcesHandler.GetResultString(_resultCode);
         }
 
         /// <summary>
@@ -1183,9 +1183,9 @@ namespace Novell.Directory.Ldap
         ///     The message corresponding to the specified result code, or
         ///     or null if the message is not available for the default locale.
         /// </returns>
-        public static string resultCodeToString(int code)
+        public static string ResultCodeToString(int code)
         {
-            return ResourcesHandler.getResultString(code);
+            return ResourcesHandler.GetResultString(code);
         }
 
         /// <summary>
@@ -1200,9 +1200,9 @@ namespace Novell.Directory.Ldap
         ///     specified locale, or null if the message is not available
         ///     for the requested locale.
         /// </returns>
-        public virtual string resultCodeToString(CultureInfo locale)
+        public virtual string ResultCodeToString(CultureInfo locale)
         {
-            return ResourcesHandler.getResultString(resultCode, locale);
+            return ResourcesHandler.GetResultString(_resultCode, locale);
         }
 
         /// <summary>
@@ -1221,9 +1221,9 @@ namespace Novell.Directory.Ldap
         ///     specified locale, or null if the message is not available
         ///     for the requested locale.
         /// </returns>
-        public static string resultCodeToString(int code, CultureInfo locale)
+        public static string ResultCodeToString(int code, CultureInfo locale)
         {
-            return ResourcesHandler.getResultString(code, locale);
+            return ResourcesHandler.GetResultString(code, locale);
         }
 
         /// <summary>
@@ -1232,7 +1232,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public override string ToString()
         {
-            return getExceptionString("LdapException");
+            return GetExceptionString("LdapException");
         }
 
         /// <summary>
@@ -1242,50 +1242,50 @@ namespace Novell.Directory.Ldap
         /// <param name="exception">
         ///     The name of the exception class
         /// </param>
-        internal virtual string getExceptionString(string exception)
+        internal virtual string GetExceptionString(string exception)
         {
             string tmsg;
 
             // Format the basic exception information
 
             // Craft a string from the resouce file
-            var msg = ResourcesHandler.getMessage("TOSTRING",
-                new object[] {exception, base.Message, resultCode, resultCodeToString()});
+            var msg = ResourcesHandler.GetMessage("TOSTRING",
+                new object[] {exception, base.Message, _resultCode, ResultCodeToString()});
             // If found no string from resource file, use a default string
             if (msg.ToUpper().Equals("TOSTRING".ToUpper()))
             {
-                msg = exception + ": (" + resultCode + ") " + resultCodeToString();
+                msg = exception + ": (" + _resultCode + ") " + ResultCodeToString();
             }
 
             // Add server message
-            if ((object) serverMessage != null && serverMessage.Length != 0)
+            if ((object) _serverMessage != null && _serverMessage.Length != 0)
             {
-                tmsg = ResourcesHandler.getMessage("SERVER_MSG", new object[] {exception, serverMessage});
+                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] {exception, _serverMessage});
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                 {
-                    tmsg = exception + ": Server Message: " + serverMessage;
+                    tmsg = exception + ": Server Message: " + _serverMessage;
                 }
 
                 msg = msg + '\n' + tmsg;
             }
 
             // Add Matched DN message
-            if ((object) matchedDN != null)
+            if ((object) _matchedDn != null)
             {
-                tmsg = ResourcesHandler.getMessage("MATCHED_DN", new object[] {exception, matchedDN});
+                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, _matchedDn});
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("MATCHED_DN".ToUpper()))
                 {
-                    tmsg = exception + ": Matched DN: " + matchedDN;
+                    tmsg = exception + ": Matched DN: " + _matchedDn;
                 }
 
                 msg = msg + '\n' + tmsg;
             }
 
-            if (rootException != null)
+            if (_rootException != null)
             {
-                msg = msg + '\n' + rootException;
+                msg = msg + '\n' + _rootException;
             }
             return msg;
         }

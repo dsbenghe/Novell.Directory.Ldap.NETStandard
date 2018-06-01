@@ -99,12 +99,12 @@ namespace Novell.Directory.Ldap.Controls
         public LdapSortResponse(string oid, bool critical, sbyte[] values) : base(oid, critical, values)
         {
             // Create a decoder object
-            var decoder = new LBERDecoder();
+            var decoder = new LberDecoder();
             if (decoder == null)
                 throw new IOException("Decoding error");
 
             // We should get back an enumerated type
-            var asnObj = decoder.decode(values);
+            var asnObj = decoder.Decode(values);
 
             if (asnObj == null || !(asnObj is Asn1Sequence))
                 throw new IOException("Decoding error");
@@ -112,14 +112,14 @@ namespace Novell.Directory.Ldap.Controls
 
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(0);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                ResultCode = ((Asn1Enumerated) asn1Enum).intValue();
+                ResultCode = ((Asn1Enumerated) asn1Enum).IntValue();
 
             // Second element is the attributeType
-            if (((Asn1Sequence) asnObj).size() > 1)
+            if (((Asn1Sequence) asnObj).Size() > 1)
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(1);
                 if (asn1String != null && asn1String is Asn1OctetString)
-                    FailedAttribute = ((Asn1OctetString) asn1String).stringValue();
+                    FailedAttribute = ((Asn1OctetString) asn1String).StringValue();
             }
         }
     }

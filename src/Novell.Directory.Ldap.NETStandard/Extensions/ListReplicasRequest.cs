@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.LIST_REPLICAS_RES, typeof(ListReplicasResponse));
+            LdapExtendedResponse.Register(ReplicationConstants.ListReplicasRes, typeof(ListReplicasResponse));
         }
 
         /// <summary>
@@ -68,25 +68,25 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public ListReplicasRequest(string serverName) : base(ReplicationConstants.LIST_REPLICAS_REQ, null)
+        public ListReplicasRequest(string serverName) : base(ReplicationConstants.ListReplicasReq, null)
         {
             try
             {
                 if ((object) serverName == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverName = new Asn1OctetString(serverName);
+                var asn1ServerName = new Asn1OctetString(serverName);
 
-                asn1_serverName.encode(encoder, encodedData);
+                asn1ServerName.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

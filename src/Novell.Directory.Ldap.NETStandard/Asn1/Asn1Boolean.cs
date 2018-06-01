@@ -38,17 +38,17 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1Boolean : Asn1Object
     {
-        private readonly bool content;
+        private readonly bool _content;
 
         /// <summary> ASN.1 BOOLEAN tag definition.</summary>
-        public const int TAG = 0x01;
+        public const int Tag = 0x01;
 
         /// <summary>
         ///     ID is added for Optimization.
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
 
         /* Constructors for Asn1Boolean
                 */
@@ -61,9 +61,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The boolean value to be contained in the
         ///     this Asn1Boolean object
         /// </param>
-        public Asn1Boolean(bool content) : base(ID)
+        public Asn1Boolean(bool content) : base(Id)
         {
-            this.content = content;
+            this._content = content;
         }
 
         /// <summary>
@@ -79,9 +79,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
         [CLSCompliant(false)]
-        public Asn1Boolean(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1Boolean(IAsn1Decoder dec, Stream inRenamed, int len) : base(Id)
         {
-            content = (bool) dec.decodeBoolean(in_Renamed, len);
+            _content = (bool) dec.DecodeBoolean(inRenamed, len);
         }
 
         /* Asn1Object implementation
@@ -98,24 +98,24 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, outRenamed);
         }
 
         /* Asn1Boolean specific methods
         */
 
         /// <summary> Returns the content of this Asn1Boolean as a boolean.</summary>
-        public bool booleanValue()
+        public bool BooleanValue()
         {
-            return content;
+            return _content;
         }
 
         /// <summary> Returns a String representation of this Asn1Boolean object.</summary>
         public override string ToString()
         {
-            return base.ToString() + "BOOLEAN: " + content;
+            return base.ToString() + "BOOLEAN: " + _content;
         }
     }
 }

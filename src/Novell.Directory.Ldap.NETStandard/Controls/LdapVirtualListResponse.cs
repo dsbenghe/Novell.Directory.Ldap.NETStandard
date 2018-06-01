@@ -120,12 +120,12 @@ namespace Novell.Directory.Ldap.Controls
         public LdapVirtualListResponse(string oid, bool critical, sbyte[] values) : base(oid, critical, values)
         {
             /* Create a decoder object */
-            var decoder = new LBERDecoder();
+            var decoder = new LberDecoder();
             if (decoder == null)
                 throw new IOException("Decoding error");
 
             /* We should get back an ASN.1 Sequence object */
-            var asnObj = decoder.decode(values);
+            var asnObj = decoder.Decode(values);
             if (asnObj == null || !(asnObj is Asn1Sequence))
                 throw new IOException("Decoding error");
 
@@ -134,9 +134,9 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 1st element which should be an integer containing the
             * targetPosition (firstPosition)
             */
-            var asn1firstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
-            if (asn1firstPosition != null && asn1firstPosition is Asn1Integer)
-                FirstPosition = ((Asn1Integer) asn1firstPosition).intValue();
+            var asn1FirstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
+            if (asn1FirstPosition != null && asn1FirstPosition is Asn1Integer)
+                FirstPosition = ((Asn1Integer) asn1FirstPosition).IntValue();
             else
                 throw new IOException("Decoding error");
 
@@ -145,25 +145,25 @@ namespace Novell.Directory.Ldap.Controls
             */
             var asn1ContentCount = ((Asn1Sequence) asnObj).get_Renamed(1);
             if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
-                ContentCount = ((Asn1Integer) asn1ContentCount).intValue();
+                ContentCount = ((Asn1Integer) asn1ContentCount).IntValue();
             else
                 throw new IOException("Decoding error");
 
             /* The 3rd element is an enum containing the errorcode */
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(2);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                ResultCode = ((Asn1Enumerated) asn1Enum).intValue();
+                ResultCode = ((Asn1Enumerated) asn1Enum).IntValue();
             else
                 throw new IOException("Decoding error");
 
             /* Optional 4th element could be the context string that the server
             * wants the client to send back with each subsequent VLV request
             */
-            if (((Asn1Sequence) asnObj).size() > 3)
+            if (((Asn1Sequence) asnObj).Size() > 3)
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(3);
                 if (asn1String != null && asn1String is Asn1OctetString)
-                    Context = ((Asn1OctetString) asn1String).stringValue();
+                    Context = ((Asn1OctetString) asn1String).StringValue();
             }
         }
     }

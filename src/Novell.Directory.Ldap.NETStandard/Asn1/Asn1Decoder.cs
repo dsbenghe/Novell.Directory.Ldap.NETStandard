@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     building Ldap packets.
     /// </summary>
     [CLSCompliant(false)]
-    public interface Asn1Decoder
+    public interface IAsn1Decoder
     {
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from a byte array.
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="value">
         ///     A byte array that points to the encoded Asn1 data
         /// </param>
-        Asn1Object decode(sbyte[] value_Renamed);
+        Asn1Object Decode(sbyte[] valueRenamed);
 
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object decode(Stream in_Renamed);
+        Asn1Object Decode(Stream inRenamed);
 
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object decode(Stream in_Renamed, int[] length);
+        Asn1Object Decode(Stream inRenamed, int[] length);
 
         /* Decoders for ASN.1 simple types
         */
@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes
         /// </param>
-        object decodeBoolean(Stream in_Renamed, int len);
+        object DecodeBoolean(Stream inRenamed, int len);
 
         /// <summary>
         ///     Decode a Numeric value directly from a stream.  Call this method when you
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes
         /// </param>
-        object decodeNumeric(Stream in_Renamed, int len);
+        object DecodeNumeric(Stream inRenamed, int len);
 
 
         /* Asn1 TYPE NOT YET SUPPORTED  
@@ -133,7 +133,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes
         /// </param>
-        object decodeOctetString(Stream in_Renamed, int len);
+        object DecodeOctetString(Stream inRenamed, int len);
 
 
         /* Asn1 TYPE NOT YET SUPPORTED  
@@ -153,7 +153,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes
         /// </param>
-        object decodeCharacterString(Stream in_Renamed, int len);
+        object DecodeCharacterString(Stream inRenamed, int len);
 
         /* No Decoders for ASN.1 structured types. A structured type's value is a
         * collection of other types.

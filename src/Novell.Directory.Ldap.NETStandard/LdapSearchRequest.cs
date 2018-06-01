@@ -66,27 +66,27 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the base DN for a search request
         /// </returns>
-        public virtual string DN
+        public virtual string Dn
         {
-            get { return Asn1Object.RequestDN; }
+            get { return Asn1Object.RequestDn; }
         }
 
         /// <summary> Retrieves the scope of a search request.</summary>
         /// <returns>
         ///     scope of a search request
         /// </returns>
-        /// <seealso cref="Novell.Directory.Ldap.LdapConnection.SCOPE_BASE">
+        /// <seealso cref="LdapConnection.ScopeBase">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapConnection.SCOPE_ONE">
+        /// <seealso cref="LdapConnection.ScopeOne">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapConnection.SCOPE_SUB">
+        /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
         public virtual int Scope
         {
             get
             {
                 //element number one stores the scope
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).intValue();
+                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
             }
         }
 
@@ -94,20 +94,20 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     integer representing how to dereference aliases
         /// </returns>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints.DEREF_ALWAYS">
+        /// <seealso cref="LdapSearchConstraints.DerefAlways">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints.DEREF_FINDING">
+        /// <seealso cref="LdapSearchConstraints.DerefFinding">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints.DEREF_NEVER">
+        /// <seealso cref="LdapSearchConstraints.DerefNever">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints.DEREF_SEARCHING">
+        /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
         public virtual int Dereference
         {
             get
             {
                 //element number two stores the dereference
-                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).intValue();
+                return ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
             }
         }
 
@@ -122,7 +122,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number three stores the max results
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).intValue();
+                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
             }
         }
 
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number four stores the server time limit
-                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).intValue();
+                return ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
             }
         }
 
@@ -154,7 +154,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 //element number five stores types value
-                return ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).booleanValue();
+                return ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
             }
         }
 
@@ -168,10 +168,10 @@ namespace Novell.Directory.Ldap
             {
                 var attrs = (RfcAttributeDescriptionList) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(7);
 
-                var rAttrs = new string[attrs.size()];
+                var rAttrs = new string[attrs.Size()];
                 for (var i = 0; i < rAttrs.Length; i++)
                 {
-                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).stringValue();
+                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).StringValue();
                 }
                 return rAttrs;
             }
@@ -183,7 +183,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string StringFilter
         {
-            get { return RfcFilter.filterToString(); }
+            get { return RfcFilter.FilterToString(); }
         }
 
         /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
@@ -245,7 +245,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual IEnumerator SearchFilter
         {
-            get { return RfcFilter.getFilterIterator(); }
+            get { return RfcFilter.GetFilterIterator(); }
         }
 
         //*************************************************************************
@@ -253,52 +253,52 @@ namespace Novell.Directory.Ldap
         //*************************************************************************
 
         /// <summary> Search Filter Identifier for an AND component.</summary>
-        public const int AND = 0;
+        public const int And = 0;
 
         /// <summary> Search Filter Identifier for an OR component.</summary>
-        public const int OR = 1;
+        public const int Or = 1;
 
         /// <summary> Search Filter Identifier for a NOT component.</summary>
-        public const int NOT = 2;
+        public const int Not = 2;
 
         /// <summary> Search Filter Identifier for an EQUALITY_MATCH component.</summary>
-        public const int EQUALITY_MATCH = 3;
+        public const int EqualityMatch = 3;
 
         /// <summary> Search Filter Identifier for a SUBSTRINGS component.</summary>
-        public const int SUBSTRINGS = 4;
+        public const int Substrings = 4;
 
         /// <summary> Search Filter Identifier for a GREATER_OR_EQUAL component.</summary>
-        public const int GREATER_OR_EQUAL = 5;
+        public const int GreaterOrEqual = 5;
 
         /// <summary> Search Filter Identifier for a LESS_OR_EQUAL component.</summary>
-        public const int LESS_OR_EQUAL = 6;
+        public const int LessOrEqual = 6;
 
         /// <summary> Search Filter Identifier for a PRESENT component.</summary>
-        public const int PRESENT = 7;
+        public const int Present = 7;
 
         /// <summary> Search Filter Identifier for an APPROX_MATCH component.</summary>
-        public const int APPROX_MATCH = 8;
+        public const int ApproxMatch = 8;
 
         /// <summary> Search Filter Identifier for an EXTENSIBLE_MATCH component.</summary>
-        public const int EXTENSIBLE_MATCH = 9;
+        public const int ExtensibleMatch = 9;
 
         /// <summary>
         ///     Search Filter Identifier for an INITIAL component of a SUBSTRING.
         ///     Note: An initial SUBSTRING is represented as "value*".
         /// </summary>
-        public const int INITIAL = 0;
+        public const int Initial = 0;
 
         /// <summary>
         ///     Search Filter Identifier for an ANY component of a SUBSTRING.
         ///     Note: An ANY SUBSTRING is represented as "*value*".
         /// </summary>
-        public const int ANY = 1;
+        public const int Any = 1;
 
         /// <summary>
         ///     Search Filter Identifier for a FINAL component of a SUBSTRING.
         ///     Note: A FINAL SUBSTRING is represented as "*value".
         /// </summary>
-        public const int FINAL = 2;
+        public const int Final = 2;
 
         /// <summary>
         ///     Constructs an Ldap Search Request.
@@ -357,11 +357,11 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints">
         /// </seealso>
-        public LdapSearchRequest(string base_Renamed, int scope, string filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
-                SEARCH_REQUEST,
-                new RfcSearchRequest(new RfcLdapDN(base_Renamed), new Asn1Enumerated(scope),
+                SearchRequest,
+                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), new RfcFilter(filter), new RfcAttributeDescriptionList(attrs)), cont)
         {
@@ -424,11 +424,11 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints">
         /// </seealso>
-        public LdapSearchRequest(string base_Renamed, int scope, RfcFilter filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
-                SEARCH_REQUEST,
-                new RfcSearchRequest(new RfcLdapDN(base_Renamed), new Asn1Enumerated(scope),
+                SearchRequest,
+                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), filter, new RfcAttributeDescriptionList(attrs)), cont)
         {

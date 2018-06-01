@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <param name="dn">
         ///     The distinguished name of the replica's partition root.
         /// </param>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The server on which the new replica will be added.
         /// </param>
         /// <param name="replicaType">
@@ -76,44 +76,44 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_MASTER">
+        /// <seealso cref="ReplicationConstants.LdapRtMaster">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SECONDARY">
+        /// <seealso cref="ReplicationConstants.LdapRtSecondary">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_READONLY">
+        /// <seealso cref="ReplicationConstants.LdapRtReadonly">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SUBREF">
+        /// <seealso cref="ReplicationConstants.LdapRtSubref">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_WRITE">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseWrite">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_READ">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseRead">
         /// </seealso>
-        public AddReplicaRequest(string dn, string serverDN, int replicaType, int flags)
-            : base(ReplicationConstants.ADD_REPLICA_REQ, null)
+        public AddReplicaRequest(string dn, string serverDn, int replicaType, int flags)
+            : base(ReplicationConstants.AddReplicaReq, null)
         {
             try
             {
-                if ((object) dn == null || (object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) dn == null || (object) serverDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_replicaType = new Asn1Integer(replicaType);
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_dn = new Asn1OctetString(dn);
+                var asn1Flags = new Asn1Integer(flags);
+                var asn1ReplicaType = new Asn1Integer(replicaType);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
+                var asn1Dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_replicaType.encode(encoder, encodedData);
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                asn1Flags.Encode(encoder, encodedData);
+                asn1ReplicaType.Encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
+                asn1Dn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     {
         private void InitBlock()
         {
-            messages = new MessageVector(5, 5);
+            _messages = new MessageVector(5, 5);
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal virtual object[] RemoveAll()
         {
-            return messages.RemoveAll();
+            return _messages.RemoveAll();
         }
 
         /// <summary>
@@ -60,14 +60,14 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var size = messages.Count;
+                var size = _messages.Count;
                 var ids = new int[size];
                 Message info;
 
                 for (var i = 0; i < size; i++)
                 {
-                    info = (Message) messages[i];
-                    ids[i] = info.MessageID;
+                    info = (Message) _messages[i];
+                    ids[i] = info.MessageId;
                 }
                 return ids;
             }
@@ -91,7 +91,7 @@ namespace Novell.Directory.Ldap
             get
             {
                 var count = 0;
-                var msgs = messages.ToArray();
+                var msgs = _messages.ToArray();
                 for (var i = 0; i < msgs.Length; i++)
                 {
                     var m = (Message) msgs[i];
@@ -101,10 +101,10 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private MessageVector messages;
-        private int indexLastRead;
-        private static object nameLock; // protect agentNum
-        private static int agentNum = 0; // Debug, agent number
+        private MessageVector _messages;
+        private int _indexLastRead;
+        private static object _nameLock; // protect agentNum
+        private static int _agentNum = 0; // Debug, agent number
 
 
         internal MessageAgent()
@@ -119,23 +119,23 @@ namespace Novell.Directory.Ldap
         /// <param name="fromAgent">
         ///     the agent to be merged into this one
         /// </param>
-        internal void merge(MessageAgent fromAgent)
+        internal void Merge(MessageAgent fromAgent)
         {
             var msgs = fromAgent.RemoveAll();
             for (var i = 0; i < msgs.Length; i++)
             {
-                messages.Add(msgs[i]);
+                _messages.Add(msgs[i]);
                 ((Message) msgs[i]).Agent = this;
             }
-            lock (messages)
+            lock (_messages)
             {
                 if (msgs.Length > 1)
                 {
-                    Monitor.PulseAll(messages); // wake all threads waiting for messages
+                    Monitor.PulseAll(_messages); // wake all threads waiting for messages
                 }
                 else if (msgs.Length == 1)
                 {
-                    Monitor.Pulse(messages); // only wake one thread
+                    Monitor.Pulse(_messages); // only wake one thread
                 }
             }
         }
@@ -144,14 +144,14 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Wakes up any threads waiting for messages in the message agent
         /// </summary>
-        internal void sleepersAwake(bool all)
+        internal void SleepersAwake(bool all)
         {
-            lock (messages)
+            lock (_messages)
             {
                 if (all)
-                    Monitor.PulseAll(messages);
+                    Monitor.PulseAll(_messages);
                 else
-                    Monitor.Pulse(messages);
+                    Monitor.Pulse(_messages);
             }
         }
 
@@ -159,10 +159,10 @@ namespace Novell.Directory.Ldap
         ///     Returns true if any responses are queued for any of the agent's messages
         ///     return false if no responses are queued, otherwise true
         /// </summary>
-        internal bool isResponseReceived()
+        internal bool IsResponseReceived()
         {
-            var size = messages.Count;
-            var next = indexLastRead + 1;
+            var size = _messages.Count;
+            var next = _indexLastRead + 1;
             Message info;
             for (var i = 0; i < size; i++)
             {
@@ -170,8 +170,8 @@ namespace Novell.Directory.Ldap
                 {
                     next = 0;
                 }
-                info = (Message) messages[next];
-                if (info.hasReplies())
+                info = (Message) _messages[next];
+                if (info.HasReplies())
                 {
                     return true;
                 }
@@ -183,12 +183,12 @@ namespace Novell.Directory.Ldap
         ///     Returns true if any responses are queued for the specified msgId
         ///     return false if no responses are queued, otherwise true
         /// </summary>
-        internal bool isResponseReceived(int msgId)
+        internal bool IsResponseReceived(int msgId)
         {
             try
             {
-                var info = messages.FindMessageById(msgId);
-                return info.hasReplies();
+                var info = _messages.FindMessageById(msgId);
+                return info.HasReplies();
             }
             catch (FieldAccessException)
             {
@@ -212,8 +212,8 @@ namespace Novell.Directory.Ldap
             try
             {
                 // Send abandon request and remove from connection list
-                info = messages.FindMessageById(msgId);
-                SupportClass.VectorRemoveElement(messages, info); // This message is now dead
+                info = _messages.FindMessageById(msgId);
+                SupportClass.VectorRemoveElement(_messages, info); // This message is now dead
                 info.Abandon(cons, null);
             }
             catch (FieldAccessException ex)
@@ -225,14 +225,14 @@ namespace Novell.Directory.Ldap
         /// <summary> Abandon all requests on this MessageAgent</summary>
         internal void AbandonAll()
         {
-            var size = messages.Count;
+            var size = _messages.Count;
             Message info;
 
             for (var i = 0; i < size; i++)
             {
-                info = (Message) messages[i];
+                info = (Message) _messages[i];
                 // Message complete and no more replies, remove from id list
-                SupportClass.VectorRemoveElement(messages, info);
+                SupportClass.VectorRemoveElement(_messages, info);
                 info.Abandon(null, null);
             }
         }
@@ -243,11 +243,11 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if a specific operation is complete
         /// </returns>
-        internal bool isComplete(int msgid)
+        internal bool IsComplete(int msgid)
         {
             try
             {
-                var info = messages.FindMessageById(msgid);
+                var info = _messages.FindMessageById(msgid);
                 if (!info.Complete)
                 {
                     return false;
@@ -267,9 +267,9 @@ namespace Novell.Directory.Ldap
         /// <param name="msgid">
         ///     the message ID.
         /// </param>
-        internal Message getMessage(int msgid)
+        internal Message GetMessage(int msgid)
         {
-            return messages.FindMessageById(msgid);
+            return _messages.FindMessageById(msgid);
         }
 
         /// <summary>
@@ -291,14 +291,14 @@ namespace Novell.Directory.Ldap
         /// <param name="queue">
         ///     the LdapMessageQueue associated with this request.
         /// </param>
-        internal void sendMessage(Connection conn, LdapMessage msg, int timeOut, LdapMessageQueue queue,
+        internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, LdapMessageQueue queue,
             BindProperties bindProps)
         {
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, queue, bindProps);
-            messages.Add(message);
-            message.sendMessage(); // Now send message to server
+            _messages.Add(message);
+            message.SendMessage(); // Now send message to server
         }
 
         /// <summary>
@@ -306,16 +306,16 @@ namespace Novell.Directory.Ldap
         /// </summary>
 
 //		internal System.Object getLdapMessage(System.Int32 msgId)
-        internal object getLdapMessage(int msgId)
+        internal object GetLdapMessage(int msgId)
         {
-            return getLdapMessage(new Integer32(msgId));
+            return GetLdapMessage(new Integer32(msgId));
         }
 
-        internal object getLdapMessage(Integer32 msgId)
+        internal object GetLdapMessage(Integer32 msgId)
         {
             object rfcMsg;
             // If no messages for this agent, just return null
-            if (messages.Count == 0)
+            if (_messages.Count == 0)
             {
                 return null;
             }
@@ -326,12 +326,12 @@ namespace Novell.Directory.Ldap
                 {
                     // Get message for this ID
 //					Message info = messages.findMessageById(msgId);
-                    var info = messages.FindMessageById(msgId.intValue);
-                    rfcMsg = info.waitForReply(); // blocks for a response
-                    if (!info.acceptsReplies() && !info.hasReplies())
+                    var info = _messages.FindMessageById(msgId.IntValue);
+                    rfcMsg = info.WaitForReply(); // blocks for a response
+                    if (!info.AcceptsReplies() && !info.HasReplies())
                     {
                         // Message complete and no more replies, remove from id list
-                        SupportClass.VectorRemoveElement(messages, info);
+                        SupportClass.VectorRemoveElement(_messages, info);
                         info.Abandon(null, null); // Get rid of resources
                     }
                     return rfcMsg;
@@ -343,26 +343,26 @@ namespace Novell.Directory.Ldap
                 }
             }
             // A msgId was NOT specified, any message will do
-            lock (messages)
+            lock (_messages)
             {
                 while (true)
                 {
-                    var next = indexLastRead + 1;
+                    var next = _indexLastRead + 1;
                     Message info;
-                    for (var i = 0; i < messages.Count; i++)
+                    for (var i = 0; i < _messages.Count; i++)
                     {
-                        if (next >= messages.Count)
+                        if (next >= _messages.Count)
                         {
                             next = 0;
                         }
-                        info = (Message) messages[next];
-                        indexLastRead = next++;
+                        info = (Message) _messages[next];
+                        _indexLastRead = next++;
                         rfcMsg = info.Reply;
                         // Check this request is complete
-                        if (!info.acceptsReplies() && !info.hasReplies())
+                        if (!info.AcceptsReplies() && !info.HasReplies())
                         {
                             // Message complete & no more replies, remove from id list
-                            SupportClass.VectorRemoveElement(messages, info); // remove from list
+                            SupportClass.VectorRemoveElement(_messages, info); // remove from list
                             info.Abandon(null, null); // Get rid of resources
                             // Start loop at next message that is now moved
                             // to the current position in the Vector.
@@ -376,25 +376,25 @@ namespace Novell.Directory.Ldap
                     } // end for loop */
                     // Messages can be removed in this loop, we we must
                     // check if any messages left for this agent
-                    if (messages.Count == 0)
+                    if (_messages.Count == 0)
                     {
                         return null;
                     }
 
                     // No data, wait for something to come in.
-                    Monitor.Wait(messages);
+                    Monitor.Wait(_messages);
                 } /* end while */
             } /* end synchronized */
         }
 
         /// <summary> Debug code to print messages in message vector</summary>
-        private void debugDisplayMessages()
+        private void DebugDisplayMessages()
         {
         }
 
         static MessageAgent()
         {
-            nameLock = new object();
+            _nameLock = new object();
         }
     }
 }

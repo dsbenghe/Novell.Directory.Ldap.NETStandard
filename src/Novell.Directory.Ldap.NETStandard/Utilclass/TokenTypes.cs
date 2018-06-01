@@ -36,11 +36,11 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public enum TokenTypes
     {
-        EOL = '\n',
-        EOF = -1,
-        NUMBER = -2,
-        WORD = -3,
-        REAL = -4,
-        STRING = -5
+        Eol = '\n',
+        Eof = -1,
+        Number = -2,
+        Word = -3,
+        Real = -4,
+        String = -5
     }
 }

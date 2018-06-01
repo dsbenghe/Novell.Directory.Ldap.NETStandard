@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     decoding it from an InputStream
         /// </summary>
         [CLSCompliant(false)]
-        public RfcAddResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcAddResponse(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
         {
         }
 
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="resultCode">
         ///     the result code of the operation
         /// </param>
-        /// <param name="matchedDN">
+        /// <param name="matchedDn">
         ///     the matched DN returned from the server
         /// </param>
         /// <param name="errorMessage">
@@ -71,8 +71,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="referral">
         ///     the referral(s) returned by the server
         /// </param>
-        public RfcAddResponse(Asn1Enumerated resultCode, RfcLdapDN matchedDN, RfcLdapString errorMessage,
-            RfcReferral referral) : base(resultCode, matchedDN, errorMessage, referral)
+        public RfcAddResponse(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
+            RfcReferral referral) : base(resultCode, matchedDn, errorMessage, referral)
         {
         }
 
@@ -81,9 +81,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.ADD_RESPONSE);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.AddResponse);
         }
     }
 }

@@ -26,9 +26,9 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
         public static void AssertSameAs(this LdapEntry expectedEntry, LdapEntry actualEntry)
         {
-            Assert.Equal(expectedEntry.DN, actualEntry.DN);
-            var expectedAttributes = expectedEntry.getAttributeSet();
-            var actualAttributes = actualEntry.getAttributeSet();
+            Assert.Equal(expectedEntry.Dn, actualEntry.Dn);
+            var expectedAttributes = expectedEntry.GetAttributeSet();
+            var actualAttributes = actualEntry.GetAttributeSet();
             expectedAttributes.AssertSameAs(actualAttributes);
         }
 
@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             foreach (LdapAttribute expectedAttribute in expectedAttributeSet)
             {
                 if (excludeAttributes.Contains(expectedAttribute.Name)) continue;
-                var actualAttribute = actualAttributeSet.getAttribute(expectedAttribute.Name);
+                var actualAttribute = actualAttributeSet.GetAttribute(expectedAttribute.Name);
                 expectedAttribute.ByteValues.ShouldBeEquivalentTo(actualAttribute.ByteValues);
             }
         }

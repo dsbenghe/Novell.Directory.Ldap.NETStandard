@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         UnbindRequest ::= [APPLICATION 2] NULL
     ///     </pre>
     /// </summary>
-    public class RfcUnbindRequest : Asn1Null, RfcRequest
+    public class RfcUnbindRequest : Asn1Null, IRfcRequest
     {
         //*************************************************************************
         // Constructor for UnbindRequest
@@ -56,18 +56,18 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: PRIMITIVE, TAG: 2. (0x42)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.UNBIND_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.UnbindRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            throw new LdapException(ExceptionMessages.NO_DUP_REQUEST, new object[] {"unbind"},
-                LdapException.Ldap_NOT_SUPPORTED, null);
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"unbind"},
+                LdapException.LdapNotSupported, null);
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
             return null;
         }

@@ -54,11 +54,11 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         protected Asn1Object ChoiceValue
         {
-            set { content = value; }
-            get { return content; }
+            set { _content = value; }
+            get { return _content; }
         }
 
-        private Asn1Object content;
+        private Asn1Object _content;
 
         /* Constructors for Asn1Choice
         */
@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Choice(Asn1Object content) : base(null)
         {
-            this.content = content;
+            this._content = content;
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         protected internal Asn1Choice() : base(null)
         {
-            content = null;
+            _content = null;
         }
 
         /* Asn1Object implementation
@@ -101,22 +101,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            content.encode(enc, out_Renamed);
+            _content.Encode(enc, outRenamed);
         }
 
         /* Asn1Choice specific methods
         */
-
-        /// <summary>
-        ///     Returns the CHOICE value stored in this Asn1Choice
-        ///     as an Asn1Object.
-        /// </summary>
-        public Asn1Object choiceValue()
-        {
-            return content;
-        }
 
         /// <summary>
         ///     This method will return the Asn1Identifier of the
@@ -124,9 +115,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     as the identifier of an Asn1Choice depends on the
         ///     type of the object encoded by this Asn1Choice.
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return content.getIdentifier();
+            return _content.GetIdentifier();
         }
 
         /// <summary>
@@ -135,15 +126,15 @@ namespace Novell.Directory.Ldap.Asn1
         ///     an Asn1Choice depends on the type of the object
         ///     encoded by this Asn1Choice.
         /// </summary>
-        public override void setIdentifier(Asn1Identifier id)
+        public override void SetIdentifier(Asn1Identifier id)
         {
-            content.setIdentifier(id);
+            _content.SetIdentifier(id);
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            return content.ToString();
+            return _content.ToString();
         }
     }
 }

@@ -40,10 +40,10 @@ namespace Novell.Directory.Ldap.Utilclass
     [CLSCompliant(false)]
     public enum CharacterTypes : sbyte
     {
-        WHITESPACE = 1,
-        NUMERIC = 2,
-        ALPHABETIC = 4,
-        STRINGQUOTE = 8,
-        COMMENTCHAR = 16
+        Whitespace = 1,
+        Numeric = 2,
+        Alphabetic = 4,
+        Stringquote = 8,
+        Commentchar = 16
     }
 }

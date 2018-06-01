@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap.Utilclass
             return;
             }
             */
-            get { return name; }
+            get { return _name; }
         }
 
         public virtual string[] Values
@@ -57,32 +57,32 @@ namespace Novell.Directory.Ldap.Utilclass
             get
             {
                 string[] strValues = null;
-                if (values.Count > 0)
+                if (_values.Count > 0)
                 {
-                    strValues = new string[values.Count];
-                    for (var i = 0; i < values.Count; i++)
+                    strValues = new string[_values.Count];
+                    for (var i = 0; i < _values.Count; i++)
                     {
-                        strValues[i] = (string) values[i];
+                        strValues[i] = (string) _values[i];
                     }
                 }
                 return strValues;
             }
         }
 
-        private string name;
-        private ArrayList values;
+        private string _name;
+        private ArrayList _values;
 
-        public AttributeQualifier(string name, string[] value_Renamed)
+        public AttributeQualifier(string name, string[] valueRenamed)
         {
-            if ((object) name == null || value_Renamed == null)
+            if ((object) name == null || valueRenamed == null)
             {
                 throw new ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
             }
-            this.name = name;
-            values = new ArrayList(5);
-            for (var i = 0; i < value_Renamed.Length; i++)
+            this._name = name;
+            _values = new ArrayList(5);
+            for (var i = 0; i < valueRenamed.Length; i++)
             {
-                values.Add(value_Renamed[i]);
+                _values.Add(valueRenamed[i]);
             }
         }
     }

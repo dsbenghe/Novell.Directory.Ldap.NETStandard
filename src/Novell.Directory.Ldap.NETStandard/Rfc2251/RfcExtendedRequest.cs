@@ -41,13 +41,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         requestValue     [1] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcExtendedRequest : Asn1Sequence, RfcRequest
+    public class RfcExtendedRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> Context-specific TAG for optional requestName.</summary>
-        public const int REQUEST_NAME = 0;
+        public const int RequestName = 0;
 
         /// <summary> Context-specific TAG for optional requestValue.</summary>
-        public const int REQUEST_VALUE = 1;
+        public const int RequestValue = 1;
 
         //*************************************************************************
         // Constructors for ExtendedRequest
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="requestName">
         ///     The OID for this extended operation.
         /// </param>
-        public RfcExtendedRequest(RfcLdapOID requestName) : this(requestName, null)
+        public RfcExtendedRequest(RfcLdapOid requestName) : this(requestName, null)
         {
         }
 
@@ -72,11 +72,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="requestValue">
         ///     An optional request value.
         /// </param>
-        public RfcExtendedRequest(RfcLdapOID requestName, Asn1OctetString requestValue) : base(2)
+        public RfcExtendedRequest(RfcLdapOid requestName, Asn1OctetString requestValue) : base(2)
         {
-            add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REQUEST_NAME), requestName, false));
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestName), requestName, false));
             if (requestValue != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REQUEST_VALUE), requestValue, false));
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestValue), requestValue, false));
         }
 
 
@@ -100,18 +100,18 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 23.
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.EXTENDED_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ExtendedRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
             // Just dup the original request
-            return new RfcExtendedRequest(toArray());
+            return new RfcExtendedRequest(ToArray());
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
             return null;
         }

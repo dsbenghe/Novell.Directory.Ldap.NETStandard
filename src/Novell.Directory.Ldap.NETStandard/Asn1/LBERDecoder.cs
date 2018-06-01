@@ -64,23 +64,23 @@ namespace Novell.Directory.Ldap.Asn1
     ///     Canonical, and Distinguished Encoding Rules", 1994.
     /// </summary>
     [CLSCompliant(true)]
-    public class LBERDecoder : Asn1Decoder
+    public class LberDecoder : IAsn1Decoder
     {
-        public LBERDecoder()
+        public LberDecoder()
         {
             InitBlock();
         }
 
         private void InitBlock()
         {
-            asn1ID = new Asn1Identifier();
-            asn1Len = new Asn1Length();
+            _asn1Id = new Asn1Identifier();
+            _asn1Len = new Asn1Length();
         }
 
         //used to speed up decode, so it doesn't need to recreate an identifier every time
         //instead just reset is called CANNOT be static for multiple connections
-        private Asn1Identifier asn1ID;
-        private Asn1Length asn1Len;
+        private Asn1Identifier _asn1Id;
+        private Asn1Length _asn1Len;
 
 
         /* Generic decode routines
@@ -88,14 +88,14 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from a byte array.</summary>
         [CLSCompliant(false)]
-        public virtual Asn1Object decode(sbyte[] value_Renamed)
+        public virtual Asn1Object Decode(sbyte[] valueRenamed)
         {
             Asn1Object asn1 = null;
 
-            var in_Renamed = new MemoryStream(SupportClass.ToByteArray(value_Renamed));
+            var inRenamed = new MemoryStream(SupportClass.ToByteArray(valueRenamed));
             try
             {
-                asn1 = decode(in_Renamed);
+                asn1 = Decode(inRenamed);
             }
             catch (IOException ioe)
             {
@@ -105,10 +105,10 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from an InputStream.</summary>
-        public virtual Asn1Object decode(Stream in_Renamed)
+        public virtual Asn1Object Decode(Stream inRenamed)
         {
             var len = new int[1];
-            return decode(in_Renamed, len);
+            return Decode(inRenamed, len);
         }
 
         /// <summary>
@@ -118,37 +118,37 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the parameter len. This information is helpful when decoding
         ///     structured types.
         /// </summary>
-        public virtual Asn1Object decode(Stream in_Renamed, int[] len)
+        public virtual Asn1Object Decode(Stream inRenamed, int[] len)
         {
-            asn1ID.reset(in_Renamed);
-            asn1Len.reset(in_Renamed);
+            _asn1Id.Reset(inRenamed);
+            _asn1Len.Reset(inRenamed);
 
-            var length = asn1Len.Length;
-            len[0] = asn1ID.EncodedLength + asn1Len.EncodedLength + length;
+            var length = _asn1Len.Length;
+            len[0] = _asn1Id.EncodedLength + _asn1Len.EncodedLength + length;
 
-            if (asn1ID.IsUniversal)
+            if (_asn1Id.IsUniversal)
             {
-                switch (asn1ID.Tag)
+                switch (_asn1Id.Tag)
                 {
-                    case Asn1Sequence.TAG:
-                        return new Asn1Sequence(this, in_Renamed, length);
+                    case Asn1Sequence.Tag:
+                        return new Asn1Sequence(this, inRenamed, length);
 
-                    case Asn1Set.TAG:
-                        return new Asn1Set(this, in_Renamed, length);
+                    case Asn1Set.Tag:
+                        return new Asn1Set(this, inRenamed, length);
 
-                    case Asn1Boolean.TAG:
-                        return new Asn1Boolean(this, in_Renamed, length);
+                    case Asn1Boolean.Tag:
+                        return new Asn1Boolean(this, inRenamed, length);
 
-                    case Asn1Integer.TAG:
-                        return new Asn1Integer(this, in_Renamed, length);
+                    case Asn1Integer.Tag:
+                        return new Asn1Integer(this, inRenamed, length);
 
-                    case Asn1OctetString.TAG:
-                        return new Asn1OctetString(this, in_Renamed, length);
+                    case Asn1OctetString.Tag:
+                        return new Asn1OctetString(this, inRenamed, length);
 
-                    case Asn1Enumerated.TAG:
-                        return new Asn1Enumerated(this, in_Renamed, length);
+                    case Asn1Enumerated.Tag:
+                        return new Asn1Enumerated(this, inRenamed, length);
 
-                    case Asn1Null.TAG:
+                    case Asn1Null.Tag:
                         return new Asn1Null(); // has no content to decode.
                     /* Asn1 TYPE NOT YET SUPPORTED
                     case Asn1BitString.TAG:
@@ -181,18 +181,18 @@ namespace Novell.Directory.Ldap.Asn1
                 }
             }
             // APPLICATION or CONTEXT-SPECIFIC tag
-            return new Asn1Tagged(this, in_Renamed, length, (Asn1Identifier) asn1ID.Clone());
+            return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier) _asn1Id.Clone());
         }
 
         /* Decoders for ASN.1 simple type Contents
         */
 
         /// <summary> Decode a boolean directly from a stream.</summary>
-        public object decodeBoolean(Stream in_Renamed, int len)
+        public object DecodeBoolean(Stream inRenamed, int len)
         {
             var lber = new sbyte[len];
 
-            var i = SupportClass.ReadInput(in_Renamed, ref lber, 0, lber.Length);
+            var i = SupportClass.ReadInput(inRenamed, ref lber, 0, lber.Length);
 
             if (i != len)
                 throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
@@ -204,10 +204,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode a Numeric type directly from a stream. Decodes INTEGER
         ///     and ENUMERATED types.
         /// </summary>
-        public object decodeNumeric(Stream in_Renamed, int len)
+        public object DecodeNumeric(Stream inRenamed, int len)
         {
             long l = 0;
-            var r = in_Renamed.ReadByte();
+            var r = inRenamed.ReadByte();
 
             if (r < 0)
                 throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
@@ -222,7 +222,7 @@ namespace Novell.Directory.Ldap.Asn1
 
             for (var i = 1; i < len; i++)
             {
-                r = in_Renamed.ReadByte();
+                r = inRenamed.ReadByte();
                 if (r < 0)
                     throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
                 l = (l << 8) | r;
@@ -231,7 +231,7 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an OctetString directly from a stream.</summary>
-        public object decodeOctetString(Stream in_Renamed, int len)
+        public object DecodeOctetString(Stream inRenamed, int len)
         {
             var octets = new sbyte[len];
             var totalLen = 0;
@@ -239,7 +239,7 @@ namespace Novell.Directory.Ldap.Asn1
             while (totalLen < len)
             {
                 // Make sure we have read all the data
-                var inLen = SupportClass.ReadInput(in_Renamed, ref octets, totalLen, len - totalLen);
+                var inLen = SupportClass.ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
                 totalLen += inLen;
             }
 
@@ -247,13 +247,13 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode a CharacterString directly from a stream.</summary>
-        public object decodeCharacterString(Stream in_Renamed, int len)
+        public object DecodeCharacterString(Stream inRenamed, int len)
         {
             var octets = new sbyte[len];
 
             for (var i = 0; i < len; i++)
             {
-                var ret = in_Renamed.ReadByte(); // blocks
+                var ret = inRenamed.ReadByte(); // blocks
                 if (ret == -1)
                     throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
                 octets[i] = (sbyte) ret;

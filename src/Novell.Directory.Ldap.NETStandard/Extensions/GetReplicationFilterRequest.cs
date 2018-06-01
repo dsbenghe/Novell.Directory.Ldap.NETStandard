@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICATION_FILTER_RES,
+            LdapExtendedResponse.Register(ReplicationConstants.GetReplicationFilterRes,
                 typeof(GetReplicationFilterResponse));
         }
 
@@ -65,33 +65,33 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Constructs an extended operations object which contains the ber encoded
         ///     replication filter.
         /// </summary>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The server whose replication filter needs to be read
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetReplicationFilterRequest(string serverDN)
-            : base(ReplicationConstants.GET_REPLICATION_FILTER_REQ, null)
+        public GetReplicationFilterRequest(string serverDn)
+            : base(ReplicationConstants.GetReplicationFilterReq, null)
         {
             try
             {
-                if ((object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) serverDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
 
                 // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                asn1ServerDn.Encode(encoder, encodedData);
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

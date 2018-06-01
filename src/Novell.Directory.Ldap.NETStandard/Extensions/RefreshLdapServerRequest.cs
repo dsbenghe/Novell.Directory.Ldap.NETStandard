@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public RefreshLdapServerRequest() : base(ReplicationConstants.REFRESH_SERVER_REQ, null)
+        public RefreshLdapServerRequest() : base(ReplicationConstants.RefreshServerReq, null)
         {
         }
     }

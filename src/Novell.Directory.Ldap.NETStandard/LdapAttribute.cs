@@ -54,33 +54,33 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapAttribute : IComparable
     {
-        private class URLData
+        private class UrlData
         {
             private void InitBlock(LdapAttribute enclosingInstance)
             {
-                this.Enclosing_Instance = enclosingInstance;
+                this.EnclosingInstance = enclosingInstance;
             }
 
-            public LdapAttribute Enclosing_Instance { get; private set; }
+            public LdapAttribute EnclosingInstance { get; private set; }
 
-            private readonly int length;
-            private readonly sbyte[] data;
+            private readonly int _length;
+            private readonly sbyte[] _data;
 
-            public URLData(LdapAttribute enclosingInstance, sbyte[] data, int length)
+            public UrlData(LdapAttribute enclosingInstance, sbyte[] data, int length)
             {
                 InitBlock(enclosingInstance);
-                this.length = length;
-                this.data = data;
+                this._length = length;
+                this._data = data;
             }
 
-            public int getLength()
+            public int GetLength()
             {
-                return length;
+                return _length;
             }
 
-            public sbyte[] getData()
+            public sbyte[] GetData()
             {
-                return data;
+                return _data;
             }
         }
 
@@ -120,15 +120,15 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (null == values)
+                if (null == _values)
                     return new sbyte[0][];
-                var size = values.Length;
+                var size = _values.Length;
                 var bva = new sbyte[size][];
                 // Deep copy so application cannot change values
                 for (int i = 0, u = size; i < u; i++)
                 {
-                    bva[i] = new sbyte[((sbyte[]) values[i]).Length];
-                    Array.Copy((Array) values[i], 0, bva[i], 0, bva[i].Length);
+                    bva[i] = new sbyte[((sbyte[]) _values[i]).Length];
+                    Array.Copy((Array) _values[i], 0, bva[i], 0, bva[i].Length);
                 }
                 return bva;
             }
@@ -145,16 +145,16 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (null == values)
+                if (null == _values)
                     return new string[0];
-                var size = values.Length;
+                var size = _values.Length;
                 var sva = new string[size];
                 for (var j = 0; j < size; j++)
                 {
                     try
                     {
                         var encoder = Encoding.GetEncoding("utf-8");
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) values[j]));
+                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) _values[j]));
 //						char[] dchar = encoder.GetChars((byte[])values[j]);
                         sva[j] = new string(dchar);
 //						sva[j] = new String((sbyte[]) values[j], "UTF-8");
@@ -189,12 +189,12 @@ namespace Novell.Directory.Ldap
             get
             {
                 string rval = null;
-                if (values != null)
+                if (_values != null)
                 {
                     try
                     {
                         var encoder = Encoding.GetEncoding("utf-8");
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) values[0]));
+                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) _values[0]));
 //						char[] dchar = encoder.GetChars((byte[]) this.values[0]);
                         rval = new string(dchar);
                     }
@@ -221,11 +221,11 @@ namespace Novell.Directory.Ldap
             get
             {
                 sbyte[] bva = null;
-                if (values != null)
+                if (_values != null)
                 {
                     // Deep copy so app can't change the value
-                    bva = new sbyte[((sbyte[]) values[0]).Length];
-                    Array.Copy((Array) values[0], 0, bva, 0, bva.Length);
+                    bva = new sbyte[((sbyte[]) _values[0]).Length];
+                    Array.Copy((Array) _values[0], 0, bva, 0, bva.Length);
                 }
                 return bva;
             }
@@ -244,13 +244,13 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (subTypes != null)
+                if (_subTypes != null)
                 {
-                    for (var i = 0; i < subTypes.Length; i++)
+                    for (var i = 0; i < _subTypes.Length; i++)
                     {
-                        if (subTypes[i].StartsWith("lang-"))
+                        if (_subTypes[i].StartsWith("lang-"))
                         {
-                            return subTypes[i];
+                            return _subTypes[i];
                         }
                     }
                 }
@@ -266,7 +266,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string Name
         {
-            get { return name; }
+            get { return _name; }
         }
 
         /// <summary>
@@ -278,14 +278,14 @@ namespace Novell.Directory.Ldap
         {
             set
             {
-                values = null;
+                _values = null;
                 try
                 {
                     var encoder = Encoding.GetEncoding("utf-8");
                     var ibytes = encoder.GetBytes(value);
                     var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                    add(sbytes);
+                    Add(sbytes);
                 }
                 catch (IOException ue)
                 {
@@ -294,10 +294,10 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private readonly string name; // full attribute name
-        private readonly string baseName; // cn of cn;lang-ja;phonetic
-        private readonly string[] subTypes; // lang-ja of cn;lang-ja
-        private object[] values; // Array of byte[] attribute values
+        private readonly string _name; // full attribute name
+        private readonly string _baseName; // cn of cn;lang-ja;phonetic
+        private readonly string[] _subTypes; // lang-ja of cn;lang-ja
+        private object[] _values; // Array of byte[] attribute values
 
         /// <summary>
         ///     Constructs an attribute with copies of all values of the input
@@ -314,18 +314,18 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("LdapAttribute class cannot be null");
             }
             // Do a deep copy of the LdapAttribute template
-            name = attr.name;
-            baseName = attr.baseName;
-            if (null != attr.subTypes)
+            _name = attr._name;
+            _baseName = attr._baseName;
+            if (null != attr._subTypes)
             {
-                subTypes = new string[attr.subTypes.Length];
-                Array.Copy(attr.subTypes, 0, subTypes, 0, subTypes.Length);
+                _subTypes = new string[attr._subTypes.Length];
+                Array.Copy(attr._subTypes, 0, _subTypes, 0, _subTypes.Length);
             }
             // OK to just copy attributes, as the app only sees a deep copy of them
-            if (null != attr.values)
+            if (null != attr._values)
             {
-                values = new object[attr.values.Length];
-                Array.Copy(attr.values, 0, values, 0, values.Length);
+                _values = new object[attr._values.Length];
+                Array.Copy(attr._values, 0, _values, 0, _values.Length);
             }
         }
 
@@ -342,9 +342,9 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("Attribute name cannot be null");
             }
-            name = attrName;
-            baseName = getBaseName(attrName);
-            subTypes = getSubtypes(attrName);
+            _name = attrName;
+            _baseName = GetBaseName(attrName);
+            _subTypes = GetSubtypes(attrName);
         }
 
         /// <summary>
@@ -368,7 +368,7 @@ namespace Novell.Directory.Ldap
             // Make our own copy of the byte array to prevent app from changing it
             var tmp = new sbyte[attrBytes.Length];
             Array.Copy(attrBytes, 0, tmp, 0, attrBytes.Length);
-            add(tmp);
+            Add(tmp);
         }
 
         /// <summary>
@@ -393,7 +393,7 @@ namespace Novell.Directory.Ldap
                 var ibytes = encoder.GetBytes(attrString);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                add(sbytes);
+                Add(sbytes);
             }
             catch (IOException e)
             {
@@ -429,7 +429,7 @@ namespace Novell.Directory.Ldap
                     var encoder = Encoding.GetEncoding("utf-8");
                     var ibytes = encoder.GetBytes(attrStrings[i]);
                     var sbytes = SupportClass.ToSByteArray(ibytes);
-                    add(sbytes);
+                    Add(sbytes);
 //					this.add(attrStrings[i].getBytes("UTF-8"));
                 }
                 catch (IOException e)
@@ -450,9 +450,9 @@ namespace Novell.Directory.Ldap
             try
             {
                 var newObj = MemberwiseClone();
-                if (values != null)
+                if (_values != null)
                 {
-                    Array.Copy(values, 0, ((LdapAttribute) newObj).values, 0, values.Length);
+                    Array.Copy(_values, 0, ((LdapAttribute) newObj)._values, 0, _values.Length);
                 }
                 return newObj;
             }
@@ -469,7 +469,7 @@ namespace Novell.Directory.Ldap
         ///     Value of the attribute as a String.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void addValue(string attrString)
+        public virtual void AddValue(string attrString)
         {
             if ((object) attrString == null)
             {
@@ -480,7 +480,7 @@ namespace Novell.Directory.Ldap
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(attrString);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
-                add(sbytes);
+                Add(sbytes);
 //				this.add(attrString.getBytes("UTF-8"));
             }
             catch (IOException ue)
@@ -498,13 +498,13 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null
         /// </param>
         [CLSCompliant(false)]
-        public virtual void addValue(sbyte[] attrBytes)
+        public virtual void AddValue(sbyte[] attrBytes)
         {
             if (attrBytes == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
-            add(attrBytes);
+            Add(attrBytes);
         }
 
         /// <summary>
@@ -516,14 +516,14 @@ namespace Novell.Directory.Ldap
         ///     The base64 value of the attribute as a String.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void addBase64Value(string attrString)
+        public virtual void AddBase64Value(string attrString)
         {
             if ((object) attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            add(Base64.decode(attrString));
+            Add(Base64.Decode(attrString));
         }
 
         /// <summary>
@@ -541,14 +541,14 @@ namespace Novell.Directory.Ldap
         ///     The end index of base encoded part, exclusive.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void addBase64Value(StringBuilder attrString, int start, int end)
+        public virtual void AddBase64Value(StringBuilder attrString, int start, int end)
         {
             if (attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            add(Base64.decode(attrString, start, end));
+            Add(Base64.Decode(attrString, start, end));
         }
 
         /// <summary>
@@ -561,14 +561,14 @@ namespace Novell.Directory.Ldap
         ///     characters.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void addBase64Value(char[] attrChars)
+        public virtual void AddBase64Value(char[] attrChars)
         {
             if (attrChars == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            add(Base64.decode(attrChars));
+            Add(Base64.Decode(attrChars));
         }
 
         /// <summary>
@@ -580,13 +580,13 @@ namespace Novell.Directory.Ldap
         ///     the value of the attribute.
         ///     @throws IllegalArgumentException if url is null
         /// </param>
-        public virtual void addURLValue(string url)
+        public virtual void AddUrlValue(string url)
         {
             if ((object) url == null)
             {
                 throw new ArgumentException("Attribute URL cannot be null");
             }
-            addURLValue(new Uri(url));
+            AddUrlValue(new Uri(url));
         }
 
         /// <summary>
@@ -598,7 +598,7 @@ namespace Novell.Directory.Ldap
         ///     of the attribute.
         ///     @throws IllegalArgumentException if url is null
         /// </param>
-        public virtual void addURLValue(Uri url)
+        public virtual void AddUrlValue(Uri url)
         {
             // Class to encapsulate the data bytes and the length
             if (url == null)
@@ -609,14 +609,14 @@ namespace Novell.Directory.Ldap
             {
                 // Get InputStream from the URL
                 var webRequest = WebRequest.Create(url);
-                var in_Renamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
+                var inRenamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
                 // Read the bytes into buffers and store the them in an arraylist
                 var bufs = new ArrayList();
                 var buf = new sbyte[4096];
                 int len, totalLength = 0;
-                while ((len = SupportClass.ReadInput(in_Renamed, ref buf, 0, 4096)) != -1)
+                while ((len = SupportClass.ReadInput(inRenamed, ref buf, 0, 4096)) != -1)
                 {
-                    bufs.Add(new URLData(this, buf, len));
+                    bufs.Add(new UrlData(this, buf, len));
                     buf = new sbyte[4096];
                     totalLength += len;
                 }
@@ -629,12 +629,12 @@ namespace Novell.Directory.Ldap
                 var offset = 0; //
                 for (var i = 0; i < bufs.Count; i++)
                 {
-                    var b = (URLData) bufs[i];
-                    len = b.getLength();
-                    Array.Copy(b.getData(), 0, data, offset, len);
+                    var b = (UrlData) bufs[i];
+                    len = b.GetLength();
+                    Array.Copy(b.GetData(), 0, data, offset, len);
                     offset += len;
                 }
-                add(data);
+                Add(data);
             }
             catch (IOException ue)
             {
@@ -650,9 +650,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The base name of the attribute.
         /// </returns>
-        public virtual string getBaseName()
+        public virtual string GetBaseName()
         {
-            return baseName;
+            return _baseName;
         }
 
         /// <summary>
@@ -668,7 +668,7 @@ namespace Novell.Directory.Ldap
         ///     The base name of the attribute.
         ///     @throws IllegalArgumentException if attrName is null
         /// </returns>
-        public static string getBaseName(string attrName)
+        public static string GetBaseName(string attrName)
         {
             if ((object) attrName == null)
             {
@@ -690,9 +690,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array subtypes or null if the attribute has none.
         /// </returns>
-        public virtual string[] getSubtypes()
+        public virtual string[] GetSubtypes()
         {
-            return subTypes;
+            return _subTypes;
         }
 
         /// <summary>
@@ -708,7 +708,7 @@ namespace Novell.Directory.Ldap
         ///     An array subtypes or null if the attribute has none.
         ///     @throws IllegalArgumentException if attrName is null
         /// </returns>
-        public static string[] getSubtypes(string attrName)
+        public static string[] GetSubtypes(string attrName)
         {
             if ((object) attrName == null)
             {
@@ -743,17 +743,17 @@ namespace Novell.Directory.Ldap
         ///     false, if it doesn't.
         ///     @throws IllegalArgumentException if subtype is null
         /// </returns>
-        public virtual bool hasSubtype(string subtype)
+        public virtual bool HasSubtype(string subtype)
         {
             if ((object) subtype == null)
             {
                 throw new ArgumentException("subtype cannot be null");
             }
-            if (null != subTypes)
+            if (null != _subTypes)
             {
-                for (var i = 0; i < subTypes.Length; i++)
+                for (var i = 0; i < _subTypes.Length; i++)
                 {
-                    if (subTypes[i].ToUpper().Equals(subtype.ToUpper()))
+                    if (_subTypes[i].ToUpper().Equals(subtype.ToUpper()))
                         return true;
                 }
             }
@@ -776,7 +776,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if subtypes is null or if array member
         ///     is null.
         /// </returns>
-        public virtual bool hasSubtypes(string[] subtypes)
+        public virtual bool HasSubtypes(string[] subtypes)
         {
             if (subtypes == null)
             {
@@ -784,13 +784,13 @@ namespace Novell.Directory.Ldap
             }
             for (var i = 0; i < subtypes.Length; i++)
             {
-                for (var j = 0; j < subTypes.Length; j++)
+                for (var j = 0; j < _subTypes.Length; j++)
                 {
-                    if ((object) subTypes[j] == null)
+                    if ((object) _subTypes[j] == null)
                     {
                         throw new ArgumentException("subtype " + "at array index " + i + " cannot be null");
                     }
-                    if (subTypes[j].ToUpper().Equals(subtypes[i].ToUpper()))
+                    if (_subTypes[j].ToUpper().Equals(subtypes[i].ToUpper()))
                     {
                         goto gotSubType;
                     }
@@ -811,7 +811,7 @@ namespace Novell.Directory.Ldap
         ///     no effect.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void removeValue(string attrString)
+        public virtual void RemoveValue(string attrString)
         {
             if (null == (object) attrString)
             {
@@ -822,7 +822,7 @@ namespace Novell.Directory.Ldap
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(attrString);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
-                removeValue(sbytes);
+                RemoveValue(sbytes);
 //				this.removeValue(attrString.getBytes("UTF-8"));
             }
             catch (IOException uee)
@@ -844,39 +844,39 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null
         /// </param>
         [CLSCompliant(false)]
-        public virtual void removeValue(sbyte[] attrBytes)
+        public virtual void RemoveValue(sbyte[] attrBytes)
         {
             if (null == attrBytes)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
-            for (var i = 0; i < values.Length; i++)
+            for (var i = 0; i < _values.Length; i++)
             {
-                if (equals(attrBytes, (sbyte[]) values[i]))
+                if (Equals(attrBytes, (sbyte[]) _values[i]))
                 {
-                    if (0 == i && 1 == values.Length)
+                    if (0 == i && 1 == _values.Length)
                     {
                         // Optimize if first element of a single valued attr
-                        values = null;
+                        _values = null;
                         return;
                     }
-                    if (values.Length == 1)
+                    if (_values.Length == 1)
                     {
-                        values = null;
+                        _values = null;
                     }
                     else
                     {
-                        var moved = values.Length - i - 1;
-                        var tmp = new object[values.Length - 1];
+                        var moved = _values.Length - i - 1;
+                        var tmp = new object[_values.Length - 1];
                         if (i != 0)
                         {
-                            Array.Copy(values, 0, tmp, 0, i);
+                            Array.Copy(_values, 0, tmp, 0, i);
                         }
                         if (moved != 0)
                         {
-                            Array.Copy(values, i + 1, tmp, i, moved);
+                            Array.Copy(_values, i + 1, tmp, i, moved);
                         }
-                        values = tmp;
+                        _values = tmp;
                         tmp = null;
                     }
                     break;
@@ -890,9 +890,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The number of values in the attribute.
         /// </returns>
-        public virtual int size()
+        public virtual int Size()
         {
-            return null == values ? 0 : values.Length;
+            return null == _values ? 0 : _values.Length;
         }
 
         /// <summary>
@@ -910,7 +910,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int CompareTo(object attribute)
         {
-            return name.CompareTo(((LdapAttribute) attribute).name);
+            return _name.CompareTo(((LdapAttribute) attribute)._name);
         }
 
         /// <summary>
@@ -922,26 +922,26 @@ namespace Novell.Directory.Ldap
         ///     that all data added to our list is in binary form.
         ///     Note: If attrBytes represents a string it should be UTF-8 encoded.
         /// </param>
-        private void add(sbyte[] bytes)
+        private void Add(sbyte[] bytes)
         {
-            if (null == values)
+            if (null == _values)
             {
-                values = new object[] {bytes};
+                _values = new object[] {bytes};
             }
             else
             {
                 // Duplicate attribute values not allowed
-                for (var i = 0; i < values.Length; i++)
+                for (var i = 0; i < _values.Length; i++)
                 {
-                    if (equals(bytes, (sbyte[]) values[i]))
+                    if (Equals(bytes, (sbyte[]) _values[i]))
                     {
                         return; // Duplicate, don't add
                     }
                 }
-                var tmp = new object[values.Length + 1];
-                Array.Copy(values, 0, tmp, 0, values.Length);
-                tmp[values.Length] = bytes;
-                values = tmp;
+                var tmp = new object[_values.Length + 1];
+                Array.Copy(_values, 0, tmp, 0, _values.Length);
+                tmp[_values.Length] = bytes;
+                _values = tmp;
                 tmp = null;
             }
         }
@@ -960,7 +960,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if the two arrays are equal
         /// </returns>
-        private bool equals(sbyte[] e1, sbyte[] e2)
+        private bool Equals(sbyte[] e1, sbyte[] e2)
         {
             // If same object, they compare true
             if (e1 == e2)
@@ -996,11 +996,11 @@ namespace Novell.Directory.Ldap
             var result = new StringBuilder("LdapAttribute: ");
             try
             {
-                result.Append("{type='" + name + "'");
-                if (values != null)
+                result.Append("{type='" + _name + "'");
+                if (_values != null)
                 {
                     result.Append(", ");
-                    if (values.Length == 1)
+                    if (_values.Length == 1)
                     {
                         result.Append("value='");
                     }
@@ -1008,19 +1008,19 @@ namespace Novell.Directory.Ldap
                     {
                         result.Append("values='");
                     }
-                    for (var i = 0; i < values.Length; i++)
+                    for (var i = 0; i < _values.Length; i++)
                     {
                         if (i != 0)
                         {
                             result.Append("','");
                         }
-                        if (((sbyte[]) values[i]).Length == 0)
+                        if (((sbyte[]) _values[i]).Length == 0)
                         {
                             continue;
                         }
                         var encoder = Encoding.GetEncoding("utf-8");
 //						char[] dchar = encoder.GetChars((byte[]) values[i]);
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) values[i]));
+                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[]) _values[i]));
                         var sval = new string(dchar);
 
 //						System.String sval = new String((sbyte[]) values[i], "UTF-8");

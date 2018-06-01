@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] Attributes
         {
-            get { return attributes; }
+            get { return _attributes; }
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string SyntaxString { get; }
 
-        private readonly string[] attributes;
+        private readonly string[] _attributes;
 
         /// <summary>
         ///     Constructs a matching rule definition for adding to or deleting from
@@ -100,17 +100,17 @@ namespace Novell.Directory.Ldap
         ///     attribute, in dotted numerical format.
         /// </param>
         public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes, bool obsolete,
-            string syntaxString) : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING])
+            string syntaxString) : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.attributes = new string[attributes.Length];
-            attributes.CopyTo(this.attributes, 0);
+            this.Oid = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
+            this._attributes = new string[attributes.Length];
+            attributes.CopyTo(this._attributes, 0);
             this.SyntaxString = syntaxString;
-            Value = formatString();
+            Value = FormatString();
         }
 
 
@@ -128,23 +128,23 @@ namespace Novell.Directory.Ldap
         ///     query for "matchingRuleUse".
         /// </param>
         public LdapMatchingRuleSchema(string rawMatchingRule, string rawMatchingRuleUse)
-            : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING])
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
             try
             {
                 var matchParser = new SchemaParser(rawMatchingRule);
                 names = new string[matchParser.Names.Length];
                 matchParser.Names.CopyTo(names, 0);
-                oid = matchParser.ID;
-                description = matchParser.Description;
-                obsolete = matchParser.Obsolete;
+                Oid = matchParser.Id;
+                Description = matchParser.Description;
+                Obsolete = matchParser.Obsolete;
                 SyntaxString = matchParser.Syntax;
                 if ((object) rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
-                    attributes = matchUseParser.Applies;
+                    _attributes = matchUseParser.Applies;
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -159,13 +159,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }

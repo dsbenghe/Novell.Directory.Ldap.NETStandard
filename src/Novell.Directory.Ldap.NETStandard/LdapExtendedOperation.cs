@@ -42,8 +42,8 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapExtendedOperation
     {
-        private string oid;
-        private sbyte[] vals;
+        private string _oid;
+        private sbyte[] _vals;
 
         /// <summary>
         ///     Constructs a new object with the specified object ID and data.
@@ -57,8 +57,8 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapExtendedOperation(string oid, sbyte[] vals)
         {
-            this.oid = oid;
-            this.vals = vals;
+            this._oid = oid;
+            this._vals = vals;
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap
             {
                 var newObj = MemberwiseClone();
 //				Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
-                Array.Copy(vals, 0, ((LdapExtendedOperation) newObj).vals, 0, vals.Length);
+                Array.Copy(_vals, 0, ((LdapExtendedOperation) newObj)._vals, 0, _vals.Length);
                 return newObj;
             }
             catch (Exception ce)
@@ -88,9 +88,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID (object ID) of the operation.
         /// </returns>
-        public virtual string getID()
+        public virtual string GetId()
         {
-            return oid;
+            return _oid;
         }
 
         /// <summary>
@@ -100,9 +100,9 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] getValue()
+        public virtual sbyte[] GetValue()
         {
-            return vals;
+            return _vals;
         }
 
         /// <summary>
@@ -112,9 +112,9 @@ namespace Novell.Directory.Ldap
         ///     The byte array of operation-specific data.
         /// </param>
         [CLSCompliant(false)]
-        protected internal virtual void setValue(sbyte[] newVals)
+        protected internal virtual void SetValue(sbyte[] newVals)
         {
-            vals = newVals;
+            _vals = newVals;
         }
 
         /// <summary>
@@ -123,9 +123,9 @@ namespace Novell.Directory.Ldap
         /// <param name="newoid">
         ///     The new OID for the operation
         /// </param>
-        protected internal virtual void setID(string newoid)
+        protected internal virtual void SetId(string newoid)
         {
-            oid = newoid;
+            _oid = newoid;
         }
     }
 }

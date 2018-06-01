@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public override int Count
         {
-            get { return map.Count; }
+            get { return _map.Count; }
         }
 
         /// <summary>
@@ -69,12 +69,12 @@ namespace Novell.Directory.Ldap
         ///     as the values.  We also do not declare the map as transient, making the
         ///     map serializable.
         /// </summary>
-        private readonly Hashtable map;
+        private readonly Hashtable _map;
 
         /// <summary> Constructs an empty set of attributes.</summary>
         public LdapAttributeSet()
         {
-            map = new Hashtable();
+            _map = new Hashtable();
         }
 
         // ---  methods not defined in Set ---
@@ -127,9 +127,9 @@ namespace Novell.Directory.Ldap
         ///     The attribute matching the specified attrName, or <code>null</code>
         ///     if there is no exact match.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName)
+        public virtual LdapAttribute GetAttribute(string attrName)
         {
-            return (LdapAttribute) map[attrName.ToUpper()];
+            return (LdapAttribute) _map[attrName.ToUpper()];
         }
 
         /// <summary>
@@ -194,10 +194,10 @@ namespace Novell.Directory.Ldap
         ///     A single best-match <code>LdapAttribute</code>, or <code>null</code>
         ///     if no match is found in the entry.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName, string lang)
+        public virtual LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;
-            return (LdapAttribute) map[key.ToUpper()];
+            return (LdapAttribute) _map[key.ToUpper()];
         }
 
         /// <summary>
@@ -237,7 +237,7 @@ namespace Novell.Directory.Ldap
         ///     An attribute set containing the attributes that match the
         ///     specified subtype.
         /// </returns>
-        public virtual LdapAttributeSet getSubset(string subtype)
+        public virtual LdapAttributeSet GetSubset(string subtype)
         {
             // Create a new tempAttributeSet
             var tempAttributeSet = new LdapAttributeSet();
@@ -250,7 +250,7 @@ namespace Novell.Directory.Ldap
 
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
-                if (attr.hasSubtype(subtype))
+                if (attr.HasSubtype(subtype))
                     tempAttributeSet.Add(attr.Clone());
             }
             return tempAttributeSet;
@@ -267,7 +267,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public override IEnumerator GetEnumerator()
         {
-            return map.Values.GetEnumerator();
+            return _map.Values.GetEnumerator();
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public override bool IsEmpty()
         {
-            return map.Count == 0;
+            return _map.Count == 0;
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace Novell.Directory.Ldap
         public override bool Contains(object attr)
         {
             var attribute = (LdapAttribute) attr;
-            return map.ContainsKey(attribute.Name.ToUpper());
+            return _map.ContainsKey(attribute.Name.ToUpper());
         }
 
         /// <summary>
@@ -317,9 +317,9 @@ namespace Novell.Directory.Ldap
             //We must enforce that attr is an LdapAttribute
             var attribute = (LdapAttribute) attr;
             var name = attribute.Name.ToUpper();
-            if (map.ContainsKey(name))
+            if (_map.ContainsKey(name))
                 return false;
-            SupportClass.PutElement(map, name, attribute);
+            SupportClass.PutElement(_map, name, attribute);
             return true;
         }
 
@@ -339,28 +339,28 @@ namespace Novell.Directory.Ldap
         ///     @throws ClassCastException occurs the specified Object
         ///     is not of type <code>LdapAttribute</code> or of type <code>String</code>.
         /// </returns>
-        public override bool Remove(object object_Renamed)
+        public override bool Remove(object objectRenamed)
         {
             string attributeName; //the name is the key to object in the HashMap
-            if (object_Renamed is string)
+            if (objectRenamed is string)
             {
-                attributeName = (string) object_Renamed;
+                attributeName = (string) objectRenamed;
             }
             else
             {
-                attributeName = ((LdapAttribute) object_Renamed).Name;
+                attributeName = ((LdapAttribute) objectRenamed).Name;
             }
             if ((object) attributeName == null)
             {
                 return false;
             }
-            return SupportClass.HashtableRemove(map, attributeName.ToUpper()) != null;
+            return SupportClass.HashtableRemove(_map, attributeName.ToUpper()) != null;
         }
 
         /// <summary> Removes all of the elements from this set.</summary>
         public override void Clear()
         {
-            map.Clear();
+            _map.Clear();
         }
 
         /// <summary>

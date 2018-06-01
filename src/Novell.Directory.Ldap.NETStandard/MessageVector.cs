@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap
         {
             lock (this)
             {
-                var message = this.OfType<Message>().SingleOrDefault(m => m.MessageID == msgId);
+                var message = this.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
                 if (message == null)
                 {
                     throw new FieldAccessException();

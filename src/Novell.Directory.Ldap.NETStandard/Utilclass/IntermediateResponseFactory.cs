@@ -61,18 +61,18 @@ namespace Novell.Directory.Ldap.Utilclass
              *                          and an LDAP error code.
              */
 
-        public static LdapIntermediateResponse convertToIntermediateResponse(RfcLdapMessage inResponse)
+        public static LdapIntermediateResponse ConvertToIntermediateResponse(RfcLdapMessage inResponse)
             //          throws LDAPException 
         {
             var tempResponse = new LdapIntermediateResponse(inResponse);
             // Get the oid stored in the Extended response
-            var inOID = tempResponse.getID();
+            var inOid = tempResponse.GetId();
 
             var regExtResponses =
-                LdapIntermediateResponse.getRegisteredResponses();
+                LdapIntermediateResponse.GetRegisteredResponses();
             try
             {
-                var extRespClass = regExtResponses.findResponseExtension(inOID);
+                var extRespClass = regExtResponses.FindResponseExtension(inOid);
                 if (extRespClass == null)
                 {
                     return tempResponse;

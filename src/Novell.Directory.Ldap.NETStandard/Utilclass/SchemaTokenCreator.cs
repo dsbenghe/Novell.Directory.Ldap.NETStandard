@@ -36,30 +36,30 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     public class SchemaTokenCreator
     {
-        private string basestring;
-        private readonly bool cppcomments = false; // C++ style comments enabled
-        private readonly bool ccomments = false; // C style comments enabled
-        private readonly bool iseolsig = false;
-        private bool cidtolower;
-        private bool pushedback;
-        private int peekchar;
-        private sbyte[] ctype;
-        private int ichar = 1;
-        private char[] buf;
+        private string _basestring;
+        private readonly bool _cppcomments = false; // C++ style comments enabled
+        private readonly bool _ccomments = false; // C style comments enabled
+        private readonly bool _iseolsig = false;
+        private bool _cidtolower;
+        private bool _pushedback;
+        private int _peekchar;
+        private sbyte[] _ctype;
+        private int _ichar = 1;
+        private char[] _buf;
 
-        private readonly StreamReader reader;
-        private readonly StringReader sreader;
-        private readonly Stream input;
+        private readonly StreamReader _reader;
+        private readonly StringReader _sreader;
+        private readonly Stream _input;
 
         public string StringValue;
-        private double NumberValue;
-        public int lastttype;
+        private double _numberValue;
+        public int Lastttype;
 
         private void Initialise()
         {
-            ctype = new sbyte[256];
-            buf = new char[20];
-            peekchar = int.MaxValue;
+            _ctype = new sbyte[256];
+            _buf = new char[20];
+            _peekchar = int.MaxValue;
             WordCharacters('a', 'z');
             WordCharacters('A', 'Z');
             WordCharacters(128 + 32, 255);
@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap.Utilclass
             CommentCharacter('/');
             QuoteCharacter('"');
             QuoteCharacter('\'');
-            parseNumbers();
+            ParseNumbers();
         }
 
         public SchemaTokenCreator(Stream instream)
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new NullReferenceException();
             }
-            input = instream;
+            _input = instream;
         }
 
         public SchemaTokenCreator(StreamReader r)
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new NullReferenceException();
             }
-            reader = r;
+            _reader = r;
         }
 
         public SchemaTokenCreator(StringReader r)
@@ -97,12 +97,12 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new NullReferenceException();
             }
-            sreader = r;
+            _sreader = r;
         }
 
-        public void pushBack()
+        public void PushBack()
         {
-            pushedback = true;
+            _pushedback = true;
         }
 
         public int CurrentLine { get; private set; } = 1;
@@ -110,32 +110,32 @@ namespace Novell.Directory.Ldap.Utilclass
         public string ToStringValue()
         {
             string strval;
-            switch (lastttype)
+            switch (Lastttype)
             {
-                case (int) TokenTypes.EOF:
+                case (int) TokenTypes.Eof:
                     strval = "EOF";
                     break;
 
-                case (int) TokenTypes.EOL:
+                case (int) TokenTypes.Eol:
                     strval = "EOL";
                     break;
 
-                case (int) TokenTypes.WORD:
+                case (int) TokenTypes.Word:
                     strval = StringValue;
                     break;
 
-                case (int) TokenTypes.STRING:
+                case (int) TokenTypes.String:
                     strval = StringValue;
                     break;
 
-                case (int) TokenTypes.NUMBER:
-                case (int) TokenTypes.REAL:
-                    strval = "n=" + NumberValue;
+                case (int) TokenTypes.Number:
+                case (int) TokenTypes.Real:
+                    strval = "n=" + _numberValue;
                     break;
 
                 default:
                 {
-                    if (lastttype < 256 && (ctype[lastttype] & (sbyte) CharacterTypes.STRINGQUOTE) != 0)
+                    if (Lastttype < 256 && (_ctype[Lastttype] & (sbyte) CharacterTypes.Stringquote) != 0)
                     {
                         strval = StringValue;
                         break;
@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                     var s = new char[3];
                     s[0] = s[2] = '\'';
-                    s[1] = (char) lastttype;
+                    s[1] = (char) Lastttype;
                     strval = new string(s);
                     break;
                 }
@@ -155,151 +155,151 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             if (min < 0)
                 min = 0;
-            if (max >= ctype.Length)
-                max = ctype.Length - 1;
+            if (max >= _ctype.Length)
+                max = _ctype.Length - 1;
             while (min <= max)
-                ctype[min++] |= (sbyte) CharacterTypes.ALPHABETIC;
+                _ctype[min++] |= (sbyte) CharacterTypes.Alphabetic;
         }
 
         public void WhitespaceCharacters(int min, int max)
         {
             if (min < 0)
                 min = 0;
-            if (max >= ctype.Length)
-                max = ctype.Length - 1;
+            if (max >= _ctype.Length)
+                max = _ctype.Length - 1;
             while (min <= max)
-                ctype[min++] = (sbyte) CharacterTypes.WHITESPACE;
+                _ctype[min++] = (sbyte) CharacterTypes.Whitespace;
         }
 
         public void OrdinaryCharacters(int min, int max)
         {
             if (min < 0)
                 min = 0;
-            if (max >= ctype.Length)
-                max = ctype.Length - 1;
+            if (max >= _ctype.Length)
+                max = _ctype.Length - 1;
             while (min <= max)
-                ctype[min++] = 0;
+                _ctype[min++] = 0;
         }
 
         public void OrdinaryCharacter(int ch)
         {
-            if (ch >= 0 && ch < ctype.Length)
-                ctype[ch] = 0;
+            if (ch >= 0 && ch < _ctype.Length)
+                _ctype[ch] = 0;
         }
 
         public void CommentCharacter(int ch)
         {
-            if (ch >= 0 && ch < ctype.Length)
-                ctype[ch] = (sbyte) CharacterTypes.COMMENTCHAR;
+            if (ch >= 0 && ch < _ctype.Length)
+                _ctype[ch] = (sbyte) CharacterTypes.Commentchar;
         }
 
         public void InitTable()
         {
-            for (var i = ctype.Length; --i >= 0;)
-                ctype[i] = 0;
+            for (var i = _ctype.Length; --i >= 0;)
+                _ctype[i] = 0;
         }
 
         public void QuoteCharacter(int ch)
         {
-            if (ch >= 0 && ch < ctype.Length)
-                ctype[ch] = (sbyte) CharacterTypes.STRINGQUOTE;
+            if (ch >= 0 && ch < _ctype.Length)
+                _ctype[ch] = (sbyte) CharacterTypes.Stringquote;
         }
 
-        public void parseNumbers()
+        public void ParseNumbers()
         {
             for (int i = '0'; i <= '9'; i++)
-                ctype[i] |= (sbyte) CharacterTypes.NUMERIC;
-            ctype['.'] |= (sbyte) CharacterTypes.NUMERIC;
-            ctype['-'] |= (sbyte) CharacterTypes.NUMERIC;
+                _ctype[i] |= (sbyte) CharacterTypes.Numeric;
+            _ctype['.'] |= (sbyte) CharacterTypes.Numeric;
+            _ctype['-'] |= (sbyte) CharacterTypes.Numeric;
         }
 
-        private int read()
+        private int Read()
         {
-            if (sreader != null)
+            if (_sreader != null)
             {
-                return sreader.Read();
+                return _sreader.Read();
             }
-            if (reader != null)
+            if (_reader != null)
             {
-                return reader.Read();
+                return _reader.Read();
             }
-            if (input != null)
-                return input.ReadByte();
+            if (_input != null)
+                return _input.ReadByte();
             throw new Exception();
         }
 
-        public int nextToken()
+        public int NextToken()
         {
-            if (pushedback)
+            if (_pushedback)
             {
-                pushedback = false;
-                return lastttype;
+                _pushedback = false;
+                return Lastttype;
             }
 
             StringValue = null;
 
-            var curc = peekchar;
+            var curc = _peekchar;
             if (curc < 0)
                 curc = int.MaxValue;
             if (curc == int.MaxValue - 1)
             {
-                curc = read();
+                curc = Read();
                 if (curc < 0)
-                    return lastttype = (int) TokenTypes.EOF;
+                    return Lastttype = (int) TokenTypes.Eof;
                 if (curc == '\n')
                     curc = int.MaxValue;
             }
             if (curc == int.MaxValue)
             {
-                curc = read();
+                curc = Read();
                 if (curc < 0)
-                    return lastttype = (int) TokenTypes.EOF;
+                    return Lastttype = (int) TokenTypes.Eof;
             }
-            lastttype = curc;
-            peekchar = int.MaxValue;
+            Lastttype = curc;
+            _peekchar = int.MaxValue;
 
-            int ctype = curc < 256 ? this.ctype[curc] : (sbyte) CharacterTypes.ALPHABETIC;
-            while ((ctype & (sbyte) CharacterTypes.WHITESPACE) != 0)
+            int ctype = curc < 256 ? this._ctype[curc] : (sbyte) CharacterTypes.Alphabetic;
+            while ((ctype & (sbyte) CharacterTypes.Whitespace) != 0)
             {
                 if (curc == '\r')
                 {
                     CurrentLine++;
-                    if (iseolsig)
+                    if (_iseolsig)
                     {
-                        peekchar = int.MaxValue - 1;
-                        return lastttype = (int) TokenTypes.EOL;
+                        _peekchar = int.MaxValue - 1;
+                        return Lastttype = (int) TokenTypes.Eol;
                     }
-                    curc = read();
+                    curc = Read();
                     if (curc == '\n')
-                        curc = read();
+                        curc = Read();
                 }
                 else
                 {
                     if (curc == '\n')
                     {
                         CurrentLine++;
-                        if (iseolsig)
+                        if (_iseolsig)
                         {
-                            return lastttype = (int) TokenTypes.EOL;
+                            return Lastttype = (int) TokenTypes.Eol;
                         }
                     }
-                    curc = read();
+                    curc = Read();
                 }
                 if (curc < 0)
-                    return lastttype = (int) TokenTypes.EOF;
-                ctype = curc < 256 ? this.ctype[curc] : (sbyte) CharacterTypes.ALPHABETIC;
+                    return Lastttype = (int) TokenTypes.Eof;
+                ctype = curc < 256 ? this._ctype[curc] : (sbyte) CharacterTypes.Alphabetic;
             }
 
-            if ((ctype & (sbyte) CharacterTypes.NUMERIC) != 0)
+            if ((ctype & (sbyte) CharacterTypes.Numeric) != 0)
             {
                 var checkb = false;
                 if (curc == '-')
                 {
-                    curc = read();
+                    curc = Read();
                     if (curc != '.' && (curc < '0' || curc > '9'))
                     {
-                        peekchar = curc;
-                        return lastttype = '-';
+                        _peekchar = curc;
+                        return Lastttype = '-';
                     }
                     checkb = true;
                 }
@@ -317,9 +317,9 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                     else
                         break;
-                    curc = read();
+                    curc = Read();
                 }
-                peekchar = curc;
+                _peekchar = curc;
                 if (tempvar != 0)
                 {
                     double divby = 10;
@@ -331,57 +331,57 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                     dvar = dvar / divby;
                 }
-                NumberValue = checkb ? -dvar : dvar;
-                return lastttype = (int) TokenTypes.NUMBER;
+                _numberValue = checkb ? -dvar : dvar;
+                return Lastttype = (int) TokenTypes.Number;
             }
 
-            if ((ctype & (sbyte) CharacterTypes.ALPHABETIC) != 0)
+            if ((ctype & (sbyte) CharacterTypes.Alphabetic) != 0)
             {
                 var i = 0;
                 do
                 {
-                    if (i >= buf.Length)
+                    if (i >= _buf.Length)
                     {
-                        var nb = new char[buf.Length * 2];
-                        Array.Copy(buf, 0, nb, 0, buf.Length);
-                        buf = nb;
+                        var nb = new char[_buf.Length * 2];
+                        Array.Copy(_buf, 0, nb, 0, _buf.Length);
+                        _buf = nb;
                     }
-                    buf[i++] = (char) curc;
-                    curc = read();
+                    _buf[i++] = (char) curc;
+                    curc = Read();
                     ctype = curc < 0
-                        ? (sbyte) CharacterTypes.WHITESPACE
-                        : curc < 256 ? this.ctype[curc] : (sbyte) CharacterTypes.ALPHABETIC;
-                } while ((ctype & ((sbyte) CharacterTypes.ALPHABETIC | (sbyte) CharacterTypes.NUMERIC)) != 0);
-                peekchar = curc;
-                StringValue = new string(buf, 0, i);
-                if (cidtolower)
+                        ? (sbyte) CharacterTypes.Whitespace
+                        : curc < 256 ? this._ctype[curc] : (sbyte) CharacterTypes.Alphabetic;
+                } while ((ctype & ((sbyte) CharacterTypes.Alphabetic | (sbyte) CharacterTypes.Numeric)) != 0);
+                _peekchar = curc;
+                StringValue = new string(_buf, 0, i);
+                if (_cidtolower)
                     StringValue = StringValue.ToLower();
-                return lastttype = (int) TokenTypes.WORD;
+                return Lastttype = (int) TokenTypes.Word;
             }
 
-            if ((ctype & (sbyte) CharacterTypes.STRINGQUOTE) != 0)
+            if ((ctype & (sbyte) CharacterTypes.Stringquote) != 0)
             {
-                lastttype = curc;
+                Lastttype = curc;
                 var i = 0;
-                var rc = read();
-                while (rc >= 0 && rc != lastttype && rc != '\n' && rc != '\r')
+                var rc = Read();
+                while (rc >= 0 && rc != Lastttype && rc != '\n' && rc != '\r')
                 {
                     if (rc == '\\')
                     {
-                        curc = read();
+                        curc = Read();
                         var first = curc;
                         if (curc >= '0' && curc <= '7')
                         {
                             curc = curc - '0';
-                            var loopchar = read();
+                            var loopchar = Read();
                             if ('0' <= loopchar && loopchar <= '7')
                             {
                                 curc = (curc << 3) + (loopchar - '0');
-                                loopchar = read();
+                                loopchar = Read();
                                 if ('0' <= loopchar && loopchar <= '7' && first <= '3')
                                 {
                                     curc = (curc << 3) + (loopchar - '0');
-                                    rc = read();
+                                    rc = Read();
                                 }
                                 else
                                     rc = loopchar;
@@ -424,44 +424,44 @@ namespace Novell.Directory.Ldap.Utilclass
                                 default:
                                     break;
                             }
-                            rc = read();
+                            rc = Read();
                         }
                     }
                     else
                     {
                         curc = rc;
-                        rc = read();
+                        rc = Read();
                     }
-                    if (i >= buf.Length)
+                    if (i >= _buf.Length)
                     {
-                        var nb = new char[buf.Length * 2];
-                        Array.Copy(buf, 0, nb, 0, buf.Length);
-                        buf = nb;
+                        var nb = new char[_buf.Length * 2];
+                        Array.Copy(_buf, 0, nb, 0, _buf.Length);
+                        _buf = nb;
                     }
-                    buf[i++] = (char) curc;
+                    _buf[i++] = (char) curc;
                 }
 
-                peekchar = rc == lastttype ? int.MaxValue : rc;
+                _peekchar = rc == Lastttype ? int.MaxValue : rc;
 
-                StringValue = new string(buf, 0, i);
-                return lastttype;
+                StringValue = new string(_buf, 0, i);
+                return Lastttype;
             }
 
-            if (curc == '/' && (cppcomments || ccomments))
+            if (curc == '/' && (_cppcomments || _ccomments))
             {
-                curc = read();
-                if (curc == '*' && ccomments)
+                curc = Read();
+                if (curc == '*' && _ccomments)
                 {
                     var prevc = 0;
-                    while ((curc = read()) != '/' || prevc != '*')
+                    while ((curc = Read()) != '/' || prevc != '*')
                     {
                         if (curc == '\r')
                         {
                             CurrentLine++;
-                            curc = read();
+                            curc = Read();
                             if (curc == '\n')
                             {
-                                curc = read();
+                                curc = Read();
                             }
                         }
                         else
@@ -469,42 +469,42 @@ namespace Novell.Directory.Ldap.Utilclass
                             if (curc == '\n')
                             {
                                 CurrentLine++;
-                                curc = read();
+                                curc = Read();
                             }
                         }
                         if (curc < 0)
-                            return lastttype = (int) TokenTypes.EOF;
+                            return Lastttype = (int) TokenTypes.Eof;
                         prevc = curc;
                     }
-                    return nextToken();
+                    return NextToken();
                 }
-                if (curc == '/' && cppcomments)
+                if (curc == '/' && _cppcomments)
                 {
-                    while ((curc = read()) != '\n' && curc != '\r' && curc >= 0)
+                    while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                         ;
-                    peekchar = curc;
-                    return nextToken();
+                    _peekchar = curc;
+                    return NextToken();
                 }
-                if ((this.ctype['/'] & (sbyte) CharacterTypes.COMMENTCHAR) != 0)
+                if ((this._ctype['/'] & (sbyte) CharacterTypes.Commentchar) != 0)
                 {
-                    while ((curc = read()) != '\n' && curc != '\r' && curc >= 0)
+                    while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                         ;
-                    peekchar = curc;
-                    return nextToken();
+                    _peekchar = curc;
+                    return NextToken();
                 }
-                peekchar = curc;
-                return lastttype = '/';
+                _peekchar = curc;
+                return Lastttype = '/';
             }
 
-            if ((ctype & (sbyte) CharacterTypes.COMMENTCHAR) != 0)
+            if ((ctype & (sbyte) CharacterTypes.Commentchar) != 0)
             {
-                while ((curc = read()) != '\n' && curc != '\r' && curc >= 0)
+                while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                     ;
-                peekchar = curc;
-                return nextToken();
+                _peekchar = curc;
+                return NextToken();
             }
 
-            return lastttype = curc;
+            return Lastttype = curc;
         }
     }
 }

@@ -37,14 +37,14 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         LdapURL ::= LdapString -- limited to characters permitted in URLs
     ///     </pre>
     /// </summary>
-    public class RfcLdapURL : RfcLdapString
+    public class RfcLdapUrl : RfcLdapString
     {
         //*************************************************************************
         // Constructor for RfcLdapURL
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcLdapURL(string s) : base(s)
+        public RfcLdapUrl(string s) : base(s)
         {
         }
     }

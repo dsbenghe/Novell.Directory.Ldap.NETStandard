@@ -55,8 +55,8 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var qCount = queue.MessageAgent.Count;
-                return entryCount - entryIndex + referenceCount - referenceIndex + qCount;
+                var qCount = _queue.MessageAgent.Count;
+                return _entryCount - _entryIndex + _referenceCount - _referenceIndex + qCount;
             }
         }
 
@@ -91,11 +91,11 @@ namespace Novell.Directory.Ldap
                 LdapMessage msg;
 
                 // <=batchSize so that we can pick up the result-done message
-                for (var i = 0; i < batchSize;)
+                for (var i = 0; i < _batchSize;)
                 {
                     try
                     {
-                        if ((msg = queue.getResponse()) != null)
+                        if ((msg = _queue.GetResponse()) != null)
                         {
                             // Only save controls if there are some
                             var ctls = msg.Controls;
@@ -108,23 +108,23 @@ namespace Novell.Directory.Ldap
                             {
                                 // Search Entry
                                 object entry = ((LdapSearchResult) msg).Entry;
-                                entries.Add(entry);
+                                _entries.Add(entry);
                                 i++;
-                                entryCount++;
+                                _entryCount++;
                             }
                             else if (msg is LdapSearchResultReference)
                             {
                                 // Search Ref
                                 var refs = ((LdapSearchResultReference) msg).Referrals;
 
-                                if (cons.ReferralFollowing)
+                                if (_cons.ReferralFollowing)
                                 {
 //									referralConn = conn.chaseReferral(queue, cons, msg, refs, 0, true, referralConn);
                                 }
                                 else
                                 {
-                                    references.Add(refs);
-                                    referenceCount++;
+                                    _references.Add(refs);
+                                    _referenceCount++;
                                 }
                             }
                             else
@@ -133,26 +133,26 @@ namespace Novell.Directory.Ldap
                                 var resp = (LdapResponse) msg;
                                 var resultCode = resp.ResultCode;
                                 // Check for an embedded exception
-                                if (resp.hasException())
+                                if (resp.HasException())
                                 {
                                     // Fake it, results in an exception when msg read
-                                    resultCode = LdapException.CONNECT_ERROR;
+                                    resultCode = LdapException.ConnectError;
                                 }
 
-                                if (resultCode == LdapException.REFERRAL && cons.ReferralFollowing)
+                                if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
 //									referralConn = conn.chaseReferral(queue, cons, resp, resp.Referrals, 0, false, referralConn);
                                 }
-                                else if (resultCode != LdapException.SUCCESS)
+                                else if (resultCode != LdapException.Success)
                                 {
                                     // Results in an exception when message read
-                                    entries.Add(resp);
-                                    entryCount++;
+                                    _entries.Add(resp);
+                                    _entryCount++;
                                 }
                                 // We are done only when we have read all messages
                                 // including those received from following referrals
-                                var msgIDs = queue.MessageIDs;
+                                var msgIDs = _queue.MessageIDs;
                                 if (msgIDs.Length == 0)
                                 {
                                     // Release referral exceptions
@@ -165,31 +165,31 @@ namespace Novell.Directory.Ldap
                         {
                             // We get here if the connection timed out
                             // we have no responses, no message IDs and no exceptions
-                            var e = new LdapException(null, LdapException.Ldap_TIMEOUT, null);
-                            entries.Add(e);
+                            var e = new LdapException(null, LdapException.LdapTimeout, null);
+                            _entries.Add(e);
                             break;
                         }
                     }
                     catch (LdapException e)
                     {
                         // Hand exception off to user
-                        entries.Add(e);
+                        _entries.Add(e);
                     }
                 }
                 return false; // search not completed
             }
         }
 
-        private readonly ArrayList entries; // Search entries
-        private int entryCount; // # Search entries in vector
-        private int entryIndex; // Current position in vector
-        private readonly ArrayList references; // Search Result References
-        private int referenceCount; // # Search Result Reference in vector
-        private int referenceIndex; // Current position in vector
-        private readonly int batchSize; // Application specified batch size
-        private bool completed; // All entries received
-        private readonly LdapSearchQueue queue;
-        private readonly LdapSearchConstraints cons; // LdapSearchConstraints for search
+        private readonly ArrayList _entries; // Search entries
+        private int _entryCount; // # Search entries in vector
+        private int _entryIndex; // Current position in vector
+        private readonly ArrayList _references; // Search Result References
+        private int _referenceCount; // # Search Result Reference in vector
+        private int _referenceIndex; // Current position in vector
+        private readonly int _batchSize; // Application specified batch size
+        private bool _completed; // All entries received
+        private readonly LdapSearchQueue _queue;
+        private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
         //private ArrayList referralConn = null; // Referral Connections
 
         /// <summary>
@@ -204,19 +204,19 @@ namespace Novell.Directory.Ldap
         internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             // setup entry Vector
-            this.cons = cons;
+            this._cons = cons;
             var requestedBatchSize = cons.BatchSize;
-            entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
-            entryCount = 0;
-            entryIndex = 0;
+            _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
+            _entryCount = 0;
+            _entryIndex = 0;
 
             // setup search reference Vector
-            references = new ArrayList(5);
-            referenceCount = 0;
-            referenceIndex = 0;
+            _references = new ArrayList(5);
+            _referenceCount = 0;
+            _referenceIndex = 0;
 
-            this.queue = queue;
-            this.batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
+            this._queue = queue;
+            this._batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
         }
 
         /// <summary>
@@ -228,16 +228,16 @@ namespace Novell.Directory.Ldap
         public bool HasMore()
         {
             var ret = false;
-            if (entryIndex < entryCount || referenceIndex < referenceCount)
+            if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
             {
                 // we have data
                 ret = true;
             }
-            else if (completed == false)
+            else if (_completed == false)
             {
                 // reload the Vector by getting more results
                 ResetVectors();
-                ret = entryIndex < entryCount || referenceIndex < referenceCount;
+                ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
             return ret;
         }
@@ -248,28 +248,28 @@ namespace Novell.Directory.Ldap
         private void ResetVectors()
         {
             // If we're done, no further checking needed
-            if (completed)
+            if (_completed)
             {
                 return;
             }
             // Checks if we have run out of references
-            if (referenceIndex != 0 && referenceIndex >= referenceCount)
+            if (_referenceIndex != 0 && _referenceIndex >= _referenceCount)
             {
-                SupportClass.SetSize(references, 0);
-                referenceCount = 0;
-                referenceIndex = 0;
+                SupportClass.SetSize(_references, 0);
+                _referenceCount = 0;
+                _referenceIndex = 0;
             }
             // Checks if we have run out of entries
-            if (entryIndex != 0 && entryIndex >= entryCount)
+            if (_entryIndex != 0 && _entryIndex >= _entryCount)
             {
-                SupportClass.SetSize(entries, 0);
-                entryCount = 0;
-                entryIndex = 0;
+                SupportClass.SetSize(_entries, 0);
+                _entryCount = 0;
+                _entryIndex = 0;
             }
             // If no data at all, must reload enumeration
-            if (referenceIndex == 0 && referenceCount == 0 && entryIndex == 0 && entryCount == 0)
+            if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
             {
-                completed = BatchOfResults;
+                _completed = BatchOfResults;
             }
         }
 
@@ -292,7 +292,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapEntry Next()
         {
-            if (completed && entryIndex >= entryCount && referenceIndex >= referenceCount)
+            if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
                 throw new ArgumentOutOfRangeException("LdapSearchResults.Next() no more results");
             }
@@ -302,21 +302,21 @@ namespace Novell.Directory.Ldap
             object element = null;
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
-            if (referenceIndex < referenceCount)
+            if (_referenceIndex < _referenceCount)
             {
-                var refs = (string[]) references[referenceIndex++];
-                var rex = new LdapReferralException(ExceptionMessages.REFERENCE_NOFOLLOW);
-                rex.setReferrals(refs);
+                var refs = (string[]) _references[_referenceIndex++];
+                var rex = new LdapReferralException(ExceptionMessages.ReferenceNofollow);
+                rex.SetReferrals(refs);
                 throw rex;
             }
-            if (entryIndex < entryCount)
+            if (_entryIndex < _entryCount)
             {
                 // Check for Search Entries and the Search Result
-                element = entries[entryIndex++];
+                element = _entries[_entryIndex++];
                 if (element is LdapResponse)
                 {
                     // Search done w/bad status
-                    if (((LdapResponse) element).hasException())
+                    if (((LdapResponse) element).HasException())
                     {
                         var lr = (LdapResponse) element;
                         var ri = lr.ActiveReferral;
@@ -324,14 +324,14 @@ namespace Novell.Directory.Ldap
                         if (ri != null)
                         {
                             // Error attempting to follow a search continuation reference
-                            var rex = new LdapReferralException(ExceptionMessages.REFERENCE_ERROR, lr.Exception);
-                            rex.setReferrals(ri.ReferralList);
+                            var rex = new LdapReferralException(ExceptionMessages.ReferenceError, lr.Exception);
+                            rex.SetReferrals(ri.ReferralList);
                             rex.FailedReferral = ri.ReferralUrl.ToString();
                             throw rex;
                         }
                     }
                     // Throw an exception if not success
-                    ((LdapResponse) element).chkResultCode();
+                    ((LdapResponse) element).ChkResultCode();
                 }
                 else if (element is LdapException)
                 {
@@ -343,8 +343,8 @@ namespace Novell.Directory.Ldap
                 // If not a Search Entry, Search Result, or search continuation
                 // we are very confused.
                 // LdapSearchResults.next(): No entry found & request is not complete
-                throw new LdapException(ExceptionMessages.REFERRAL_LOCAL, new object[] {"next"},
-                    LdapException.LOCAL_ERROR, null);
+                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next"},
+                    LdapException.LocalError, null);
             }
             return (LdapEntry) element;
         }
@@ -354,11 +354,11 @@ namespace Novell.Directory.Ldap
         internal void Abandon()
         {
             // first, remove message ID and timer and any responses in the queue
-            queue.MessageAgent.AbandonAll();
+            _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
             ResetVectors();
-            completed = true;
+            _completed = true;
         }
 
         /// <summary>Returns an enumerator that iterates through a collection.</summary>

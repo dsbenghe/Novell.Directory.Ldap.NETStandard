@@ -40,10 +40,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class BaseEdirEventData
     {
-        protected MemoryStream decodedData;
-        protected LBERDecoder decoder;
+        protected MemoryStream DecodedData;
+        protected LberDecoder Decoder;
 
-        private EdirEventDataType event_data_type;
+        private EdirEventDataType _eventDataType;
 
         /// <summary>
         ///     The value for this attribute allows the caller to identify the
@@ -51,24 +51,24 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         /// </summary>
         public EdirEventDataType EventDataType
         {
-            get { return event_data_type; }
+            get { return _eventDataType; }
         }
 
         public BaseEdirEventData(EdirEventDataType eventDataType, Asn1Object message)
         {
-            event_data_type = eventDataType;
+            _eventDataType = eventDataType;
 
-            var byteData = SupportClass.ToByteArray(((Asn1OctetString) message).byteValue());
-            decodedData = new MemoryStream(byteData);
-            decoder = new LBERDecoder();
+            var byteData = SupportClass.ToByteArray(((Asn1OctetString) message).ByteValue());
+            DecodedData = new MemoryStream(byteData);
+            Decoder = new LberDecoder();
         }
 
         protected void DataInitDone()
         {
             // We dont want the unnecessary memory to remain occupied if
             // this object is retained by the caller
-            decodedData = null;
-            decoder = null;
+            DecodedData = null;
+            Decoder = null;
         }
     }
 }

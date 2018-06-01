@@ -39,18 +39,18 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///     If the protocol operation of the RfcLdapMessage is of this type,
     ///     it contains at least an RfcLdapResult.
     /// </summary>
-    public interface RfcResponse
+    public interface IRfcResponse
     {
         /// <summary> </summary>
-        Asn1Enumerated getResultCode();
+        Asn1Enumerated GetResultCode();
 
         /// <summary> </summary>
-        RfcLdapDN getMatchedDN();
+        RfcLdapDn GetMatchedDn();
 
         /// <summary> </summary>
-        RfcLdapString getErrorMessage();
+        RfcLdapString GetErrorMessage();
 
         /// <summary> </summary>
-        RfcReferral getReferral();
+        RfcReferral GetReferral();
     }
 }

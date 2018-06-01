@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         ModifyDNResponse ::= [APPLICATION 13] LdapResult
     ///     </pre>
     /// </summary>
-    public class RfcModifyDNResponse : RfcLdapResult
+    public class RfcModifyDnResponse : RfcLdapResult
     {
         //*************************************************************************
         // Constructor for ModifyDNResponse
@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> Create a ModifyDNResponse by decoding it from an InputStream</summary>
         [CLSCompliant(false)]
-        public RfcModifyDNResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcModifyDnResponse(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
         {
         }
 
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="resultCode">
         ///     the result code of the operation
         /// </param>
-        /// <param name="matchedDN">
+        /// <param name="matchedDn">
         ///     the matched DN returned from the server
         /// </param>
         /// <param name="errorMessage">
@@ -68,8 +68,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="referral">
         ///     the referral(s) returned by the server
         /// </param>
-        public RfcModifyDNResponse(Asn1Enumerated resultCode, RfcLdapDN matchedDN, RfcLdapString errorMessage,
-            RfcReferral referral) : base(resultCode, matchedDN, errorMessage, referral)
+        public RfcModifyDnResponse(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
+            RfcReferral referral) : base(resultCode, matchedDn, errorMessage, referral)
         {
         }
 
@@ -78,9 +78,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RDN_RESPONSE);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRdnResponse);
         }
     }
 }

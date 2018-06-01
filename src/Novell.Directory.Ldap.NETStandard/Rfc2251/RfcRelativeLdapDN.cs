@@ -35,10 +35,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         * Represents an Ldap Relative DN.
         */
 
-    public class RfcRelativeLdapDN : RfcLdapString
+    public class RfcRelativeLdapDn : RfcLdapString
     {
         /// <summary> </summary>
-        public RfcRelativeLdapDN(string s) : base(s)
+        public RfcRelativeLdapDn(string s) : base(s)
         {
         }
     }

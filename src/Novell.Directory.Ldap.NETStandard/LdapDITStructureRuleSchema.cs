@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     Structure Rule.  It is used to discover or modify which
     ///     object classes a particular object class may be subordinate to in the DIT.
     /// </summary>
-    public class LdapDITStructureRuleSchema : LdapSchemaElement
+    public class LdapDitStructureRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the rule ID for this structure rule.
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The rule ID for this structure rule.
         /// </returns>
-        public virtual int RuleID { get; }
+        public virtual int RuleId { get; }
 
         /// <summary>
         ///     Returns the NameForm that this structure rule controls.
@@ -78,10 +78,10 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] Superiors
         {
-            get { return superiorIDs; }
+            get { return _superiorIDs; }
         }
 
-        private readonly string[] superiorIDs = {""};
+        private readonly string[] _superiorIDs = {""};
 
         /// <summary>
         ///     Constructs a DIT structure rule for adding to or deleting from the
@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap
         /// <param name="names">
         ///     The names of the structure rule.
         /// </param>
-        /// <param name="ruleID">
+        /// <param name="ruleId">
         ///     The unique identifier of the structure rule. NOTE:
         ///     this is an integer, not a dotted numerical
         ///     identifier. Structure rules aren't identified
@@ -115,17 +115,17 @@ namespace Novell.Directory.Ldap
         ///     the DIT to object classes of those represented
         ///     by the structure rules here; it may be null.
         /// </param>
-        public LdapDITStructureRuleSchema(string[] names, int ruleID, string description, bool obsolete, string nameForm,
-            string[] superiorIDs) : base(LdapSchema.schemaTypeNames[LdapSchema.DITSTRUCTURE])
+        public LdapDitStructureRuleSchema(string[] names, int ruleId, string description, bool obsolete, string nameForm,
+            string[] superiorIDs) : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditstructure])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.RuleID = ruleID;
-            this.description = description;
-            this.obsolete = obsolete;
+            this.RuleId = ruleId;
+            this.Description = description;
+            this.Obsolete = obsolete;
             this.NameForm = nameForm;
-            this.superiorIDs = superiorIDs;
-            Value = formatString();
+            this._superiorIDs = superiorIDs;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a schema
         ///     query for dITStructureRules.
         /// </param>
-        public LdapDITStructureRuleSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.DITSTRUCTURE])
+        public LdapDitStructureRuleSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditstructure])
         {
-            obsolete = false;
+            Obsolete = false;
             try
             {
                 var parser = new SchemaParser(raw);
@@ -149,26 +149,26 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    RuleID = int.Parse(parser.ID);
+                if ((object) parser.Id != null)
+                    RuleId = int.Parse(parser.Id);
                 if ((object) parser.Description != null)
-                    description = parser.Description;
+                    Description = parser.Description;
                 if (parser.Superiors != null)
                 {
-                    superiorIDs = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(superiorIDs, 0);
+                    _superiorIDs = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(_superiorIDs, 0);
                 }
                 if ((object) parser.NameForm != null)
                     NameForm = parser.NameForm;
-                obsolete = parser.Obsolete;
+                Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException)
             {
@@ -182,13 +182,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            token = RuleID.ToString();
+            token = RuleId.ToString();
             valueBuffer.Append(token);
 
             strArray = Names;
@@ -248,7 +248,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");

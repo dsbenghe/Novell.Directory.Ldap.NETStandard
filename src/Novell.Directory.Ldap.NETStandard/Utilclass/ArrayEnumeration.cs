@@ -36,30 +36,30 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     public class ArrayEnumeration : IEnumerator
     {
-        private object tempAuxObj;
+        private object _tempAuxObj;
 
         public virtual bool MoveNext()
         {
-            var result = hasMoreElements();
+            var result = HasMoreElements();
             if (result)
             {
-                tempAuxObj = nextElement();
+                _tempAuxObj = NextElement();
             }
             return result;
         }
 
         public virtual void Reset()
         {
-            tempAuxObj = null;
+            _tempAuxObj = null;
         }
 
         public virtual object Current
         {
-            get { return tempAuxObj; }
+            get { return _tempAuxObj; }
         }
 
-        private readonly object[] eArray;
-        private int index;
+        private readonly object[] _eArray;
+        private int _index;
 
         /// <summary>
         ///     Constructor to create the Enumeration
@@ -69,23 +69,23 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         public ArrayEnumeration(object[] eArray)
         {
-            this.eArray = eArray;
+            this._eArray = eArray;
         }
 
-        public bool hasMoreElements()
+        public bool HasMoreElements()
         {
-            if (eArray == null)
+            if (_eArray == null)
                 return false;
-            return index < eArray.Length;
+            return _index < _eArray.Length;
         }
 
-        public object nextElement()
+        public object NextElement()
         {
-            if (eArray == null || index >= eArray.Length)
+            if (_eArray == null || _index >= _eArray.Length)
             {
                 throw new ArgumentOutOfRangeException();
             }
-            return eArray[index++];
+            return _eArray[_index++];
         }
     }
 }

@@ -63,22 +63,22 @@ namespace Novell.Directory.Ldap.Asn1
     ///     Canonical, and Distinguished Encoding Rules", 1994.
     /// </summary>
     [CLSCompliant(true)]
-    public class LBEREncoder : Asn1Encoder
+    public class LberEncoder : IAsn1Encoder
     {
         /* Encoders for ASN.1 simple type Contents
                 */
 
         /// <summary> BER Encode an Asn1Boolean directly into the specified output stream.</summary>
-        public virtual void encode(Asn1Boolean b, Stream out_Renamed)
+        public virtual void Encode(Asn1Boolean b, Stream outRenamed)
         {
             /* Encode the id */
-            encode(b.getIdentifier(), out_Renamed);
+            Encode(b.GetIdentifier(), outRenamed);
 
             /* Encode the length */
-            out_Renamed.WriteByte(0x01);
+            outRenamed.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            out_Renamed.WriteByte((byte) (b.booleanValue() ? (sbyte) SupportClass.Identity(0xff) : (sbyte) 0x00));
+            outRenamed.WriteByte((byte) (b.BooleanValue() ? (sbyte) SupportClass.Identity(0xff) : (sbyte) 0x00));
         }
 
         /// <summary>
@@ -87,25 +87,25 @@ namespace Novell.Directory.Ldap.Asn1
         ///     possible.
         ///     Can be used to encode INTEGER and ENUMERATED values.
         /// </summary>
-        public void encode(Asn1Numeric n, Stream out_Renamed)
+        public void Encode(Asn1Numeric n, Stream outRenamed)
         {
             var octets = new sbyte[8];
             sbyte len;
-            var value_Renamed = n.longValue();
-            long endValue = value_Renamed < 0 ? -1 : 0;
+            var valueRenamed = n.LongValue();
+            long endValue = valueRenamed < 0 ? -1 : 0;
             var endSign = endValue & 0x80;
 
-            for (len = 0; len == 0 || value_Renamed != endValue || (octets[len - 1] & 0x80) != endSign; len++)
+            for (len = 0; len == 0 || valueRenamed != endValue || (octets[len - 1] & 0x80) != endSign; len++)
             {
-                octets[len] = (sbyte) (value_Renamed & 0xFF);
-                value_Renamed >>= 8;
+                octets[len] = (sbyte) (valueRenamed & 0xFF);
+                valueRenamed >>= 8;
             }
 
-            encode(n.getIdentifier(), out_Renamed);
-            out_Renamed.WriteByte((byte) len); // Length
+            Encode(n.GetIdentifier(), outRenamed);
+            outRenamed.WriteByte((byte) len); // Length
             for (var i = len - 1; i >= 0; i--)
                 // Content
-                out_Renamed.WriteByte((byte) octets[i]);
+                outRenamed.WriteByte((byte) octets[i]);
         }
 
         /* Asn1 TYPE NOT YET SUPPORTED
@@ -118,10 +118,10 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Encode an Asn1Null directly into the specified outputstream.</summary>
-        public void encode(Asn1Null n, Stream out_Renamed)
+        public void Encode(Asn1Null n, Stream outRenamed)
         {
-            encode(n.getIdentifier(), out_Renamed);
-            out_Renamed.WriteByte(0x00); // Length (with no Content)
+            Encode(n.GetIdentifier(), outRenamed);
+            outRenamed.WriteByte(0x00); // Length (with no Content)
         }
 
         /* Asn1 TYPE NOT YET SUPPORTED
@@ -134,13 +134,13 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Encode an Asn1OctetString directly into the specified outputstream.</summary>
-        public void encode(Asn1OctetString os, Stream out_Renamed)
+        public void Encode(Asn1OctetString os, Stream outRenamed)
         {
-            encode(os.getIdentifier(), out_Renamed);
-            encodeLength(os.byteValue().Length, out_Renamed);
-            sbyte[] temp_sbyteArray;
-            temp_sbyteArray = os.byteValue();
-            out_Renamed.Write(SupportClass.ToByteArray(temp_sbyteArray), 0, temp_sbyteArray.Length);
+            Encode(os.GetIdentifier(), outRenamed);
+            EncodeLength(os.ByteValue().Length, outRenamed);
+            sbyte[] tempSbyteArray;
+            tempSbyteArray = os.ByteValue();
+            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
             ;
             ;
         }
@@ -170,53 +170,53 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Encode an Asn1Structured into the specified outputstream.  This method
         ///     can be used to encode SET, SET_OF, SEQUENCE, SEQUENCE_OF
         /// </summary>
-        public void encode(Asn1Structured c, Stream out_Renamed)
+        public void Encode(Asn1Structured c, Stream outRenamed)
         {
-            encode(c.getIdentifier(), out_Renamed);
+            Encode(c.GetIdentifier(), outRenamed);
 
-            var value_Renamed = c.toArray();
+            var valueRenamed = c.ToArray();
 
             var output = new MemoryStream();
 
             /* Cycle through each element encoding each element */
-            for (var i = 0; i < value_Renamed.Length; i++)
+            for (var i = 0; i < valueRenamed.Length; i++)
             {
-                value_Renamed[i].encode(this, output);
+                valueRenamed[i].Encode(this, output);
             }
 
             /* Encode the length */
-            encodeLength((int) output.Length, out_Renamed);
+            EncodeLength((int) output.Length, outRenamed);
 
             /* Add each encoded element into the output stream */
-            sbyte[] temp_sbyteArray;
-            temp_sbyteArray = SupportClass.ToSByteArray(output.ToArray());
-            out_Renamed.Write(SupportClass.ToByteArray(temp_sbyteArray), 0, temp_sbyteArray.Length);
+            sbyte[] tempSbyteArray;
+            tempSbyteArray = SupportClass.ToSByteArray(output.ToArray());
+            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
             ;
             ;
         }
 
         /// <summary> Encode an Asn1Tagged directly into the specified outputstream.</summary>
-        public void encode(Asn1Tagged t, Stream out_Renamed)
+        public void Encode(Asn1Tagged t, Stream outRenamed)
         {
             if (t.Explicit)
             {
-                encode(t.getIdentifier(), out_Renamed);
+                Encode(t.GetIdentifier(), outRenamed);
 
                 /* determine the encoded length of the base type. */
                 var encodedContent = new MemoryStream();
-                t.taggedValue().encode(this, encodedContent);
+                t.TaggedValue.Encode(this, encodedContent);
 
-                encodeLength((int) encodedContent.Length, out_Renamed);
-                sbyte[] temp_sbyteArray;
-                temp_sbyteArray = SupportClass.ToSByteArray(encodedContent.ToArray());
-                out_Renamed.Write(SupportClass.ToByteArray(temp_sbyteArray), 0, temp_sbyteArray.Length);
+                EncodeLength((int) encodedContent.Length, outRenamed);
+                sbyte[] tempSbyteArray;
+                tempSbyteArray = SupportClass.ToSByteArray(encodedContent.ToArray());
+                outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
                 ;
                 ;
                 ;
             }
             else
             {
-                t.taggedValue().encode(this, out_Renamed);
+                t.TaggedValue.Encode(this, outRenamed);
             }
         }
 
@@ -226,7 +226,7 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Encode an Asn1Identifier directly into the specified outputstream.</summary>
-        public void encode(Asn1Identifier id, Stream out_Renamed)
+        public void Encode(Asn1Identifier id, Stream outRenamed)
         {
             var c = id.Asn1Class;
             var t = id.Tag;
@@ -235,13 +235,13 @@ namespace Novell.Directory.Ldap.Asn1
             if (t < 30)
             {
                 /* single octet */
-                out_Renamed.WriteByte((byte) (ccf | t));
+                outRenamed.WriteByte((byte) (ccf | t));
             }
             else
             {
                 /* multiple octet */
-                out_Renamed.WriteByte((byte) (ccf | 0x1F));
-                encodeTagInteger(t, out_Renamed);
+                outRenamed.WriteByte((byte) (ccf | 0x1F));
+                EncodeTagInteger(t, outRenamed);
             }
         }
 
@@ -252,11 +252,11 @@ namespace Novell.Directory.Ldap.Asn1
         *  Encodes the specified length into the the outputstream
         */
 
-        private void encodeLength(int length, Stream out_Renamed)
+        private void EncodeLength(int length, Stream outRenamed)
         {
             if (length < 0x80)
             {
-                out_Renamed.WriteByte((byte) length);
+                outRenamed.WriteByte((byte) length);
             }
             else
             {
@@ -268,28 +268,28 @@ namespace Novell.Directory.Ldap.Asn1
                     length >>= 8;
                 }
 
-                out_Renamed.WriteByte((byte) (0x80 | n));
+                outRenamed.WriteByte((byte) (0x80 | n));
 
                 for (var i = n - 1; i >= 0; i--)
-                    out_Renamed.WriteByte((byte) octets[i]);
+                    outRenamed.WriteByte((byte) octets[i]);
             }
         }
 
         /// <summary> Encodes the provided tag into the outputstream.</summary>
-        private void encodeTagInteger(int value_Renamed, Stream out_Renamed)
+        private void EncodeTagInteger(int valueRenamed, Stream outRenamed)
         {
             var octets = new sbyte[5];
             int n;
-            for (n = 0; value_Renamed != 0; n++)
+            for (n = 0; valueRenamed != 0; n++)
             {
-                octets[n] = (sbyte) (value_Renamed & 0x7F);
-                value_Renamed = value_Renamed >> 7;
+                octets[n] = (sbyte) (valueRenamed & 0x7F);
+                valueRenamed = valueRenamed >> 7;
             }
             for (var i = n - 1; i > 0; i--)
             {
-                out_Renamed.WriteByte((byte) (octets[i] | 0x80));
+                outRenamed.WriteByte((byte) (octets[i] | 0x80));
             }
-            out_Renamed.WriteByte((byte) octets[0]);
+            outRenamed.WriteByte((byte) octets[0]);
         }
     }
 }

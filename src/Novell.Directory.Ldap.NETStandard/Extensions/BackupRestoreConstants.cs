@@ -36,23 +36,23 @@ namespace Novell.Directory.Ldap.Extensions
         /**
                  * A constant for eDirectory LDAP Based Backup Request OID. 
                  */
-        public const string NLDAP_LDAP_BACKUP_REQUEST = "2.16.840.1.113719.1.27.100.96";
+        public const string NldapLdapBackupRequest = "2.16.840.1.113719.1.27.100.96";
 
         /**
          * A constant for eDirectory LDAP Based Backup Response OID. 
          */
-        public const string NLDAP_LDAP_BACKUP_RESPONSE = "2.16.840.1.113719.1.27.100.97";
+        public const string NldapLdapBackupResponse = "2.16.840.1.113719.1.27.100.97";
 
         /**
          * A constant for eDirectory LDAP Based Restore Request OID. 
          */
-        public const string NLDAP_LDAP_RESTORE_REQUEST = "2.16.840.1.113719.1.27.100.98";
+        public const string NldapLdapRestoreRequest = "2.16.840.1.113719.1.27.100.98";
 
 
         /**
          * A constant for eDirectory LDAP Based Restore Response OID. 
          */
-        public const string NLDAP_LDAP_RESTORE_RESPONSE = "2.16.840.1.113719.1.27.100.99";
+        public const string NldapLdapRestoreResponse = "2.16.840.1.113719.1.27.100.99";
 
         /**
          * Default constructor

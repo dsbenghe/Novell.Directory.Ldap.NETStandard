@@ -43,40 +43,40 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventIntermediateResponse : LdapIntermediateResponse
     {
-        private EdirEventType event_type;
+        private EdirEventType _eventType;
 
         /// <summary>
         ///     Type of Edir event.
         /// </summary>
         public EdirEventType EventType
         {
-            get { return event_type; }
+            get { return _eventType; }
         }
 
-        private EdirEventResultType event_result_type;
+        private EdirEventResultType _eventResultType;
 
         /// <summary>
         ///     Type of Edir event result.
         /// </summary>
         public EdirEventResultType EventResultType
         {
-            get { return event_result_type; }
+            get { return _eventResultType; }
         }
 
-        private BaseEdirEventData event_response_data;
+        private BaseEdirEventData _eventResponseData;
 
         /// <summary>
         ///     The response data object associated with Edir event.
         /// </summary>
         public BaseEdirEventData EventResponseDataObject
         {
-            get { return event_response_data; }
+            get { return _eventResponseData; }
         }
 
         public EdirEventIntermediateResponse(RfcLdapMessage message)
             : base(message)
         {
-            ProcessMessage(getValue());
+            ProcessMessage(GetValue());
         }
 
         public EdirEventIntermediateResponse(byte[] message)
@@ -87,89 +87,89 @@ namespace Novell.Directory.Ldap.Events.Edir
 
         private void ProcessMessage(sbyte[] returnedValue)
         {
-            var decoder = new LBERDecoder();
-            var sequence = (Asn1Sequence) decoder.decode(returnedValue);
+            var decoder = new LberDecoder();
+            var sequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
-            event_type = (EdirEventType) ((Asn1Integer) sequence.get_Renamed(0)).intValue();
-            event_result_type = (EdirEventResultType) ((Asn1Integer) sequence.get_Renamed(1)).intValue();
+            _eventType = (EdirEventType) ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
+            _eventResultType = (EdirEventResultType) ((Asn1Integer) sequence.get_Renamed(1)).IntValue();
 
-            if (sequence.size() > 2)
+            if (sequence.Size() > 2)
             {
                 var objTagged = (Asn1Tagged) sequence.get_Renamed(2);
 
-                switch ((EdirEventDataType) objTagged.getIdentifier().Tag)
+                switch ((EdirEventDataType) objTagged.GetIdentifier().Tag)
                 {
-                    case EdirEventDataType.EDIR_TAG_ENTRY_EVENT_DATA:
-                        event_response_data = new EntryEventData(EdirEventDataType.EDIR_TAG_ENTRY_EVENT_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagEntryEventData:
+                        _eventResponseData = new EntryEventData(EdirEventDataType.EdirTagEntryEventData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_VALUE_EVENT_DATA:
-                        event_response_data = new ValueEventData(EdirEventDataType.EDIR_TAG_VALUE_EVENT_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagValueEventData:
+                        _eventResponseData = new ValueEventData(EdirEventDataType.EdirTagValueEventData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_DEBUG_EVENT_DATA:
-                        event_response_data = new DebugEventData(EdirEventDataType.EDIR_TAG_DEBUG_EVENT_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagDebugEventData:
+                        _eventResponseData = new DebugEventData(EdirEventDataType.EdirTagDebugEventData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_GENERAL_EVENT_DATA:
-                        event_response_data = new GeneralDSEventData(EdirEventDataType.EDIR_TAG_GENERAL_EVENT_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagGeneralEventData:
+                        _eventResponseData = new GeneralDsEventData(EdirEventDataType.EdirTagGeneralEventData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_SKULK_DATA:
-                        event_response_data = null;
+                    case EdirEventDataType.EdirTagSkulkData:
+                        _eventResponseData = null;
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_BINDERY_EVENT_DATA:
-                        event_response_data = new BinderyObjectEventData(EdirEventDataType.EDIR_TAG_BINDERY_EVENT_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagBinderyEventData:
+                        _eventResponseData = new BinderyObjectEventData(EdirEventDataType.EdirTagBinderyEventData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_DSESEV_INFO:
-                        event_response_data = new SecurityEquivalenceEventData(EdirEventDataType.EDIR_TAG_DSESEV_INFO,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagDsesevInfo:
+                        _eventResponseData = new SecurityEquivalenceEventData(EdirEventDataType.EdirTagDsesevInfo,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_MODULE_STATE_DATA:
-                        event_response_data = new ModuleStateEventData(EdirEventDataType.EDIR_TAG_MODULE_STATE_DATA,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagModuleStateData:
+                        _eventResponseData = new ModuleStateEventData(EdirEventDataType.EdirTagModuleStateData,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_NETWORK_ADDRESS:
-                        event_response_data = new NetworkAddressEventData(EdirEventDataType.EDIR_TAG_NETWORK_ADDRESS,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagNetworkAddress:
+                        _eventResponseData = new NetworkAddressEventData(EdirEventDataType.EdirTagNetworkAddress,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_CONNECTION_STATE:
-                        event_response_data = new ConnectionStateEventData(EdirEventDataType.EDIR_TAG_CONNECTION_STATE,
-                            objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagConnectionState:
+                        _eventResponseData = new ConnectionStateEventData(EdirEventDataType.EdirTagConnectionState,
+                            objTagged.TaggedValue);
                         break;
 
-                    case EdirEventDataType.EDIR_TAG_CHANGE_SERVER_ADDRESS:
-                        event_response_data =
-                            new ChangeAddressEventData(EdirEventDataType.EDIR_TAG_CHANGE_SERVER_ADDRESS,
-                                objTagged.taggedValue());
+                    case EdirEventDataType.EdirTagChangeServerAddress:
+                        _eventResponseData =
+                            new ChangeAddressEventData(EdirEventDataType.EdirTagChangeServerAddress,
+                                objTagged.TaggedValue);
                         break;
 
                     /*
                           case EdirEventDataType.EDIR_TAG_CHANGE_CONFIG_PARAM :
                               responsedata =
                                   new ChangeConfigEventData(
-                                      taggedobject.taggedValue());
+                                      taggedobject.TaggedValue);
               
                               break;
               
                           case EdirEventDataType.EDIR_TAG_STATUS_LOG :
                               responsedata =
-                                  new StatusLogEventData(taggedobject.taggedValue());
+                                  new StatusLogEventData(taggedobject.TaggedValue);
               
                               break;
                     */
-                    case EdirEventDataType.EDIR_TAG_NO_DATA:
-                        event_response_data = null;
+                    case EdirEventDataType.EdirTagNoData:
+                        _eventResponseData = null;
                         break;
 
                     default:
@@ -180,7 +180,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             else
             {
                 //NO DATA
-                event_response_data = null;
+                _eventResponseData = null;
             }
         }
     }

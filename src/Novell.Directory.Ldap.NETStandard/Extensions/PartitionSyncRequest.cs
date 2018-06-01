@@ -69,29 +69,29 @@ namespace Novell.Directory.Ldap.Extensions
         ///     and an Ldap error code.
         /// </exception>
         public PartitionSyncRequest(string serverName, string partitionRoot, int delay)
-            : base(ReplicationConstants.NAMING_CONTEXT_SYNC_REQ, null)
+            : base(ReplicationConstants.NamingContextSyncReq, null)
         {
             try
             {
                 if ((object) serverName == null || (object) partitionRoot == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverName = new Asn1OctetString(serverName);
-                var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
-                var asn1_delay = new Asn1Integer(delay);
+                var asn1ServerName = new Asn1OctetString(serverName);
+                var asn1PartitionRoot = new Asn1OctetString(partitionRoot);
+                var asn1Delay = new Asn1Integer(delay);
 
-                asn1_serverName.encode(encoder, encodedData);
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_delay.encode(encoder, encodedData);
+                asn1ServerName.Encode(encoder, encodedData);
+                asn1PartitionRoot.Encode(encoder, encodedData);
+                asn1Delay.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

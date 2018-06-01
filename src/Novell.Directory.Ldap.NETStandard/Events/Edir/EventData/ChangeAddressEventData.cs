@@ -39,46 +39,46 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ChangeAddressEventData : BaseEdirEventData
     {
-        private int nFlags;
+        private int _nFlags;
 
         public int Flags
         {
-            get { return nFlags; }
+            get { return _nFlags; }
         }
 
-        private int nProto;
+        private int _nProto;
 
         public int Proto
         {
-            get { return nProto; }
+            get { return _nProto; }
         }
 
-        private int address_family;
+        private int _addressFamily;
 
         public int AddressFamily
         {
-            get { return address_family; }
+            get { return _addressFamily; }
         }
 
-        private string strAddress;
+        private string _strAddress;
 
         public string Address
         {
-            get { return strAddress; }
+            get { return _strAddress; }
         }
 
-        private string pstk_name;
+        private string _pstkName;
 
         public string PstkName
         {
-            get { return pstk_name; }
+            get { return _pstkName; }
         }
 
-        private string source_module;
+        private string _sourceModule;
 
         public string SourceModule
         {
-            get { return source_module; }
+            get { return _sourceModule; }
         }
 
         public ChangeAddressEventData(EdirEventDataType eventDataType, Asn1Object message)
@@ -86,12 +86,12 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            nFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            nProto = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            address_family = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strAddress = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            pstk_name = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            source_module = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            _nFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _nProto = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _addressFamily = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _strAddress = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            _pstkName = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            _sourceModule = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }
@@ -103,12 +103,12 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[ChangeAddresssEvent");
-            buf.AppendFormat("(flags={0})", +nFlags);
-            buf.AppendFormat("(proto={0})", nProto);
-            buf.AppendFormat("(addrFamily={0})", address_family);
-            buf.AppendFormat("(address={0})", strAddress);
-            buf.AppendFormat("(pstkName={0})", pstk_name);
-            buf.AppendFormat("(source={0})", source_module);
+            buf.AppendFormat("(flags={0})", +_nFlags);
+            buf.AppendFormat("(proto={0})", _nProto);
+            buf.AppendFormat("(addrFamily={0})", _addressFamily);
+            buf.AppendFormat("(address={0})", _strAddress);
+            buf.AppendFormat("(pstkName={0})", _pstkName);
+            buf.AppendFormat("(source={0})", _sourceModule);
             buf.Append("]");
 
             return buf.ToString();

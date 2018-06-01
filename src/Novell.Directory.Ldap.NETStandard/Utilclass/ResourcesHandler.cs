@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
         }
 
         /// <summary> The default Locale</summary>
-        private static CultureInfo defaultLocale;
+        private static CultureInfo _defaultLocale;
 
         /// <summary>
         ///     Returns a string using the MessageOrKey as a key into
@@ -65,9 +65,9 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the text for the message specified by the MessageKey or the Key
         ///     if it there is no message for that key.
         /// </returns>
-        public static string getMessage(string messageOrKey, object[] arguments)
+        public static string GetMessage(string messageOrKey, object[] arguments)
         {
-            return getMessage(messageOrKey, arguments, null);
+            return GetMessage(messageOrKey, arguments, null);
         }
 
         /// <summary>
@@ -91,13 +91,13 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the text for the message specified by the MessageKey or the Key
         ///     if it there is no message for that key.
         /// </returns>
-        public static string getMessage(string messageOrKey, object[] arguments, CultureInfo locale)
+        public static string GetMessage(string messageOrKey, object[] arguments, CultureInfo locale)
         {
-            if (defaultLocale == null)
-                defaultLocale = CultureInfo.CurrentUICulture;
+            if (_defaultLocale == null)
+                _defaultLocale = CultureInfo.CurrentUICulture;
 
             if (locale == null)
-                locale = defaultLocale;
+                locale = _defaultLocale;
 
             if (messageOrKey == null)
             {
@@ -132,9 +132,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string getResultString(int code)
+        public static string GetResultString(int code)
         {
-            return getResultString(code, null);
+            return GetResultString(code, null);
         }
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string getResultString(int code, CultureInfo locale)
+        public static string GetResultString(int code, CultureInfo locale)
         {
             string result;
             try
@@ -160,14 +160,14 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (ArgumentNullException)
             {
-                result = getMessage(ExceptionMessages.UNKNOWN_RESULT, new object[] {code}, locale);
+                result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code}, locale);
             }
             return result;
         }
 
         static ResourcesHandler()
         {
-            defaultLocale = CultureInfo.CurrentUICulture;
+            _defaultLocale = CultureInfo.CurrentUICulture;
         }
     } //end class ResourcesHandler
 }

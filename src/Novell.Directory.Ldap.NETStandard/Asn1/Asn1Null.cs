@@ -39,14 +39,14 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1Null : Asn1Object
     {
         /// <summary> ASN.1 NULL tag definition.</summary>
-        public const int TAG = 0x05;
+        public const int Tag = 0x05;
 
         /// <summary> ID is added for Optimization.</summary>
         /// <summary>
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
 
         /* Constructor for Asn1Null
                 */
@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Call this constructor to construct a new Asn1Null
         ///     object.
         /// </summary>
-        public Asn1Null() : base(ID)
+        public Asn1Null() : base(Id)
         {
         }
 
@@ -73,9 +73,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, outRenamed);
         }
 
         /* Asn1Null specific methods

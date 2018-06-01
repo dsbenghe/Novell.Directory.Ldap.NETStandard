@@ -39,20 +39,20 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         LdapDN ::= LdapString
     ///     </pre>
     /// </summary>
-    public class RfcLdapDN : RfcLdapString
+    public class RfcLdapDn : RfcLdapString
     {
         //*************************************************************************
         // Constructors for RfcLdapDN
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcLdapDN(string s) : base(s)
+        public RfcLdapDn(string s) : base(s)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcLdapDN(sbyte[] s) : base(s)
+        public RfcLdapDn(sbyte[] s) : base(s)
         {
         }
     }

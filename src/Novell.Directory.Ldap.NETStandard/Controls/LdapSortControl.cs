@@ -45,14 +45,14 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapSortControl : LdapControl
     {
-        private static readonly int ORDERING_RULE = 0;
-        private static readonly int REVERSE_ORDER = 1;
+        private static readonly int OrderingRule = 0;
+        private static readonly int ReverseOrder = 1;
 
         /// <summary> The requestOID of the sort control</summary>
-        private static readonly string requestOID = "1.2.840.113556.1.4.473";
+        private static readonly string RequestOid = "1.2.840.113556.1.4.473";
 
         /// <summary> The responseOID of the sort control</summary>
-        private static readonly string responseOID = "1.2.840.113556.1.4.474";
+        private static readonly string ResponseOid = "1.2.840.113556.1.4.474";
 
         /// <summary>
         ///     Constructs a sort control with a single key.
@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     if the search operation is to fail if the
         ///     server does not support this control.
         /// </param>
-        public LdapSortControl(LdapSortKey[] keys, bool critical) : base(requestOID, critical, null)
+        public LdapSortControl(LdapSortKey[] keys, bool critical) : base(RequestOid, critical, null)
         {
             var sortKeyList = new Asn1SequenceOf();
 
@@ -88,25 +88,25 @@ namespace Novell.Directory.Ldap.Controls
             {
                 var key = new Asn1Sequence();
 
-                key.add(new Asn1OctetString(keys[i].Key));
+                key.Add(new Asn1OctetString(keys[i].Key));
 
                 if ((object) keys[i].MatchRule != null)
                 {
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, ORDERING_RULE),
+                    key.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, OrderingRule),
                         new Asn1OctetString(keys[i].MatchRule), false));
                 }
 
                 if (keys[i].Reverse)
                 {
                     // only add if true
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REVERSE_ORDER),
+                    key.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, ReverseOrder),
                         new Asn1Boolean(true), false));
                 }
 
-                sortKeyList.add(key);
+                sortKeyList.Add(key);
             }
 
-            setValue(sortKeyList.getEncoding(new LBEREncoder()));
+            SetValue(sortKeyList.GetEncoding(new LberEncoder()));
         }
 
         static LdapSortControl()
@@ -121,7 +121,7 @@ namespace Novell.Directory.Ldap.Controls
                 */
                 try
                 {
-                    register(responseOID, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
+                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
                 }
                 catch (Exception e)
                 {

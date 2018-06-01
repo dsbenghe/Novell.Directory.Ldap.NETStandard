@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the authentication dn for this connection
         /// </returns>
-        public virtual string AuthenticationDN { get; }
+        public virtual string AuthenticationDn { get; }
 
         /// <summary>
         ///     Gets the authentication method
@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap.Utilclass
             object bindCallbackHandler)
         {
             this.ProtocolVersion = version;
-            this.AuthenticationDN = dn;
+            this.AuthenticationDn = dn;
             this.AuthenticationMethod = method;
             this.Anonymous = anonymous;
             this.SaslBindProperties = bindProperties;

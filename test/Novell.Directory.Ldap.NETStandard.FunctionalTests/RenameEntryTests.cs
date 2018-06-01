@@ -15,13 +15,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
             TestHelper.WithAuthenticatedLdapConnection((ldapConnection) =>
             {
-                ldapConnection.Rename(entry.DN, "cn=" + newCn, true);
+                ldapConnection.Rename(entry.Dn, "cn=" + newCn, true);
             });
 
-            Assert.Null(LdapOps.GetEntry(entry.DN));
+            Assert.Null(LdapOps.GetEntry(entry.Dn));
             var renamedEntry = LdapOps.GetEntry(TestHelper.BuildDn(newCn));
             Assert.NotNull(renamedEntry);
-            entry.getAttributeSet().AssertSameAs(renamedEntry.getAttributeSet(), new List<string> {"cn"});
+            entry.GetAttributeSet().AssertSameAs(renamedEntry.GetAttributeSet(), new List<string> {"cn"});
         }
     }
 }

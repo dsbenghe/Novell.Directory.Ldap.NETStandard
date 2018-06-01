@@ -42,15 +42,15 @@ namespace Novell.Directory.Ldap
         ///     the message ID.  Returns -1 if no message
         ///     is associated with this exception.
         /// </returns>
-        internal virtual int MessageID
+        internal virtual int MessageId
         {
             get
             {
-                if (request == null)
+                if (_request == null)
                 {
                     return -1;
                 }
-                return request.MessageID;
+                return _request.MessageId;
             }
         }
 
@@ -66,59 +66,59 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (request == null)
+                if (_request == null)
                 {
                     return -1;
                 }
-                var reqType = request.MessageType;
+                var reqType = _request.MessageType;
                 var responseType = -1;
                 switch (reqType)
                 {
-                    case LdapMessage.BIND_REQUEST:
-                        responseType = LdapMessage.BIND_RESPONSE;
+                    case LdapMessage.BindRequest:
+                        responseType = LdapMessage.BindResponse;
                         break;
 
-                    case LdapMessage.UNBIND_REQUEST:
+                    case LdapMessage.UnbindRequest:
                         responseType = -1;
                         break;
 
-                    case LdapMessage.SEARCH_REQUEST:
-                        responseType = LdapMessage.SEARCH_RESULT;
+                    case LdapMessage.SearchRequest:
+                        responseType = LdapMessage.SearchResult;
                         break;
 
-                    case LdapMessage.MODIFY_REQUEST:
-                        responseType = LdapMessage.MODIFY_RESPONSE;
+                    case LdapMessage.ModifyRequest:
+                        responseType = LdapMessage.ModifyResponse;
                         break;
 
-                    case LdapMessage.ADD_REQUEST:
-                        responseType = LdapMessage.ADD_RESPONSE;
+                    case LdapMessage.AddRequest:
+                        responseType = LdapMessage.AddResponse;
                         break;
 
-                    case LdapMessage.DEL_REQUEST:
-                        responseType = LdapMessage.DEL_RESPONSE;
+                    case LdapMessage.DelRequest:
+                        responseType = LdapMessage.DelResponse;
                         break;
 
-                    case LdapMessage.MODIFY_RDN_REQUEST:
-                        responseType = LdapMessage.MODIFY_RDN_RESPONSE;
+                    case LdapMessage.ModifyRdnRequest:
+                        responseType = LdapMessage.ModifyRdnResponse;
                         break;
 
-                    case LdapMessage.COMPARE_REQUEST:
-                        responseType = LdapMessage.COMPARE_RESPONSE;
+                    case LdapMessage.CompareRequest:
+                        responseType = LdapMessage.CompareResponse;
                         break;
 
-                    case LdapMessage.ABANDON_REQUEST:
+                    case LdapMessage.AbandonRequest:
                         responseType = -1;
                         break;
 
-                    case LdapMessage.EXTENDED_REQUEST:
-                        responseType = LdapMessage.EXTENDED_RESPONSE;
+                    case LdapMessage.ExtendedRequest:
+                        responseType = LdapMessage.ExtendedResponse;
                         break;
                 }
                 return responseType;
             }
         }
 
-        private readonly Message request;
+        private readonly Message _request;
 
         /// <summary>
         ///     Constructs a InterThreadException with its associated message.
@@ -135,7 +135,7 @@ namespace Novell.Directory.Ldap
         internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
             Message request) : base(message, arguments, resultCode, null, rootException)
         {
-            this.request = request;
+            this._request = request;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the abandon request
         ///     or null if none.
         /// </param>
-        public LdapAbandonRequest(int id, LdapControl[] cont) : base(ABANDON_REQUEST, new RfcAbandonRequest(id), cont)
+        public LdapAbandonRequest(int id, LdapControl[] cont) : base(AbandonRequest, new RfcAbandonRequest(id), cont)
         {
         }
     }

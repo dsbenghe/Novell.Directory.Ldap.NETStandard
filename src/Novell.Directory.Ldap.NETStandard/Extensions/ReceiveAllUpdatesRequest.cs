@@ -57,11 +57,11 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the replica
         ///     that will be updated.
         /// </param>
-        /// <param name="toServerDN">
+        /// <param name="toServerDn">
         ///     The distinguished name of the server holding the
         ///     replica to be updated.
         /// </param>
-        /// <param name="fromServerDN">
+        /// <param name="fromServerDn">
         ///     The distinguished name of the server from which
         ///     updates are sent.
         /// </param>
@@ -69,30 +69,30 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public ReceiveAllUpdatesRequest(string partitionRoot, string toServerDN, string fromServerDN)
-            : base(ReplicationConstants.RECEIVE_ALL_UPDATES_REQ, null)
+        public ReceiveAllUpdatesRequest(string partitionRoot, string toServerDn, string fromServerDn)
+            : base(ReplicationConstants.ReceiveAllUpdatesReq, null)
         {
             try
             {
-                if ((object) partitionRoot == null || (object) toServerDN == null || (object) fromServerDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object) partitionRoot == null || (object) toServerDn == null || (object) fromServerDn == null)
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
-                var asn1_toServerDN = new Asn1OctetString(toServerDN);
-                var asn1_fromServerDN = new Asn1OctetString(fromServerDN);
+                var asn1PartitionRoot = new Asn1OctetString(partitionRoot);
+                var asn1ToServerDn = new Asn1OctetString(toServerDn);
+                var asn1FromServerDn = new Asn1OctetString(fromServerDn);
 
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_toServerDN.encode(encoder, encodedData);
-                asn1_fromServerDN.encode(encoder, encodedData);
+                asn1PartitionRoot.Encode(encoder, encodedData);
+                asn1ToServerDn.Encode(encoder, encodedData);
+                asn1FromServerDn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

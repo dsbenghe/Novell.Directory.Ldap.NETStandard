@@ -41,11 +41,11 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class MonitorEventResponse : LdapExtendedResponse
     {
-        private EdirEventSpecifier[] specifier_list;
+        private EdirEventSpecifier[] _specifierList;
 
         public EdirEventSpecifier[] SpecifierList
         {
-            get { return specifier_list; }
+            get { return _specifierList; }
         }
 
         public MonitorEventResponse(RfcLdapMessage message)
@@ -55,28 +55,28 @@ namespace Novell.Directory.Ldap.Events.Edir
 
             if (null == returnedValue)
             {
-                throw new LdapException(LdapException.resultCodeToString(ResultCode),
+                throw new LdapException(LdapException.ResultCodeToString(ResultCode),
                     ResultCode,
                     null);
             }
 
-            var decoder = new LBERDecoder();
+            var decoder = new LberDecoder();
 
-            var sequence = (Asn1Sequence) decoder.decode(returnedValue);
+            var sequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
-            var length = ((Asn1Integer) sequence.get_Renamed(0)).intValue();
+            var length = ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
             var sequenceSet = (Asn1Set) sequence.get_Renamed(1);
-            specifier_list = new EdirEventSpecifier[length];
+            _specifierList = new EdirEventSpecifier[length];
 
             for (var i = 0; i < length; i++)
             {
                 var eventspecifiersequence =
                     (Asn1Sequence) sequenceSet.get_Renamed(i);
                 var classfication =
-                    ((Asn1Integer) eventspecifiersequence.get_Renamed(0)).intValue();
+                    ((Asn1Integer) eventspecifiersequence.get_Renamed(0)).IntValue();
                 var enumtype =
-                    ((Asn1Enumerated) eventspecifiersequence.get_Renamed(1)).intValue();
-                specifier_list[i] =
+                    ((Asn1Enumerated) eventspecifiersequence.get_Renamed(1)).IntValue();
+                _specifierList[i] =
                     new EdirEventSpecifier((EdirEventType) classfication, (EdirEventResultType) enumtype);
             }
         }

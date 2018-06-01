@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var req = (RfcCompareRequest) Asn1Object.getRequest();
+                var req = (RfcCompareRequest) Asn1Object.GetRequest();
                 return req.AttributeValueAssertion.AttributeDescription;
             }
         }
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var req = (RfcCompareRequest) Asn1Object.getRequest();
+                var req = (RfcCompareRequest) Asn1Object.GetRequest();
                 return req.AttributeValueAssertion.AssertionValue;
             }
         }
@@ -83,9 +83,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to compare
         /// </returns>
-        public virtual string DN
+        public virtual string Dn
         {
-            get { return Asn1Object.RequestDN; }
+            get { return Asn1Object.RequestDn; }
         }
 
         /// <summary>
@@ -106,12 +106,12 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         [CLSCompliant(false)]
-        public LdapCompareRequest(string dn, string name, sbyte[] value_Renamed, LdapControl[] cont)
+        public LdapCompareRequest(string dn, string name, sbyte[] valueRenamed, LdapControl[] cont)
             : base(
-                COMPARE_REQUEST,
-                new RfcCompareRequest(new RfcLdapDN(dn),
+                CompareRequest,
+                new RfcCompareRequest(new RfcLdapDn(dn),
                     new RfcAttributeValueAssertion(new RfcAttributeDescription(name),
-                        new RfcAssertionValue(value_Renamed))), cont)
+                        new RfcAssertionValue(valueRenamed))), cont)
         {
         }
     }

@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
     {
         private void InitBlock()
         {
-            usage = USER_APPLICATIONS;
+            _usage = UserApplications;
         }
 
         /// <summary>
@@ -138,35 +138,35 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int Usage
         {
-            get { return usage; }
+            get { return _usage; }
         }
 
-        private int usage;
+        private int _usage;
 
         /// <summary>
         ///     Indicates that the attribute usage is for ordinary application
         ///     or user data.
         /// </summary>
-        public const int USER_APPLICATIONS = 0;
+        public const int UserApplications = 0;
 
         /// <summary>
         ///     Indicates that the attribute usage is for directory operations.
         ///     Values are vendor specific.
         /// </summary>
-        public const int DIRECTORY_OPERATION = 1;
+        public const int DirectoryOperation = 1;
 
         /// <summary>
         ///     Indicates that the attribute usage is for distributed operational
         ///     attributes. These hold server (DSA) information that is shared among
         ///     servers holding replicas of the entry.
         /// </summary>
-        public const int DISTRIBUTED_OPERATION = 2;
+        public const int DistributedOperation = 2;
 
         /// <summary>
         ///     Indicates that the attribute usage is for local operational attributes.
         ///     These hold server (DSA) information that is local to a server.
         /// </summary>
-        public const int DSA_OPERATION = 3;
+        public const int DsaOperation = 3;
 
         /// <summary>
         ///     Constructs an attribute definition for adding to or deleting from a
@@ -223,13 +223,13 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapAttributeSchema(string[] names, string oid, string description, string syntaxString, bool single,
             string superior, bool obsolete, string equality, string ordering, string substring, bool collective,
-            bool isUserModifiable, int usage) : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
+            bool isUserModifiable, int usage) : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
             InitBlock();
             this.names = names;
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
+            this.Oid = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
             this.SyntaxString = syntaxString;
             this.SingleValued = single;
             this.EqualityMatchingRule = equality;
@@ -237,9 +237,9 @@ namespace Novell.Directory.Ldap
             this.SubstringMatchingRule = substring;
             this.Collective = collective;
             UserModifiable = isUserModifiable;
-            this.usage = usage;
+            this._usage = usage;
             this.Superior = superior;
-            Value = formatString();
+            Value = FormatString();
         }
 
 
@@ -251,7 +251,7 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned on a directory
         ///     query for "attributetypes".
         /// </param>
-        public LdapAttributeSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.ATTRIBUTE])
+        public LdapAttributeSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
             InitBlock();
             try
@@ -260,24 +260,24 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                     names = parser.Names;
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
+                if ((object) parser.Id != null)
+                    Oid = parser.Id;
                 if ((object) parser.Description != null)
-                    description = parser.Description;
+                    Description = parser.Description;
                 if ((object) parser.Syntax != null)
                     SyntaxString = parser.Syntax;
                 if ((object) parser.Superior != null)
                     Superior = parser.Superior;
                 SingleValued = parser.Single;
-                obsolete = parser.Obsolete;
+                Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException e)
             {
@@ -292,13 +292,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -368,19 +368,19 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(" NO-USER-MODIFICATION");
             }
             int useType;
-            if ((useType = Usage) != USER_APPLICATIONS)
+            if ((useType = Usage) != UserApplications)
             {
                 switch (useType)
                 {
-                    case DIRECTORY_OPERATION:
+                    case DirectoryOperation:
                         valueBuffer.Append(" USAGE directoryOperation");
                         break;
 
-                    case DISTRIBUTED_OPERATION:
+                    case DistributedOperation:
                         valueBuffer.Append(" USAGE distributedOperation");
                         break;
 
-                    case DSA_OPERATION:
+                    case DsaOperation:
                         valueBuffer.Append(" USAGE dSAOperation");
                         break;
 
@@ -396,7 +396,7 @@ namespace Novell.Directory.Ldap
                 if ((object) token != null)
                 {
                     valueBuffer.Append(" " + token);
-                    strArray = getQualifier(token);
+                    strArray = GetQualifier(token);
                     if (strArray != null)
                     {
                         if (strArray.Length > 1)

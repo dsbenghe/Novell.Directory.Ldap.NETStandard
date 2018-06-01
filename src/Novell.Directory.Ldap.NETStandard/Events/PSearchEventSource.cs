@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class PSearchEventSource : LdapEventSource
     {
-        private SearchResultEventHandler search_result_event;
+        private SearchResultEventHandler _searchResultEvent;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -50,17 +50,17 @@ namespace Novell.Directory.Ldap.Events
         {
             add
             {
-                search_result_event += value;
+                _searchResultEvent += value;
                 ListenerAdded();
             }
             remove
             {
-                search_result_event -= value;
+                _searchResultEvent -= value;
                 ListenerRemoved();
             }
         }
 
-        private SearchReferralEventHandler search_referral_event;
+        private SearchReferralEventHandler _searchReferralEvent;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -70,12 +70,12 @@ namespace Novell.Directory.Ldap.Events
         {
             add
             {
-                search_referral_event += value;
+                _searchReferralEvent += value;
                 ListenerAdded();
             }
             remove
             {
-                search_referral_event -= value;
+                _searchReferralEvent -= value;
                 ListenerRemoved();
             }
         }
@@ -105,25 +105,25 @@ namespace Novell.Directory.Ldap.Events
         protected override int GetListeners()
         {
             var nListeners = 0;
-            if (null != search_result_event)
-                nListeners = search_result_event.GetInvocationList().Length;
+            if (null != _searchResultEvent)
+                nListeners = _searchResultEvent.GetInvocationList().Length;
 
-            if (null != search_referral_event)
-                nListeners += search_referral_event.GetInvocationList().Length;
+            if (null != _searchReferralEvent)
+                nListeners += _searchReferralEvent.GetInvocationList().Length;
 
             return nListeners;
         }
 
-        private LdapConnection mConnection;
-        private string mSearchBase;
-        private int mScope;
-        private string[] mAttrs;
-        private string mFilter;
-        private bool mTypesOnly;
-        private LdapSearchConstraints mSearchConstraints;
-        private LdapEventType mEventChangeType;
+        private LdapConnection _mConnection;
+        private string _mSearchBase;
+        private int _mScope;
+        private string[] _mAttrs;
+        private string _mFilter;
+        private bool _mTypesOnly;
+        private LdapSearchConstraints _mSearchConstraints;
+        private LdapEventType _mEventChangeType;
 
-        private LdapSearchQueue mQueue;
+        private LdapSearchQueue _mQueue;
 
         // Constructor
         public PSearchEventSource(
@@ -147,22 +147,22 @@ namespace Novell.Directory.Ldap.Events
                 throw new ArgumentException("Null argument specified");
             }
 
-            mConnection = conn;
-            mSearchBase = searchBase;
-            mScope = scope;
-            mFilter = filter;
-            mAttrs = attrs;
-            mTypesOnly = typesOnly;
-            mEventChangeType = eventchangetype;
+            _mConnection = conn;
+            _mSearchBase = searchBase;
+            _mScope = scope;
+            _mFilter = filter;
+            _mAttrs = attrs;
+            _mTypesOnly = typesOnly;
+            _mEventChangeType = eventchangetype;
 
             // make things ready for starting a search operation
             if (constraints == null)
             {
-                mSearchConstraints = new LdapSearchConstraints();
+                _mSearchConstraints = new LdapSearchConstraints();
             }
             else
             {
-                mSearchConstraints = constraints;
+                _mSearchConstraints = constraints;
             }
 
             //Create the persistent search control
@@ -173,38 +173,38 @@ namespace Novell.Directory.Ldap.Events
                     true); //control is critcal
 
             // add the persistent search control to the search constraints
-            mSearchConstraints.setControls(psCtrl);
+            _mSearchConstraints.SetControls(psCtrl);
         } // end of Constructor
 
         protected override void StartSearchAndPolling()
         {
             // perform the search with no attributes returned
-            mQueue =
-                mConnection.Search(mSearchBase, // container to search
-                    mScope, // search container's subtree
-                    mFilter, // search filter, all objects
-                    mAttrs, // don't return attributes
-                    mTypesOnly, // return attrs and values or attrs only.
+            _mQueue =
+                _mConnection.Search(_mSearchBase, // container to search
+                    _mScope, // search container's subtree
+                    _mFilter, // search filter, all objects
+                    _mAttrs, // don't return attributes
+                    _mTypesOnly, // return attrs and values or attrs only.
                     null, // use default search queue
-                    mSearchConstraints); // use default search constraints
+                    _mSearchConstraints); // use default search constraints
 
-            var ids = mQueue.MessageIDs;
+            var ids = _mQueue.MessageIDs;
 
             if (ids.Length != 1)
             {
                 throw new LdapException(
                     null,
-                    LdapException.LOCAL_ERROR,
+                    LdapException.LocalError,
                     "Unable to Obtain Message Id"
                 );
             }
 
-            StartEventPolling(mQueue, mConnection, ids[0]);
+            StartEventPolling(_mQueue, _mConnection, ids[0]);
         }
 
         protected override void StopSearchAndPolling()
         {
-            mConnection.Abandon(mQueue);
+            _mConnection.Abandon(_mQueue);
             StopEventPolling();
         }
 
@@ -220,10 +220,10 @@ namespace Novell.Directory.Ldap.Events
 
             switch (sourceMessage.Type)
             {
-                case LdapMessage.SEARCH_RESULT_REFERENCE:
-                    if (null != search_referral_event)
+                case LdapMessage.SearchResultReference:
+                    if (null != _searchReferralEvent)
                     {
-                        search_referral_event(this,
+                        _searchReferralEvent(this,
                             new SearchReferralEventArgs(
                                 sourceMessage,
                                 aClassification,
@@ -233,10 +233,10 @@ namespace Novell.Directory.Ldap.Events
                     }
                     break;
 
-                case LdapMessage.SEARCH_RESPONSE:
-                    if (null != search_result_event)
+                case LdapMessage.SearchResponse:
+                    if (null != _searchResultEvent)
                     {
-                        var changeType = LdapEventType.TYPE_UNKNOWN;
+                        var changeType = LdapEventType.TypeUnknown;
                         var controls = sourceMessage.Controls;
                         foreach (var control in controls)
                         {
@@ -248,7 +248,7 @@ namespace Novell.Directory.Ldap.Events
                             }
                         }
                         // if no changeType then value is TYPE_UNKNOWN
-                        search_result_event(this,
+                        _searchResultEvent(this,
                             new SearchResultEventArgs(
                                 sourceMessage,
                                 aClassification,
@@ -258,12 +258,12 @@ namespace Novell.Directory.Ldap.Events
                     }
                     break;
 
-                case LdapMessage.SEARCH_RESULT:
+                case LdapMessage.SearchResult:
                     // This is a generic LDAP Event
                     // TODO: Why the type is ANY...? (java code)
                     NotifyDirectoryListeners(new LdapEventArgs(sourceMessage,
-                        EventClassifiers.CLASSIFICATION_LDAP_PSEARCH,
-                        LdapEventType.LDAP_PSEARCH_ANY));
+                        EventClassifiers.ClassificationLdapPsearch,
+                        LdapEventType.LdapPsearchAny));
                     bListenersNotified = true;
                     break;
 

@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 for (var i = 0; i < attrs.Length; i++)
                 {
-                    add(new RfcAttributeDescription(attrs[i]));
+                    Add(new RfcAttributeDescription(attrs[i]));
                 }
             }
         }

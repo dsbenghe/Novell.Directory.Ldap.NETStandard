@@ -44,13 +44,13 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1Sequence : Asn1Structured
     {
         /// <summary> ASN.1 SEQUENCE tag definition.</summary>
-        public const int TAG = 0x10;
+        public const int Tag = 0x10;
 
         /// <summary>
         ///     ID is added for Optimization.
         ///     id needs only be one Value for every instance Thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, true, TAG);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
 
         /* Constructors for Asn1Sequence
                 */
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1Sequence object with no actual Asn1Objects in it.
         ///     Assumes a default size of 10 elements.
         /// </summary>
-        public Asn1Sequence() : base(ID, 10)
+        public Asn1Sequence() : base(Id, 10)
         {
         }
 
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1Sequence(int size) : base(ID, size)
+        public Asn1Sequence(int size) : base(Id, size)
         {
         }
 
@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the number of items in the array
         /// </param>
-        public Asn1Sequence(Asn1Object[] newContent, int size) : base(ID, newContent, size)
+        public Asn1Sequence(Asn1Object[] newContent, int size) : base(Id, newContent, size)
         {
         }
 
@@ -103,9 +103,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
         [CLSCompliant(false)]
-        public Asn1Sequence(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1Sequence(IAsn1Decoder dec, Stream inRenamed, int len) : base(Id)
         {
-            decodeStructured(dec, in_Renamed, len);
+            DecodeStructured(dec, inRenamed, len);
         }
 
         /* Asn1Sequence specific methods

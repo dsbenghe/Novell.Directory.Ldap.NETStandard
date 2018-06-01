@@ -45,45 +45,45 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </seealso>
     public class EnumeratedIterator : IEnumerator
     {
-        private object tempAuxObj;
+        private object _tempAuxObj;
 
         public virtual bool MoveNext()
         {
-            var result = hasMoreElements();
+            var result = HasMoreElements();
             if (result)
             {
-                tempAuxObj = nextElement();
+                _tempAuxObj = NextElement();
             }
             return result;
         }
 
         public virtual void Reset()
         {
-            tempAuxObj = null;
+            _tempAuxObj = null;
         }
 
         public virtual object Current
         {
-            get { return tempAuxObj; }
+            get { return _tempAuxObj; }
         }
 
-        private readonly IEnumerator i;
+        private readonly IEnumerator _i;
 
         public EnumeratedIterator(IEnumerator iterator)
         {
-            i = iterator;
+            _i = iterator;
         }
 
         /// <summary> Enumeration method that maps to Iterator.hasNext()</summary>
-        public bool hasMoreElements()
+        public bool HasMoreElements()
         {
-            return i.MoveNext();
+            return _i.MoveNext();
         }
 
         /// <summary> Enumeration method that maps to Iterator.next()</summary>
-        public object nextElement()
+        public object NextElement()
         {
-            return i.Current;
+            return _i.Current;
         }
     }
 }

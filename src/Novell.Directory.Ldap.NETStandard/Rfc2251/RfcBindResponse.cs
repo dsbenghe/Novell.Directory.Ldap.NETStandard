@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         serverSaslCreds    [7] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcBindResponse : Asn1Sequence, RfcResponse
+    public class RfcBindResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary>
         ///     Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
@@ -53,15 +53,15 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (size() == 5)
-                    return (Asn1OctetString) ((Asn1Tagged) get_Renamed(4)).taggedValue();
+                if (Size() == 5)
+                    return (Asn1OctetString) ((Asn1Tagged) get_Renamed(4)).TaggedValue;
 
-                if (size() == 4)
+                if (Size() == 4)
                 {
                     // could be referral or serverSaslCreds
                     var obj = get_Renamed(3);
                     if (obj is Asn1Tagged)
-                        return (Asn1OctetString) ((Asn1Tagged) obj).taggedValue();
+                        return (Asn1OctetString) ((Asn1Tagged) obj).TaggedValue;
                 }
 
                 return null;
@@ -79,16 +79,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     need to be decoded since it is already an OCTET STRING.
         /// </summary>
         [CLSCompliant(false)]
-        public RfcBindResponse(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
+        public RfcBindResponse(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
-            if (size() > 3)
+            if (Size() > 3)
             {
                 var obj = (Asn1Tagged) get_Renamed(3);
-                var id = obj.getIdentifier();
-                if (id.Tag == RfcLdapResult.REFERRAL)
+                var id = obj.GetIdentifier();
+                if (id.Tag == RfcLdapResult.Referral)
                 {
-                    var content = ((Asn1OctetString) obj.taggedValue()).byteValue();
+                    var content = ((Asn1OctetString) obj.TaggedValue).ByteValue();
                     var bais = new MemoryStream(SupportClass.ToByteArray(content));
                     set_Renamed(3, new RfcReferral(dec, bais, content.Length));
                 }
@@ -100,27 +100,27 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public Asn1Enumerated getResultCode()
+        public Asn1Enumerated GetResultCode()
         {
             return (Asn1Enumerated) get_Renamed(0);
         }
 
         /// <summary> </summary>
-        public RfcLdapDN getMatchedDN()
+        public RfcLdapDn GetMatchedDn()
         {
-            return new RfcLdapDN(((Asn1OctetString) get_Renamed(1)).byteValue());
+            return new RfcLdapDn(((Asn1OctetString) get_Renamed(1)).ByteValue());
         }
 
         /// <summary> </summary>
-        public RfcLdapString getErrorMessage()
+        public RfcLdapString GetErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).byteValue());
+            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).ByteValue());
         }
 
         /// <summary> </summary>
-        public RfcReferral getReferral()
+        public RfcReferral GetReferral()
         {
-            if (size() > 3)
+            if (Size() > 3)
             {
                 var obj = get_Renamed(3);
                 if (obj is RfcReferral)
@@ -130,9 +130,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.BIND_RESPONSE);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.BindResponse);
         }
     }
 }

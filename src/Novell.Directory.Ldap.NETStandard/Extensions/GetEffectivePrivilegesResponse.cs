@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </exception>
         public GetEffectivePrivilegesResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
         {
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
@@ -77,15 +77,15 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("No returned value");
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
-                var asn1_privileges = (Asn1Integer) decoder.decode(returnedValue);
-                if (asn1_privileges == null)
+                var asn1Privileges = (Asn1Integer) decoder.Decode(returnedValue);
+                if (asn1Privileges == null)
                     throw new IOException("Decoding error");
 
-                Privileges = asn1_privileges.intValue();
+                Privileges = asn1Privileges.IntValue();
             }
             else
             {

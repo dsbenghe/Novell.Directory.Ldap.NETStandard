@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         authentication          AuthenticationChoice }
     ///     </pre>
     /// </summary>
-    public class RfcBindRequest : Asn1Sequence, RfcRequest
+    public class RfcBindRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> </summary>
         /// <summary> Sets the protocol version</summary>
@@ -56,9 +56,9 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         /// <summary> </summary>
-        public virtual RfcLdapDN Name
+        public virtual RfcLdapDn Name
         {
-            get { return (RfcLdapDN) get_Renamed(1); }
+            get { return (RfcLdapDn) get_Renamed(1); }
 
             set { set_Renamed(1, value); }
         }
@@ -77,8 +77,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.APPLICATION, true,
-            LdapMessage.BIND_REQUEST);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Application, true,
+            LdapMessage.BindRequest);
 
 
         //*************************************************************************
@@ -86,16 +86,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcBindRequest(Asn1Integer version, RfcLdapDN name, RfcAuthenticationChoice auth) : base(3)
+        public RfcBindRequest(Asn1Integer version, RfcLdapDn name, RfcAuthenticationChoice auth) : base(3)
         {
-            add(version);
-            add(name);
-            add(auth);
+            Add(version);
+            Add(name);
+            Add(auth);
         }
 
         [CLSCompliant(false)]
         public RfcBindRequest(int version, string dn, string mechanism, sbyte[] credentials)
-            : this(new Asn1Integer(version), new RfcLdapDN(dn), new RfcAuthenticationChoice(mechanism, credentials))
+            : this(new Asn1Integer(version), new RfcLdapDn(dn), new RfcAuthenticationChoice(mechanism, credentials))
         {
         }
 
@@ -103,12 +103,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Bind Request copying the original data from
         ///     an existing request.
         /// </summary>
-        internal RfcBindRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
+        internal RfcBindRequest(Asn1Object[] origRequest, string baseRenamed) : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if ((object) baseRenamed != null)
             {
-                set_Renamed(1, new RfcLdapDN(base_Renamed));
+                set_Renamed(1, new RfcLdapDn(baseRenamed));
             }
         }
 
@@ -126,19 +126,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 0. (0x60)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return ID;
+            return Id;
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            return new RfcBindRequest(toArray(), base_Renamed);
+            return new RfcBindRequest(ToArray(), baseRenamed);
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return ((RfcLdapDN) get_Renamed(1)).stringValue();
+            return ((RfcLdapDn) get_Renamed(1)).StringValue();
         }
     }
 }

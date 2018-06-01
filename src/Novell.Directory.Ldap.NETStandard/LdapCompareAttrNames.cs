@@ -52,8 +52,8 @@ namespace Novell.Directory.Ldap
         private void InitBlock()
         {
 //			location = Locale.getDefault();
-            location = CultureInfo.CurrentCulture;
-            collator = CultureInfo.CurrentCulture.CompareInfo;
+            _location = CultureInfo.CurrentCulture;
+            _collator = CultureInfo.CurrentCulture.CompareInfo;
         }
 
         /// <summary>
@@ -76,20 +76,20 @@ namespace Novell.Directory.Ldap
             get
             {
                 //currently supports only English local.
-                return location;
+                return _location;
             }
 
             set
             {
-                collator = value.CompareInfo;
-                location = value;
+                _collator = value.CompareInfo;
+                _location = value;
             }
         }
 
-        private readonly string[] sortByNames; //names to to sort by.
-        private readonly bool[] sortAscending; //true if sorting ascending
-        private CultureInfo location;
-        private CompareInfo collator;
+        private readonly string[] _sortByNames; //names to to sort by.
+        private readonly bool[] _sortAscending; //true if sorting ascending
+        private CultureInfo _location;
+        private CompareInfo _collator;
 
         /// <summary>
         ///     Constructs an object that sorts results by a single attribute, in
@@ -101,10 +101,10 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string attrName)
         {
             InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = true;
+            _sortByNames = new string[1];
+            _sortByNames[0] = attrName;
+            _sortAscending = new bool[1];
+            _sortAscending[0] = true;
         }
 
         /// <summary>
@@ -121,10 +121,10 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string attrName, bool ascendingFlag)
         {
             InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = ascendingFlag;
+            _sortByNames = new string[1];
+            _sortByNames[0] = attrName;
+            _sortAscending = new bool[1];
+            _sortAscending[0] = ascendingFlag;
         }
 
 
@@ -141,12 +141,12 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string[] attrNames)
         {
             InitBlock();
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[attrNames.Length];
+            _sortByNames = new string[attrNames.Length];
+            _sortAscending = new bool[attrNames.Length];
             for (var i = 0; i < attrNames.Length; i++)
             {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = true;
+                _sortByNames[i] = attrNames[i];
+                _sortAscending[i] = true;
             }
         }
 
@@ -177,15 +177,15 @@ namespace Novell.Directory.Ldap
             InitBlock();
             if (attrNames.Length != ascendingFlags.Length)
             {
-                throw new LdapException(ExceptionMessages.UNEQUAL_LENGTHS, LdapException.INAPPROPRIATE_MATCHING, null);
+                throw new LdapException(ExceptionMessages.UnequalLengths, LdapException.InappropriateMatching, null);
                 //"Length of attribute Name array does not equal length of Flags array"
             }
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[ascendingFlags.Length];
+            _sortByNames = new string[attrNames.Length];
+            _sortAscending = new bool[ascendingFlags.Length];
             for (var i = 0; i < attrNames.Length; i++)
             {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = ascendingFlags[i];
+                _sortByNames[i] = attrNames[i];
+                _sortAscending[i] = ascendingFlags[i];
             }
         }
 
@@ -214,22 +214,22 @@ namespace Novell.Directory.Ldap
             string[] first; //multivalued attributes are ignored.
             string[] second; //we just use the first element
             int compare, i = 0;
-            if (collator == null)
+            if (_collator == null)
             {
                 //using default locale
-                collator = CultureInfo.CurrentCulture.CompareInfo;
+                _collator = CultureInfo.CurrentCulture.CompareInfo;
             }
 
             do
             {
                 //while first and second are equal
-                one = entry1.getAttribute(sortByNames[i]);
-                two = entry2.getAttribute(sortByNames[i]);
+                one = entry1.GetAttribute(_sortByNames[i]);
+                two = entry2.GetAttribute(_sortByNames[i]);
                 if (one != null && two != null)
                 {
                     first = one.StringValueArray;
                     second = two.StringValueArray;
-                    compare = collator.Compare(first[0], second[0]);
+                    compare = _collator.Compare(first[0], second[0]);
                 }
                 //We could also use the other multivalued attributes to break ties.
                 //one of the entries was null
@@ -246,9 +246,9 @@ namespace Novell.Directory.Ldap
                 }
 
                 i++;
-            } while (compare == 0 && i < sortByNames.Length);
+            } while (compare == 0 && i < _sortByNames.Length);
 
-            if (sortAscending[i - 1])
+            if (_sortAscending[i - 1])
             {
                 // return the normal ascending comparison.
                 return compare;
@@ -275,17 +275,17 @@ namespace Novell.Directory.Ldap
             var comp = (LdapCompareAttrNames) comparator;
 
             // Test to see if the attribute to compare are the same length
-            if (comp.sortByNames.Length != sortByNames.Length || comp.sortAscending.Length != sortAscending.Length)
+            if (comp._sortByNames.Length != _sortByNames.Length || comp._sortAscending.Length != _sortAscending.Length)
             {
                 return false;
             }
 
             // Test to see if the attribute names and sorting orders are the same.
-            for (var i = 0; i < sortByNames.Length; i++)
+            for (var i = 0; i < _sortByNames.Length; i++)
             {
-                if (comp.sortAscending[i] != sortAscending[i])
+                if (comp._sortAscending[i] != _sortAscending[i])
                     return false;
-                if (!comp.sortByNames[i].ToUpper().Equals(sortByNames[i].ToUpper()))
+                if (!comp._sortByNames[i].ToUpper().Equals(_sortByNames[i].ToUpper()))
                     return false;
             }
             return true;

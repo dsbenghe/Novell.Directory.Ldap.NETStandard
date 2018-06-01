@@ -41,16 +41,16 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public abstract class Asn1Numeric : Asn1Object
     {
-        private readonly long content;
+        private readonly long _content;
 
-        internal Asn1Numeric(Asn1Identifier id, int value_Renamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, int valueRenamed) : base(id)
         {
-            content = value_Renamed;
+            _content = valueRenamed;
         }
 
-        internal Asn1Numeric(Asn1Identifier id, long value_Renamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, long valueRenamed) : base(id)
         {
-            content = value_Renamed;
+            _content = valueRenamed;
         }
 
 /*		internal Asn1Numeric(Asn1Identifier id, System.Int64 value_Renamed):base(id)
@@ -61,15 +61,15 @@ namespace Novell.Directory.Ldap.Asn1
 */
 
         /// <summary> Returns the content of this Asn1Numeric object as an int.</summary>
-        public int intValue()
+        public int IntValue()
         {
-            return (int) content;
+            return (int) _content;
         }
 
         /// <summary> Returns the content of this Asn1Numeric object as a long.</summary>
-        public long longValue()
+        public long LongValue()
         {
-            return content;
+            return _content;
         }
     }
 }

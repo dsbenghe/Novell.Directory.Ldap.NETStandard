@@ -12,7 +12,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
             TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Add(ldapEntry); });
 
-            var readEntry = LdapOps.GetEntry(ldapEntry.DN);
+            var readEntry = LdapOps.GetEntry(ldapEntry.Dn);
             ldapEntry.AssertSameAs(readEntry);
         }
 
@@ -24,7 +24,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var ldapException = Assert.Throws<LdapException>(
                 () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Add(ldapEntry); })
             );
-            Assert.Equal(LdapException.ENTRY_ALREADY_EXISTS, ldapException.ResultCode);
+            Assert.Equal(LdapException.EntryAlreadyExists, ldapException.ResultCode);
         }
     }
 }

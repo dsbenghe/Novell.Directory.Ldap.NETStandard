@@ -39,14 +39,14 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1Integer : Asn1Numeric
     {
         /// <summary> ASN.1 INTEGER tag definition.</summary>
-        public const int TAG = 0x02;
+        public const int Tag = 0x02;
 
         /// <summary> ID is added for Optimization.</summary>
         /// <summary>
         ///     ID needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        private static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
 
         /* Constructors for Asn1Integer
                 */
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The integer value to be contained in the
         ///     this Asn1Integer object
         /// </param>
-        public Asn1Integer(int content) : base(ID, content)
+        public Asn1Integer(int content) : base(Id, content)
         {
         }
 
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The long value to be contained in the
         ///     this Asn1Integer object
         /// </param>
-        public Asn1Integer(long content) : base(ID, content)
+        public Asn1Integer(long content) : base(Id, content)
         {
         }
 
@@ -88,8 +88,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
         [CLSCompliant(false)]
-        public Asn1Integer(Asn1Decoder dec, Stream in_Renamed, int len)
-            : base(ID, (long) dec.decodeNumeric(in_Renamed, len))
+        public Asn1Integer(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(Id, (long) dec.DecodeNumeric(inRenamed, len))
         {
         }
 
@@ -107,9 +107,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, outRenamed);
         }
 
         /* Asn1Integer specific methods
@@ -118,7 +118,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Returns a String representation of this Asn1Integer object.</summary>
         public override string ToString()
         {
-            return base.ToString() + "INTEGER: " + longValue();
+            return base.ToString() + "INTEGER: " + LongValue();
         }
     }
 }

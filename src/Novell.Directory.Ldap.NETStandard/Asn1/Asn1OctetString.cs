@@ -39,17 +39,17 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1OctetString : Asn1Object
     {
-        private readonly sbyte[] content;
+        private readonly sbyte[] _content;
 
         /// <summary> ASN.1 OCTET STRING tag definition.</summary>
-        public const int TAG = 0x04;
+        public const int Tag = 0x04;
 
         /// <summary>
         ///     ID is added for Optimization.
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        protected internal static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, false, TAG);
+        protected internal static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
 
         /* Constructors for Asn1OctetString
                 */
@@ -63,9 +63,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     will be contained in the this Asn1OctetString object
         /// </param>
         [CLSCompliant(false)]
-        public Asn1OctetString(sbyte[] content) : base(ID)
+        public Asn1OctetString(sbyte[] content) : base(Id)
         {
-            this.content = content;
+            this._content = content;
         }
 
 
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A string value that will be contained
         ///     in the this Asn1OctetString object
         /// </param>
-        public Asn1OctetString(string content) : base(ID)
+        public Asn1OctetString(string content) : base(Id)
         {
             try
             {
@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap.Asn1
                 var ibytes = encoder.GetBytes(content);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                this.content = sbytes;
+                this._content = sbytes;
 //				this.content = content.getBytes("UTF8");
             }
             catch (IOException uee)
@@ -115,9 +115,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte stream that contains the encoded ASN.1
         /// </param>
         [CLSCompliant(false)]
-        public Asn1OctetString(Asn1Decoder dec, Stream in_Renamed, int len) : base(ID)
+        public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len) : base(Id)
         {
-            content = len > 0 ? (sbyte[]) dec.decodeOctetString(in_Renamed, len) : new sbyte[0];
+            _content = len > 0 ? (sbyte[]) dec.DecodeOctetString(inRenamed, len) : new sbyte[0];
         }
 
 
@@ -135,9 +135,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            enc.encode(this, out_Renamed);
+            enc.Encode(this, outRenamed);
         }
 
 
@@ -146,20 +146,20 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary> Returns the content of this Asn1OctetString as a byte array.</summary>
         [CLSCompliant(false)]
-        public sbyte[] byteValue()
+        public sbyte[] ByteValue()
         {
-            return content;
+            return _content;
         }
 
 
         /// <summary> Returns the content of this Asn1OctetString as a String.</summary>
-        public string stringValue()
+        public string StringValue()
         {
             string s = null;
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
-                var dchar = encoder.GetChars(SupportClass.ToByteArray(content));
+                var dchar = encoder.GetChars(SupportClass.ToByteArray(_content));
                 s = new string(dchar);
 //				sbyte *sb=content;
 //				s = new  String(sb,0,content.Length, new System.Text.UTF8Encoding());
@@ -176,7 +176,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            return base.ToString() + "OCTET STRING: " + stringValue();
+            return base.ToString() + "OCTET STRING: " + StringValue();
         }
     }
 }

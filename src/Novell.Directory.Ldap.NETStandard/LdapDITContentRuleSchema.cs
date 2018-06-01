@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     additional auxiliary classes, mandatory and optional attributes, and
     ///     restricted attributes in effect for an object class.
     /// </summary>
-    public class LdapDITContentRuleSchema : LdapSchemaElement
+    public class LdapDitContentRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the list of allowed auxiliary classes.
@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] AuxiliaryClasses
         {
-            get { return auxiliary; }
+            get { return _auxiliary; }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] RequiredAttributes
         {
-            get { return required; }
+            get { return _required; }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] OptionalAttributes
         {
-            get { return optional; }
+            get { return _optional; }
         }
 
         /// <summary>
@@ -89,13 +89,13 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual string[] PrecludedAttributes
         {
-            get { return precluded; }
+            get { return _precluded; }
         }
 
-        private readonly string[] auxiliary = {""};
-        private readonly string[] required = {""};
-        private readonly string[] optional = {""};
-        private readonly string[] precluded = {""};
+        private readonly string[] _auxiliary = {""};
+        private readonly string[] _required = {""};
+        private readonly string[] _optional = {""};
+        private readonly string[] _precluded = {""};
 
         /// <summary>
         ///     Constructs a DIT content rule for adding to or deleting from the
@@ -142,20 +142,20 @@ namespace Novell.Directory.Ldap
         ///     applies. These may be specified by either name
         ///     or numeric oid.
         /// </param>
-        public LdapDITContentRuleSchema(string[] names, string oid, string description, bool obsolete,
+        public LdapDitContentRuleSchema(string[] names, string oid, string description, bool obsolete,
             string[] auxiliary, string[] required, string[] optional, string[] precluded)
-            : base(LdapSchema.schemaTypeNames[LdapSchema.DITCONTENT])
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.auxiliary = auxiliary;
-            this.required = required;
-            this.optional = optional;
-            this.precluded = precluded;
-            Value = formatString();
+            this.Oid = oid;
+            this.Description = description;
+            this.Obsolete = obsolete;
+            this._auxiliary = auxiliary;
+            this._required = required;
+            this._optional = optional;
+            this._precluded = precluded;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a schema query
         ///     for content rules.
         /// </param>
-        public LdapDITContentRuleSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.DITCONTENT])
+        public LdapDitContentRuleSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
         {
-            obsolete = false;
+            Obsolete = false;
             try
             {
                 var parser = new SchemaParser(raw);
@@ -179,39 +179,39 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
+                if ((object) parser.Id != null)
+                    Oid = parser.Id;
                 if ((object) parser.Description != null)
-                    description = parser.Description;
+                    Description = parser.Description;
                 if (parser.Auxiliary != null)
                 {
-                    auxiliary = new string[parser.Auxiliary.Length];
-                    parser.Auxiliary.CopyTo(auxiliary, 0);
+                    _auxiliary = new string[parser.Auxiliary.Length];
+                    parser.Auxiliary.CopyTo(_auxiliary, 0);
                 }
                 if (parser.Required != null)
                 {
-                    required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(required, 0);
+                    _required = new string[parser.Required.Length];
+                    parser.Required.CopyTo(_required, 0);
                 }
                 if (parser.Optional != null)
                 {
-                    optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(optional, 0);
+                    _optional = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(_optional, 0);
                 }
                 if (parser.Precluded != null)
                 {
-                    precluded = new string[parser.Precluded.Length];
-                    parser.Precluded.CopyTo(precluded, 0);
+                    _precluded = new string[parser.Precluded.Length];
+                    parser.Precluded.CopyTo(_precluded, 0);
                 }
-                obsolete = parser.Obsolete;
+                Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+                Value = FormatString();
             }
             catch (IOException)
             {
@@ -225,13 +225,13 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
             string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -328,7 +328,7 @@ namespace Novell.Directory.Ldap
                 {
                     qualName = (string) en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                             valueBuffer.Append("( ");

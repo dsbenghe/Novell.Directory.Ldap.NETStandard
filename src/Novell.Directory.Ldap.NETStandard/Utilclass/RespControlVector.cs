@@ -54,19 +54,19 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             private void InitBlock(RespControlVector enclosingInstance)
             {
-                this.Enclosing_Instance = enclosingInstance;
+                this.EnclosingInstance = enclosingInstance;
             }
 
-            public RespControlVector Enclosing_Instance { get; private set; }
+            public RespControlVector EnclosingInstance { get; private set; }
 
-            public readonly string myOID;
-            public readonly Type myClass;
+            public readonly string MyOid;
+            public readonly Type MyClass;
 
             public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
             {
                 InitBlock(enclosingInstance);
-                myOID = oid;
-                myClass = controlClass;
+                MyOid = oid;
+                MyClass = controlClass;
             }
         }
 
@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         */
 
-        public void registerResponseControl(string oid, Type controlClass)
+        public void RegisterResponseControl(string oid, Type controlClass)
         {
             lock (this)
             {
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Utilclass
         * Class name that was provided to us on registration.
         */
 
-        public Type findResponseControl(string searchOID)
+        public Type FindResponseControl(string searchOid)
         {
             lock (this)
             {
@@ -103,10 +103,10 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
 
                     /* Does the stored OID match with whate we are looking for */
-                    if (ctl.myOID.CompareTo(searchOID) == 0)
+                    if (ctl.MyOid.CompareTo(searchOid) == 0)
                     {
                         /* Return the class name if we have match */
-                        return ctl.myClass;
+                        return ctl.MyClass;
                     }
                 }
                 /* The requested control does not have a registered response class */

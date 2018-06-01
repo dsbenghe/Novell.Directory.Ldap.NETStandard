@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </exception>
         public PartitionEntryCountResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
         {
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
@@ -76,15 +76,15 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("No returned value");
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
                 if (decoder == null)
                     throw new IOException("Decoding error");
 
-                var asn1_count = (Asn1Integer) decoder.decode(returnedValue);
-                if (asn1_count == null)
+                var asn1Count = (Asn1Integer) decoder.Decode(returnedValue);
+                if (asn1Count == null)
                     throw new IOException("Decoding error");
 
-                Count = asn1_count.intValue();
+                Count = asn1Count.IntValue();
             }
             else
             {

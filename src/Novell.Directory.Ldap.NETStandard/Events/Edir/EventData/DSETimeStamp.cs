@@ -38,34 +38,34 @@ namespace Novell.Directory.Ldap.Events.Edir
     ///     The class represents the Timestamp datastructure for Edir events
     ///     Notification.
     /// </summary>
-    public class DSETimeStamp
+    public class DseTimeStamp
     {
-        protected int nSeconds;
+        protected int NSeconds;
 
         public int Seconds
         {
-            get { return nSeconds; }
+            get { return NSeconds; }
         }
 
-        private int replica_number;
+        private int _replicaNumber;
 
         public int ReplicaNumber
         {
-            get { return replica_number; }
+            get { return _replicaNumber; }
         }
 
-        protected int nEvent;
+        protected int NEvent;
 
         public int Event
         {
-            get { return nEvent; }
+            get { return NEvent; }
         }
 
-        public DSETimeStamp(Asn1Sequence dseObject)
+        public DseTimeStamp(Asn1Sequence dseObject)
         {
-            nSeconds = ((Asn1Integer) dseObject.get_Renamed(0)).intValue();
-            replica_number = ((Asn1Integer) dseObject.get_Renamed(1)).intValue();
-            nEvent = ((Asn1Integer) dseObject.get_Renamed(2)).intValue();
+            NSeconds = ((Asn1Integer) dseObject.get_Renamed(0)).IntValue();
+            _replicaNumber = ((Asn1Integer) dseObject.get_Renamed(1)).IntValue();
+            NEvent = ((Asn1Integer) dseObject.get_Renamed(2)).IntValue();
         }
 
         /// <summary>
@@ -75,9 +75,9 @@ namespace Novell.Directory.Ldap.Events.Edir
         {
             var buf = new StringBuilder();
 
-            buf.AppendFormat("[TimeStamp (seconds={0})", nSeconds);
-            buf.AppendFormat("(replicaNumber={0})", replica_number);
-            buf.AppendFormat("(event={0})", nEvent);
+            buf.AppendFormat("[TimeStamp (seconds={0})", NSeconds);
+            buf.AppendFormat("(replicaNumber={0})", _replicaNumber);
+            buf.AppendFormat("(event={0})", NEvent);
             buf.Append("]");
 
             return buf.ToString();

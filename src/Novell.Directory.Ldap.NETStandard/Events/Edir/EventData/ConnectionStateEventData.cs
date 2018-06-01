@@ -39,32 +39,32 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ConnectionStateEventData : BaseEdirEventData
     {
-        private string strConnectionDN;
+        private string _strConnectionDn;
 
-        public string ConnectionDN
+        public string ConnectionDn
         {
-            get { return strConnectionDN; }
+            get { return _strConnectionDn; }
         }
 
-        private int old_flags;
+        private int _oldFlags;
 
         public int OldFlags
         {
-            get { return old_flags; }
+            get { return _oldFlags; }
         }
 
-        private int new_flags;
+        private int _newFlags;
 
         public int NewFlags
         {
-            get { return new_flags; }
+            get { return _newFlags; }
         }
 
-        private string source_module;
+        private string _sourceModule;
 
         public string SourceModule
         {
-            get { return source_module; }
+            get { return _sourceModule; }
         }
 
         public ConnectionStateEventData(EdirEventDataType eventDataType, Asn1Object message)
@@ -72,10 +72,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            strConnectionDN = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            old_flags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            new_flags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            source_module = ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            _strConnectionDn = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            _oldFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _newFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _sourceModule = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }
@@ -87,10 +87,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[ConnectionStateEvent");
-            buf.AppendFormat("(ConnectionDN={0})", strConnectionDN);
-            buf.AppendFormat("(oldFlags={0})", old_flags);
-            buf.AppendFormat("(newFlags={0})", new_flags);
-            buf.AppendFormat("(SourceModule={0})", source_module);
+            buf.AppendFormat("(ConnectionDN={0})", _strConnectionDn);
+            buf.AppendFormat("(oldFlags={0})", _oldFlags);
+            buf.AppendFormat("(newFlags={0})", _newFlags);
+            buf.AppendFormat("(SourceModule={0})", _sourceModule);
             buf.Append("]");
 
             return buf.ToString();

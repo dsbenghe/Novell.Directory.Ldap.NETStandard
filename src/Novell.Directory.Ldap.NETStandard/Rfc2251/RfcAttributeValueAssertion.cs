@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public virtual string AttributeDescription
         {
-            get { return ((RfcAttributeDescription) get_Renamed(0)).stringValue(); }
+            get { return ((RfcAttributeDescription) get_Renamed(0)).StringValue(); }
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         [CLSCompliant(false)]
         public virtual sbyte[] AssertionValue
         {
-            get { return ((RfcAssertionValue) get_Renamed(1)).byteValue(); }
+            get { return ((RfcAssertionValue) get_Renamed(1)).ByteValue(); }
         }
 
         /// <summary>
@@ -78,8 +78,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </param>
         public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av) : base(2)
         {
-            add(ad);
-            add(av);
+            Add(ad);
+            Add(av);
         }
     }
 }

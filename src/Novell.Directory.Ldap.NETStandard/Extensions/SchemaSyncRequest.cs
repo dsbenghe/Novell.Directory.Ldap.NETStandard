@@ -62,27 +62,27 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public SchemaSyncRequest(string serverName, int delay) : base(ReplicationConstants.SCHEMA_SYNC_REQ, null)
+        public SchemaSyncRequest(string serverName, int delay) : base(ReplicationConstants.SchemaSyncReq, null)
         {
             try
             {
                 if ((object) serverName == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverName = new Asn1OctetString(serverName);
-                var asn1_delay = new Asn1Integer(delay);
+                var asn1ServerName = new Asn1OctetString(serverName);
+                var asn1Delay = new Asn1Integer(delay);
 
-                asn1_serverName.encode(encoder, encodedData);
-                asn1_delay.encode(encoder, encodedData);
+                asn1ServerName.Encode(encoder, encodedData);
+                asn1Delay.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

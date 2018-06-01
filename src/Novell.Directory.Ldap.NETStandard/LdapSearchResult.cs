@@ -53,34 +53,34 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (entry == null)
+                if (_entry == null)
                 {
                     var attrs = new LdapAttributeSet();
 
-                    var attrList = ((RfcSearchResultEntry) message.Response).Attributes;
+                    var attrList = ((RfcSearchResultEntry) Message.Response).Attributes;
 
-                    var seqArray = attrList.toArray();
+                    var seqArray = attrList.ToArray();
                     for (var i = 0; i < seqArray.Length; i++)
                     {
                         var seq = (Asn1Sequence) seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).stringValue());
+                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
 
-                        var set_Renamed = (Asn1Set) seq.get_Renamed(1);
-                        object[] setArray = set_Renamed.toArray();
+                        var setRenamed = (Asn1Set) seq.get_Renamed(1);
+                        object[] setArray = setRenamed.ToArray();
                         for (var j = 0; j < setArray.Length; j++)
                         {
-                            attr.addValue(((Asn1OctetString) setArray[j]).byteValue());
+                            attr.AddValue(((Asn1OctetString) setArray[j]).ByteValue());
                         }
                         attrs.Add(attr);
                     }
 
-                    entry = new LdapEntry(((RfcSearchResultEntry) message.Response).ObjectName.stringValue(), attrs);
+                    _entry = new LdapEntry(((RfcSearchResultEntry) Message.Response).ObjectName.StringValue(), attrs);
                 }
-                return entry;
+                return _entry;
             }
         }
 
-        private LdapEntry entry;
+        private LdapEntry _entry;
 
         /// <summary>
         ///     Constructs an LdapSearchResult object.
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("Argument \"entry\" cannot be null");
             }
-            this.entry = entry;
+            this._entry = entry;
         }
 
         /// <summary>
@@ -120,13 +120,13 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             string str;
-            if (entry == null)
+            if (_entry == null)
             {
                 str = base.ToString();
             }
             else
             {
-                str = entry.ToString();
+                str = _entry.ToString();
             }
             return str;
         }

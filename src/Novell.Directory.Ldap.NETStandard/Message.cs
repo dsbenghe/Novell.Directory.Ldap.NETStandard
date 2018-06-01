@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap
     {
         private void InitBlock()
         {
-            replies = new MessageVector(5, 5);
+            _replies = new MessageVector(5, 5);
         }
 
         /// <summary>
@@ -53,8 +53,8 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var size = replies.Count;
-                if (complete)
+                var size = _replies.Count;
+                if (_complete)
                 {
                     return size > 0 ? size - 1 : size;
                 }
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap
         /// <summary> sets the agent for this message</summary>
         internal virtual MessageAgent Agent
         {
-            set { agent = value; }
+            set { _agent = value; }
         }
 
         /// <summary>
@@ -74,31 +74,31 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if no replies are queued, otherwise true
         /// </returns>
-        internal virtual bool hasReplies()
+        internal virtual bool HasReplies()
         {
-            if (replies == null)
+            if (_replies == null)
             {
                 // abandoned request
                 return false;
             }
-            return replies.Count > 0;
+            return _replies.Count > 0;
         }
 
         internal virtual int MessageType
         {
             get
             {
-                if (msg == null)
+                if (_msg == null)
                 {
                     return -1;
                 }
-                return msg.Type;
+                return _msg.Type;
             }
         }
 
-        internal virtual int MessageID
+        internal virtual int MessageId
         {
-            get { return msgId; }
+            get { return _msgId; }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual bool Complete
         {
-            get { return complete; }
+            get { return _complete; }
         }
 
         /// <summary>
@@ -119,35 +119,35 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the next reply message on the reply queue or null
         /// </returns>
-        internal virtual object waitForReply()
+        internal virtual object WaitForReply()
         {
-            if (replies == null)
+            if (_replies == null)
             {
                 return null;
             }
             // sync on message so don't confuse with timer thread
-            lock (replies)
+            lock (_replies)
             {
                 object msg = null;
-                while (waitForReply_Renamed_Field)
+                while (_waitForReplyRenamedField)
                 {
-                    if (replies.Count == 0)
+                    if (_replies.Count == 0)
                     {
-                        Monitor.Wait(replies);
-                        if (waitForReply_Renamed_Field)
+                        Monitor.Wait(_replies);
+                        if (_waitForReplyRenamedField)
                         {
                             continue;
                         }
                         break;
                     }
-                    object temp_object;
-                    temp_object = replies[0];
-                    replies.RemoveAt(0);
-                    msg = temp_object; // Atomic get and remove
-                    if ((complete || !acceptReplies) && replies.Count == 0)
+                    object tempObject;
+                    tempObject = _replies[0];
+                    _replies.RemoveAt(0);
+                    msg = tempObject; // Atomic get and remove
+                    if ((_complete || !_acceptReplies) && _replies.Count == 0)
                     {
                         // Remove msg from connection queue when last reply read
-                        conn.removeMessage(this);
+                        _conn.RemoveMessage(this);
                     }
                     return msg;
                 }
@@ -167,26 +167,26 @@ namespace Novell.Directory.Ldap
             get
             {
                 object msg;
-                if (replies == null)
+                if (_replies == null)
                 {
                     return null;
                 }
-                lock (replies)
+                lock (_replies)
                 {
                     // Test and remove must be atomic
-                    if (replies.Count == 0)
+                    if (_replies.Count == 0)
                     {
                         return null; // No data
                     }
-                    object temp_object;
-                    temp_object = replies[0];
-                    replies.RemoveAt(0);
-                    msg = temp_object; // Atomic get and remove
+                    object tempObject;
+                    tempObject = _replies[0];
+                    _replies.RemoveAt(0);
+                    msg = tempObject; // Atomic get and remove
                 }
-                if (conn != null && (complete || !acceptReplies) && replies.Count == 0)
+                if (_conn != null && (_complete || !_acceptReplies) && _replies.Count == 0)
                 {
                     // Remove msg from connection queue when last reply read
-                    conn.removeMessage(this);
+                    _conn.RemoveMessage(this);
                 }
                 return msg;
             }
@@ -198,9 +198,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if replies are no longer accepted for this request
         /// </returns>
-        internal virtual bool acceptsReplies()
+        internal virtual bool AcceptsReplies()
         {
-            return acceptReplies;
+            return _acceptReplies;
         }
 
         /// <summary>
@@ -212,13 +212,13 @@ namespace Novell.Directory.Ldap
         internal virtual LdapMessage Request
         {
             /*package*/
-            get { return msg; }
+            get { return _msg; }
         }
 
 
         internal virtual bool BindRequest
         {
-            get { return bindprops != null; }
+            get { return _bindprops != null; }
         }
 
 
@@ -230,25 +230,25 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal virtual MessageAgent MessageAgent
         {
-            get { return agent; }
+            get { return _agent; }
         }
 
         private readonly string _stackTraceCreation;
         private string _stackTraceCleanup;
 
-        private LdapMessage msg; // msg request sent to server
-        private Connection conn; // Connection object where msg sent
-        private MessageAgent agent; // MessageAgent handling this request
-        private LdapMessageQueue queue; // Application message queue
-        private int mslimit; // client time limit in milliseconds
-        private SupportClass.ThreadClass timer; // Timeout thread
+        private LdapMessage _msg; // msg request sent to server
+        private Connection _conn; // Connection object where msg sent
+        private MessageAgent _agent; // MessageAgent handling this request
+        private LdapMessageQueue _queue; // Application message queue
+        private int _mslimit; // client time limit in milliseconds
+        private SupportClass.ThreadClass _timer; // Timeout thread
         // Note: MessageVector is synchronized
-        private MessageVector replies; // place to store replies
-        private readonly int msgId; // message ID of this request
-        private bool acceptReplies = true; // false if no longer accepting replies
-        private bool waitForReply_Renamed_Field = true; // true if wait for reply
-        private bool complete; // true LdapResult received
-        private BindProperties bindprops; // Bind properties if a bind request
+        private MessageVector _replies; // place to store replies
+        private readonly int _msgId; // message ID of this request
+        private bool _acceptReplies = true; // false if no longer accepting replies
+        private bool _waitForReplyRenamedField = true; // true if wait for reply
+        private bool _complete; // true LdapResult received
+        private BindProperties _bindprops; // Bind properties if a bind request
 
         internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, LdapMessageQueue queue,
             BindProperties bindprops)
@@ -256,33 +256,33 @@ namespace Novell.Directory.Ldap
             if (conn == null) throw new ArgumentNullException(nameof(conn));
             _stackTraceCreation = Environment.StackTrace;
             InitBlock();
-            this.msg = msg;
-            this.conn = conn;
-            this.agent = agent;
-            this.queue = queue;
-            this.mslimit = mslimit;
-            msgId = msg.MessageID;
-            this.bindprops = bindprops;
+            this._msg = msg;
+            this._conn = conn;
+            this._agent = agent;
+            this._queue = queue;
+            this._mslimit = mslimit;
+            _msgId = msg.MessageId;
+            this._bindprops = bindprops;
         }
 
-        internal void sendMessage()
+        internal void SendMessage()
         {
-            conn.writeMessage(this);
+            _conn.WriteMessage(this);
             // Start the timer thread
-            if (mslimit != 0)
+            if (_mslimit != 0)
             {
                 // Don't start the timer thread for abandon or Unbind
-                switch (msg.Type)
+                switch (_msg.Type)
                 {
-                    case LdapMessage.ABANDON_REQUEST:
-                    case LdapMessage.UNBIND_REQUEST:
-                        mslimit = 0;
+                    case LdapMessage.AbandonRequest:
+                    case LdapMessage.UnbindRequest:
+                        _mslimit = 0;
                         break;
 
                     default:
-                        timer = new Timeout(this, mslimit, this);
-                        timer.IsBackground = true; // If this is the last thread running, allow exit.
-                        timer.Start();
+                        _timer = new Timeout(this, _mslimit, this);
+                        _timer.IsBackground = true; // If this is the last thread running, allow exit.
+                        _timer.Start();
                         break;
                 }
             }
@@ -290,44 +290,44 @@ namespace Novell.Directory.Ldap
 
         internal virtual void Abandon(LdapConstraints cons, InterThreadException informUserEx)
         {
-            if (!waitForReply_Renamed_Field)
+            if (!_waitForReplyRenamedField)
             {
                 return;
             }
-            acceptReplies = false; // don't listen to anyone
-            waitForReply_Renamed_Field = false; // don't let sleeping threads lie
-            if (!complete)
+            _acceptReplies = false; // don't listen to anyone
+            _waitForReplyRenamedField = false; // don't let sleeping threads lie
+            if (!_complete)
             {
                 try
                 {
                     // If a bind, release bind semaphore & wake up waiting threads
                     // Must do before writing abandon message, otherwise deadlock
-                    if (bindprops != null)
+                    if (_bindprops != null)
                     {
                         int id;
-                        if (conn.BindSemIdClear)
+                        if (_conn.BindSemIdClear)
                         {
                             // Semaphore id for normal operations
-                            id = msgId;
+                            id = _msgId;
                         }
                         else
                         {
                             // Semaphore id for sasl bind
-                            id = conn.BindSemId;
-                            conn.clearBindSemId();
+                            id = _conn.BindSemId;
+                            _conn.ClearBindSemId();
                         }
-                        conn.freeWriteSemaphore(id);
+                        _conn.FreeWriteSemaphore(id);
                     }
 
                     // Create the abandon message, but don't track it.
                     LdapControl[] cont = null;
                     if (cons != null)
                     {
-                        cont = cons.getControls();
+                        cont = cons.GetControls();
                     }
-                    LdapMessage msg = new LdapAbandonRequest(msgId, cont);
+                    LdapMessage msg = new LdapAbandonRequest(_msgId, cont);
                     // Send abandon message to server
-                    conn.writeMessage(msg);
+                    _conn.WriteMessage(msg);
                 }
                 catch (LdapException ex)
                 {
@@ -336,17 +336,17 @@ namespace Novell.Directory.Ldap
                 // If not informing user, remove message from agent
                 if (informUserEx == null)
                 {
-                    agent.Abandon(msgId, null);
+                    _agent.Abandon(_msgId, null);
                 }
-                conn.removeMessage(this);
+                _conn.RemoveMessage(this);
             }
             // Get rid of all replies queued
             if (informUserEx != null)
             {
-                replies.Add(new LdapResponse(informUserEx, conn.ActiveReferral));
-                stopTimer();
+                _replies.Add(new LdapResponse(informUserEx, _conn.ActiveReferral));
+                StopTimer();
                 // wake up waiting threads to receive exception
-                sleepersAwake();
+                SleepersAwake();
                 // Message will get cleaned up when last response removed from queue
             }
             else
@@ -354,30 +354,30 @@ namespace Novell.Directory.Ldap
                 // Wake up any waiting threads, so they can terminate.
                 // If informing the user, we wake sleepers after
                 // caller queues dummy response with error status
-                sleepersAwake();
-                cleanup();
+                SleepersAwake();
+                Cleanup();
             }
         }
 
-        private void cleanup()
+        private void Cleanup()
         {
-            stopTimer(); // Make sure timer stopped
+            StopTimer(); // Make sure timer stopped
             try
             {
-                acceptReplies = false;
-                if (conn != null)
+                _acceptReplies = false;
+                if (_conn != null)
                 {
-                    conn.removeMessage(this);
+                    _conn.RemoveMessage(this);
                 }
                 // Empty out any accumuluated replies
-                if (replies != null)
+                if (_replies != null)
                 {
-                    while (!(replies.Count == 0))
+                    while (!(_replies.Count == 0))
                     {
-                        object temp_object;
-                        temp_object = replies[0];
-                        replies.RemoveAt(0);
-                        var generatedAux = temp_object;
+                        object tempObject;
+                        tempObject = _replies[0];
+                        _replies.RemoveAt(0);
+                        var generatedAux = tempObject;
                     }
                 }
             }
@@ -387,46 +387,46 @@ namespace Novell.Directory.Ldap
             }
             _stackTraceCleanup = Environment.StackTrace;
             // Let GC clean up this stuff, leave name in case finalized is called
-            conn = null;
-            msg = null;
+            _conn = null;
+            _msg = null;
             // agent = null;  // leave this reference
-            queue = null;
+            _queue = null;
             //replies = null; //leave this since we use it as a semaphore
-            bindprops = null;
+            _bindprops = null;
         }
 
 
-        internal virtual void putReply(RfcLdapMessage message)
+        internal virtual void PutReply(RfcLdapMessage message)
         {
-            if (!acceptReplies)
+            if (!_acceptReplies)
             {
                 return;
             }
-            lock (replies)
+            lock (_replies)
             {
-                replies.Add(message);
+                _replies.Add(message);
             }
-            message.RequestingMessage = msg; // Save request message info
+            message.RequestingMessage = _msg; // Save request message info
             switch (message.Type)
             {
-                case LdapMessage.SEARCH_RESPONSE:
-                case LdapMessage.SEARCH_RESULT_REFERENCE:
-                case LdapMessage.INTERMEDIATE_RESPONSE:
+                case LdapMessage.SearchResponse:
+                case LdapMessage.SearchResultReference:
+                case LdapMessage.IntermediateResponse:
                     break;
 
                 default:
                     int res;
-                    stopTimer();
+                    StopTimer();
                     // Accept no more results for this message
                     // Leave on connection queue so we can abandon if necessary
-                    acceptReplies = false;
-                    complete = true;
-                    if (bindprops != null)
+                    _acceptReplies = false;
+                    _complete = true;
+                    if (_bindprops != null)
                     {
-                        res = ((RfcResponse) message.Response).getResultCode().intValue();
-                        if (res != LdapException.SASL_BIND_IN_PROGRESS)
+                        res = ((IRfcResponse) message.Response).GetResultCode().IntValue();
+                        if (res != LdapException.SaslBindInProgress)
                         {
-                            if (conn == null)
+                            if (_conn == null)
                             {
                                 var logger = Logger.Factory.CreateLogger<Message>();
                                 logger.LogError("Null connection; creation stack {0}, cleanup stack {1}",
@@ -435,53 +435,53 @@ namespace Novell.Directory.Ldap
 
                             int id;
                             // We either have success or failure on the bind
-                            if (res == LdapException.SUCCESS)
+                            if (res == LdapException.Success)
                             {
                                 // Set bind properties into connection object
-                                conn.BindProperties = bindprops;
+                                _conn.BindProperties = _bindprops;
                             }
                             // If not a sasl bind in-progress, release the bind
                             // semaphore and wake up all waiting threads
-                            if (conn.BindSemIdClear)
+                            if (_conn.BindSemIdClear)
                             {
                                 // Semaphore id for normal operations
-                                id = msgId;
+                                id = _msgId;
                             }
                             else
                             {
                                 // Semaphore id for sasl bind
-                                id = conn.BindSemId;
-                                conn.clearBindSemId();
+                                id = _conn.BindSemId;
+                                _conn.ClearBindSemId();
                             }
-                            conn.freeWriteSemaphore(id);
+                            _conn.FreeWriteSemaphore(id);
                         }
                     }
                     break;
             }
             // wake up waiting threads
-            sleepersAwake();
+            SleepersAwake();
         }
 
         /// <summary> stops the timeout timer from running</summary>
-        internal virtual void stopTimer()
+        internal virtual void StopTimer()
         {
             // If timer thread started, stop it
-            if (timer != null)
+            if (_timer != null)
             {
-                timer.Stop();
+                _timer.Stop();
             }
         }
 
         /// <summary> Notifies all waiting threads</summary>
-        private void sleepersAwake()
+        private void SleepersAwake()
         {
             // Notify any thread waiting for this message id
-            lock (replies)
+            lock (_replies)
             {
-                Monitor.Pulse(replies);
+                Monitor.Pulse(_replies);
             }
             // Notify a thread waiting for any message id
-            agent.sleepersAwake(false);
+            _agent.SleepersAwake(false);
         }
 
         /// <summary>
@@ -492,20 +492,20 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(Message enclosingInstance)
             {
-                this.Enclosing_Instance = enclosingInstance;
+                this.EnclosingInstance = enclosingInstance;
             }
 
-            public Message Enclosing_Instance { get; private set; }
+            public Message EnclosingInstance { get; private set; }
 
-            private readonly int timeToWait;
-            private readonly Message message;
+            private readonly int _timeToWait;
+            private readonly Message _message;
 
 
             internal Timeout(Message enclosingInstance, int interval, Message msg)
             {
                 InitBlock(enclosingInstance);
-                timeToWait = interval;
-                message = msg;
+                _timeToWait = interval;
+                _message = msg;
             }
 
             /// <summary>
@@ -518,12 +518,12 @@ namespace Novell.Directory.Ldap
                 {
                     if (!IsStopping)
                     {
-                        Thread.Sleep(new TimeSpan(timeToWait));
-                        message.acceptReplies = false;
+                        Thread.Sleep(new TimeSpan(_timeToWait));
+                        _message._acceptReplies = false;
                         // Note: Abandon clears the bind semaphore after failed bind.
-                        message.Abandon(null,
-                            new InterThreadException("Client request timed out", null, LdapException.Ldap_TIMEOUT, null,
-                                message));
+                        _message.Abandon(null,
+                            new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
+                                _message));
                     }
                     else
                     {

@@ -41,16 +41,16 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.DirectoryEventArgs' />
     public class BaseEventArgs : EventArgs
     {
-        protected LdapMessage ldap_message;
+        protected LdapMessage LdapMessage;
 
         public LdapMessage ContianedEventInformation
         {
-            get { return ldap_message; }
+            get { return LdapMessage; }
         }
 
         public BaseEventArgs(LdapMessage message)
         {
-            ldap_message = message;
+            LdapMessage = message;
         }
     }
 }

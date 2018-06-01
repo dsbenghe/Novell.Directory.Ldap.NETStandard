@@ -55,13 +55,8 @@ namespace Novell.Directory.Ldap
         ///     The distinguished name of the entry.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual string DN
-        {
-            get { return dn; }
-        }
-
-        protected internal string dn;
-        protected internal LdapAttributeSet attrs;
+        public string Dn { get; set; }
+        protected internal LdapAttributeSet Attrs;
 
         /// <summary> Constructs an empty entry.</summary>
         public LdapEntry() : this(null, null)
@@ -104,8 +99,8 @@ namespace Novell.Directory.Ldap
             {
                 attrs = new LdapAttributeSet();
             }
-            this.dn = dn;
-            this.attrs = attrs;
+            this.Dn = dn;
+            this.Attrs = attrs;
         }
 
         /// <summary>
@@ -117,9 +112,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of LdapAttribute objects.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName)
+        public virtual LdapAttribute GetAttribute(string attrName)
         {
-            return attrs.getAttribute(attrName);
+            return Attrs.GetAttribute(attrName);
         }
 
         /// <summary>
@@ -131,9 +126,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute set of the entry.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet()
+        public virtual LdapAttributeSet GetAttributeSet()
         {
-            return attrs;
+            return Attrs;
         }
 
 
@@ -159,9 +154,9 @@ namespace Novell.Directory.Ldap
         ///     match the specified subtypes or an empty set if no attributes
         ///     match.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet(string subtype)
+        public virtual LdapAttributeSet GetAttributeSet(string subtype)
         {
-            return attrs.getSubset(subtype);
+            return Attrs.GetSubset(subtype);
         }
 
         /// <summary>
@@ -180,7 +175,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int CompareTo(object entry)
         {
-            return LdapDN.normalize(dn).CompareTo(LdapDN.normalize(((LdapEntry) entry).dn));
+            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry) entry).Dn));
         }
 
         /// <summary>
@@ -192,13 +187,13 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             var result = new StringBuilder("LdapEntry: ");
-            if ((object) dn != null)
+            if (Dn != null)
             {
-                result.Append(dn + "; ");
+                result.Append(Dn + "; ");
             }
-            if (attrs != null)
+            if (Attrs != null)
             {
-                result.Append(attrs);
+                result.Append(Attrs);
             }
             return result.ToString();
         }

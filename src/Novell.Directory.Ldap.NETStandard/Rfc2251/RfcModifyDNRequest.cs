@@ -43,29 +43,29 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         newSuperior     [0] LdapDN OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcModifyDNRequest : Asn1Sequence, RfcRequest
+    public class RfcModifyDnRequest : Asn1Sequence, IRfcRequest
     {
         //*************************************************************************
         // Constructors for ModifyDNRequest
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcModifyDNRequest(RfcLdapDN entry, RfcRelativeLdapDN newrdn, Asn1Boolean deleteoldrdn)
+        public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn)
             : this(entry, newrdn, deleteoldrdn, null)
         {
         }
 
         /// <summary> </summary>
-        public RfcModifyDNRequest(RfcLdapDN entry, RfcRelativeLdapDN newrdn, Asn1Boolean deleteoldrdn,
-            RfcLdapDN newSuperior) : base(4)
+        public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn,
+            RfcLdapDn newSuperior) : base(4)
         {
-            add(entry);
-            add(newrdn);
-            add(deleteoldrdn);
+            Add(entry);
+            Add(newrdn);
+            Add(deleteoldrdn);
             if (newSuperior != null)
             {
-                newSuperior.setIdentifier(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0));
-                add(newSuperior);
+                newSuperior.SetIdentifier(new Asn1Identifier(Asn1Identifier.Context, false, 0));
+                Add(newSuperior);
             }
         }
 
@@ -73,13 +73,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Delete Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        internal RfcModifyDNRequest(Asn1Object[] origRequest, string base_Renamed)
+        internal RfcModifyDnRequest(Asn1Object[] origRequest, string baseRenamed)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if ((object) baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
         }
 
@@ -93,19 +93,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_RDN_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRdnRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            return new RfcModifyDNRequest(toArray(), base_Renamed);
+            return new RfcModifyDnRequest(ToArray(), baseRenamed);
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }

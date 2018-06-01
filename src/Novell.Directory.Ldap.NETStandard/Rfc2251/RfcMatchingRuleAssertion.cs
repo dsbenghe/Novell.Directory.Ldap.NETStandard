@@ -79,17 +79,17 @@ namespace Novell.Directory.Ldap.Rfc2251
             RfcAssertionValue matchValue, Asn1Boolean dnAttributes) : base(4)
         {
             if (matchingRule != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 1), matchingRule, false));
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 1), matchingRule, false));
 
             if (type != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 2), type, false));
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 2), type, false));
 
-            add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 3), matchValue, false));
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 3), matchValue, false));
 
             // if dnAttributes if false, that is the default value and we must not
             // encode it. (See RFC 2251 5.1 number 4)
-            if (dnAttributes != null && dnAttributes.booleanValue())
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 4), dnAttributes, false));
+            if (dnAttributes != null && dnAttributes.BooleanValue())
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 4), dnAttributes, false));
         }
     }
 }

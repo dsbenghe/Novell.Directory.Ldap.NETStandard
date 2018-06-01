@@ -54,8 +54,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcSubstringFilter(RfcAttributeDescription type, Asn1SequenceOf substrings) : base(2)
         {
-            add(type);
-            add(substrings);
+            Add(type);
+            Add(substrings);
         }
     }
 }

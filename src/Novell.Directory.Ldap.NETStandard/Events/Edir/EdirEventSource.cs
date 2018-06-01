@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSource : LdapEventSource
     {
-        private EdirEventHandler edir_event;
+        private EdirEventHandler _edirEvent;
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -49,12 +49,12 @@ namespace Novell.Directory.Ldap.Events.Edir
         {
             add
             {
-                edir_event += value;
+                _edirEvent += value;
                 ListenerAdded();
             }
             remove
             {
-                edir_event -= value;
+                _edirEvent -= value;
                 ListenerRemoved();
             }
         }
@@ -71,45 +71,45 @@ namespace Novell.Directory.Ldap.Events.Edir
         protected override int GetListeners()
         {
             var nListeners = 0;
-            if (null != edir_event)
-                nListeners = edir_event.GetInvocationList().Length;
+            if (null != _edirEvent)
+                nListeners = _edirEvent.GetInvocationList().Length;
 
             return nListeners;
         }
 
-        private LdapConnection mConnection;
-        private MonitorEventRequest mRequestOperation;
-        private LdapResponseQueue mQueue;
+        private LdapConnection _mConnection;
+        private MonitorEventRequest _mRequestOperation;
+        private LdapResponseQueue _mQueue;
 
         public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
         {
             if (null == specifier || null == conn)
                 throw new ArgumentException("Null argument specified");
 
-            mRequestOperation = new MonitorEventRequest(specifier);
-            mConnection = conn;
+            _mRequestOperation = new MonitorEventRequest(specifier);
+            _mConnection = conn;
         }
 
         protected override void StartSearchAndPolling()
         {
-            mQueue = mConnection.ExtendedOperation(mRequestOperation, null, null);
-            var ids = mQueue.MessageIDs;
+            _mQueue = _mConnection.ExtendedOperation(_mRequestOperation, null, null);
+            var ids = _mQueue.MessageIDs;
 
             if (ids.Length != 1)
             {
                 throw new LdapException(
                     null,
-                    LdapException.LOCAL_ERROR,
+                    LdapException.LocalError,
                     "Unable to Obtain Message Id"
                 );
             }
 
-            StartEventPolling(mQueue, mConnection, ids[0]);
+            StartEventPolling(_mQueue, _mConnection, ids[0]);
         }
 
         protected override void StopSearchAndPolling()
         {
-            mConnection.Abandon(mQueue);
+            _mConnection.Abandon(_mQueue);
             StopEventPolling();
         }
 
@@ -118,16 +118,16 @@ namespace Novell.Directory.Ldap.Events.Edir
             int nType)
         {
             var bListenersNotified = false;
-            if (null != edir_event)
+            if (null != _edirEvent)
             {
                 if (null != sourceMessage)
                 {
-                    if (sourceMessage.Type == LdapMessage.INTERMEDIATE_RESPONSE &&
+                    if (sourceMessage.Type == LdapMessage.IntermediateResponse &&
                         sourceMessage is EdirEventIntermediateResponse)
                     {
-                        edir_event(this,
+                        _edirEvent(this,
                             new EdirEventArgs(sourceMessage,
-                                EventClassifiers.CLASSIFICATION_EDIR_EVENT));
+                                EventClassifiers.ClassificationEdirEvent));
                         bListenersNotified = true;
                     }
                 }

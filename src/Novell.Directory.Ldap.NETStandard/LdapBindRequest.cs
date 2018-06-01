@@ -54,9 +54,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Authentication DN for a bind request
         /// </returns>
-        public virtual string AuthenticationDN
+        public virtual string AuthenticationDn
         {
-            get { return Asn1Object.RequestDN; }
+            get { return Asn1Object.RequestDn; }
         }
 
         /// <summary>
@@ -85,9 +85,9 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapBindRequest(int version, string dn, sbyte[] passwd, LdapControl[] cont)
             : base(
-                BIND_REQUEST,
-                new RfcBindRequest(new Asn1Integer(version), new RfcLdapDN(dn),
-                    new RfcAuthenticationChoice(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 0),
+                BindRequest,
+                new RfcBindRequest(new Asn1Integer(version), new RfcLdapDn(dn),
+                    new RfcAuthenticationChoice(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 0),
                         new Asn1OctetString(passwd), false))), cont)
         {
         }

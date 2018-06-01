@@ -39,72 +39,72 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class EntryEventData : BaseEdirEventData
     {
-        protected string strPerpetratorDN;
+        protected string StrPerpetratorDn;
 
-        public string PerpetratorDN
+        public string PerpetratorDn
         {
-            get { return strPerpetratorDN; }
+            get { return StrPerpetratorDn; }
         }
 
-        protected string strEntry;
+        protected string StrEntry;
 
         public string Entry
         {
-            get { return strEntry; }
+            get { return StrEntry; }
         }
 
-        protected string strNewDN;
+        protected string StrNewDn;
 
-        public string NewDN
+        public string NewDn
         {
-            get { return strNewDN; }
+            get { return StrNewDn; }
         }
 
-        protected string strClassId;
+        protected string StrClassId;
 
         public string ClassId
         {
-            get { return strClassId; }
+            get { return StrClassId; }
         }
 
-        protected int nVerb;
+        protected int NVerb;
 
         public int Verb
         {
-            get { return nVerb; }
+            get { return NVerb; }
         }
 
-        protected int nFlags;
+        protected int NFlags;
 
         public int Flags
         {
-            get { return nFlags; }
+            get { return NFlags; }
         }
 
-        protected DSETimeStamp timeStampObj;
+        protected DseTimeStamp TimeStampObj;
 
-        public DSETimeStamp TimeStamp
+        public DseTimeStamp TimeStamp
         {
-            get { return timeStampObj; }
+            get { return TimeStampObj; }
         }
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
-            strPerpetratorDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strEntry =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
-            strClassId =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            StrPerpetratorDn =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            StrEntry =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            StrClassId =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
-            timeStampObj =
-                new DSETimeStamp((Asn1Sequence) decoder.decode(decodedData, length));
-            nVerb = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            nFlags = ((Asn1Integer) decoder.decode(decodedData, length)).intValue();
-            strNewDN =
-                ((Asn1OctetString) decoder.decode(decodedData, length)).stringValue();
+            TimeStampObj =
+                new DseTimeStamp((Asn1Sequence) Decoder.Decode(DecodedData, length));
+            NVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            NFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            StrNewDn =
+                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }
@@ -116,13 +116,13 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("EntryEventData[");
-            buf.AppendFormat("(Entry={0})", strEntry);
-            buf.AppendFormat("(Prepetrator={0})", strPerpetratorDN);
-            buf.AppendFormat("(ClassId={0})", strClassId);
-            buf.AppendFormat("(Verb={0})", nVerb);
-            buf.AppendFormat("(Flags={0})", nFlags);
-            buf.AppendFormat("(NewDN={0})", strNewDN);
-            buf.AppendFormat("(TimeStamp={0})", timeStampObj);
+            buf.AppendFormat("(Entry={0})", StrEntry);
+            buf.AppendFormat("(Prepetrator={0})", StrPerpetratorDn);
+            buf.AppendFormat("(ClassId={0})", StrClassId);
+            buf.AppendFormat("(Verb={0})", NVerb);
+            buf.AppendFormat("(Flags={0})", NFlags);
+            buf.AppendFormat("(NewDN={0})", StrNewDn);
+            buf.AppendFormat("(TimeStamp={0})", TimeStampObj);
             buf.Append("]");
 
             return buf.ToString();

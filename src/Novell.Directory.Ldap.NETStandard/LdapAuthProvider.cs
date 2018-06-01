@@ -39,9 +39,9 @@ namespace Novell.Directory.Ldap
     ///     encapsulates information that is used by the client for authentication
     ///     when following referrals automatically.
     /// </summary>
-    /// <seealso cref="LdapAuthHandler">
+    /// <seealso cref="ILdapAuthHandler">
     /// </seealso>
-    /// <seealso cref="LdapBindHandler">
+    /// <seealso cref="ILdapBindHandler">
     /// </seealso>
     public class LdapAuthProvider
     {
@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name from the object.
         /// </returns>
-        public virtual string DN { get; }
+        public virtual string Dn { get; }
 
         /// <summary>
         ///     Returns the password to be used for authentication on automatic
@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapAuthProvider(string dn, sbyte[] password)
         {
-            this.DN = dn;
+            this.Dn = dn;
             this.Password = password;
         }
     }

@@ -94,14 +94,14 @@ namespace Novell.Directory.Ldap.Extensions
         *                          message and an LDAP error code.
         */
 
-        public LdapRestoreRequest(string objectDN, byte[] passwd,
+        public LdapRestoreRequest(string objectDn, byte[] passwd,
             int bufferLength, string chunkSizesString, byte[] returnedBuffer) :
-            base(BackupRestoreConstants.NLDAP_LDAP_RESTORE_REQUEST, null)
+            base(BackupRestoreConstants.NldapLdapRestoreRequest, null)
         {
             try
             {
                 //Verify the validity of arguments
-                if (objectDN == null || bufferLength == 0 ||
+                if (objectDn == null || bufferLength == 0 ||
                     chunkSizesString == null || returnedBuffer == null)
                     throw new ArgumentException("PARAM_ERROR");
 
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap.Extensions
                 {
                     throw new LdapLocalException(
                         "Invalid data buffer send in the request",
-                        LdapException.ENCODING_ERROR, e);
+                        LdapException.EncodingError, e);
                 }
                 //Return exception if chunkSize == 0
                 if (chunkSize == 0)
@@ -155,40 +155,40 @@ namespace Novell.Directory.Ldap.Extensions
                 }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
                 //Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
-                var asn1_bufferLength = new Asn1Integer(bufferLength);
-                var asn1_buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
+                var asn1ObjectDn = new Asn1OctetString(objectDn);
+                var asn1Passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1BufferLength = new Asn1Integer(bufferLength);
+                var asn1Buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
 
                 //Form the chunks sequence to be passed to Server
-                var asn1_chunksSeq = new Asn1Sequence();
-                asn1_chunksSeq.add(new Asn1Integer(chunkSize));
-                var asn1_chunksSet = new Asn1Set();
+                var asn1ChunksSeq = new Asn1Sequence();
+                asn1ChunksSeq.Add(new Asn1Integer(chunkSize));
+                var asn1ChunksSet = new Asn1Set();
                 for (var i = 0; i < chunkSize; i++)
                 {
                     var tmpChunk = new Asn1Integer(chunks[i]);
                     var tmpSeq = new Asn1Sequence();
-                    tmpSeq.add(tmpChunk);
-                    asn1_chunksSet.add(tmpSeq);
+                    tmpSeq.Add(tmpChunk);
+                    asn1ChunksSet.Add(tmpSeq);
                 }
-                asn1_chunksSeq.add(asn1_chunksSet);
+                asn1ChunksSeq.Add(asn1ChunksSet);
 
                 //Encode data to send to server
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
-                asn1_bufferLength.encode(encoder, encodedData);
-                asn1_buffer.encode(encoder, encodedData);
-                asn1_chunksSeq.encode(encoder, encodedData);
+                asn1ObjectDn.Encode(encoder, encodedData);
+                asn1Passwd.Encode(encoder, encodedData);
+                asn1BufferLength.Encode(encoder, encodedData);
+                asn1Buffer.Encode(encoder, encodedData);
+                asn1ChunksSeq.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException("ENCODING_ERROR", LdapException.EncodingError, null, ioe);
             }
         }
     }

@@ -62,10 +62,10 @@ public class Integer32 : object
 {
     public Integer32(int ival)
     {
-        intValue = ival;
+        IntValue = ival;
     }
 
-    public int intValue { get; set; }
+    public int IntValue { get; set; }
 }
 
 /// <summary>
@@ -255,13 +255,13 @@ public class SupportClass
     public class Tokenizer
     {
         //Element list identified
-        private ArrayList elements;
+        private ArrayList _elements;
         //Source string to use
-        private string source;
+        private string _source;
         //The tokenizer uses the default delimiter set: the space character, the tab character, the newline character, and the carriage-return character
-        private string delimiters = " \t\n\r";
+        private string _delimiters = " \t\n\r";
 
-        private readonly bool returnDelims;
+        private readonly bool _returnDelims;
 
         /// <summary>
         ///     Initializes a new class instance with a specified string to process
@@ -269,10 +269,10 @@ public class SupportClass
         /// <param name="source">String to tokenize</param>
         public Tokenizer(string source)
         {
-            elements = new ArrayList();
-            elements.AddRange(source.Split(delimiters.ToCharArray()));
+            _elements = new ArrayList();
+            _elements.AddRange(source.Split(_delimiters.ToCharArray()));
             RemoveEmptyStrings();
-            this.source = source;
+            this._source = source;
         }
 
         /// <summary>
@@ -283,45 +283,45 @@ public class SupportClass
         /// <param name="delimiters">String containing the delimiters</param>
         public Tokenizer(string source, string delimiters)
         {
-            elements = new ArrayList();
-            this.delimiters = delimiters;
-            elements.AddRange(source.Split(this.delimiters.ToCharArray()));
+            _elements = new ArrayList();
+            this._delimiters = delimiters;
+            _elements.AddRange(source.Split(this._delimiters.ToCharArray()));
             RemoveEmptyStrings();
-            this.source = source;
+            this._source = source;
         }
 
         public Tokenizer(string source, string delimiters, bool retDel)
         {
-            elements = new ArrayList();
-            this.delimiters = delimiters;
-            this.source = source;
-            returnDelims = retDel;
-            if (returnDelims)
+            _elements = new ArrayList();
+            this._delimiters = delimiters;
+            this._source = source;
+            _returnDelims = retDel;
+            if (_returnDelims)
                 Tokenize();
             else
-                elements.AddRange(source.Split(this.delimiters.ToCharArray()));
+                _elements.AddRange(source.Split(this._delimiters.ToCharArray()));
             RemoveEmptyStrings();
         }
 
         private void Tokenize()
         {
-            var tempstr = source;
+            var tempstr = _source;
             var toks = "";
-            if (tempstr.IndexOfAny(delimiters.ToCharArray()) < 0 && tempstr.Length > 0)
+            if (tempstr.IndexOfAny(_delimiters.ToCharArray()) < 0 && tempstr.Length > 0)
             {
-                elements.Add(tempstr);
+                _elements.Add(tempstr);
             }
-            else if (tempstr.IndexOfAny(delimiters.ToCharArray()) < 0 && tempstr.Length <= 0)
+            else if (tempstr.IndexOfAny(_delimiters.ToCharArray()) < 0 && tempstr.Length <= 0)
             {
                 return;
             }
-            while (tempstr.IndexOfAny(delimiters.ToCharArray()) >= 0)
+            while (tempstr.IndexOfAny(_delimiters.ToCharArray()) >= 0)
             {
-                if (tempstr.IndexOfAny(delimiters.ToCharArray()) == 0)
+                if (tempstr.IndexOfAny(_delimiters.ToCharArray()) == 0)
                 {
                     if (tempstr.Length > 1)
                     {
-                        elements.Add(tempstr.Substring(0, 1));
+                        _elements.Add(tempstr.Substring(0, 1));
                         tempstr = tempstr.Substring(1);
                     }
                     else
@@ -329,9 +329,9 @@ public class SupportClass
                 }
                 else
                 {
-                    toks = tempstr.Substring(0, tempstr.IndexOfAny(delimiters.ToCharArray()));
-                    elements.Add(toks);
-                    elements.Add(tempstr.Substring(toks.Length, 1));
+                    toks = tempstr.Substring(0, tempstr.IndexOfAny(_delimiters.ToCharArray()));
+                    _elements.Add(toks);
+                    _elements.Add(tempstr.Substring(toks.Length, 1));
                     if (tempstr.Length > toks.Length + 1)
                     {
                         tempstr = tempstr.Substring(toks.Length + 1);
@@ -342,7 +342,7 @@ public class SupportClass
             }
             if (tempstr.Length > 0)
             {
-                elements.Add(tempstr);
+                _elements.Add(tempstr);
             }
         }
 
@@ -351,7 +351,7 @@ public class SupportClass
         /// </summary>
         public int Count
         {
-            get { return elements.Count; }
+            get { return _elements.Count; }
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ public class SupportClass
         /// <returns>True or false, depending if there are more tokens</returns>
         public bool HasMoreTokens()
         {
-            return elements.Count > 0;
+            return _elements.Count > 0;
         }
 
         /// <summary>
@@ -370,22 +370,22 @@ public class SupportClass
         public string NextToken()
         {
             string result;
-            if (source == "") throw new Exception();
-            if (returnDelims)
+            if (_source == "") throw new Exception();
+            if (_returnDelims)
             {
 //						Tokenize();
                 RemoveEmptyStrings();
-                result = (string) elements[0];
-                elements.RemoveAt(0);
+                result = (string) _elements[0];
+                _elements.RemoveAt(0);
                 return result;
             }
-            elements = new ArrayList();
-            elements.AddRange(source.Split(delimiters.ToCharArray()));
+            _elements = new ArrayList();
+            _elements.AddRange(_source.Split(_delimiters.ToCharArray()));
             RemoveEmptyStrings();
-            result = (string) elements[0];
-            elements.RemoveAt(0);
-            source = source.Remove(source.IndexOf(result), result.Length);
-            source = source.TrimStart(delimiters.ToCharArray());
+            result = (string) _elements[0];
+            _elements.RemoveAt(0);
+            _source = _source.Remove(_source.IndexOf(result), result.Length);
+            _source = _source.TrimStart(_delimiters.ToCharArray());
             return result;
         }
 
@@ -397,7 +397,7 @@ public class SupportClass
         /// <returns>The string value of the token</returns>
         public string NextToken(string delimiters)
         {
-            this.delimiters = delimiters;
+            this._delimiters = delimiters;
             return NextToken();
         }
 
@@ -406,10 +406,10 @@ public class SupportClass
         /// </summary>
         private void RemoveEmptyStrings()
         {
-            for (var index = 0; index < elements.Count; index++)
-                if ((string) elements[index] == "")
+            for (var index = 0; index < _elements.Count; index++)
+                if ((string) _elements[index] == "")
                 {
-                    elements.RemoveAt(index);
+                    _elements.RemoveAt(index);
                     index--;
                 }
         }
@@ -422,7 +422,7 @@ public class SupportClass
     /// </summary>
     public class DateTimeFormatManager
     {
-        public static DateTimeFormatHashTable manager = new DateTimeFormatHashTable();
+        public static DateTimeFormatHashTable Manager = new DateTimeFormatHashTable();
 
         /// <summary>
         ///     Hashtable class to provide functionality for dateformat properties
@@ -508,8 +508,8 @@ public class SupportClass
     /// <returns>A string representing the date with the time and date patterns</returns>
     public static string FormatDateTime(DateTimeFormatInfo format, DateTime date)
     {
-        var timePattern = DateTimeFormatManager.manager.GetTimeFormatPattern(format);
-        var datePattern = DateTimeFormatManager.manager.GetDateFormatPattern(format);
+        var timePattern = DateTimeFormatManager.Manager.GetTimeFormatPattern(format);
+        var datePattern = DateTimeFormatManager.Manager.GetDateFormatPattern(format);
         return date.ToString(datePattern + " " + timePattern, format);
     }
 
@@ -578,44 +578,44 @@ public class SupportClass
         /// <summary>
         ///     The instance of System.Threading.Thread
         /// </summary>
-        private Thread threadField;
+        private Thread _threadField;
 
         /// <summary>
         ///     Initializes a new instance of the ThreadClass class
         /// </summary>
         public ThreadClass()
         {
-            threadField = new Thread(Run);
+            _threadField = new Thread(Run);
         }
 
         /// <summary>
         ///     Initializes a new instance of the Thread class.
         /// </summary>
-        /// <param name="Name">The name of the thread</param>
-        public ThreadClass(string Name)
+        /// <param name="name">The name of the thread</param>
+        public ThreadClass(string name)
         {
-            threadField = new Thread(Run);
-            this.Name = Name;
+            _threadField = new Thread(Run);
+            this.Name = name;
         }
 
         /// <summary>
         ///     Initializes a new instance of the Thread class.
         /// </summary>
-        /// <param name="Start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing</param>
-        public ThreadClass(ThreadStart Start)
+        /// <param name="start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing</param>
+        public ThreadClass(ThreadStart start)
         {
-            threadField = new Thread(Start);
+            _threadField = new Thread(start);
         }
 
         /// <summary>
         ///     Initializes a new instance of the Thread class.
         /// </summary>
-        /// <param name="Start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing</param>
-        /// <param name="Name">The name of the thread</param>
-        public ThreadClass(ThreadStart Start, string Name)
+        /// <param name="start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing</param>
+        /// <param name="name">The name of the thread</param>
+        public ThreadClass(ThreadStart start, string name)
         {
-            threadField = new Thread(Start);
-            this.Name = Name;
+            _threadField = new Thread(start);
+            this.Name = name;
         }
 
         /// <summary>
@@ -630,7 +630,7 @@ public class SupportClass
         /// </summary>
         public virtual void Start()
         {
-            threadField.Start();
+            _threadField.Start();
         }
 
         ///// <summary>
@@ -652,8 +652,8 @@ public class SupportClass
         /// </summary>
         public Thread Instance
         {
-            get { return threadField; }
-            set { threadField = value; }
+            get { return _threadField; }
+            set { _threadField = value; }
         }
 
         /// <summary>
@@ -661,11 +661,11 @@ public class SupportClass
         /// </summary>
         public string Name
         {
-            get { return threadField.Name; }
+            get { return _threadField.Name; }
             set
             {
-                if (threadField.Name == null)
-                    threadField.Name = value;
+                if (_threadField.Name == null)
+                    _threadField.Name = value;
             }
         }
 
@@ -674,7 +674,7 @@ public class SupportClass
         /// </summary>
         public bool IsAlive
         {
-            get { return threadField.IsAlive; }
+            get { return _threadField.IsAlive; }
         }
 
         /// <summary>
@@ -682,8 +682,8 @@ public class SupportClass
         /// </summary>
         public bool IsBackground
         {
-            get { return threadField.IsBackground; }
-            set { threadField.IsBackground = value; }
+            get { return _threadField.IsBackground; }
+            set { _threadField.IsBackground = value; }
         }
 
         public bool IsStopping { get; private set; }
@@ -693,31 +693,31 @@ public class SupportClass
         /// </summary>
         public void Join()
         {
-            threadField.Join();
+            _threadField.Join();
         }
 
         /// <summary>
         ///     Blocks the calling thread until a thread terminates or the specified time elapses
         /// </summary>
-        /// <param name="MiliSeconds">Time of wait in milliseconds</param>
-        public void Join(int MiliSeconds)
+        /// <param name="miliSeconds">Time of wait in milliseconds</param>
+        public void Join(int miliSeconds)
         {
             lock (this)
             {
-                threadField.Join(MiliSeconds * 10000);
+                _threadField.Join(miliSeconds * 10000);
             }
         }
 
         /// <summary>
         ///     Blocks the calling thread until a thread terminates or the specified time elapses
         /// </summary>
-        /// <param name="MiliSeconds">Time of wait in milliseconds</param>
-        /// <param name="NanoSeconds">Time of wait in nanoseconds</param>
-        public void Join(int MiliSeconds, int NanoSeconds)
+        /// <param name="miliSeconds">Time of wait in milliseconds</param>
+        /// <param name="nanoSeconds">Time of wait in nanoseconds</param>
+        public void Join(int miliSeconds, int nanoSeconds)
         {
             lock (this)
             {
-                threadField.Join(MiliSeconds * 10000 + NanoSeconds * 100);
+                _threadField.Join(miliSeconds * 10000 + nanoSeconds * 100);
             }
         }
 
@@ -737,9 +737,9 @@ public class SupportClass
         /// <returns>The currently running thread</returns>
         public static ThreadClass Current()
         {
-            var CurrentThread = new ThreadClass();
-            CurrentThread.Instance = Thread.CurrentThread;
-            return CurrentThread;
+            var currentThread = new ThreadClass();
+            currentThread.Instance = Thread.CurrentThread;
+            return currentThread;
         }
     }
 
@@ -1330,10 +1330,10 @@ public class SupportClass
         /// <param name="val">The value to fill the array with.</param>
         public static void FillArray(Array array, int fromindex, int toindex, object val)
         {
-            var Temp_Object = val;
+            var tempObject = val;
             var elementtype = array.GetType().GetElementType();
             if (elementtype != val.GetType())
-                Temp_Object = Convert.ChangeType(val, elementtype);
+                tempObject = Convert.ChangeType(val, elementtype);
             if (array.Length == 0)
                 throw new NullReferenceException();
             if (fromindex > toindex)
@@ -1341,7 +1341,7 @@ public class SupportClass
             if (fromindex < 0 || array.Length < toindex)
                 throw new IndexOutOfRangeException();
             for (var index = fromindex > 0 ? fromindex-- : fromindex; index < toindex; index++)
-                array.SetValue(Temp_Object, index);
+                array.SetValue(tempObject, index);
         }
 
         /// <summary>
@@ -1652,14 +1652,14 @@ public class SupportClass
     /// <summary>
     ///     Creates an output file stream to write to the file with the specified name.
     /// </summary>
-    /// <param name="FileName">Name of the file to write.</param>
-    /// <param name="Append">True in order to write to the end of the file, false otherwise.</param>
+    /// <param name="fileName">Name of the file to write.</param>
+    /// <param name="append">True in order to write to the end of the file, false otherwise.</param>
     /// <returns>New instance of FileStream with the proper file mode.</returns>
-    public static FileStream GetFileStream(string FileName, bool Append)
+    public static FileStream GetFileStream(string fileName, bool append)
     {
-        if (Append)
-            return new FileStream(FileName, FileMode.Append);
-        return new FileStream(FileName, FileMode.Create);
+        if (append)
+            return new FileStream(fileName, FileMode.Append);
+        return new FileStream(fileName, FileMode.Create);
     }
 
 
@@ -1697,7 +1697,7 @@ public class SupportClass
     /// </summary>
     public class MessageDigestSupport
     {
-        private int position;
+        private int _position;
 
         /// <summary>
         ///     The HashAlgorithm instance that provide the cryptographic hash algorithm
@@ -1746,19 +1746,19 @@ public class SupportClass
         /// <param name="newData">The array of bytes for the update operation</param>
         public void Update(byte[] newData)
         {
-            if (position == 0)
+            if (_position == 0)
             {
                 Data = newData;
-                position = Data.Length - 1;
+                _position = Data.Length - 1;
             }
             else
             {
                 var oldData = Data;
-                Data = new byte[newData.Length + position + 1];
+                Data = new byte[newData.Length + _position + 1];
                 oldData.CopyTo(Data, 0);
                 newData.CopyTo(Data, oldData.Length);
 
-                position = Data.Length - 1;
+                _position = Data.Length - 1;
             }
         }
 
@@ -1793,7 +1793,7 @@ public class SupportClass
         public void Reset()
         {
             Data = null;
-            position = 0;
+            _position = 0;
         }
 
         /// <summary>
@@ -1837,7 +1837,7 @@ public class SupportClass
     /// <summary>
     ///     Interface used by classes which must be single threaded.
     /// </summary>
-    public interface SingleThreadModel
+    public interface ISingleThreadModel
     {
     }
 

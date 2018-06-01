@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         arbitrarily run up.)
     ///     </pre>
     /// </summary>
-    internal class RfcMessageID : Asn1Integer
+    internal class RfcMessageId : Asn1Integer
     {
         /// <summary>
         ///     Increments the message number atomically
@@ -54,19 +54,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the new message number
         /// </returns>
-        private static int MessageID
+        private static int MessageId
         {
             get
             {
-                lock (lock_Renamed)
+                lock (LockRenamed)
                 {
-                    return messageID < int.MaxValue ? ++messageID : (messageID = 1);
+                    return _messageId < int.MaxValue ? ++_messageId : (_messageId = 1);
                 }
             }
         }
 
-        private static int messageID;
-        private static readonly object lock_Renamed;
+        private static int _messageId;
+        private static readonly object LockRenamed;
 
         /// <summary>
         ///     Creates a MessageID with an auto incremented Asn1Integer value.
@@ -74,18 +74,18 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     MessageID zero is never used in this implementation.  Always
         ///     start the messages with one.
         /// </summary>
-        protected internal RfcMessageID() : base(MessageID)
+        protected internal RfcMessageId() : base(MessageId)
         {
         }
 
         /// <summary> Creates a MessageID with a specified int value.</summary>
-        protected internal RfcMessageID(int i) : base(i)
+        protected internal RfcMessageId(int i) : base(i)
         {
         }
 
-        static RfcMessageID()
+        static RfcMessageId()
         {
-            lock_Renamed = new object();
+            LockRenamed = new object();
         }
     }
 }

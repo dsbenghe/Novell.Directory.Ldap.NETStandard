@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         DelRequest ::= [APPLICATION 10] LdapDN
     ///     </pre>
     /// </summary>
-    public class RfcDelRequest : RfcLdapDN, RfcRequest
+    public class RfcDelRequest : RfcLdapDn, IRfcRequest
     {
         //*************************************************************************
         // Constructor for DelRequest
@@ -73,23 +73,23 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     when this object is encoded.
         ///     Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.DEL_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.DelRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            if ((object) base_Renamed == null)
+            if ((object) baseRenamed == null)
             {
-                return new RfcDelRequest(byteValue());
+                return new RfcDelRequest(ByteValue());
             }
-            return new RfcDelRequest(base_Renamed);
+            return new RfcDelRequest(baseRenamed);
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return stringValue();
+            return StringValue();
         }
     }
 }

@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         attributes      AttributeDescriptionList }
     ///     </pre>
     /// </summary>
-    public class RfcSearchRequest : Asn1Sequence, RfcRequest
+    public class RfcSearchRequest : Asn1Sequence, IRfcRequest
     {
         //*************************************************************************
         // Constructors for SearchRequest
@@ -64,28 +64,28 @@ namespace Novell.Directory.Ldap.Rfc2251
         *
         */
 
-        public RfcSearchRequest(RfcLdapDN baseObject, Asn1Enumerated scope, Asn1Enumerated derefAliases,
+        public RfcSearchRequest(RfcLdapDn baseObject, Asn1Enumerated scope, Asn1Enumerated derefAliases,
             Asn1Integer sizeLimit, Asn1Integer timeLimit, Asn1Boolean typesOnly, RfcFilter filter,
             RfcAttributeDescriptionList attributes) : base(8)
         {
-            add(baseObject);
-            add(scope);
-            add(derefAliases);
-            add(sizeLimit);
-            add(timeLimit);
-            add(typesOnly);
-            add(filter);
-            add(attributes);
+            Add(baseObject);
+            Add(scope);
+            Add(derefAliases);
+            Add(sizeLimit);
+            Add(timeLimit);
+            Add(typesOnly);
+            Add(filter);
+            Add(attributes);
         }
 
         /// <summary> Constructs a new Search Request copying from an existing request.</summary>
-        internal RfcSearchRequest(Asn1Object[] origRequest, string base_Renamed, string filter, bool request)
+        internal RfcSearchRequest(Asn1Object[] origRequest, string baseRenamed, string filter, bool request)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if ((object) baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
 
             // If this is a reencode of a search continuation reference
@@ -93,10 +93,10 @@ namespace Novell.Directory.Ldap.Rfc2251
             // base so we don't return objects a level deeper than requested
             if (request)
             {
-                var scope = ((Asn1Enumerated) origRequest[1]).intValue();
-                if (scope == LdapConnection.SCOPE_ONE)
+                var scope = ((Asn1Enumerated) origRequest[1]).IntValue();
+                if (scope == LdapConnection.ScopeOne)
                 {
-                    set_Renamed(1, new Asn1Enumerated(LdapConnection.SCOPE_BASE));
+                    set_Renamed(1, new Asn1Enumerated(LdapConnection.ScopeBase));
                 }
             }
             // Replace the filter if specified, otherwise keep original filter
@@ -116,19 +116,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 3. (0x63)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.SEARCH_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            return new RfcSearchRequest(toArray(), base_Renamed, filter, request);
+            return new RfcSearchRequest(ToArray(), baseRenamed, filter, request);
         }
 
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }

@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         modification    AttributeTypeAndValues } }
     ///     </pre>
     /// </summary>
-    public class RfcModifyRequest : Asn1Sequence, RfcRequest
+    public class RfcModifyRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary>
         ///     Return the Modifications for this request
@@ -64,22 +64,22 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> </summary>
-        public RfcModifyRequest(RfcLdapDN object_Renamed, Asn1SequenceOf modification) : base(2)
+        public RfcModifyRequest(RfcLdapDn objectRenamed, Asn1SequenceOf modification) : base(2)
         {
-            add(object_Renamed);
-            add(modification);
+            Add(objectRenamed);
+            Add(modification);
         }
 
         /// <summary>
         ///     Constructs a new Modify Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        internal RfcModifyRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
+        internal RfcModifyRequest(Asn1Object[] origRequest, string baseRenamed) : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if ((object) baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
         }
 
@@ -88,14 +88,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         //*************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_REQUEST);
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
         }
 
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            return new RfcModifyRequest(toArray(), base_Renamed);
+            return new RfcModifyRequest(ToArray(), baseRenamed);
         }
 
         /// <summary>
@@ -104,9 +104,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the DN for this request.
         /// </returns>
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }

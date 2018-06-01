@@ -153,7 +153,7 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             // Format the basic exception information
-            return getExceptionString("LdapLocalException");
+            return GetExceptionString("LdapLocalException");
         }
     }
 }

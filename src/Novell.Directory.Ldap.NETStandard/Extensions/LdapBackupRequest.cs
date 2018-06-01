@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Extensions
             * Register the extendedresponse class which is returned by the server
             * in response to a LdapBackupRequest
             */
-            LdapExtendedResponse.register(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE, typeof(LdapBackupResponse));
+            LdapExtendedResponse.Register(BackupRestoreConstants.NldapLdapBackupResponse, typeof(LdapBackupResponse));
         }
 
         /**
@@ -97,8 +97,8 @@ namespace Novell.Directory.Ldap.Extensions
         *                          message and an LDAP error code.
         */
 
-        public LdapBackupRequest(string objectDN, byte[] passwd, string stateInfo) :
-            base(BackupRestoreConstants.NLDAP_LDAP_BACKUP_REQUEST, null)
+        public LdapBackupRequest(string objectDn, byte[] passwd, string stateInfo) :
+            base(BackupRestoreConstants.NldapLdapBackupRequest, null)
         {
             int mts; // Modifaction time stamp of the Object
             int revision; // Revision number of the Object
@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap.Extensions
 
             try
             {
-                if (objectDN == null)
+                if (objectDn == null)
                     throw new ArgumentException("PARAM_ERROR");
 
                 //If encrypted password has null reference make it null String
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap.Extensions
                     catch (FormatException e)
                     {
                         throw new LdapLocalException("Invalid Modification Timestamp send in the request",
-                            LdapException.ENCODING_ERROR, e);
+                            LdapException.EncodingError, e);
                     }
                     try
                     {
@@ -147,30 +147,30 @@ namespace Novell.Directory.Ldap.Extensions
                     {
                         throw new LdapLocalException(
                             "Invalid Revision send in the request",
-                            LdapException.ENCODING_ERROR, e);
+                            LdapException.EncodingError, e);
                     }
                 }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
                 // Encode data of objectDN, mts and revision
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_mts = new Asn1Integer(mts);
-                var asn1_revision = new Asn1Integer(revision);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1ObjectDn = new Asn1OctetString(objectDn);
+                var asn1Mts = new Asn1Integer(mts);
+                var asn1Revision = new Asn1Integer(revision);
+                var asn1Passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
 
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_mts.encode(encoder, encodedData);
-                asn1_revision.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
+                asn1ObjectDn.Encode(encoder, encodedData);
+                asn1Mts.Encode(encoder, encodedData);
+                asn1Revision.Encode(encoder, encodedData);
+                asn1Passwd.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException("ENCODING_ERROR", LdapException.EncodingError, null, ioe);
             }
         }
     }

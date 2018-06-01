@@ -44,15 +44,15 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.31
     ///     The request value has a value of null.
     /// </summary>
-    public class GetBindDNRequest : LdapExtendedOperation
+    public class GetBindDnRequest : LdapExtendedOperation
     {
-        static GetBindDNRequest()
+        static GetBindDnRequest()
         {
             /*
             * Register the extendedresponse class which is returned by the
             * server in response to a ListReplicasRequest
             */
-            LdapExtendedResponse.register(ReplicationConstants.GET_IDENTITY_NAME_RES, typeof(GetBindDNResponse));
+            LdapExtendedResponse.Register(ReplicationConstants.GetIdentityNameRes, typeof(GetBindDnResponse));
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetBindDNRequest() : base(ReplicationConstants.GET_IDENTITY_NAME_REQ, null)
+        public GetBindDnRequest() : base(ReplicationConstants.GetIdentityNameReq, null)
         {
         }
     }

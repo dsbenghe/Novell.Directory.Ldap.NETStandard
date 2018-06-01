@@ -42,14 +42,14 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1SetOf : Asn1Structured
     {
         /// <summary> ASN.1 SET OF tag definition.</summary>
-        public const int TAG = 0x11;
+        public const int Tag = 0x11;
 
         /// <summary>
         ///     ID is added for Optimization.
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, true, TAG);
+        public static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
 
         /* Constructors for Asn1SetOf
                 */
@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1SetOf object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1SetOf() : base(ID)
+        public Asn1SetOf() : base(Id)
         {
         }
 
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1SetOf(int size) : base(ID, size)
+        public Asn1SetOf(int size) : base(Id, size)
         {
         }
 
@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Set.
         /// </summary>
-        public Asn1SetOf(Asn1Set set_Renamed) : base(ID, set_Renamed.toArray(), set_Renamed.size())
+        public Asn1SetOf(Asn1Set setRenamed) : base(Id, setRenamed.ToArray(), setRenamed.Size())
         {
         }
 

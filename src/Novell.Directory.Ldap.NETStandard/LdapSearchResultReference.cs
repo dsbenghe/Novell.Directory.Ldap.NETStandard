@@ -49,20 +49,20 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var references = ((RfcSearchResultReference) message.Response).toArray();
-                srefs = new string[references.Length];
+                var references = ((RfcSearchResultReference) Message.Response).ToArray();
+                _srefs = new string[references.Length];
                 for (var i = 0; i < references.Length; i++)
                 {
-                    srefs[i] = ((Asn1OctetString) references[i]).stringValue();
+                    _srefs[i] = ((Asn1OctetString) references[i]).StringValue();
                 }
-                return srefs;
+                return _srefs;
             }
         }
 
-        private string[] srefs;
-        private static object nameLock; // protect agentNum
-        private static int refNum = 0; // Debug, LdapConnection number
-        private string name; // String name for debug
+        private string[] _srefs;
+        private static object _nameLock; // protect agentNum
+        private static int _refNum = 0; // Debug, LdapConnection number
+        private string _name; // String name for debug
         /*package*/
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
 
         static LdapSearchResultReference()
         {
-            nameLock = new object();
+            _nameLock = new object();
         }
     }
 }
