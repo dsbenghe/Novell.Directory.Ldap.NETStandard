@@ -650,7 +650,7 @@ public class SupportClass
         public Thread Instance
         {
             get => _threadField;
-            set { _threadField = value; }
+            set => _threadField = value;
         }
 
         /// <summary>
@@ -677,7 +677,7 @@ public class SupportClass
         public bool IsBackground
         {
             get => _threadField.IsBackground;
-            set { _threadField.IsBackground = value; }
+            set => _threadField.IsBackground = value;
         }
 
         public bool IsStopping { get; private set; }

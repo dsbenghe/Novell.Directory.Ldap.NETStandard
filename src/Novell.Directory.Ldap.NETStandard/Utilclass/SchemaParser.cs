@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             get => _rawString;
 
-            set { _rawString = value; }
+            set => _rawString = value;
         }
 
         public virtual string[] Names => _names;

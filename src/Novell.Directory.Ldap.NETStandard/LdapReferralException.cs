@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap
             */
             get => _failedReferral;
 
-            set { _failedReferral = value; }
+            set => _failedReferral = value;
         }
 
         private string _failedReferral;

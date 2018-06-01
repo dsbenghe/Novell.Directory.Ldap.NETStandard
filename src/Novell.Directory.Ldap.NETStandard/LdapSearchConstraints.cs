@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap
         {
             get => _batchSize;
 
-            set { _batchSize = value; }
+            set => _batchSize = value;
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Novell.Directory.Ldap
         {
             get => _dereference;
 
-            set { _dereference = value; }
+            set => _dereference = value;
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace Novell.Directory.Ldap
         {
             get => _maxResults;
 
-            set { _maxResults = value; }
+            set => _maxResults = value;
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Novell.Directory.Ldap
         {
             get => _serverTimeLimit;
 
-            set { _serverTimeLimit = value; }
+            set => _serverTimeLimit = value;
         }
 
         private int _dereference;

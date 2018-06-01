@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.Events
         public EventClassifiers EventClassification
         {
             get => EClassification;
-            set { EClassification = value; }
+            set => EClassification = value;
         }
 
         public DirectoryEventArgs(LdapMessage sourceMessage,

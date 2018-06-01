@@ -286,7 +286,7 @@ namespace Novell.Directory.Ldap
         public bool SecureSocketLayer
         {
             get => _conn.Ssl;
-            set { _conn.Ssl = value; }
+            set => _conn.Ssl = value;
         }
 
         /// <summary>
@@ -299,7 +299,7 @@ namespace Novell.Directory.Ldap
         public int ConnectionTimeout
         {
             get => _conn.ConnectionTimeout;
-            set { _conn.ConnectionTimeout = value; }
+            set => _conn.ConnectionTimeout = value;
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace Novell.Directory.Ldap
         {
             add => _conn.OnCertificateValidation += value;
 
-            remove { _conn.OnCertificateValidation -= value; }
+            remove => _conn.OnCertificateValidation -= value;
         }
 
         /*

@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get => (Asn1Integer) get_Renamed(0);
 
-            set { set_Renamed(0, value); }
+            set => set_Renamed(0, value);
         }
 
         /// <summary> </summary>
@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get => (RfcLdapDn) get_Renamed(1);
 
-            set { set_Renamed(1, value); }
+            set => set_Renamed(1, value);
         }
 
         /// <summary> </summary>
@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get => (RfcAuthenticationChoice) get_Renamed(2);
 
-            set { set_Renamed(2, value); }
+            set => set_Renamed(2, value);
         }
 
         /// <summary>

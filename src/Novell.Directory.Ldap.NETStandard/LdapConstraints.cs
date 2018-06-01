@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
         {
             get => _hopLimit;
 
-            set { _hopLimit = value; }
+            set => _hopLimit = value;
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap
             get => _properties;
 
 
-            set { _properties = (Hashtable) value.Clone(); }
+            set => _properties = (Hashtable) value.Clone();
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace Novell.Directory.Ldap
         {
             get => _doReferrals;
 
-            set { _doReferrals = value; }
+            set => _doReferrals = value;
         }
 
         /// <summary>
@@ -166,7 +166,7 @@ namespace Novell.Directory.Ldap
         {
             get => _msLimit;
 
-            set { _msLimit = value; }
+            set => _msLimit = value;
         }
 
         private int _msLimit;

@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Asn1
         protected Asn1Object ChoiceValue
         {
             set => _content = value;
-            get { return _content; }
+            get => _content;
         }
 
         private Asn1Object _content;
