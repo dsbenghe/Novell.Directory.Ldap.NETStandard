@@ -59,8 +59,8 @@ namespace Novell.Directory.Ldap.Utilclass
             }
         }
 
-        private string _name;
-        private ArrayList _values;
+        private readonly string _name;
+        private readonly ArrayList _values;
 
         public AttributeQualifier(string name, string[] valueRenamed)
         {

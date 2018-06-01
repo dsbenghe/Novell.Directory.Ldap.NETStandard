@@ -90,10 +90,10 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int Type => _type;
 
-        private string[] _superiors;
-        private string[] _required;
-        private string[] _optional;
-        private int _type = -1;
+        private readonly string[] _superiors;
+        private readonly string[] _required;
+        private readonly string[] _optional;
+        private readonly int _type = -1;
 
         /// <summary>
         ///     This class definition defines an abstract schema class.

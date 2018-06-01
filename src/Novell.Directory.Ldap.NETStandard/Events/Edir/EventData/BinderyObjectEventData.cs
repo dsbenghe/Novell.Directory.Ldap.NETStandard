@@ -39,23 +39,23 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class BinderyObjectEventData : BaseEdirEventData
     {
-        private string _strEntryDn;
+        private readonly string _strEntryDn;
 
         public string EntryDn => _strEntryDn;
 
-        private int _nType;
+        private readonly int _nType;
 
         public int ValueType => _nType;
 
-        private int _nEmuObjFlags;
+        private readonly int _nEmuObjFlags;
 
         public int EmuObjFlags => _nEmuObjFlags;
 
-        private int _nSecurity;
+        private readonly int _nSecurity;
 
         public int Security => _nSecurity;
 
-        private string _strName;
+        private readonly string _strName;
 
         public string Name => _strName;
 

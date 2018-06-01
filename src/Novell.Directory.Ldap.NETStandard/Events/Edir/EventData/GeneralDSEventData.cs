@@ -40,31 +40,31 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class GeneralDsEventData : BaseEdirEventData
     {
-        private int _dsTime;
+        private readonly int _dsTime;
 
         public int DsTime => _dsTime;
 
-        private int _milliSeconds;
+        private readonly int _milliSeconds;
 
         public int MilliSeconds => _milliSeconds;
 
-        private int _nVerb;
+        private readonly int _nVerb;
 
         public int Verb => _nVerb;
 
-        private int _currentProcess;
+        private readonly int _currentProcess;
 
         public int CurrentProcess => _currentProcess;
 
-        private string _strPerpetratorDn;
+        private readonly string _strPerpetratorDn;
 
         public string PerpetratorDn => _strPerpetratorDn;
 
-        private int[] _integerValues;
+        private readonly int[] _integerValues;
 
         public int[] IntegerValues => _integerValues;
 
-        private string[] _stringValues;
+        private readonly string[] _stringValues;
 
         public string[] StringValues => _stringValues;
 

@@ -40,31 +40,31 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugEventData : BaseEdirEventData
     {
-        private int _dsTime;
+        private readonly int _dsTime;
 
         public int DsTime => _dsTime;
 
-        private int _milliSeconds;
+        private readonly int _milliSeconds;
 
         public int MilliSeconds => _milliSeconds;
 
-        private string _strPerpetratorDn;
+        private readonly string _strPerpetratorDn;
 
         public string PerpetratorDn => _strPerpetratorDn;
 
-        private string _strFormatString;
+        private readonly string _strFormatString;
 
         public string FormatString => _strFormatString;
 
-        private int _nVerb;
+        private readonly int _nVerb;
 
         public int Verb => _nVerb;
 
-        private int _parameterCount;
+        private readonly int _parameterCount;
 
         public int ParameterCount => _parameterCount;
 
-        private ArrayList _parameterCollection;
+        private readonly ArrayList _parameterCollection;
 
         public ArrayList Parameters => _parameterCollection;
 

@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
 
         public int Seconds => NSeconds;
 
-        private int _replicaNumber;
+        private readonly int _replicaNumber;
 
         public int ReplicaNumber => _replicaNumber;
 

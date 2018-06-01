@@ -39,27 +39,27 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ChangeAddressEventData : BaseEdirEventData
     {
-        private int _nFlags;
+        private readonly int _nFlags;
 
         public int Flags => _nFlags;
 
-        private int _nProto;
+        private readonly int _nProto;
 
         public int Proto => _nProto;
 
-        private int _addressFamily;
+        private readonly int _addressFamily;
 
         public int AddressFamily => _addressFamily;
 
-        private string _strAddress;
+        private readonly string _strAddress;
 
         public string Address => _strAddress;
 
-        private string _pstkName;
+        private readonly string _pstkName;
 
         public string PstkName => _pstkName;
 
-        private string _sourceModule;
+        private readonly string _sourceModule;
 
         public string SourceModule => _sourceModule;
 

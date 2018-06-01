@@ -40,23 +40,23 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class SecurityEquivalenceEventData : BaseEdirEventData
     {
-        private string _strEntryDn;
+        private readonly string _strEntryDn;
 
         public string EntryDn => _strEntryDn;
 
-        private int _retryCount;
+        private readonly int _retryCount;
 
         public int RetryCount => _retryCount;
 
-        private string _strValueDn;
+        private readonly string _strValueDn;
 
         public string ValueDn => _strValueDn;
 
-        private int _referralCount;
+        private readonly int _referralCount;
 
         public int ReferralCount => _referralCount;
 
-        private ArrayList _referralList;
+        private readonly ArrayList _referralList;
 
         public ArrayList ReferralList => _referralList;
 

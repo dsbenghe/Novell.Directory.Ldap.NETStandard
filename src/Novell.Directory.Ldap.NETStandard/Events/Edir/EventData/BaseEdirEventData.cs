@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         protected MemoryStream DecodedData;
         protected LberDecoder Decoder;
 
-        private EdirEventDataType _eventDataType;
+        private readonly EdirEventDataType _eventDataType;
 
         /// <summary>
         ///     The value for this attribute allows the caller to identify the

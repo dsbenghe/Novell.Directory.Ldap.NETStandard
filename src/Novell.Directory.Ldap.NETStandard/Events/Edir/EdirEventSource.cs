@@ -77,8 +77,8 @@ namespace Novell.Directory.Ldap.Events.Edir
             return nListeners;
         }
 
-        private LdapConnection _mConnection;
-        private MonitorEventRequest _mRequestOperation;
+        private readonly LdapConnection _mConnection;
+        private readonly MonitorEventRequest _mRequestOperation;
         private LdapResponseQueue _mQueue;
 
         public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)

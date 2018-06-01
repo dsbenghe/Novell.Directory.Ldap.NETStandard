@@ -114,13 +114,13 @@ namespace Novell.Directory.Ldap.Events
             return nListeners;
         }
 
-        private LdapConnection _mConnection;
-        private string _mSearchBase;
-        private int _mScope;
-        private string[] _mAttrs;
-        private string _mFilter;
-        private bool _mTypesOnly;
-        private LdapSearchConstraints _mSearchConstraints;
+        private readonly LdapConnection _mConnection;
+        private readonly string _mSearchBase;
+        private readonly int _mScope;
+        private readonly string[] _mAttrs;
+        private readonly string _mFilter;
+        private readonly bool _mTypesOnly;
+        private readonly LdapSearchConstraints _mSearchConstraints;
         private LdapEventType _mEventChangeType;
 
         private LdapSearchQueue _mQueue;
