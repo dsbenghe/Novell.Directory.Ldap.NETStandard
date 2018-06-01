@@ -1119,14 +1119,13 @@ namespace Novell.Directory.Ldap
                         catch (FieldAccessException)
                         {
                             /*
-                                                        * We get the NoSuchFieldException when we could not find
-                                                        * a matching message id.  First check to see if this is
-                                                        * an unsolicited notification (msgID == 0). If it is not
-                                                        * we throw it away. If it is we call any unsolicited
-                                                        * listeners that might have been registered to listen for these
-                                                        * messages.
-                                                        */
-
+                            * We get the NoSuchFieldException when we could not find
+                            * a matching message id.  First check to see if this is
+                            * an unsolicited notification (msgID == 0). If it is not
+                            * we throw it away. If it is we call any unsolicited
+                            * listeners that might have been registered to listen for these
+                            * messages.
+                            */                        
 
                             /* Note the location of this code.  We could have required
                             * that message ID 0 be just like other message ID's but

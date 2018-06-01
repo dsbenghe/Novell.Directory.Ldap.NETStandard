@@ -14,7 +14,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
     public class TestsConfig
     {
-        public static LdapServerConfiguration LdapServer { get; private set; }
+        public static LdapServerConfiguration LdapServer { get; }
         public const string DefaultObjectClass = "inetOrgPerson";
         public const string DefaultPassword = "password";
 

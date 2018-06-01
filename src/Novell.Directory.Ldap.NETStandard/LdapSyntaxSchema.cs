@@ -88,10 +88,9 @@ namespace Novell.Directory.Ldap
                 if ((object) parser.Description != null)
                     Description = parser.Description;
                 var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
+                    var attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
                 Value = FormatString();

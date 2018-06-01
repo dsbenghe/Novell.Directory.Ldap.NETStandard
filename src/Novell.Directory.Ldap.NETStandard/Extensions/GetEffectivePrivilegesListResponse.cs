@@ -48,9 +48,6 @@ namespace Novell.Directory.Ldap.Extensions
         //Identity returned by the server
         private readonly int[] _privileges = {0};
 
-        //Number of responses
-        private readonly int _noPrivileges;
-
         public GetEffectivePrivilegesListResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
         {
             /// <summary> Constructs an object from the responseValue which contains the effective
@@ -75,23 +72,18 @@ namespace Novell.Directory.Ldap.Extensions
 
                 //Create a decoder object
                 var decoder = new LberDecoder();
-                if (decoder == null)
-                    throw new IOException("Decoding error");
 
                 var asn1Seq1 = (Asn1Sequence) decoder.Decode(returnedValue);
                 if (asn1Seq1 == null)
                     throw new IOException("Decoding error");
                 var asn1Seq2 = (Asn1Sequence) asn1Seq1.get_Renamed(0);
-                _noPrivileges = ((Asn1Integer) asn1Seq2.get_Renamed(0)).IntValue();
+                var noPrivileges = ((Asn1Integer) asn1Seq2.get_Renamed(0)).IntValue();
 
-                Asn1Set setPrivilegResponse = null;
-
-                setPrivilegResponse = (Asn1Set) asn1Seq1.get_Renamed(1);
-                Asn1Sequence seq2 = null;
-                _privileges = new int[_noPrivileges];
-                for (var index = 0; index < _noPrivileges; index++)
+                var setPrivilegResponse = (Asn1Set) asn1Seq1.get_Renamed(1);
+                _privileges = new int[noPrivileges];
+                for (var index = 0; index < noPrivileges; index++)
                 {
-                    seq2 = (Asn1Sequence) setPrivilegResponse.get_Renamed(index);
+                    var seq2 = (Asn1Sequence) setPrivilegResponse.get_Renamed(index);
                     _privileges[index] = ((Asn1Integer) seq2.get_Renamed(0)).IntValue();
                 }
             }

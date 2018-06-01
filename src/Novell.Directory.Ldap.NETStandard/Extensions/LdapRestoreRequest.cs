@@ -116,7 +116,6 @@ namespace Novell.Directory.Ldap.Extensions
                 */
                 int index;
                 int chunkSize;
-                int[] chunks = null;
                 index = chunkSizesString.IndexOf(';');
                 try
                 {
@@ -136,7 +135,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                 int chunkIndex;
                 //Construct chunks array
-                chunks = new int[chunkSize];
+                var chunks = new int[chunkSize];
                 /*
                 * Iterate through each member in buffer and
                 * assign to chunks array elements

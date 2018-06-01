@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Asn1
     {
         private Asn1Identifier _id;
 
-        public Asn1Object(Asn1Identifier id)
+        protected Asn1Object(Asn1Identifier id)
         {
             _id = id;
         }
