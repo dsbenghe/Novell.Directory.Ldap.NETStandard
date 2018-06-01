@@ -32,7 +32,7 @@
 using System.Text;
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Events.Edir
+namespace Novell.Directory.Ldap.Events.Edir.EventData
 {
     /// <summary>
     ///     The class represents the Timestamp datastructure for Edir events
