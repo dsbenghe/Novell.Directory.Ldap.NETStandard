@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Choice(Asn1Object content) : base(null)
         {
-            this._content = content;
+            _content = content;
         }
 
         /// <summary>

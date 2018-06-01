@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         public ArrayEnumeration(object[] eArray)
         {
-            this._eArray = eArray;
+            _eArray = eArray;
         }
 
         public bool HasMoreElements()

@@ -78,8 +78,8 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapAuthProvider(string dn, sbyte[] password)
         {
-            this.Dn = dn;
-            this.Password = password;
+            Dn = dn;
+            Password = password;
         }
     }
 }

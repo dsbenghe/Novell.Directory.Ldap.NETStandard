@@ -240,13 +240,13 @@ namespace Novell.Directory.Ldap
             if (conn == null) throw new ArgumentNullException(nameof(conn));
             _stackTraceCreation = Environment.StackTrace;
             InitBlock();
-            this._msg = msg;
-            this._conn = conn;
-            this._agent = agent;
-            this._queue = queue;
-            this._mslimit = mslimit;
+            _msg = msg;
+            _conn = conn;
+            _agent = agent;
+            _queue = queue;
+            _mslimit = mslimit;
             _msgId = msg.MessageId;
-            this._bindprops = bindprops;
+            _bindprops = bindprops;
         }
 
         internal void SendMessage()
@@ -476,7 +476,7 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(Message enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             public Message EnclosingInstance { get; private set; }

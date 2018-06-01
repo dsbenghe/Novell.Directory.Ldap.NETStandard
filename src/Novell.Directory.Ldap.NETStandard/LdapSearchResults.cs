@@ -204,7 +204,7 @@ namespace Novell.Directory.Ldap
         internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             // setup entry Vector
-            this._cons = cons;
+            _cons = cons;
             var requestedBatchSize = cons.BatchSize;
             _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
             _entryCount = 0;
@@ -215,8 +215,8 @@ namespace Novell.Directory.Ldap
             _referenceCount = 0;
             _referenceIndex = 0;
 
-            this._queue = queue;
-            this._batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
+            _queue = queue;
+            _batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
         }
 
         /// <summary>

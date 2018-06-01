@@ -135,7 +135,7 @@ namespace Novell.Directory.Ldap
         internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
             Message request) : base(message, arguments, resultCode, null, rootException)
         {
-            this._request = request;
+            _request = request;
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         public Asn1OctetString(sbyte[] content) : base(Id)
         {
-            this._content = content;
+            _content = content;
         }
 
 
@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap.Asn1
                 var ibytes = encoder.GetBytes(content);
                 var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                this._content = sbytes;
+                _content = sbytes;
 //				this.content = content.getBytes("UTF8");
             }
             catch (IOException uee)

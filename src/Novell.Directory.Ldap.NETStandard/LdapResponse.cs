@@ -301,7 +301,7 @@ namespace Novell.Directory.Ldap
         public LdapResponse(InterThreadException ex, ReferralInfo activeReferral)
         {
             _exception = ex;
-            this.ActiveReferral = activeReferral;
+            ActiveReferral = activeReferral;
         }
 
         /// <summary>

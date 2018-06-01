@@ -523,7 +523,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         protected internal LdapMessage(RfcLdapMessage message)
         {
-            this.Message = message;
+            Message = message;
         }
 
         /// <summary>

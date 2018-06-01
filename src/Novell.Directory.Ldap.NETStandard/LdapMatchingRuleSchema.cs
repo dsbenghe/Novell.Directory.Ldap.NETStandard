@@ -101,12 +101,12 @@ namespace Novell.Directory.Ldap
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.Oid = oid;
-            this.Description = description;
-            this.Obsolete = obsolete;
-            this._attributes = new string[attributes.Length];
-            attributes.CopyTo(this._attributes, 0);
-            this.SyntaxString = syntaxString;
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            _attributes = new string[attributes.Length];
+            attributes.CopyTo(_attributes, 0);
+            SyntaxString = syntaxString;
             Value = FormatString();
         }
 

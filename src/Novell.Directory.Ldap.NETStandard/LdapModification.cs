@@ -143,8 +143,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapModification(int op, LdapAttribute attr)
         {
-            this.Op = op;
-            this.Attribute = attr;
+            Op = op;
+            Attribute = attr;
         }
     }
 }

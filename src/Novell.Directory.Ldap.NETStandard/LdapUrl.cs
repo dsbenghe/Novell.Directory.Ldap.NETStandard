@@ -231,11 +231,11 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            this._host = host;
+            _host = host;
 
-            this._port = port;
+            _port = port;
 
-            this._dn = dn;
+            _dn = dn;
         }
 
 
@@ -283,23 +283,23 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            this._host = host;
+            _host = host;
 
-            this._port = port;
+            _port = port;
 
-            this._dn = dn;
+            _dn = dn;
 
             _attrs = new string[attrNames.Length];
 
             attrNames.CopyTo(_attrs, 0);
 
-            this._scope = scope;
+            _scope = scope;
 
-            this._filter = filter;
+            _filter = filter;
 
-            this._extensions = new string[extensions.Length];
+            _extensions = new string[extensions.Length];
 
-            extensions.CopyTo(this._extensions, 0);
+            extensions.CopyTo(_extensions, 0);
         }
 
 
@@ -351,23 +351,23 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            this._host = host;
+            _host = host;
 
-            this._port = port;
+            _port = port;
 
-            this._dn = dn;
+            _dn = dn;
 
             _attrs = attrNames;
 
-            this._scope = scope;
+            _scope = scope;
 
-            this._filter = filter;
+            _filter = filter;
 
-            this._extensions = new string[extensions.Length];
+            _extensions = new string[extensions.Length];
 
-            extensions.CopyTo(this._extensions, 0);
+            extensions.CopyTo(_extensions, 0);
 
-            this._secure = secure;
+            _secure = secure;
         }
 
 
@@ -557,7 +557,7 @@ namespace Novell.Directory.Ldap
         internal virtual void SetDn(string dn)
 
         {
-            this._dn = dn;
+            _dn = dn;
         }
 
 

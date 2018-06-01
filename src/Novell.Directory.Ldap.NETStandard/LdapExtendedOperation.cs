@@ -57,8 +57,8 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapExtendedOperation(string oid, sbyte[] vals)
         {
-            this._oid = oid;
-            this._vals = vals;
+            _oid = oid;
+            _vals = vals;
         }
 
         /// <summary>

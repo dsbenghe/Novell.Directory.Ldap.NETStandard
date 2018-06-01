@@ -142,8 +142,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Create an RfcLdapMessage request from input parameters.</summary>
         public RfcLdapMessage(IRfcRequest op, RfcControls controls) : base(3)
         {
-            this._op = (Asn1Object) op;
-            this._controls = controls;
+            _op = (Asn1Object) op;
+            _controls = controls;
 
             Add(new RfcMessageId()); // MessageID has static counter
             Add((Asn1Object) op);
@@ -161,8 +161,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Create an RfcLdapMessage response from input parameters.</summary>
         public RfcLdapMessage(Asn1Sequence op, RfcControls controls) : base(3)
         {
-            this._op = op;
-            this._controls = controls;
+            _op = op;
+            _controls = controls;
 
             Add(new RfcMessageId()); // MessageID has static counter
             Add(op);

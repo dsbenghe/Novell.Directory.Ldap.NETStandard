@@ -82,12 +82,12 @@ namespace Novell.Directory.Ldap.Utilclass
         public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties,
             object bindCallbackHandler)
         {
-            this.ProtocolVersion = version;
-            this.AuthenticationDn = dn;
-            this.AuthenticationMethod = method;
-            this.Anonymous = anonymous;
-            this.SaslBindProperties = bindProperties;
-            this.SaslCallbackHandler = bindCallbackHandler;
+            ProtocolVersion = version;
+            AuthenticationDn = dn;
+            AuthenticationMethod = method;
+            Anonymous = anonymous;
+            SaslBindProperties = bindProperties;
+            SaslCallbackHandler = bindCallbackHandler;
         }
     }
 }

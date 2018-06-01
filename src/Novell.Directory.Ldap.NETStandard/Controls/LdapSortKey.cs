@@ -140,9 +140,9 @@ namespace Novell.Directory.Ldap.Controls
         /// </param>
         public LdapSortKey(string key, bool reverse, string matchRule)
         {
-            this.Key = key;
-            this.Reverse = reverse;
-            this.MatchRule = matchRule;
+            Key = key;
+            Reverse = reverse;
+            MatchRule = matchRule;
         }
     }
 }

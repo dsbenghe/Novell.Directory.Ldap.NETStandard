@@ -272,7 +272,7 @@ public class SupportClass
             _elements = new ArrayList();
             _elements.AddRange(source.Split(_delimiters.ToCharArray()));
             RemoveEmptyStrings();
-            this._source = source;
+            _source = source;
         }
 
         /// <summary>
@@ -284,22 +284,22 @@ public class SupportClass
         public Tokenizer(string source, string delimiters)
         {
             _elements = new ArrayList();
-            this._delimiters = delimiters;
-            _elements.AddRange(source.Split(this._delimiters.ToCharArray()));
+            _delimiters = delimiters;
+            _elements.AddRange(source.Split(_delimiters.ToCharArray()));
             RemoveEmptyStrings();
-            this._source = source;
+            _source = source;
         }
 
         public Tokenizer(string source, string delimiters, bool retDel)
         {
             _elements = new ArrayList();
-            this._delimiters = delimiters;
-            this._source = source;
+            _delimiters = delimiters;
+            _source = source;
             _returnDelims = retDel;
             if (_returnDelims)
                 Tokenize();
             else
-                _elements.AddRange(source.Split(this._delimiters.ToCharArray()));
+                _elements.AddRange(source.Split(_delimiters.ToCharArray()));
             RemoveEmptyStrings();
         }
 
@@ -394,7 +394,7 @@ public class SupportClass
         /// <returns>The string value of the token</returns>
         public string NextToken(string delimiters)
         {
-            this._delimiters = delimiters;
+            _delimiters = delimiters;
             return NextToken();
         }
 
@@ -592,7 +592,7 @@ public class SupportClass
         public ThreadClass(string name)
         {
             _threadField = new Thread(Run);
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>
@@ -612,7 +612,7 @@ public class SupportClass
         public ThreadClass(ThreadStart start, string name)
         {
             _threadField = new Thread(start);
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>

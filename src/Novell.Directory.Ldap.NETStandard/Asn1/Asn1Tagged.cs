@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap.Asn1
             : base(identifier)
         {
             _content = objectRenamed;
-            this._explicitRenamed = explicitRenamed;
+            _explicitRenamed = explicitRenamed;
 
             if (!explicitRenamed && _content != null)
             {

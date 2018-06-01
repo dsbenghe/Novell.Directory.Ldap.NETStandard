@@ -99,8 +99,8 @@ namespace Novell.Directory.Ldap
             {
                 attrs = new LdapAttributeSet();
             }
-            this.Dn = dn;
-            this.Attrs = attrs;
+            Dn = dn;
+            Attrs = attrs;
         }
 
         /// <summary>

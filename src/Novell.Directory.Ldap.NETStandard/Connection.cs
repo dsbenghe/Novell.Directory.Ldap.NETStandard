@@ -539,8 +539,8 @@ namespace Novell.Directory.Ldap
                     {
                         if (Ssl)
                         {
-                            this.Host = host;
-                            this.Port = port;
+                            Host = host;
+                            Port = port;
                             _sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
                             var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
                             var hostadd = ipAddresses.First(ip => ip.AddressFamily == AddressFamily.InterNetwork);
@@ -586,8 +586,8 @@ namespace Novell.Directory.Ldap
                         LdapException.ConnectError, null, ioe);
                 }
                 // Set host and port
-                this.Host = host;
-                this.Port = port;
+                Host = host;
+                Port = port;
                 // start the reader thread
                 StartReader();
                 _clientActive = true; // Client is up
@@ -1041,7 +1041,7 @@ namespace Novell.Directory.Ldap
 
             public ReaderThread(Connection enclosingInstance)
             {
-                this._enclosingInstance = enclosingInstance;
+                _enclosingInstance = enclosingInstance;
             }
 
             public void Stop()
@@ -1247,7 +1247,7 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(Connection enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             public Connection EnclosingInstance { get; private set; }

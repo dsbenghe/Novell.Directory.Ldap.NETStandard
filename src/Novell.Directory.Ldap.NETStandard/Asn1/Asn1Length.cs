@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Constructs an Asn1Length</summary>
         public Asn1Length(int length)
         {
-            this._length = length;
+            _length = length;
         }
 
         /// <summary>

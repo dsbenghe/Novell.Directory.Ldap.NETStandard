@@ -116,7 +116,7 @@ namespace Novell.Directory.Ldap
         /// <summary> Create an LdapControl from an existing control.</summary>
         protected internal LdapControl(RfcControl control)
         {
-            this._control = control;
+            _control = control;
         }
 
         /// <summary>

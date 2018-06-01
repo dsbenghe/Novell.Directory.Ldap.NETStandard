@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             private void InitBlock(RespControlVector enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             public RespControlVector EnclosingInstance { get; private set; }

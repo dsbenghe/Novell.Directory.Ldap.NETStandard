@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("Argument \"entry\" cannot be null");
             }
-            this._entry = entry;
+            _entry = entry;
         }
 
         /// <summary>

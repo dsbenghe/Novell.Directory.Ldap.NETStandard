@@ -93,7 +93,7 @@ namespace Novell.Directory.Ldap
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
             // Get a unique connection name for debug
-            this.Agent = agent;
+            Agent = agent;
         }
 
         /// <summary>

@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Asn1
 
         public Asn1Object(Asn1Identifier id)
         {
-            this._id = id;
+            _id = id;
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public virtual void SetIdentifier(Asn1Identifier id)
         {
-            this._id = id;
+            _id = id;
         }
 
         /// <summary>

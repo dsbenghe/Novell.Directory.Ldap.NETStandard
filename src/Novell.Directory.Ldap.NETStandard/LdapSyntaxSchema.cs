@@ -64,8 +64,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSyntaxSchema(string oid, string description) : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
         {
-            this.Oid = oid;
-            this.Description = description;
+            Oid = oid;
+            Description = description;
             Value = FormatString();
         }
 

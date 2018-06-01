@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
             }
-            this._name = name;
+            _name = name;
             _values = new ArrayList(5);
             for (var i = 0; i < valueRenamed.Length; i++)
             {

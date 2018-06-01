@@ -183,9 +183,9 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Identifier(int tagClass, bool constructed, int tag)
         {
-            this._tagClass = tagClass;
-            this._constructed = constructed;
-            this._tag = tag;
+            _tagClass = tagClass;
+            _constructed = constructed;
+            _tag = tag;
         }
 
         /// <summary>

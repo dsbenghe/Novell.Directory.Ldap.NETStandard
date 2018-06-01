@@ -382,10 +382,10 @@ namespace Novell.Directory.Ldap
             int batchSize, ILdapReferralHandler handler, int hopLimit) : base(msLimit, doReferrals, handler, hopLimit)
         {
             InitBlock();
-            this._serverTimeLimit = serverTimeLimit;
-            this._dereference = dereference;
-            this._maxResults = maxResults;
-            this._batchSize = batchSize;
+            _serverTimeLimit = serverTimeLimit;
+            _dereference = dereference;
+            _maxResults = maxResults;
+            _batchSize = batchSize;
             // Get a unique connection name for debug
         }
 

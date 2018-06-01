@@ -1041,7 +1041,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             private void InitBlock(RfcFilter enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             /// <summary>
@@ -1174,7 +1174,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             public FilterIterator(RfcFilter enclosingInstance, Asn1Tagged root)
             {
                 InitBlock(enclosingInstance);
-                this.Root = root;
+                Root = root;
             }
 
             public virtual bool MoveNext()
@@ -1193,7 +1193,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             private void InitBlock(RfcFilter enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             /// <summary>
@@ -1387,7 +1387,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             public FilterTokenizer(RfcFilter enclosingInstance, string filter)
             {
                 InitBlock(enclosingInstance);
-                this._filter = filter;
+                _filter = filter;
                 _offset = 0;
                 _filterLength = filter.Length;
             }

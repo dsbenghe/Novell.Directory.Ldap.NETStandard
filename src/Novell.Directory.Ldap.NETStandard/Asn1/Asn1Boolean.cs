@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Boolean(bool content) : base(Id)
         {
-            this._content = content;
+            _content = content;
         }
 
         /// <summary>

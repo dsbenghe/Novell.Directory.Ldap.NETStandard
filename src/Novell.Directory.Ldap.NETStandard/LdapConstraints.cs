@@ -247,8 +247,8 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public LdapConstraints(int msLimit, bool doReferrals, ILdapReferralHandler handler, int hopLimit)
         {
-            this._msLimit = msLimit;
-            this._doReferrals = doReferrals;
+            _msLimit = msLimit;
+            _doReferrals = doReferrals;
             _refHandler = handler;
             _hopLimit = hopLimit;
             // Get a unique constraints name for debug
@@ -334,13 +334,13 @@ namespace Novell.Directory.Ldap
         {
             if (controls == null || controls.Length == 0)
             {
-                this._controls = null;
+                _controls = null;
                 return;
             }
-            this._controls = new LdapControl[controls.Length];
+            _controls = new LdapControl[controls.Length];
             for (var i = 0; i < controls.Length; i++)
             {
-                this._controls[i] = (LdapControl) controls[i].Clone();
+                _controls[i] = (LdapControl) controls[i].Clone();
             }
         }
 

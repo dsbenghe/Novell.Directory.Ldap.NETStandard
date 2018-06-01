@@ -212,7 +212,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             _types.Add(attrType);
             _values.Add(attrValue);
-            this._rawValue += rawValue;
+            _rawValue += rawValue;
         }
 
         /// <summary>

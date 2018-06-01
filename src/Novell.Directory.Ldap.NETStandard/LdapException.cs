@@ -1140,11 +1140,11 @@ namespace Novell.Directory.Ldap
             string matchedDn, Exception rootException)
             : base(ResourcesHandler.GetMessage(messageOrKey, arguments))
         {
-            this._messageOrKey = messageOrKey;
-            this._arguments = arguments;
-            this._resultCode = resultCode;
-            this._rootException = rootException;
-            this._matchedDn = matchedDn;
+            _messageOrKey = messageOrKey;
+            _arguments = arguments;
+            _resultCode = resultCode;
+            _rootException = rootException;
+            _matchedDn = matchedDn;
             _serverMessage = serverMsg;
         }
 

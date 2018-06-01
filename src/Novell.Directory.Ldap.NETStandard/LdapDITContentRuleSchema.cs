@@ -136,13 +136,13 @@ namespace Novell.Directory.Ldap
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.Oid = oid;
-            this.Description = description;
-            this.Obsolete = obsolete;
-            this._auxiliary = auxiliary;
-            this._required = required;
-            this._optional = optional;
-            this._precluded = precluded;
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            _auxiliary = auxiliary;
+            _required = required;
+            _optional = optional;
+            _precluded = precluded;
             Value = FormatString();
         }
 

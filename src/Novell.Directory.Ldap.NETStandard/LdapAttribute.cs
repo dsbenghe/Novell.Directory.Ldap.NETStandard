@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
         {
             private void InitBlock(LdapAttribute enclosingInstance)
             {
-                this.EnclosingInstance = enclosingInstance;
+                EnclosingInstance = enclosingInstance;
             }
 
             public LdapAttribute EnclosingInstance { get; private set; }
@@ -69,8 +69,8 @@ namespace Novell.Directory.Ldap
             public UrlData(LdapAttribute enclosingInstance, sbyte[] data, int length)
             {
                 InitBlock(enclosingInstance);
-                this._length = length;
-                this._data = data;
+                _length = length;
+                _data = data;
             }
 
             public int GetLength()

@@ -117,11 +117,11 @@ namespace Novell.Directory.Ldap
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.RuleId = ruleId;
-            this.Description = description;
-            this.Obsolete = obsolete;
-            this.NameForm = nameForm;
-            this._superiorIDs = superiorIDs;
+            RuleId = ruleId;
+            Description = description;
+            Obsolete = obsolete;
+            NameForm = nameForm;
+            _superiorIDs = superiorIDs;
             Value = FormatString();
         }
 

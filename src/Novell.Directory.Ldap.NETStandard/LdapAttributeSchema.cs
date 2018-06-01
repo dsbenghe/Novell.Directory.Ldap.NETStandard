@@ -224,18 +224,18 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
             this.names = names;
-            this.Oid = oid;
-            this.Description = description;
-            this.Obsolete = obsolete;
-            this.SyntaxString = syntaxString;
-            this.SingleValued = single;
-            this.EqualityMatchingRule = equality;
-            this.OrderingMatchingRule = ordering;
-            this.SubstringMatchingRule = substring;
-            this.Collective = collective;
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            SyntaxString = syntaxString;
+            SingleValued = single;
+            EqualityMatchingRule = equality;
+            OrderingMatchingRule = ordering;
+            SubstringMatchingRule = substring;
+            Collective = collective;
             UserModifiable = isUserModifiable;
-            this._usage = usage;
-            this.Superior = superior;
+            _usage = usage;
+            Superior = superior;
             Value = FormatString();
         }
 

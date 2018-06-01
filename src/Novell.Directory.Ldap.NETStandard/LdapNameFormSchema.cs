@@ -115,14 +115,14 @@ namespace Novell.Directory.Ldap
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.Oid = oid;
-            this.Description = description;
-            this.Obsolete = obsolete;
-            this.ObjectClass = objectClass;
-            this._required = new string[required.Length];
-            required.CopyTo(this._required, 0);
-            this._optional = new string[optional.Length];
-            optional.CopyTo(this._optional, 0);
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            ObjectClass = objectClass;
+            _required = new string[required.Length];
+            required.CopyTo(_required, 0);
+            _optional = new string[optional.Length];
+            optional.CopyTo(_optional, 0);
             Value = FormatString();
         }
 
