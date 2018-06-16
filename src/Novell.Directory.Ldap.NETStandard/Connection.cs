@@ -154,7 +154,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Return whether a connection has been made</summary>
-        internal bool Connected => _inRenamed != null;
+        internal bool Connected => _inStream != null;
 
         /// <summary>
         ///     Sets the authentication credentials in the object
@@ -219,8 +219,8 @@ namespace Novell.Directory.Ldap
         private TcpClient _socket;
         private TcpClient _nonTlsBackup;
 
-        private Stream _inRenamed;
-        private Stream _outRenamed;
+        private Stream _inStream;
+        private Stream _outStream;
         // When set to true the client connection is up and running
         private bool _clientActive = true;
 
@@ -535,7 +535,7 @@ namespace Novell.Directory.Ldap
 
                 try
                 {
-                    if (_inRenamed == null || _outRenamed == null)
+                    if (_inStream == null || _outStream == null)
                     {
                         if (Ssl)
                         {
@@ -554,15 +554,15 @@ namespace Novell.Directory.Ldap
                                 RemoteCertificateValidationCallback
                             );
                             sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
-                            _inRenamed = sslstream;
-                            _outRenamed = sslstream;
+                            _inStream = sslstream;
+                            _outStream = sslstream;
                         }
                         else
                         {
                             _socket = new TcpClient();
                             _socket.ConnectAsync(host, port).WaitAndUnwrap(ConnectionTimeout);
-                            _inRenamed = _socket.GetStream();
-                            _outRenamed = _socket.GetStream();
+                            _inStream = _socket.GetStream();
+                            _outStream = _socket.GetStream();
                         }
                     }
                     else
@@ -646,7 +646,7 @@ namespace Novell.Directory.Ldap
                 }
                 else
                 {
-                    if (_inRenamed != null)
+                    if (_inStream != null)
                     {
                         // Not a clone and connected
                         /*
@@ -733,7 +733,7 @@ namespace Novell.Directory.Ldap
                 // Semaphore id for sasl bind operations
                 id = BindSemId;
             }
-            var myOut = _outRenamed;
+            var myOut = _outStream;
 
             AcquireWriteSemaphore(id);
             try
@@ -819,14 +819,14 @@ namespace Novell.Directory.Ldap
             try
             {
                 // Now send unbind if socket not closed
-                if (BindProperties != null && _outRenamed != null && _outRenamed.CanWrite && !BindProperties.Anonymous)
+                if (BindProperties != null && _outStream != null && _outStream.CanWrite && !BindProperties.Anonymous)
                 {
                     try
                     {
                         var msg = new LdapUnbindRequest(null);
                         var ber = msg.Asn1Object.GetEncoding(_encoder);
-                        _outRenamed.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
-                        _outRenamed.Flush();
+                        _outStream.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
+                        _outStream.Flush();
                     }
                     catch (Exception)
                     {
@@ -842,8 +842,8 @@ namespace Novell.Directory.Ldap
                     // Close the socket
                     try
                     {
-                        _inRenamed?.Dispose();
-                        _outRenamed?.Dispose();
+                        _inStream?.Dispose();
+                        _outStream?.Dispose();
                         if (Ssl)
                         {
                             _sock.Dispose();
@@ -859,8 +859,8 @@ namespace Novell.Directory.Ldap
                     }
                     _socket = null;
                     _sock = null;
-                    _inRenamed = null;
-                    _outRenamed = null;
+                    _inStream = null;
+                    _outStream = null;
                 }
             }
             finally
@@ -966,20 +966,14 @@ namespace Novell.Directory.Ldap
                     RemoteCertificateValidationCallback
                 );
                 sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
-                _inRenamed = sslstream;
-                _outRenamed = sslstream;
+                _inStream = sslstream;
+                _outStream = sslstream;
                 StartReader();
             }
-            catch (IOException ioe)
+            catch (Exception ex)
             {
                 _nonTlsBackup = null;
-                throw new LdapException("Could not negotiate a secure connection", LdapException.ConnectError, null,
-                    ioe);
-            }
-            catch (Exception uhe)
-            {
-                _nonTlsBackup = null;
-                throw new LdapException("The host is unknown", LdapException.ConnectError, null, uhe);
+                throw new LdapException("Error starting TLS", LdapException.ConnectError, null, ex);
             }
         }
 
@@ -1011,14 +1005,14 @@ namespace Novell.Directory.Ldap
             try
             {
                 _stopReaderMessageId = StopReading;
-                _outRenamed?.Dispose();
-                _inRenamed?.Dispose();
+                _outStream?.Dispose();
+                _inStream?.Dispose();
                 //				this.sock.Shutdown(SocketShutdown.Both);
                 //				this.sock.Close();
                 WaitForReader(null);
                 _socket = _nonTlsBackup;
-                _inRenamed = _socket.GetStream();
-                _outRenamed = _socket.GetStream();
+                _inStream = _socket.GetStream();
+                _outStream = _socket.GetStream();
                 // Allow the new reader to start
                 _stopReaderMessageId = ContinueReading;
             }
@@ -1033,7 +1027,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// TLS not supported in first release
-        public class ReaderThread
+        public sealed class ReaderThread
         {
             private readonly Connection _enclosingInstance;
             private bool _isStopping;
@@ -1057,7 +1051,7 @@ namespace Novell.Directory.Ldap
                 // the stream Dispose used to be called from Connection dispose but only when a Bind is succesful which was causing
                 // the Dispose to hang un unsuccesful bind
                 // So, yeah isStopping flag is pretty much useless as there are very small chances that it will bit hit
-                var socketStream = _enclosingInstance._inRenamed;
+                var socketStream = _enclosingInstance._inStream;
                 socketStream?.Dispose();
                 _enclosedThread.Join();
             }
@@ -1066,7 +1060,7 @@ namespace Novell.Directory.Ldap
             ///     This thread decodes and processes RfcLdapMessage's from the server.
             ///     Note: This thread needs a graceful shutdown implementation.
             /// </summary>
-            public virtual void Run()
+            public void Run()
             {
                 var reason = "reader: thread stopping";
                 InterThreadException notify = null;
@@ -1086,7 +1080,7 @@ namespace Novell.Directory.Ldap
                         /* get current value of in, keep value consistant
                         * though the loop, i.e. even during shutdown
                         */
-                        myIn = _enclosingInstance._inRenamed;
+                        myIn = _enclosingInstance._inStream;
                         if (myIn == null)
                         {
                             break;
@@ -1177,8 +1171,8 @@ namespace Novell.Directory.Ldap
                             ex, info);
                     }
                     // The connection is no good, don't use it any more
-                    _enclosingInstance._inRenamed = null;
-                    _enclosingInstance._outRenamed = null;
+                    _enclosingInstance._inStream = null;
+                    _enclosingInstance._outStream = null;
                 }
                 finally
                 {
