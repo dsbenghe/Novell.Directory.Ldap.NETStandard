@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of LdapAttribute objects.
         /// </returns>
-        public virtual LdapAttribute GetAttribute(string attrName)
+        public LdapAttribute GetAttribute(string attrName)
         {
             return Attrs.GetAttribute(attrName);
         }
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute set of the entry.
         /// </returns>
-        public virtual LdapAttributeSet GetAttributeSet()
+        public LdapAttributeSet GetAttributeSet()
         {
             return Attrs;
         }
@@ -154,7 +154,7 @@ namespace Novell.Directory.Ldap
         ///     match the specified subtypes or an empty set if no attributes
         ///     match.
         /// </returns>
-        public virtual LdapAttributeSet GetAttributeSet(string subtype)
+        public LdapAttributeSet GetAttributeSet(string subtype)
         {
             return Attrs.GetSubset(subtype);
         }

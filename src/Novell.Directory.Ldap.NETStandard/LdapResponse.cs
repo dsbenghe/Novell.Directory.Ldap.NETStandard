@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     Any error message in the response.
         /// </returns>
-        public virtual string ErrorMessage
+        public string ErrorMessage
         {
             get
             {
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The partially matched DN field, if the response contains one.
         /// </returns>
-        public virtual string MatchedDn
+        public string MatchedDn
         {
             get
             {
@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     All the referrals in the server response.
         /// </returns>
-        public virtual string[] Referrals
+        public string[] Referrals
         {
             get
             {
@@ -160,7 +160,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The result code.
         /// </returns>
-        public virtual int ResultCode
+        public int ResultCode
         {
             get
             {
@@ -178,7 +178,7 @@ namespace Novell.Directory.Ldap
         ///     Checks the resultCode and generates the appropriate exception or
         ///     null if success.
         /// </summary>
-        internal virtual LdapException ResultException
+        private LdapException ResultException
         {
             get
             {
@@ -266,7 +266,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an embedded exception if any
         /// </returns>
-        internal virtual LdapException Exception => _exception;
+        internal LdapException Exception => _exception;
 
         /// <summary>
         ///     Indicates the referral instance being followed if the
@@ -275,7 +275,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the referral being followed
         /// </returns>
-        internal virtual ReferralInfo ActiveReferral
+        internal ReferralInfo ActiveReferral
         {
             /*package*/
             get;
@@ -440,7 +440,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal virtual void ChkResultCode()
+        internal void ChkResultCode()
         {
             if (_exception != null)
             {
@@ -462,7 +462,7 @@ namespace Novell.Directory.Ldap
         ///     true if contains an embedded Ldapexception
         /// </returns>
         /*package*/
-        internal virtual bool HasException()
+        internal bool HasException()
         {
             return _exception != null;
         }

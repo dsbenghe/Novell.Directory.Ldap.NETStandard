@@ -291,7 +291,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The error message or null if the message was not set.
         /// </returns>
-        public virtual string LdapErrorMessage
+        public string LdapErrorMessage
         {
             get
             {
@@ -308,7 +308,7 @@ namespace Novell.Directory.Ldap
         ///     For example, an IOException with additional information may be returned
         ///     on a CONNECT_ERROR failure.
         /// </summary>
-        public virtual Exception Cause => _rootException;
+        public Exception Cause => _rootException;
 
         /// <summary>
         ///     Returns the result code from the exception.
@@ -318,7 +318,7 @@ namespace Novell.Directory.Ldap
         ///     code will be one of those defined for the class. Otherwise, a local error
         ///     code is returned.
         /// </summary>
-        public virtual int ResultCode => _resultCode;
+        public int ResultCode => _resultCode;
 
         /// <summary>
         ///     Returns the part of a submitted distinguished name which could be
@@ -338,7 +338,7 @@ namespace Novell.Directory.Ldap
         ///     The part of a submitted distinguished name which could be
         ///     matched by the server or null if the error is a local error.
         /// </returns>
-        public virtual string MatchedDn => _matchedDn;
+        public string MatchedDn => _matchedDn;
 
         public override string Message => ResultCodeToString();
 
@@ -1155,7 +1155,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message for the result code in the LdapException object.
         /// </returns>
-        public virtual string ResultCodeToString()
+        public string ResultCodeToString()
         {
             return ResourcesHandler.GetResultString(_resultCode);
         }
@@ -1188,7 +1188,7 @@ namespace Novell.Directory.Ldap
         ///     specified locale, or null if the message is not available
         ///     for the requested locale.
         /// </returns>
-        public virtual string ResultCodeToString(CultureInfo locale)
+        public string ResultCodeToString(CultureInfo locale)
         {
             return ResourcesHandler.GetResultString(_resultCode, locale);
         }
@@ -1230,7 +1230,7 @@ namespace Novell.Directory.Ldap
         /// <param name="exception">
         ///     The name of the exception class
         /// </param>
-        internal virtual string GetExceptionString(string exception)
+        internal string GetExceptionString(string exception)
         {
             string tmsg;
 

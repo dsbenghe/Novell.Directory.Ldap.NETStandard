@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID (object ID) of the operation.
         /// </returns>
-        public virtual string GetId()
+        public string GetId()
         {
             return _oid;
         }
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] GetValue()
+        public sbyte[] GetValue()
         {
             return _vals;
         }
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap
         ///     The byte array of operation-specific data.
         /// </param>
         [CLSCompliant(false)]
-        protected internal virtual void SetValue(sbyte[] newVals)
+        protected void SetValue(sbyte[] newVals)
         {
             _vals = newVals;
         }
@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap
         /// <param name="newoid">
         ///     The new OID for the operation
         /// </param>
-        protected internal virtual void SetId(string newoid)
+        protected void SetId(string newoid)
         {
             _oid = newoid;
         }

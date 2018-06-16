@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapException.ReferralLimitExceeded">
         /// </seealso>
-        public virtual int HopLimit
+        public int HopLimit
         {
             get => _hopLimit;
 
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap
         /// <param name="props">
         ///     the properties represented by the Hashtable object to set.
         /// </param>
-        internal virtual Hashtable Properties
+        internal Hashtable Properties
         {
             get => _properties;
 
@@ -124,7 +124,7 @@ namespace Novell.Directory.Ldap
         ///     False to throw an LdapReferralException if
         ///     the server returns a referral.
         /// </param>
-        public virtual bool ReferralFollowing
+        public bool ReferralFollowing
         {
             get => _doReferrals;
 
@@ -162,7 +162,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapException.LdapTimeout">
         /// </seealso>
-        public virtual int TimeLimit
+        public int TimeLimit
         {
             get => _msLimit;
 
@@ -262,7 +262,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="Controls">
         /// </seealso>
-        public virtual LdapControl[] GetControls()
+        public LdapControl[] GetControls()
         {
             return _controls;
         }
@@ -282,7 +282,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.GetProperty">
         /// </seealso>
-        public virtual object GetProperty(string name)
+        public object GetProperty(string name)
         {
             if (_properties == null)
             {
@@ -300,7 +300,7 @@ namespace Novell.Directory.Ldap
         ///     An LdapReferralHandler object that can process authentication.
         /// </returns>
         /*package*/
-        internal virtual ILdapReferralHandler getReferralHandler()
+        internal ILdapReferralHandler getReferralHandler()
         {
             return _refHandler;
         }
@@ -312,7 +312,7 @@ namespace Novell.Directory.Ldap
         ///     A single control to be sent to the server or
         ///     null if none.
         /// </param>
-        public virtual void SetControls(LdapControl control)
+        public void SetControls(LdapControl control)
         {
             if (control == null)
             {
@@ -330,7 +330,7 @@ namespace Novell.Directory.Ldap
         ///     An array of controls to be sent to the server or
         ///     null if none.
         /// </param>
-        public virtual void SetControls(LdapControl[] controls)
+        public void SetControls(LdapControl[] controls)
         {
             if (controls == null || controls.Length == 0)
             {
@@ -360,7 +360,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="LdapConnection.GetProperty">
         /// </seealso>
-        public virtual void SetProperty(string name, object valueRenamed)
+        public void SetProperty(string name, object valueRenamed)
         {
             if (_properties == null)
             {
@@ -382,7 +382,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="ILdapBindHandler">
         /// </seealso>
-        public virtual void setReferralHandler(ILdapReferralHandler handler)
+        public void setReferralHandler(ILdapReferralHandler handler)
         {
             _refHandler = handler;
         }

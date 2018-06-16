@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     name of object instance used for debug
         /// </returns>
-        internal virtual string DebugName => Name;
+        internal string DebugName => Name;
 
         /// <summary>
         ///     Returns the internal client message agent
@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The internal client message agent
         /// </returns>
-        internal virtual MessageAgent MessageAgent => Agent;
+        internal MessageAgent MessageAgent => Agent;
 
         /// <summary>
         ///     Returns the message IDs for all outstanding requests. These are requests
@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message IDs for all outstanding requests.
         /// </returns>
-        public virtual int[] MessageIDs => Agent.MessageIDs;
+        public int[] MessageIDs => Agent.MessageIDs;
 
         /// <summary> The message agent object associated with this queue</summary>
         internal MessageAgent Agent;
@@ -117,7 +117,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapMessage GetResponse()
+        public LdapMessage GetResponse()
         {
             return GetResponse(null);
         }
@@ -149,7 +149,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapMessage GetResponse(int msgid)
+        public LdapMessage GetResponse(int msgid)
         {
             return GetResponse(new Integer32(msgid));
         }
@@ -210,7 +210,7 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse,
         ///     otherwise false.
         /// </returns>
-        public virtual bool IsResponseReceived()
+        public bool IsResponseReceived()
         {
             return Agent.IsResponseReceived();
         }
@@ -228,7 +228,7 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse
         ///     for the specified message ID, otherwise false.
         /// </returns>
-        public virtual bool IsResponseReceived(int msgid)
+        public bool IsResponseReceived(int msgid)
         {
             return Agent.IsResponseReceived(msgid);
         }
@@ -242,7 +242,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if there is no outstanding operation
         ///     for the message ID,
         /// </summary>
-        public virtual bool IsComplete(int msgid)
+        public bool IsComplete(int msgid)
         {
             return Agent.IsComplete(msgid);
         }

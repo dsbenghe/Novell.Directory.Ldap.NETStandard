@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     OID of the response.
         /// </returns>
-        public virtual string Id
+        public string Id
         {
             get
             {
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap
         ///     The value of the response.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] Value
+        public sbyte[] Value
         {
             get
             {

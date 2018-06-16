@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );
         /// </returns>
-        public virtual IEnumerator ByteValues => new ArrayEnumeration(ByteValueArray);
+        public IEnumerator ByteValues => new ArrayEnumeration(ByteValueArray);
 
         /// <summary>
         ///     Returns an enumerator for the string values of an attribute.
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public virtual IEnumerator StringValues => new ArrayEnumeration(StringValueArray);
+        public IEnumerator StringValues => new ArrayEnumeration(StringValueArray);
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap
         ///     no values.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[][] ByteValueArray
+        public sbyte[][] ByteValueArray
         {
             get
             {
@@ -135,7 +135,7 @@ namespace Novell.Directory.Ldap
         ///     The values as an array of strings or an empty array if there are
         ///     no values
         /// </returns>
-        public virtual string[] StringValueArray
+        public string[] StringValueArray
         {
             get
             {
@@ -178,7 +178,7 @@ namespace Novell.Directory.Ldap
         ///     value may vary from one call to another.
         ///     If the attribute has no values <code>null</code> is returned
         /// </returns>
-        public virtual string StringValue
+        public string StringValue
         {
             get
             {
@@ -210,7 +210,7 @@ namespace Novell.Directory.Ldap
         ///     If the attribute has no values <code>null</code> is returned
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] ByteValue
+        public sbyte[] ByteValue
         {
             get
             {
@@ -234,7 +234,7 @@ namespace Novell.Directory.Ldap
         ///     The language subtype of the attribute or null if the attribute
         ///     has none.
         /// </returns>
-        public virtual string LangSubtype
+        public string LangSubtype
         {
             get
             {
@@ -258,14 +258,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name of the attribute.
         /// </returns>
-        public virtual string Name => _name;
+        public string Name => _name;
 
         /// <summary>
         ///     Replaces all values with the specified value. This protected method is
         ///     used by sub-classes of LdapSchemaElement because the value cannot be set
         ///     with a contructor.
         /// </summary>
-        protected internal virtual string Value
+        protected string Value
         {
             set
             {
@@ -489,7 +489,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null
         /// </param>
         [CLSCompliant(false)]
-        public virtual void AddValue(sbyte[] attrBytes)
+        public void AddValue(sbyte[] attrBytes)
         {
             if (attrBytes == null)
             {
@@ -507,7 +507,7 @@ namespace Novell.Directory.Ldap
         ///     The base64 value of the attribute as a String.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void AddBase64Value(string attrString)
+        public void AddBase64Value(string attrString)
         {
             if ((object) attrString == null)
             {
@@ -532,7 +532,7 @@ namespace Novell.Directory.Ldap
         ///     The end index of base encoded part, exclusive.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void AddBase64Value(StringBuilder attrString, int start, int end)
+        public void AddBase64Value(StringBuilder attrString, int start, int end)
         {
             if (attrString == null)
             {
@@ -552,7 +552,7 @@ namespace Novell.Directory.Ldap
         ///     characters.
         ///     @throws IllegalArgumentException if attrString is null
         /// </param>
-        public virtual void AddBase64Value(char[] attrChars)
+        public void AddBase64Value(char[] attrChars)
         {
             if (attrChars == null)
             {
@@ -571,7 +571,7 @@ namespace Novell.Directory.Ldap
         ///     the value of the attribute.
         ///     @throws IllegalArgumentException if url is null
         /// </param>
-        public virtual void AddUrlValue(string url)
+        public void AddUrlValue(string url)
         {
             if ((object) url == null)
             {
@@ -589,7 +589,7 @@ namespace Novell.Directory.Ldap
         ///     of the attribute.
         ///     @throws IllegalArgumentException if url is null
         /// </param>
-        public virtual void AddUrlValue(Uri url)
+        public void AddUrlValue(Uri url)
         {
             // Class to encapsulate the data bytes and the length
             if (url == null)
@@ -641,7 +641,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The base name of the attribute.
         /// </returns>
-        public virtual string GetBaseName()
+        public string GetBaseName()
         {
             return _baseName;
         }
@@ -681,7 +681,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array subtypes or null if the attribute has none.
         /// </returns>
-        public virtual string[] GetSubtypes()
+        public string[] GetSubtypes()
         {
             return _subTypes;
         }
@@ -734,7 +734,7 @@ namespace Novell.Directory.Ldap
         ///     false, if it doesn't.
         ///     @throws IllegalArgumentException if subtype is null
         /// </returns>
-        public virtual bool HasSubtype(string subtype)
+        public bool HasSubtype(string subtype)
         {
             if ((object) subtype == null)
             {
@@ -767,7 +767,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if subtypes is null or if array member
         ///     is null.
         /// </returns>
-        public virtual bool HasSubtypes(string[] subtypes)
+        public bool HasSubtypes(string[] subtypes)
         {
             if (subtypes == null)
             {
@@ -835,7 +835,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null
         /// </param>
         [CLSCompliant(false)]
-        public virtual void RemoveValue(sbyte[] attrBytes)
+        public void RemoveValue(sbyte[] attrBytes)
         {
             if (null == attrBytes)
             {
@@ -881,7 +881,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The number of values in the attribute.
         /// </returns>
-        public virtual int Size()
+        public int Size()
         {
             return null == _values ? 0 : _values.Length;
         }
