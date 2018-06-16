@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         controlValue            OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public sealed class RfcControl : Asn1Sequence
+    public class RfcControl : Asn1Sequence
     {
         /// <summary> </summary>
         public Asn1OctetString ControlType => (Asn1OctetString) get_Renamed(0);

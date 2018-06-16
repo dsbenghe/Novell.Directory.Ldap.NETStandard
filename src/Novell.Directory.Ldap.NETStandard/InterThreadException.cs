@@ -33,7 +33,7 @@ using System;
 
 namespace Novell.Directory.Ldap
 {
-    public sealed class InterThreadException : LdapException
+    public class InterThreadException : LdapException
     {
         /// <summary>
         ///     Returns the message ID of this message request.

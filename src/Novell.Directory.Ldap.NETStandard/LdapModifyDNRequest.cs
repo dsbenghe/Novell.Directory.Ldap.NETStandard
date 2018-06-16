@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
      *               deleteoldrdn    BOOLEAN,
      *               newSuperior     [0] LdapDN OPTIONAL }
      */
-    public sealed class LdapModifyDnRequest : LdapMessage
+    public class LdapModifyDnRequest : LdapMessage
     {
         /// <summary>
         ///     Returns the dn of the entry to rename or move in the directory

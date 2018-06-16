@@ -34,7 +34,7 @@ using System.Collections;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    public sealed class ArrayEnumeration : IEnumerator
+    public class ArrayEnumeration : IEnumerator
     {
         private object _tempAuxObj;
 

@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public sealed class LdapAttributeSchema : LdapSchemaElement
+    public class LdapAttributeSchema : LdapSchemaElement
     {
         private void InitBlock()
         {

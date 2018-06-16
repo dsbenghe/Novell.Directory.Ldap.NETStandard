@@ -38,7 +38,7 @@ using Novell.Directory.Ldap.Utilclass;
 namespace Novell.Directory.Ldap
 {
     /// <summary> Encapsulates an Ldap message, its state, and its replies.</summary>
-    internal sealed class Message
+    internal class Message
     {
         private void InitBlock()
         {
@@ -472,7 +472,7 @@ namespace Novell.Directory.Ldap
         ///     Timer class to provide timing for messages.  Only called
         ///     if time to wait is non zero.
         /// </summary>
-        private sealed class Timeout : SupportClass.ThreadClass
+        private class Timeout : SupportClass.ThreadClass
         {
             private void InitBlock(Message enclosingInstance)
             {

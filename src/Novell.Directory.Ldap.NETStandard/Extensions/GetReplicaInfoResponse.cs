@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The getReplicaInfoResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.18
     /// </summary>
-    public sealed class GetReplicaInfoResponse : LdapExtendedResponse
+    public class GetReplicaInfoResponse : LdapExtendedResponse
     {
         // Other info as returned by the server
         private readonly int _partitionId;

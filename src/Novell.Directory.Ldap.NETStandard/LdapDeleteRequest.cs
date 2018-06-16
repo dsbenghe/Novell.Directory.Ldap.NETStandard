@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
     /*
      *       DelRequest ::= [APPLICATION 10] LdapDN
      */
-    public sealed class LdapDeleteRequest : LdapMessage
+    public class LdapDeleteRequest : LdapMessage
     {
         /// <summary>
         ///     Returns of the dn of the entry to delete from the directory

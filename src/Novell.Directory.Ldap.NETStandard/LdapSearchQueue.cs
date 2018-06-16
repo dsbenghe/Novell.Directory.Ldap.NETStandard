@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapResponseQueue">
     /// </seealso>
-    public sealed class LdapSearchQueue : LdapMessageQueue
+    public class LdapSearchQueue : LdapMessageQueue
     {
         /// <summary>
         ///     Constructs a response queue using a specific client queue

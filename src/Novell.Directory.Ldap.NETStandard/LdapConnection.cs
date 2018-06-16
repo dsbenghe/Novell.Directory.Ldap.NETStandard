@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
     ///     application may have more than one LdapConnection object, connected
     ///     to the same or different directory servers.
     /// </summary>
-    public sealed class LdapConnection : ILdapConnection
+    public class LdapConnection : ILdapConnection
     {
         private void InitBlock()
         {

@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     /// <seealso cref="Dn">
     /// </seealso>
-    public sealed class Rdn : object
+    public class Rdn : object
     {
         /// <summary>
         ///     Returns the actually Raw String before Normalization

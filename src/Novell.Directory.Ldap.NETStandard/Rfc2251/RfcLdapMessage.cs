@@ -70,7 +70,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///     constructor should be package protected. (So the MessageID value
     ///     isn't arbitrarily run up.)
     /// </summary>
-    public sealed class RfcLdapMessage : Asn1Sequence
+    public class RfcLdapMessage : Asn1Sequence
     {
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
         public int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();

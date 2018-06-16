@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Controls
     ///     added to the result set, when an entry is deleted from the result set,
     ///     when a DN has been changed or when and attribute value has been changed.
     /// </summary>
-    public sealed class LdapPersistSearchControl : LdapControl
+    public class LdapPersistSearchControl : LdapControl
     {
         /// <summary>
         ///     Returns the change types to be monitored as a logical OR of any or

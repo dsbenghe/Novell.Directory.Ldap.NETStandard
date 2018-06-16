@@ -35,7 +35,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     This class encapsulates the combination of LdapReferral URL and
     ///     the connection opened to service this URL
     /// </summary>
-    public sealed class ReferralInfo
+    public class ReferralInfo
     {
         /// <summary>
         ///     Returns the referral URL

@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The getEffectivePrivilegesResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.34
     /// </summary>
-    public sealed class GetEffectivePrivilegesResponse : LdapExtendedResponse
+    public class GetEffectivePrivilegesResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the effective privileges.

@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     Structure Rule.  It is used to discover or modify which
     ///     object classes a particular object class may be subordinate to in the DIT.
     /// </summary>
-    public sealed class LdapDitStructureRuleSchema : LdapSchemaElement
+    public class LdapDitStructureRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the rule ID for this structure rule.

@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
      *               requestName      [0] LdapOID,
      *               requestValue     [1] OCTET STRING OPTIONAL }
      */
-    public sealed class LdapExtendedRequest : LdapMessage
+    public class LdapExtendedRequest : LdapMessage
     {
         /// <summary> Retrieves an extended operation from this request</summary>
         /// <returns>

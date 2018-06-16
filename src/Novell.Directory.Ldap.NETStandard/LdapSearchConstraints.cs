@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConnection.Constraints">
     /// </seealso>
-    public sealed class LdapSearchConstraints : LdapConstraints
+    public class LdapSearchConstraints : LdapConstraints
     {
         private void InitBlock()
         {

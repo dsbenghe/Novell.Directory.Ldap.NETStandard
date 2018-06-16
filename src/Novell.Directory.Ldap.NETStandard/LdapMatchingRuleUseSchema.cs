@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public sealed class LdapMatchingRuleUseSchema : LdapSchemaElement
+    public class LdapMatchingRuleUseSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns an array of all the attributes which this matching rule

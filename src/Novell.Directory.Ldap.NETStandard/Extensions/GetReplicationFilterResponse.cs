@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The GetReplicationFilterResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.38
     /// </summary>
-    public sealed class GetReplicationFilterResponse : LdapExtendedResponse
+    public class GetReplicationFilterResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the replicationFilter as an array of classname-attribute name pairs

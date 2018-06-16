@@ -35,7 +35,7 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    internal sealed class MessageAgent
+    internal class MessageAgent
     {
         private void InitBlock()
         {

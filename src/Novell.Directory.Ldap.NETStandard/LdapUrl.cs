@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.Search">
     /// </seealso>
-    public sealed class LdapUrl
+    public class LdapUrl
 
     {
         private void InitBlock()

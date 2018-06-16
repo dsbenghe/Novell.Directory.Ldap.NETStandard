@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     Canonical, and Distinguished Encoding Rules", 1994.
     /// </summary>
     [CLSCompliant(true)]
-    public sealed class LberDecoder : IAsn1Decoder
+    public class LberDecoder : IAsn1Decoder
     {
         public LberDecoder()
         {

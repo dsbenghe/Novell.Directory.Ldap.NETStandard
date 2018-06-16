@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap
      *                                               replace (2) },
      *                       modification    AttributeTypeAndValues } }
      */
-    public sealed class LdapModifyRequest : LdapMessage
+    public class LdapModifyRequest : LdapMessage
     {
         /// <summary>
         ///     Returns of the dn of the entry to modify in the directory

@@ -34,7 +34,7 @@ namespace Novell.Directory.Ldap.Controls
     /// <summary>
     ///     Encapsulates parameters for sorting search results.
     /// </summary>
-    public sealed class LdapSortKey
+    public class LdapSortKey
     {
         /// <summary>
         ///     Returns the attribute to used for sorting.

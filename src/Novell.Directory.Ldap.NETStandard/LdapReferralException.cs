@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap
     ///     to the referrals or search continuation references received on an Ldap
     ///     operation.
     /// </summary>
-    public sealed class LdapReferralException : LdapException
+    public class LdapReferralException : LdapException
     {
         /// <summary>
         ///     Sets a referral that could not be processed

@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     /// <seealso cref="Rdn">
     /// </seealso>
-    public sealed class Dn : object
+    public class Dn : object
     {
         private void InitBlock()
         {

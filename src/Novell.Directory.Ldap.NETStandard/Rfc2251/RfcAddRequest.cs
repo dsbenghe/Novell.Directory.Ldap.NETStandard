@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         attributes      AttributeList }
     ///     </pre>
     /// </summary>
-    public sealed class RfcAddRequest : Asn1Sequence, IRfcRequest
+    public class RfcAddRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> Gets the attributes of the entry</summary>
         public RfcAttributeList Attributes => (RfcAttributeList) get_Renamed(1);

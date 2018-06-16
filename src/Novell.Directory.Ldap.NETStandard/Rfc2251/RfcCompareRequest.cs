@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         ava             AttributeValueAssertion }
     ///     </pre>
     /// </summary>
-    public sealed class RfcCompareRequest : Asn1Sequence, IRfcRequest
+    public class RfcCompareRequest : Asn1Sequence, IRfcRequest
     {
         public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion) get_Renamed(1);
 

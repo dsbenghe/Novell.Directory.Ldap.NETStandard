@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         response         [11] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public sealed class RfcExtendedResponse : Asn1Sequence, IRfcResponse
+    public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary> </summary>
         public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid) get_Renamed(_responseNameIndex) : null;

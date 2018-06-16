@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         modification    AttributeTypeAndValues } }
     ///     </pre>
     /// </summary>
-    public sealed class RfcModifyRequest : Asn1Sequence, IRfcRequest
+    public class RfcModifyRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary>
         ///     Return the Modifications for this request

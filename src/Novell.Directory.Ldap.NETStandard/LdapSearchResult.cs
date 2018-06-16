@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.Search">
     /// </seealso>
-    public sealed class LdapSearchResult : LdapMessage
+    public class LdapSearchResult : LdapMessage
     {
         /// <summary>
         ///     Returns the entry of a server's search response.

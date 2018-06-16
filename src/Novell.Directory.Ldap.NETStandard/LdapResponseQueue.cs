@@ -36,7 +36,7 @@ namespace Novell.Directory.Ldap
     ///     It represents the message queue associated with a particular asynchronous
     ///     Ldap operation or operations.
     /// </summary>
-    public sealed class LdapResponseQueue : LdapMessageQueue
+    public class LdapResponseQueue : LdapMessageQueue
     {
         /// <summary>
         ///     Constructs a response queue using the specified message agent

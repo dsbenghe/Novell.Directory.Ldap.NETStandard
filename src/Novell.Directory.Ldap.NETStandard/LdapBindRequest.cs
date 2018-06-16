@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
      *               name                    LdapDN,
      *               authentication          AuthenticationChoice }
      */
-    public sealed class LdapBindRequest : LdapMessage
+    public class LdapBindRequest : LdapMessage
     {
         /// <summary>
         ///     Retrieves the Authentication DN for a bind request.

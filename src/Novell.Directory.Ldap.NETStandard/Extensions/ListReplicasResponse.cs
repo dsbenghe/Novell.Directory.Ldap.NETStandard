@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The listReplicaResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.20
     /// </summary>
-    public sealed class ListReplicasResponse : LdapExtendedResponse
+    public class ListReplicasResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns a list of distinguished names for the replicas on the server.

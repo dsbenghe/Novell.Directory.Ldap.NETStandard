@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         extensibleMatch [9] MatchingRuleAssertion }
     ///     </pre>
     /// </summary>
-    public sealed class RfcFilter : Asn1Choice
+    public class RfcFilter : Asn1Choice
     {
         //*************************************************************************
         // Public variables for Filter
@@ -1033,7 +1033,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     the type of filter component.  Then the component values will be returned
         ///     AND, NOT, and OR components values will be returned as Iterators.
         /// </summary>
-        private sealed class FilterIterator : IEnumerator
+        private class FilterIterator : IEnumerator
         {
             public void Reset()
             {
@@ -1189,7 +1189,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> This inner class will tokenize the components of an RFC 2254 search filter.</summary>
-        private sealed class FilterTokenizer
+        private class FilterTokenizer
         {
             private void InitBlock(RfcFilter enclosingInstance)
             {

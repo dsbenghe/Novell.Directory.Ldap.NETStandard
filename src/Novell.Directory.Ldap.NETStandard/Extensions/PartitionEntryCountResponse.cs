@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     OID:
     ///     2.16.840.1.113719.1.27.100.14
     /// </summary>
-    public sealed class PartitionEntryCountResponse : LdapExtendedResponse
+    public class PartitionEntryCountResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the number of entries in the naming context.

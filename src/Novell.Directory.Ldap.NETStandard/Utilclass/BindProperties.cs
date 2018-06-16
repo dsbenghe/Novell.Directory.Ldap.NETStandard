@@ -34,7 +34,7 @@ using System.Collections;
 namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary> Encapsulates an Ldap Bind properties</summary>
-    public sealed class BindProperties
+    public class BindProperties
     {
         /// <summary> gets the protocol version</summary>
         public int ProtocolVersion { get; } = 3;

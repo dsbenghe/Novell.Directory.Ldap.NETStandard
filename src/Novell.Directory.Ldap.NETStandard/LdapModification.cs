@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapAttribute">
     /// </seealso>
-    public sealed class LdapModification
+    public class LdapModification
     {
         /// <summary>
         ///     Returns the attribute to modify, with any existing values.

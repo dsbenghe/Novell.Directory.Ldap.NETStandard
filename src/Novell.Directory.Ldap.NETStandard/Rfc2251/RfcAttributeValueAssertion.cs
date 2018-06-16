@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         assertionValue  AssertionValue }
     ///     </pre>
     /// </summary>
-    public sealed class RfcAttributeValueAssertion : Asn1Sequence
+    public class RfcAttributeValueAssertion : Asn1Sequence
     {
         /// <summary>
         ///     Returns the attribute description.

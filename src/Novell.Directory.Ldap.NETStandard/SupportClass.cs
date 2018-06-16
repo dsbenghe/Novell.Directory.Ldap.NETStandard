@@ -745,7 +745,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     This class contains different methods to manage Collections.
         /// </summary>
-        public sealed class CollectionSupport : CollectionBase
+        public class CollectionSupport : CollectionBase
         {
             /// <summary>
             ///     Adds an specified element to the collection.

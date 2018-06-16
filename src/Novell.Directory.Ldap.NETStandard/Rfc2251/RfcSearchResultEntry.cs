@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         attributes      PartialAttributeList }
     ///     </pre>
     /// </summary>
-    public sealed class RfcSearchResultEntry : Asn1Sequence
+    public class RfcSearchResultEntry : Asn1Sequence
     {
         /// <summary> </summary>
         public Asn1OctetString ObjectName => (Asn1OctetString) get_Renamed(0);

@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         authentication          AuthenticationChoice }
     ///     </pre>
     /// </summary>
-    public sealed class RfcBindRequest : Asn1Sequence, IRfcRequest
+    public class RfcBindRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> </summary>
         /// <summary> Sets the protocol version</summary>

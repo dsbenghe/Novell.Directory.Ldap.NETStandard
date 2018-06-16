@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     </pre>
     /// </summary>
     [CLSCompliant(true)]
-    public sealed class Asn1Identifier : object
+    public class Asn1Identifier : object
     {
         /// <summary>
         ///     Returns the CLASS of this Asn1Identifier as an int value.

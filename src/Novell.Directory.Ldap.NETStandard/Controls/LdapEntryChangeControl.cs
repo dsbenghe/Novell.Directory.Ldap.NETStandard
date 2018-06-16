@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Controls
     ///     contains additional information about a change such as what type of
     ///     change occurred.
     /// </summary>
-    public sealed class LdapEntryChangeControl : LdapControl
+    public class LdapEntryChangeControl : LdapControl
     {
         /// <summary>
         ///     returns the record number of the change in the servers change log.

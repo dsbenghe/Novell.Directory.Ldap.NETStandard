@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
      *               entry           LdapDN,
      *               ava             AttributeValueAssertion }
      */
-    public sealed class LdapCompareRequest : LdapMessage
+    public class LdapCompareRequest : LdapMessage
     {
         /// <summary>
         ///     Returns the LdapAttribute associated with this request.

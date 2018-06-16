@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConnection.GetSchemaDN">
     /// </seealso>
-    public sealed class LdapSchema : LdapEntry
+    public class LdapSchema : LdapEntry
     {
         private void InitBlock()
         {

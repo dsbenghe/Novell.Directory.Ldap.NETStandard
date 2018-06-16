@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public sealed class LdapObjectClassSchema : LdapSchemaElement
+    public class LdapObjectClassSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the object classes from which this one derives.

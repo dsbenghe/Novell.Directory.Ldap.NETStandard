@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     usual after the Asn1Tagged identifier has been encoded.
     /// </summary>
     [CLSCompliant(true)]
-    public sealed class Asn1Tagged : Asn1Object
+    public class Asn1Tagged : Asn1Object
     {
         /// <summary> Sets the Asn1Object tagged value</summary>
         [CLSCompliant(false)]

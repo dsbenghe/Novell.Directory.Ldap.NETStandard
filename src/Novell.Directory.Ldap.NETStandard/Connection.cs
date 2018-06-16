@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
     ///     operating systems do not time slice.
     /// </summary>
     /*package*/
-    internal sealed class Connection
+    internal class Connection
     {
         public event RemoteCertificateValidationCallback OnCertificateValidation;
         private SslPolicyErrors _handshakePolicyErrors;
@@ -1027,7 +1027,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// TLS not supported in first release
-        public sealed class ReaderThread
+        public class ReaderThread
         {
             private readonly Connection _enclosingInstance;
             private bool _isStopping;

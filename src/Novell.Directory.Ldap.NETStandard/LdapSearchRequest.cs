@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
      *               filter          Filter,
      *               attributes      AttributeDescriptionList }
      */
-    public sealed class LdapSearchRequest : LdapMessage
+    public class LdapSearchRequest : LdapMessage
     {
         /// <summary>
         ///     Retrieves the Base DN for a search request.

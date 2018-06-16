@@ -35,7 +35,7 @@ using System.Text;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    public sealed class SchemaParser
+    public class SchemaParser
     {
         private void InitBlock()
         {

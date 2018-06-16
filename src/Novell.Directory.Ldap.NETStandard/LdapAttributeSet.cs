@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapEntry">
     /// </seealso>
-    public sealed class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
+    public class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
     {
         /// <summary>
         ///     Returns the number of attributes in this set.

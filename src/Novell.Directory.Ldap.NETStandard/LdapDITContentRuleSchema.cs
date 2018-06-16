@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     additional auxiliary classes, mandatory and optional attributes, and
     ///     restricted attributes in effect for an object class.
     /// </summary>
-    public sealed class LdapDitContentRuleSchema : LdapSchemaElement
+    public class LdapDitContentRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the list of allowed auxiliary classes.

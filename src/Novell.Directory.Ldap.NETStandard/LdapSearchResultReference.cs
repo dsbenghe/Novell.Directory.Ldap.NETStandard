@@ -37,7 +37,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Encapsulates a continuation reference from an asynchronous search operation.
     /// </summary>
-    public sealed class LdapSearchResultReference : LdapMessage
+    public class LdapSearchResultReference : LdapMessage
     {
         /// <summary>
         ///     Returns any URLs in the object.
