@@ -42,9 +42,9 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         ava             AttributeValueAssertion }
     ///     </pre>
     /// </summary>
-    public class RfcCompareRequest : Asn1Sequence, IRfcRequest
+    public sealed class RfcCompareRequest : Asn1Sequence, IRfcRequest
     {
-        public virtual RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion) get_Renamed(1);
+        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion) get_Renamed(1);
 
         //*************************************************************************
         // Constructor for CompareRequest

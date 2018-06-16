@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap
     ///     to the referrals or search continuation references received on an Ldap
     ///     operation.
     /// </summary>
-    public class LdapReferralException : LdapException
+    public sealed class LdapReferralException : LdapException
     {
         /// <summary>
         ///     Sets a referral that could not be processed
@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap
         /// <param name="url">
         ///     The referral URL that could not be processed.
         /// </param>
-        public virtual string FailedReferral
+        public string FailedReferral
         {
             /* Gets the referral that could not be processed.  If multiple referrals
             * could not be processed, the method returns one of them.
@@ -231,7 +231,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of URLs that comprise this referral
         /// </returns>
-        public virtual string[] GetReferrals()
+        public string[] GetReferrals()
         {
             return _referrals;
         }
@@ -243,7 +243,7 @@ namespace Novell.Directory.Ldap
         ///     the list of referrals returned by the Ldap server in a
         ///     single response.
         /// </param>
-        internal virtual void SetReferrals(string[] urls)
+        internal void SetReferrals(string[] urls)
         {
             _referrals = urls;
         }

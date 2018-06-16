@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
      *               filter          Filter,
      *               attributes      AttributeDescriptionList }
      */
-    public class LdapSearchRequest : LdapMessage
+    public sealed class LdapSearchRequest : LdapMessage
     {
         /// <summary>
         ///     Retrieves the Base DN for a search request.
@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the base DN for a search request
         /// </returns>
-        public virtual string Dn => Asn1Object.RequestDn;
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary> Retrieves the scope of a search request.</summary>
         /// <returns>
@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
-        public virtual int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
+        public int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
 
         /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
         /// <returns>
@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
-        public virtual int Dereference => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
+        public int Dereference => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
 
         /// <summary>
         ///     Retrieves the maximum number of entries to be returned on a search.
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     Maximum number of search entries.
         /// </returns>
-        public virtual int MaxResults => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
+        public int MaxResults => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
 
         /// <summary>
         ///     Retrieves the server time limit for a search request.
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     server time limit in nanoseconds.
         /// </returns>
-        public virtual int ServerTimeLimit => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
+        public int ServerTimeLimit => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
 
         /// <summary>
         ///     Retrieves whether attribute values or only attribute types(names) should
@@ -118,13 +118,13 @@ namespace Novell.Directory.Ldap
         ///     true if only attribute types (names) are returned, false if
         ///     attributes types and values are to be returned.
         /// </returns>
-        public virtual bool TypesOnly => ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
+        public bool TypesOnly => ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
 
         /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
         /// <returns>
         ///     Attribute names to be searched
         /// </returns>
-        public virtual string[] Attributes
+        public string[] Attributes
         {
             get
             {
@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     filter string for this search request
         /// </returns>
-        public virtual string StringFilter => RfcFilter.FilterToString();
+        public string StringFilter => RfcFilter.FilterToString();
 
         /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
         /// <returns>
@@ -199,7 +199,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     Iterator representing filter components
         /// </returns>
-        public virtual IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
+        public IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
 
         //*************************************************************************
         // Public variables for Filter

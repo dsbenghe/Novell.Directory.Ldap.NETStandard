@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapResponseQueue">
     /// </seealso>
-    public class LdapSearchQueue : LdapMessageQueue
+    public sealed class LdapSearchQueue : LdapMessageQueue
     {
         /// <summary>
         ///     Constructs a response queue using a specific client queue
@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap
         ///     Ldap request, after which it will receive responses
         ///     for that request..
         /// </param>
-        public virtual void Merge(LdapMessageQueue queue2)
+        public void Merge(LdapMessageQueue queue2)
         {
             var q = (LdapSearchQueue) queue2;
             Agent.Merge(q.MessageAgent);

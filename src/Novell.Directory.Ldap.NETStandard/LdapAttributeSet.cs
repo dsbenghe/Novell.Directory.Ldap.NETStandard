@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapEntry">
     /// </seealso>
-    public class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
+    public sealed class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
     {
         /// <summary>
         ///     Returns the number of attributes in this set.
@@ -124,7 +124,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute matching the specified attrName, or <code>null</code>
         ///     if there is no exact match.
         /// </returns>
-        public virtual LdapAttribute GetAttribute(string attrName)
+        public LdapAttribute GetAttribute(string attrName)
         {
             return (LdapAttribute) _map[attrName.ToUpper()];
         }
@@ -191,7 +191,7 @@ namespace Novell.Directory.Ldap
         ///     A single best-match <code>LdapAttribute</code>, or <code>null</code>
         ///     if no match is found in the entry.
         /// </returns>
-        public virtual LdapAttribute GetAttribute(string attrName, string lang)
+        public LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;
             return (LdapAttribute) _map[key.ToUpper()];
@@ -234,7 +234,7 @@ namespace Novell.Directory.Ldap
         ///     An attribute set containing the attributes that match the
         ///     specified subtype.
         /// </returns>
-        public virtual LdapAttributeSet GetSubset(string subtype)
+        public LdapAttributeSet GetSubset(string subtype)
         {
             // Create a new tempAttributeSet
             var tempAttributeSet = new LdapAttributeSet();

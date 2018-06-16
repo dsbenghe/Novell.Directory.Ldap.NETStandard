@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The GetBindDNResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.32
     /// </summary>
-    public class GetBindDnResponse : LdapExtendedResponse
+    public sealed class GetBindDnResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the identity of the object.
@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     A string value specifying the bind dn returned by the server.
         /// </returns>
-        public virtual string Identity => _identity;
+        public string Identity => _identity;
 
         // Identity returned by the server
         private readonly string _identity;

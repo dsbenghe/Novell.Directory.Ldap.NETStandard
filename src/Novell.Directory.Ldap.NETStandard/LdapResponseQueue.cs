@@ -36,7 +36,7 @@ namespace Novell.Directory.Ldap
     ///     It represents the message queue associated with a particular asynchronous
     ///     Ldap operation or operations.
     /// </summary>
-    public class LdapResponseQueue : LdapMessageQueue
+    public sealed class LdapResponseQueue : LdapMessageQueue
     {
         /// <summary>
         ///     Constructs a response queue using the specified message agent
@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap
         ///     Ldap request, after which it will receive responses
         ///     for that request..
         /// </param>
-        public virtual void Merge(LdapMessageQueue queue2)
+        public void Merge(LdapMessageQueue queue2)
         {
             var q = (LdapResponseQueue) queue2;
             Agent.Merge(q.MessageAgent);

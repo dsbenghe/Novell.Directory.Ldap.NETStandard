@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Controls
     ///     added to the result set, when an entry is deleted from the result set,
     ///     when a DN has been changed or when and attribute value has been changed.
     /// </summary>
-    public class LdapPersistSearchControl : LdapControl
+    public sealed class LdapPersistSearchControl : LdapControl
     {
         /// <summary>
         ///     Returns the change types to be monitored as a logical OR of any or
@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     to the value ANY which is defined as the logical OR of all of the
         ///     preceding values.
         /// </summary>
-        public virtual int ChangeTypes
+        public int ChangeTypes
         {
             get => _mChangeTypes;
 
@@ -85,7 +85,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="returnControls">
         ///     true to return entry change controls.
         /// </param>
-        public virtual bool ReturnControls
+        public bool ReturnControls
         {
             get => _mReturnControls;
 
@@ -111,7 +111,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="changesOnly">
         ///     true to skip results for the initial search
         /// </param>
-        public virtual bool ChangesOnly
+        public bool ChangesOnly
         {
             get => _mChangesOnly;
 

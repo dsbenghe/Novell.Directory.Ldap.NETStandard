@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
     /*
      *       DelRequest ::= [APPLICATION 10] LdapDN
      */
-    public class LdapDeleteRequest : LdapMessage
+    public sealed class LdapDeleteRequest : LdapMessage
     {
         /// <summary>
         ///     Returns of the dn of the entry to delete from the directory
@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to delete
         /// </returns>
-        public virtual string Dn => Asn1Object.RequestDn;
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Constructs a request to delete an entry from the directory

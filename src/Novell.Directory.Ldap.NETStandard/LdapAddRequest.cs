@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
      *               entry           LdapDN,
      *               attributes      AttributeList }
      */
-    public class LdapAddRequest : LdapMessage
+    public sealed class LdapAddRequest : LdapMessage
     {
         /// <summary>
         ///     Constructs an LdapEntry that represents the add request
@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an LdapEntry that represents the add request.
         /// </returns>
-        public virtual LdapEntry Entry
+        public LdapEntry Entry
         {
             get
             {

@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         modification    AttributeTypeAndValues } }
     ///     </pre>
     /// </summary>
-    public class RfcModifyRequest : Asn1Sequence, IRfcRequest
+    public sealed class RfcModifyRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary>
         ///     Return the Modifications for this request
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the modifications for this request.
         /// </returns>
-        public virtual Asn1SequenceOf Modifications => (Asn1SequenceOf) get_Renamed(1);
+        public Asn1SequenceOf Modifications => (Asn1SequenceOf) get_Renamed(1);
 
         //*************************************************************************
         // Constructor for ModifyRequest

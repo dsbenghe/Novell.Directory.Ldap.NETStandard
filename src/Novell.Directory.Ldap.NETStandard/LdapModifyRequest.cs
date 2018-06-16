@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap
      *                                               replace (2) },
      *                       modification    AttributeTypeAndValues } }
      */
-    public class LdapModifyRequest : LdapMessage
+    public sealed class LdapModifyRequest : LdapMessage
     {
         /// <summary>
         ///     Returns of the dn of the entry to modify in the directory
@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to modify
         /// </returns>
-        public virtual string Dn => Asn1Object.RequestDn;
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Constructs the modifications associated with this request
@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an array of LdapModification objects
         /// </returns>
-        public virtual LdapModification[] Modifications
+        public LdapModification[] Modifications
         {
             get
             {

@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public class LdapAttributeSchema : LdapSchemaElement
+    public sealed class LdapAttributeSchema : LdapSchemaElement
     {
         private void InitBlock()
         {
@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object identifer of the attribute's syntax.
         /// </returns>
-        public virtual string SyntaxString { get; }
+        public string SyntaxString { get; }
 
         /// <summary>
         ///     Returns the name of the attribute type which this attribute derives
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute's superior attribute, or null if there is none.
         /// </returns>
-        public virtual string Superior { get; }
+        public string Superior { get; }
 
         /// <summary>
         ///     Returns true if the attribute is single-valued.
@@ -81,7 +81,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is single-valued; false if the attribute
         ///     is multi-valued.
         /// </returns>
-        public virtual bool SingleValued { get; }
+        public bool SingleValued { get; }
 
         /// <summary>
         ///     Returns the matching rule for this attribute.
@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's equality matching rule; null if it has no equality
         ///     matching rule.
         /// </returns>
-        public virtual string EqualityMatchingRule { get; }
+        public string EqualityMatchingRule { get; }
 
         /// <summary>
         ///     Returns the ordering matching rule for this attribute.
@@ -99,7 +99,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's ordering matching rule; null if it has no ordering
         ///     matching rule.
         /// </returns>
-        public virtual string OrderingMatchingRule { get; }
+        public string OrderingMatchingRule { get; }
 
         /// <summary>
         ///     Returns the substring matching rule for this attribute.
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
         ///     The attribute's substring matching rule; null if it has no substring
         ///     matching rule.
         /// </returns>
-        public virtual string SubstringMatchingRule { get; }
+        public string SubstringMatchingRule { get; }
 
         /// <summary>
         ///     Returns true if the attribute is a collective attribute.
@@ -117,7 +117,7 @@ namespace Novell.Directory.Ldap
         ///     True if the attribute is a collective; false if the attribute
         ///     is not a collective attribute.
         /// </returns>
-        public virtual bool Collective { get; }
+        public bool Collective { get; }
 
         /// <summary>
         ///     Returns false if the attribute is read-only.
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap
         ///     False if the attribute is read-only; true if the attribute
         ///     is read-write.
         /// </returns>
-        public virtual bool UserModifiable { get; } = true;
+        public bool UserModifiable { get; } = true;
 
         /// <summary>
         ///     Returns the usage of the attribute.
@@ -136,7 +136,7 @@ namespace Novell.Directory.Ldap
         ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
         ///     DSA_OPERATION.
         /// </returns>
-        public virtual int Usage => _usage;
+        public int Usage => _usage;
 
         private int _usage;
 

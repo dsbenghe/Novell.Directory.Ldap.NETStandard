@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public class LdapNameFormSchema : LdapSchemaElement
+    public sealed class LdapNameFormSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the name of the object class which this name form applies to.
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name of the object class.
         /// </returns>
-        public virtual string ObjectClass { get; }
+        public string ObjectClass { get; }
 
         /// <summary>
         ///     Returns the list of required naming attributes for an entry
@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required naming attributes.
         /// </returns>
-        public virtual string[] RequiredNamingAttributes => _required;
+        public string[] RequiredNamingAttributes => _required;
 
         /// <summary>
         ///     Returns the list of optional naming attributes for an entry
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of the optional naming attributes.
         /// </returns>
-        public virtual string[] OptionalNamingAttributes => _optional;
+        public string[] OptionalNamingAttributes => _optional;
 
         private readonly string[] _required;
         private readonly string[] _optional;

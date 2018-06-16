@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     additional auxiliary classes, mandatory and optional attributes, and
     ///     restricted attributes in effect for an object class.
     /// </summary>
-    public class LdapDitContentRuleSchema : LdapSchemaElement
+    public sealed class LdapDitContentRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the list of allowed auxiliary classes.
@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public virtual string[] AuxiliaryClasses => _auxiliary;
+        public string[] AuxiliaryClasses => _auxiliary;
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public virtual string[] RequiredAttributes => _required;
+        public string[] RequiredAttributes => _required;
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public virtual string[] OptionalAttributes => _optional;
+        public string[] OptionalAttributes => _optional;
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public virtual string[] PrecludedAttributes => _precluded;
+        public string[] PrecludedAttributes => _precluded;
 
         private readonly string[] _auxiliary = {""};
         private readonly string[] _required = {""};

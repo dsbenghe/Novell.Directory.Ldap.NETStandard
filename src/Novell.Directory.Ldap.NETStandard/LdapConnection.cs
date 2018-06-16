@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
     ///     application may have more than one LdapConnection object, connected
     ///     to the same or different directory servers.
     /// </summary>
-    public class LdapConnection : ILdapConnection
+    public sealed class LdapConnection : ILdapConnection
     {
         private void InitBlock()
         {
@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap
         ///     The protol version used for authentication or 0
         ///     not authenticated.
         /// </returns>
-        public virtual int ProtocolVersion
+        public int ProtocolVersion
         {
             get
             {
@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name if authenticated; otherwise, null.
         /// </returns>
-        public virtual string AuthenticationDn
+        public string AuthenticationDn
         {
             get
             {
@@ -122,7 +122,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The method used to authenticate the connection.
         /// </returns>
-        public virtual string AuthenticationMethod
+        public string AuthenticationMethod
         {
             get
             {
@@ -145,7 +145,7 @@ namespace Novell.Directory.Ldap
         ///     The bind properties Map Object used for SASL bind or null if
         ///     the connection is not present or not authenticated.
         /// </returns>
-        public virtual IDictionary SaslBindProperties
+        public IDictionary SaslBindProperties
         {
             get
             {
@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap
         ///     The call back handler used for SASL bind or null if the
         ///     object is not present or not authenticated.
         /// </returns>
-        public virtual object SaslBindCallbackHandler
+        public object SaslBindCallbackHandler
         {
             get
             {
@@ -205,7 +205,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="SearchConstraints()">
         /// </seealso>
-        public virtual LdapConstraints Constraints
+        public LdapConstraints Constraints
         {
             get => (LdapConstraints) _defSearchCons.Clone();
 
@@ -247,7 +247,7 @@ namespace Novell.Directory.Ldap
         ///     The host name of the Ldap server to which the object last
         ///     connected or null if the object has never connected.
         /// </returns>
-        public virtual string Host => _conn.Host;
+        public string Host => _conn.Host;
 
         /// <summary>
         ///     Returns the port number of the Ldap server to which the object is or
@@ -257,7 +257,7 @@ namespace Novell.Directory.Ldap
         ///     The port number of the Ldap server to which the object last
         ///     connected or -1 if the object has never connected.
         /// </returns>
-        public virtual int Port => _conn.Port;
+        public int Port => _conn.Port;
 
         /// <summary>
         ///     Returns a copy of the set of search constraints associated with this
@@ -273,7 +273,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapSearchConstraints">
         /// </seealso>
-        public virtual LdapSearchConstraints SearchConstraints => (LdapSearchConstraints) _defSearchCons.Clone();
+        public LdapSearchConstraints SearchConstraints => (LdapSearchConstraints) _defSearchCons.Clone();
 
 
         /// <summary>
@@ -310,7 +310,7 @@ namespace Novell.Directory.Ldap
         ///     True if the object has authenticated; false if it has not
         ///     authenticated.
         /// </returns>
-        public virtual bool Bound => _conn.Bound;
+        public bool Bound => _conn.Bound;
 
         /// <summary>
         ///     Indicates whether the connection represented by this object is open
@@ -319,7 +319,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     True if connection is open; false if the connection is closed.
         /// </returns>
-        public virtual bool Connected => _conn.Connected;
+        public bool Connected => _conn.Connected;
 
         /// <summary>
         ///     Indicatates if the connection is protected by TLS.
@@ -331,7 +331,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     True if the connection is protected by TLS.
         /// </returns>
-        public virtual bool Tls => _conn.Tls;
+        public bool Tls => _conn.Tls;
 
 
         /// <summary>
@@ -348,7 +348,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="LdapMessage.Controls">
         /// </seealso>
-        public virtual LdapControl[] ResponseControls
+        public LdapControl[] ResponseControls
         {
             get
             {
@@ -388,7 +388,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Connection object
         /// </returns>
-        internal virtual Connection Connection => _conn;
+        internal Connection Connection => _conn;
 
         /// <summary>
         ///     Return the Connection object name associated with this LdapConnection
@@ -396,7 +396,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Connection object name
         /// </returns>
-        internal virtual string ConnectionName { get; }
+        internal string ConnectionName { get; }
 
         private LdapSearchConstraints _defSearchCons;
         private LdapControl[] _responseCtls;
@@ -603,7 +603,7 @@ namespace Novell.Directory.Ldap
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool isDisposing)
+        private void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
@@ -644,7 +644,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="object">
         /// </seealso>
-        public virtual object GetProperty(string name)
+        public object GetProperty(string name)
         {
             if (name.ToUpper().Equals(LdapPropertySdk.ToUpper()))
                 return Connection.Sdk;
@@ -667,7 +667,7 @@ namespace Novell.Directory.Ldap
         ///     unsolicited message from a server.  This object must
         ///     implement the LdapUnsolicitedNotificationListener interface.
         /// </param>
-        public virtual void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        public void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
         {
             if (listener != null)
                 _conn.AddUnsolicitedNotificationListener(listener);
@@ -684,7 +684,7 @@ namespace Novell.Directory.Ldap
         ///     An object to no longer be notified on arrival of
         ///     an unsolicited message from a server.
         /// </param>
-        public virtual void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        public void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
         {
             if (listener != null)
                 _conn.RemoveUnsolicitedNotificationListener(listener);
@@ -702,7 +702,7 @@ namespace Novell.Directory.Ldap
         ///     SocketFactory has been specified that does not implement
         ///     LdapTLSSocketFactory an LdapException is thrown.
         /// </exception>
-        public virtual void StartTls()
+        public void StartTls()
         {
             var startTls = MakeExtendedOperation(new LdapExtendedOperation(StartTlsOid, null), null);
 
@@ -754,7 +754,7 @@ namespace Novell.Directory.Ldap
         ///         by StopTLS
         ///     </p>
         /// </summary>
-        public virtual void StopTls()
+        public void StopTls()
         {
             if (!Tls)
             {
@@ -803,7 +803,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(LdapSearchResults results)
+        public void Abandon(LdapSearchResults results)
         {
             Abandon(results, _defSearchCons);
         }
@@ -823,7 +823,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(LdapSearchResults results, LdapConstraints cons)
+        public void Abandon(LdapSearchResults results, LdapConstraints cons)
         {
             results.Abandon();
         }
@@ -840,7 +840,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(int id)
+        public void Abandon(int id)
         {
             Abandon(id, _defSearchCons);
         }
@@ -861,7 +861,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(int id, LdapConstraints cons)
+        public void Abandon(int id, LdapConstraints cons)
         {
             // We need to inform the Message Agent which owns this messageID to
             // remove it from the queue.
@@ -890,7 +890,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(LdapMessageQueue queue)
+        public void Abandon(LdapMessageQueue queue)
         {
             Abandon(queue, _defSearchCons);
         }
@@ -912,7 +912,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Abandon(LdapMessageQueue queue, LdapConstraints cons)
+        public void Abandon(LdapMessageQueue queue, LdapConstraints cons)
         {
             if (queue != null)
             {
@@ -948,7 +948,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Add(LdapEntry entry)
+        public void Add(LdapEntry entry)
         {
             Add(entry, _defSearchCons);
         }
@@ -968,7 +968,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Add(LdapEntry entry, LdapConstraints cons)
+        public void Add(LdapEntry entry, LdapConstraints cons)
         {
             var queue = Add(entry, null, cons);
 
@@ -999,7 +999,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue)
+        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue)
         {
             return Add(entry, queue, _defSearchCons);
         }
@@ -1024,7 +1024,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
+        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
         {
             if (cons == null)
                 cons = _defSearchCons;
@@ -1077,7 +1077,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Bind(string dn, string passwd)
+        public void Bind(string dn, string passwd)
         {
             Bind(LdapV3, dn, passwd, _defSearchCons);
         }
@@ -1115,7 +1115,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Bind(int version, string dn, string passwd)
+        public void Bind(int version, string dn, string passwd)
         {
             Bind(version, dn, passwd, _defSearchCons);
         }
@@ -1152,7 +1152,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Bind(string dn, string passwd, LdapConstraints cons)
+        public void Bind(string dn, string passwd, LdapConstraints cons)
         {
             Bind(LdapV3, dn, passwd, cons);
         }
@@ -1193,7 +1193,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Bind(int version, string dn, string passwd, LdapConstraints cons)
+        public void Bind(int version, string dn, string passwd, LdapConstraints cons)
         {
             sbyte[] pw = null;
             if ((object) passwd != null)
@@ -1234,7 +1234,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public virtual void Bind(int version, string dn, sbyte[] passwd)
+        public void Bind(int version, string dn, sbyte[] passwd)
         {
             Bind(version, dn, passwd, _defSearchCons);
         }
@@ -1271,7 +1271,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public virtual void Bind(int version, string dn, sbyte[] passwd, LdapConstraints cons)
+        public void Bind(int version, string dn, sbyte[] passwd, LdapConstraints cons)
         {
             var queue = Bind(version, dn, passwd, null, cons);
             var res = (LdapResponse) queue.GetResponse();
@@ -1321,7 +1321,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public virtual LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue)
+        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue)
         {
             return Bind(version, dn, passwd, queue, _defSearchCons);
         }
@@ -1363,7 +1363,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public virtual LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
+        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             int msgId;
@@ -1441,7 +1441,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual bool Compare(string dn, LdapAttribute attr)
+        public bool Compare(string dn, LdapAttribute attr)
         {
             return Compare(dn, attr, _defSearchCons);
         }
@@ -1472,7 +1472,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
+        public bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
         {
             var ret = false;
 
@@ -1529,7 +1529,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.CompareFalse">
         /// </seealso>
-        public virtual LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
+        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
         {
             return Compare(dn, attr, queue, _defSearchCons);
         }
@@ -1565,7 +1565,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.CompareFalse">
         /// </seealso>
-        public virtual LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
+        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             if (attr.Size() != 1)
@@ -1616,7 +1616,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Connect(string host, int port)
+        public void Connect(string host, int port)
         {
             // connect doesn't affect other clones
             // If not a clone, destroys old connection.
@@ -1673,7 +1673,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Delete(string dn)
+        public void Delete(string dn)
         {
             Delete(dn, _defSearchCons);
         }
@@ -1695,7 +1695,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Delete(string dn, LdapConstraints cons)
+        public void Delete(string dn, LdapConstraints cons)
         {
             var queue = Delete(dn, null, cons);
 
@@ -1728,7 +1728,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Delete(string dn, LdapResponseQueue queue)
+        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue)
         {
             return Delete(dn, queue, _defSearchCons);
         }
@@ -1754,7 +1754,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
+        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
         {
             if ((object) dn == null)
             {
@@ -1785,7 +1785,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Disconnect()
+        public void Disconnect()
         {
             // disconnect from API call
             DisconnectImpl();
@@ -1828,7 +1828,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op)
+        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op)
         {
             return ExtendedOperation(op, _defSearchCons);
         }
@@ -1859,7 +1859,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
+        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
         {
             // Call asynchronous API and get back handler to reponse queue
             var queue = ExtendedOperation(op, cons, null);
@@ -1904,7 +1904,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
+        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
         {
             return ExtendedOperation(op, _defSearchCons, queue);
         }
@@ -1940,7 +1940,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
+        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
             LdapResponseQueue queue)
         {
             // Use default constraints if none-specified
@@ -1956,7 +1956,7 @@ namespace Novell.Directory.Ldap
         ///     extendedOperation and startTLS which needs the LdapMessage to
         ///     get the MessageID.
         /// </summary>
-        protected internal virtual LdapMessage MakeExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
+        internal LdapMessage MakeExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
         {
             // Use default constraints if none-specified
             if (cons == null)
@@ -2000,7 +2000,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Modify(string dn, LdapModification mod)
+        public void Modify(string dn, LdapModification mod)
         {
             Modify(dn, mod, _defSearchCons);
         }
@@ -2028,7 +2028,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Modify(string dn, LdapModification mod, LdapConstraints cons)
+        public void Modify(string dn, LdapModification mod, LdapConstraints cons)
         {
             var mods = new LdapModification[1];
             mods[0] = mod;
@@ -2056,7 +2056,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Modify(string dn, LdapModification[] mods)
+        public void Modify(string dn, LdapModification[] mods)
         {
             Modify(dn, mods, _defSearchCons);
         }
@@ -2085,7 +2085,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an
         ///     error message and an Ldap error code.
         /// </exception>
-        public virtual void Modify(string dn, LdapModification[] mods, LdapConstraints cons)
+        public void Modify(string dn, LdapModification[] mods, LdapConstraints cons)
         {
             var queue = Modify(dn, mods, null, cons);
 
@@ -2126,7 +2126,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Modify(string dn, LdapModification mod, LdapResponseQueue queue)
+        public LdapResponseQueue Modify(string dn, LdapModification mod, LdapResponseQueue queue)
         {
             return Modify(dn, mod, queue, _defSearchCons);
         }
@@ -2159,7 +2159,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Modify(string dn, LdapModification mod, LdapResponseQueue queue,
+        public LdapResponseQueue Modify(string dn, LdapModification mod, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             var mods = new LdapModification[1];
@@ -2193,7 +2193,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue)
+        public LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue)
         {
             return Modify(dn, mods, queue, _defSearchCons);
         }
@@ -2227,7 +2227,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue,
+        public LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             if ((object) dn == null)
@@ -2261,7 +2261,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found
         /// </exception>
-        public virtual LdapEntry Read(string dn)
+        public LdapEntry Read(string dn)
         {
             return Read(dn, _defSearchCons);
         }
@@ -2284,7 +2284,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found
         /// </exception>
-        public virtual LdapEntry Read(string dn, LdapSearchConstraints cons)
+        public LdapEntry Read(string dn, LdapSearchConstraints cons)
         {
             return Read(dn, null, cons);
         }
@@ -2305,7 +2305,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found
         /// </exception>
-        public virtual LdapEntry Read(string dn, string[] attrs)
+        public LdapEntry Read(string dn, string[] attrs)
         {
             return Read(dn, attrs, _defSearchCons);
         }
@@ -2330,7 +2330,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found
         /// </exception>
-        public virtual LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
+        public LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
         {
             var sr = Search(dn, ScopeBase, null, attrs, false, cons);
             
@@ -2426,7 +2426,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Rename(string dn, string newRdn, bool deleteOldRdn)
+        public void Rename(string dn, string newRdn, bool deleteOldRdn)
         {
             Rename(dn, newRdn, deleteOldRdn, _defSearchCons);
         }
@@ -2453,7 +2453,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
+        public void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
         {
             // null for newParentdn means that this is originating as an Ldapv2 call
             Rename(dn, newRdn, null, deleteOldRdn, cons);
@@ -2482,7 +2482,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
+        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
         {
             Rename(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
         }
@@ -2514,7 +2514,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
+        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
         {
             var queue = Rename(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
 
@@ -2557,7 +2557,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue)
+        public LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue)
         {
             return Rename(dn, newRdn, deleteOldRdn, queue, _defSearchCons);
         }
@@ -2589,7 +2589,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue,
+        public LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             return Rename(dn, newRdn, null, deleteOldRdn, queue, cons);
@@ -2623,7 +2623,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
+        public LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
             LdapResponseQueue queue)
         {
             return Rename(dn, newRdn, newParentdn, deleteOldRdn, queue, _defSearchCons);
@@ -2661,7 +2661,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
+        public LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
             LdapResponseQueue queue, LdapConstraints cons)
         {
             if ((object) dn == null || (object) newRdn == null)
@@ -2737,7 +2737,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+        public LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchQueue queue)
         {
             return Search(@base, scope, filter, attrs, typesOnly, queue, _defSearchCons);
@@ -2787,7 +2787,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+        public LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             if ((object) filter == null)
@@ -2914,7 +2914,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="RfcLdapMessage.IsRequest">
         /// </seealso>
-        public virtual LdapMessageQueue SendRequest(LdapMessage request, LdapMessageQueue queue)
+        public LdapMessageQueue SendRequest(LdapMessage request, LdapMessageQueue queue)
         {
             return SendRequest(request, queue, null);
         }
@@ -2949,7 +2949,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="RfcLdapMessage.IsRequest">
         /// </seealso>
-        public virtual LdapMessageQueue SendRequest(LdapMessage request, LdapMessageQueue queue, LdapConstraints cons)
+        public LdapMessageQueue SendRequest(LdapMessage request, LdapMessageQueue queue, LdapConstraints cons)
         {
             if (!request.Request)
             {
@@ -3254,7 +3254,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal virtual ArrayList ChaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
+        internal ArrayList ChaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
             string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
         {
             var connList = connectionList;
@@ -3426,7 +3426,7 @@ namespace Novell.Directory.Ldap
         */
 
 
-        internal virtual void ReleaseReferralConnections(ArrayList list)
+        internal void ReleaseReferralConnections(ArrayList list)
         {
             if (list == null)
             {
@@ -3440,7 +3440,6 @@ namespace Novell.Directory.Ldap
                 {
                     rconn = (LdapConnection) list[i];
                     list.RemoveAt(i);
-//					rconn = (LdapConnection) list.RemoveAt(i);
                     rconn.Disconnect();
                 }
                 catch (IndexOutOfRangeException ex)
@@ -3480,7 +3479,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="GetSchemaDn(string)">
         /// </seealso>
-        public virtual LdapSchema FetchSchema(string schemaDn)
+        public LdapSchema FetchSchema(string schemaDn)
         {
             var ent = Read(schemaDn, LdapSchema.SchemaTypeNames);
             return new LdapSchema(ent);
@@ -3508,7 +3507,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="Modify">
         /// </seealso>
-        public virtual string GetSchemaDn()
+        public string GetSchemaDn()
         {
             return GetSchemaDn("");
         }
@@ -3537,7 +3536,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="Modify">
         /// </seealso>
-        public virtual string GetSchemaDn(string dn)
+        public string GetSchemaDn(string dn)
         {
             string[] attrSubSchema = {"subschemaSubentry"};
 

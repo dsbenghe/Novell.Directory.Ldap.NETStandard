@@ -43,11 +43,11 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         authentication          AuthenticationChoice }
     ///     </pre>
     /// </summary>
-    public class RfcBindRequest : Asn1Sequence, IRfcRequest
+    public sealed class RfcBindRequest : Asn1Sequence, IRfcRequest
     {
         /// <summary> </summary>
         /// <summary> Sets the protocol version</summary>
-        public virtual Asn1Integer Version
+        public Asn1Integer Version
         {
             get => (Asn1Integer) get_Renamed(0);
 
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         /// <summary> </summary>
-        public virtual RfcLdapDn Name
+        public RfcLdapDn Name
         {
             get => (RfcLdapDn) get_Renamed(1);
 
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         /// <summary> </summary>
-        public virtual RfcAuthenticationChoice AuthenticationChoice
+        public RfcAuthenticationChoice AuthenticationChoice
         {
             get => (RfcAuthenticationChoice) get_Renamed(2);
 

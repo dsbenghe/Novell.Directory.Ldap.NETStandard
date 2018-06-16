@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapAttribute">
     /// </seealso>
-    public class LdapModification
+    public sealed class LdapModification
     {
         /// <summary>
         ///     Returns the attribute to modify, with any existing values.
@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute to modify.
         /// </returns>
-        public virtual LdapAttribute Attribute { get; }
+        public LdapAttribute Attribute { get; }
 
         /// <summary>
         ///     Returns the type of modification specified by this object.
@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The type of modification specified by this object.
         /// </returns>
-        public virtual int Op { get; }
+        public int Op { get; }
 
         /// <summary>
         ///     Adds the listed values to the given attribute, creating

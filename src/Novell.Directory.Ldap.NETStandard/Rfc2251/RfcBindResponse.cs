@@ -43,13 +43,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         serverSaslCreds    [7] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcBindResponse : Asn1Sequence, IRfcResponse
+    public sealed class RfcBindResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary>
         ///     Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
         ///     otherwise null.
         /// </summary>
-        public virtual Asn1OctetString ServerSaslCreds
+        public Asn1OctetString ServerSaslCreds
         {
             get
             {

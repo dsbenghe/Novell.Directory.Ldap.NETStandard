@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     OID:
     ///     2.16.840.1.113719.1.27.100.14
     /// </summary>
-    public class PartitionEntryCountResponse : LdapExtendedResponse
+    public sealed class PartitionEntryCountResponse : LdapExtendedResponse
     {
         /// <summary>
         ///     Returns the number of entries in the naming context.
@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     The count of the number of objects returned.
         /// </returns>
-        public virtual int Count { get; }
+        public int Count { get; }
 
         //The count of the objects returned by the server is saved here
 

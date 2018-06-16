@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     ///     The <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
-    internal class MessageVector : ArrayList
+    internal sealed class MessageVector : ArrayList
     {
         internal MessageVector(int cap, int incr) : base(cap)
         {
@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the array containing all of the elements.
         /// </returns>
-        internal virtual object[] RemoveAll()
+        internal object[] RemoveAll()
         {
             lock (this)
             {

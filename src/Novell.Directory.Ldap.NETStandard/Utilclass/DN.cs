@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     /// <seealso cref="Rdn">
     /// </seealso>
-    public class Dn : object
+    public sealed class Dn : object
     {
         private void InitBlock()
         {
@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     list of RDNs
         /// </returns>
-        public virtual ArrayList RdNs
+        public ArrayList RdNs
         {
             get
             {
@@ -81,7 +81,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Parent DN
         /// </returns>
-        public virtual Dn Parent
+        public Dn Parent
         {
             get
             {
@@ -668,7 +668,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     <code>String[]</code> containing the rdns in the DN with
         ///     the leftmost rdn in the first element of the array
         /// </returns>
-        public virtual string[] ExplodeDn(bool noTypes)
+        public string[] ExplodeDn(bool noTypes)
         {
             var length = _rdnList.Count;
             var rdns = new string[length];
@@ -681,7 +681,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the count of RDN
         /// </returns>
-        public virtual int CountRdNs()
+        public int CountRdNs()
         {
             return _rdnList.Count;
         }
@@ -699,7 +699,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if containerDN contains this DN
         /// </returns>
-        public virtual bool IsDescendantOf(Dn containerDn)
+        public bool IsDescendantOf(Dn containerDn)
         {
             var i = containerDn._rdnList.Count - 1; //index to an RDN of the ContainerDN
             var j = _rdnList.Count - 1; //index to an RDN of the ContainedDN
@@ -732,7 +732,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rdn">
         ///     an RDN to be added
         /// </param>
-        public virtual void AddRdn(Rdn rdn)
+        public void AddRdn(Rdn rdn)
         {
             _rdnList.Insert(0, rdn);
         }
@@ -741,7 +741,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rdn">
         ///     an RDN to be added
         /// </param>
-        public virtual void AddRdnToFront(Rdn rdn)
+        public void AddRdnToFront(Rdn rdn)
         {
             _rdnList.Insert(0, rdn);
         }
@@ -750,7 +750,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rdn">
         ///     an RDN to be added
         /// </param>
-        public virtual void AddRdnToBack(Rdn rdn)
+        public void AddRdnToBack(Rdn rdn)
         {
             _rdnList.Add(rdn);
         }

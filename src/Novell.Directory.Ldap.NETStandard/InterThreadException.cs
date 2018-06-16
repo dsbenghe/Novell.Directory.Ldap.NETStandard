@@ -33,7 +33,7 @@ using System;
 
 namespace Novell.Directory.Ldap
 {
-    public class InterThreadException : LdapException
+    public sealed class InterThreadException : LdapException
     {
         /// <summary>
         ///     Returns the message ID of this message request.
@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap
         ///     the message ID.  Returns -1 if no message
         ///     is associated with this exception.
         /// </returns>
-        internal virtual int MessageId
+        internal int MessageId
         {
             get
             {
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap
         ///     the message type of the expected reply.  Returns -1
         ///     if no reply expected.
         /// </returns>
-        internal virtual int ReplyType
+        internal int ReplyType
         {
             get
             {

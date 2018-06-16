@@ -39,13 +39,13 @@ namespace Novell.Directory.Ldap.Asn1
     ///     be used by Asn1Encoder's and Asn1Decoder's by composition.
     /// </summary>
     [CLSCompliant(true)]
-    public class Asn1Length
+    public sealed class Asn1Length
     {
         /// <summary> Returns the length of this Asn1Length.</summary>
-        public virtual int Length => _length;
+        public int Length => _length;
 
         /// <summary> Returns the encoded length of this Asn1Length.</summary>
-        public virtual int EncodedLength => _encodedLength;
+        public int EncodedLength => _encodedLength;
 
         /* Private variables
         */

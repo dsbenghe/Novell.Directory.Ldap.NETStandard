@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     </pre>
     /// </summary>
     [CLSCompliant(true)]
-    public class Asn1Identifier : object
+    public sealed class Asn1Identifier : object
     {
         /// <summary>
         ///     Returns the CLASS of this Asn1Identifier as an int value.
@@ -82,7 +82,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </seealso>
         /// <seealso cref="Private">
         /// </seealso>
-        public virtual int Asn1Class => _tagClass;
+        public int Asn1Class => _tagClass;
 
         /// <summary>
         ///     Return a boolean indicating if the constructed bit is set.
@@ -90,13 +90,13 @@ namespace Novell.Directory.Ldap.Asn1
         /// <returns>
         ///     true if constructed and false if primitive.
         /// </returns>
-        public virtual bool Constructed => _constructed;
+        public bool Constructed => _constructed;
 
         /// <summary> Returns the TAG of this Asn1Identifier.</summary>
-        public virtual int Tag => _tag;
+        public int Tag => _tag;
 
         /// <summary> Returns the encoded length of this Asn1Identifier.</summary>
-        public virtual int EncodedLength => _encodedLength;
+        public int EncodedLength => _encodedLength;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="Universal">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool IsUniversal => _tagClass == Universal;
+        public bool IsUniversal => _tagClass == Universal;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="Application">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool IsApplication => _tagClass == Application;
+        public bool IsApplication => _tagClass == Application;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <seealso cref="Context">
         /// </seealso>
         [CLSCompliant(false)]
-        public virtual bool IsContext => _tagClass == Context;
+        public bool IsContext => _tagClass == Context;
 
         /// <summary>
         ///     Returns a boolean value indicating whether or not this Asn1Identifier
@@ -131,7 +131,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="Private"></seealso>
         [CLSCompliant(false)]
-        public virtual bool IsPrivate => _tagClass == Private;
+        public bool IsPrivate => _tagClass == Private;
 
         /// <summary>
         ///     IsUniversal tag class.

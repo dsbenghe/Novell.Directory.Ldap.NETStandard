@@ -38,7 +38,7 @@ using Novell.Directory.Ldap.Utilclass;
 namespace Novell.Directory.Ldap
 {
     /// <summary> Encapsulates an Ldap message, its state, and its replies.</summary>
-    internal class Message
+    internal sealed class Message
     {
         private void InitBlock()
         {
@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
         ///     Get number of messages queued.
         ///     Don't count the last message containing result code.
         /// </summary>
-        internal virtual int Count
+        internal int Count
         {
             get
             {
@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> sets the agent for this message</summary>
-        internal virtual MessageAgent Agent
+        internal MessageAgent Agent
         {
             set => _agent = value;
         }
@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if no replies are queued, otherwise true
         /// </returns>
-        internal virtual bool HasReplies()
+        internal bool HasReplies()
         {
             if (_replies == null)
             {
@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap
             return _replies.Count > 0;
         }
 
-        internal virtual int MessageType
+        internal int MessageType
         {
             get
             {
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal virtual int MessageId => _msgId;
+        internal int MessageId => _msgId;
 
         /// <summary>
         ///     gets the operation complete status for this message
@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap
         ///     the true if the operation is complete, i.e.
         ///     the LdapResult has been received.
         /// </returns>
-        internal virtual bool Complete => _complete;
+        internal bool Complete => _complete;
 
         /// <summary>
         ///     Gets the next reply from the reply queue or waits until one is there
@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the next reply message on the reply queue or null
         /// </returns>
-        internal virtual object WaitForReply()
+        internal object WaitForReply()
         {
             if (_replies == null)
             {
@@ -156,7 +156,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the next reply message on the reply queue or null if none
         /// </returns>
-        internal virtual object Reply
+        internal object Reply
         {
             get
             {
@@ -192,7 +192,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     false if replies are no longer accepted for this request
         /// </returns>
-        internal virtual bool AcceptsReplies()
+        internal bool AcceptsReplies()
         {
             return _acceptReplies;
         }
@@ -203,10 +203,10 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the LdapMessage request associated with this message
         /// </returns>
-        internal virtual LdapMessage Request => _msg;
+        internal LdapMessage Request => _msg;
 
 
-        internal virtual bool BindRequest => _bindprops != null;
+        internal bool BindRequest => _bindprops != null;
 
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the MessageAgent associated with this message
         /// </returns>
-        internal virtual MessageAgent MessageAgent => _agent;
+        internal MessageAgent MessageAgent => _agent;
 
         private readonly string _stackTraceCreation;
         private string _stackTraceCleanup;
@@ -272,7 +272,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal virtual void Abandon(LdapConstraints cons, InterThreadException informUserEx)
+        internal void Abandon(LdapConstraints cons, InterThreadException informUserEx)
         {
             if (!_waitForReplyRenamedField)
             {
@@ -380,7 +380,7 @@ namespace Novell.Directory.Ldap
         }
 
 
-        internal virtual void PutReply(RfcLdapMessage message)
+        internal void PutReply(RfcLdapMessage message)
         {
             if (!_acceptReplies)
             {
@@ -447,7 +447,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> stops the timeout timer from running</summary>
-        internal virtual void StopTimer()
+        internal void StopTimer()
         {
             // If timer thread started, stop it
             if (_timer != null)

@@ -745,14 +745,14 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     This class contains different methods to manage Collections.
         /// </summary>
-        public class CollectionSupport : CollectionBase
+        public sealed class CollectionSupport : CollectionBase
         {
             /// <summary>
             ///     Adds an specified element to the collection.
             /// </summary>
             /// <param name="element">The element to be added.</param>
             /// <returns>Returns true if the element was successfuly added. Otherwise returns false.</returns>
-            public virtual bool Add(object element)
+            public bool Add(object element)
             {
                 return List.Add(element) != -1;
             }
@@ -762,7 +762,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be added.</param>
             /// <returns>Returns true if all the elements were successfuly added. Otherwise returns false.</returns>
-            public virtual bool AddAll(ICollection collection)
+            public bool AddAll(ICollection collection)
             {
                 var result = false;
                 if (collection != null)
@@ -783,7 +783,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be added.</param>
             /// <returns>Returns true if all the elements were successfuly added. Otherwise returns false.</returns>
-            public virtual bool AddAll(CollectionSupport collection)
+            public bool AddAll(CollectionSupport collection)
             {
                 return AddAll((ICollection) collection);
             }
@@ -793,7 +793,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="element"> The element that will be verified.</param>
             /// <returns>Returns true if the element is contained in the collection. Otherwise returns false.</returns>
-            public virtual bool Contains(object element)
+            public bool Contains(object element)
             {
                 return List.Contains(element);
             }
@@ -803,7 +803,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be verified.</param>
             /// <returns>Returns true if all the elements are contained in the collection. Otherwise returns false.</returns>
-            public virtual bool ContainsAll(ICollection collection)
+            public bool ContainsAll(ICollection collection)
             {
                 var result = false;
                 var tempEnumerator = new ArrayList(collection).GetEnumerator();
@@ -818,7 +818,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be verified.</param>
             /// <returns>Returns true if all the elements are contained in the collection. Otherwise returns false.</returns>
-            public virtual bool ContainsAll(CollectionSupport collection)
+            public bool ContainsAll(CollectionSupport collection)
             {
                 return ContainsAll((ICollection) collection);
             }
@@ -827,7 +827,7 @@ namespace Novell.Directory.Ldap
             ///     Verifies if the collection is empty.
             /// </summary>
             /// <returns>Returns true if the collection is empty. Otherwise returns false.</returns>
-            public virtual bool IsEmpty()
+            public bool IsEmpty()
             {
                 return Count == 0;
             }
@@ -837,7 +837,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="element">The element to be removed.</param>
             /// <returns>Returns true if the element was successfuly removed. Otherwise returns false.</returns>
-            public virtual bool Remove(object element)
+            public bool Remove(object element)
             {
                 var result = false;
                 if (Contains(element))
@@ -853,7 +853,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be removed.</param>
             /// <returns>Returns true if all the elements were successfuly removed. Otherwise returns false.</returns>
-            public virtual bool RemoveAll(ICollection collection)
+            public bool RemoveAll(ICollection collection)
             {
                 var result = false;
                 var tempEnumerator = new ArrayList(collection).GetEnumerator();
@@ -870,7 +870,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to extract the elements that will be removed.</param>
             /// <returns>Returns true if all the elements were successfuly removed. Otherwise returns false.</returns>
-            public virtual bool RemoveAll(CollectionSupport collection)
+            public bool RemoveAll(CollectionSupport collection)
             {
                 return RemoveAll((ICollection) collection);
             }
@@ -880,7 +880,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to verify the elements that will be retained.</param>
             /// <returns>Returns true if all the elements were successfully removed. Otherwise returns false.</returns>
-            public virtual bool RetainAll(ICollection collection)
+            public bool RetainAll(ICollection collection)
             {
                 var result = false;
                 var tempEnumerator = GetEnumerator();
@@ -904,7 +904,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="collection">The collection used to verify the elements that will be retained.</param>
             /// <returns>Returns true if all the elements were successfully removed. Otherwise returns false.</returns>
-            public virtual bool RetainAll(CollectionSupport collection)
+            public bool RetainAll(CollectionSupport collection)
             {
                 return RetainAll((ICollection) collection);
             }
@@ -913,7 +913,7 @@ namespace Novell.Directory.Ldap
             ///     Obtains an array containing all the elements of the collection.
             /// </summary>
             /// <returns>The array containing all the elements of the collection</returns>
-            public virtual object[] ToArray()
+            public object[] ToArray()
             {
                 var index = 0;
                 var objects = new object[Count];
@@ -928,7 +928,7 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <param name="objects">The array into which the elements of the collection will be stored.</param>
             /// <returns>The array containing all the elements of the collection.</returns>
-            public virtual object[] ToArray(object[] objects)
+            public object[] ToArray(object[] objects)
             {
                 var index = 0;
                 var tempEnumerator = GetEnumerator();

@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         extensibleMatch [9] MatchingRuleAssertion }
     ///     </pre>
     /// </summary>
-    public class RfcFilter : Asn1Choice
+    public sealed class RfcFilter : Asn1Choice
     {
         //*************************************************************************
         // Public variables for Filter
@@ -609,7 +609,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws Novell.Directory.Ldap.LdapLocalException
         ///     Occurs when this component is created out of sequence.
         /// </summary>
-        public virtual void StartSubstrings(string attrName)
+        public void StartSubstrings(string attrName)
         {
             _finalFound = false;
             var seq = new Asn1SequenceOf(5);
@@ -638,7 +638,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     sequence or the type added is out of sequence.
         /// </param>
         [CLSCompliant(false)]
-        public virtual void AddSubstring(int type, sbyte[] valueRenamed)
+        public void AddSubstring(int type, sbyte[] valueRenamed)
         {
             try
             {
@@ -679,7 +679,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException Occurs when this is called out of sequence,
         ///     or the substrings filter is empty.
         /// </summary>
-        public virtual void EndSubstrings()
+        public void EndSubstrings()
         {
             try
             {
@@ -713,7 +713,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Occurs when the filter type is not a valid attribute assertion.
         /// </param>
         [CLSCompliant(false)]
-        public virtual void AddAttributeValueAssertion(int rfcType, string attrName, sbyte[] valueRenamed)
+        public void AddAttributeValueAssertion(int rfcType, string attrName, sbyte[] valueRenamed)
         {
             if (_filterStack != null && !(_filterStack.Count == 0) && _filterStack.Peek() is Asn1SequenceOf)
             {
@@ -741,7 +741,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs if addPresent is called out of sequence.
         /// </param>
-        public virtual void AddPresent(string attrName)
+        public void AddPresent(string attrName)
         {
             Asn1Object current = new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, Present),
                 new RfcAttributeDescription(attrName), false);
@@ -767,7 +767,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
         [CLSCompliant(false)]
-        public virtual void AddExtensibleMatch(string matchingRule, string attrName, sbyte[] valueRenamed,
+        public void AddExtensibleMatch(string matchingRule, string attrName, sbyte[] valueRenamed,
             bool useDnMatching)
         {
             Asn1Object current = new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
@@ -789,7 +789,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     [AND | OR | NOT]
         ///     @throws Novell.Directory.Ldap.LdapLocalException
         /// </param>
-        public virtual void StartNestedFilter(int rfcType)
+        public void StartNestedFilter(int rfcType)
         {
             Asn1Object current;
             if (rfcType == And || rfcType == Or)
@@ -815,7 +815,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws Novell.Directory.Ldap.LdapLocalException  Occurs when the specified
         ///     type differs from the current filter component.
         /// </param>
-        public virtual void EndNestedFilter(int rfcType)
+        public void EndNestedFilter(int rfcType)
         {
             if (rfcType == Not)
             {
@@ -840,13 +840,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     Iterator over filter segments
         /// </returns>
-        public virtual IEnumerator GetFilterIterator()
+        public IEnumerator GetFilterIterator()
         {
             return new FilterIterator(this, (Asn1Tagged) ChoiceValue);
         }
 
         /// <summary> Creates and returns a String representation of this filter.</summary>
-        public virtual string FilterToString()
+        public string FilterToString()
         {
             var filter = new StringBuilder();
             StringFilter(GetFilterIterator(), filter);
@@ -1033,7 +1033,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     the type of filter component.  Then the component values will be returned
         ///     AND, NOT, and OR components values will be returned as Iterators.
         /// </summary>
-        private class FilterIterator : IEnumerator
+        private sealed class FilterIterator : IEnumerator
         {
             public void Reset()
             {
@@ -1049,7 +1049,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             ///     The first object returned is an Integer identifying
             ///     its type.
             /// </summary>
-            public virtual object Current
+            public object Current
             {
                 get
                 {
@@ -1177,7 +1177,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 Root = root;
             }
 
-            public virtual bool MoveNext()
+            public bool MoveNext()
             {
                 return _hasMore;
             }
@@ -1189,7 +1189,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> This inner class will tokenize the components of an RFC 2254 search filter.</summary>
-        internal class FilterTokenizer
+        private sealed class FilterTokenizer
         {
             private void InitBlock(RfcFilter enclosingInstance)
             {
@@ -1204,7 +1204,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             ///     and a -1 is returned. Otherwise, the int value of the operator read is
             ///     returned.
             /// </summary>
-            public virtual int OpOrAttr
+            public int OpOrAttr
             {
                 get
                 {
@@ -1297,7 +1297,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             ///     Reads an RFC 2251 filter type from the filter string and returns its
             ///     int value.
             /// </summary>
-            public virtual int FilterType
+            public int FilterType
             {
                 get
                 {
@@ -1343,7 +1343,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
 
             /// <summary> Reads a value from a filter string.</summary>
-            public virtual string Value
+            public string Value
             {
                 get
                 {
@@ -1366,7 +1366,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
 
             /// <summary> Returns the current attribute identifier.</summary>
-            public virtual string Attr => _attr;
+            public string Attr => _attr;
 
             public RfcFilter EnclosingInstance { get; private set; }
 

@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         assertionValue  AssertionValue }
     ///     </pre>
     /// </summary>
-    public class RfcAttributeValueAssertion : Asn1Sequence
+    public sealed class RfcAttributeValueAssertion : Asn1Sequence
     {
         /// <summary>
         ///     Returns the attribute description.
@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the attribute description
         /// </returns>
-        public virtual string AttributeDescription => ((RfcAttributeDescription) get_Renamed(0)).StringValue();
+        public string AttributeDescription => ((RfcAttributeDescription) get_Renamed(0)).StringValue();
 
         /// <summary>
         ///     Returns the assertion value.
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     the assertion value.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] AssertionValue => ((RfcAssertionValue) get_Renamed(1)).ByteValue();
+        public sbyte[] AssertionValue => ((RfcAssertionValue) get_Renamed(1)).ByteValue();
 
         /// <summary>
         ///     Creates an Attribute Value Assertion.

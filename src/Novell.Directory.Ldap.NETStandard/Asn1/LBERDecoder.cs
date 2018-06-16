@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Asn1
     ///     Canonical, and Distinguished Encoding Rules", 1994.
     /// </summary>
     [CLSCompliant(true)]
-    public class LberDecoder : IAsn1Decoder
+    public sealed class LberDecoder : IAsn1Decoder
     {
         public LberDecoder()
         {
@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from a byte array.</summary>
         [CLSCompliant(false)]
-        public virtual Asn1Object Decode(sbyte[] valueRenamed)
+        public Asn1Object Decode(sbyte[] valueRenamed)
         {
             Asn1Object asn1 = null;
 
@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from an InputStream.</summary>
-        public virtual Asn1Object Decode(Stream inRenamed)
+        public Asn1Object Decode(Stream inRenamed)
         {
             var len = new int[1];
             return Decode(inRenamed, len);
@@ -118,7 +118,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the parameter len. This information is helpful when decoding
         ///     structured types.
         /// </summary>
-        public virtual Asn1Object Decode(Stream inRenamed, int[] len)
+        public Asn1Object Decode(Stream inRenamed, int[] len)
         {
             _asn1Id.Reset(inRenamed);
             _asn1Len.Reset(inRenamed);

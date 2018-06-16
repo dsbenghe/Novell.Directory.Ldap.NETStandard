@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConnection.Constraints">
     /// </seealso>
-    public class LdapSearchConstraints : LdapConstraints
+    public sealed class LdapSearchConstraints : LdapConstraints
     {
         private void InitBlock()
         {
@@ -76,7 +76,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="BatchSize">
         /// </seealso>
-        public virtual int BatchSize
+        public int BatchSize
         {
             get => _batchSize;
 
@@ -124,7 +124,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="Dereference">
         /// </seealso>
-        public virtual int Dereference
+        public int Dereference
         {
             get => _dereference;
 
@@ -159,7 +159,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.SizeLimitExceeded">
         /// </seealso>
-        public virtual int MaxResults
+        public int MaxResults
         {
             get => _maxResults;
 
@@ -196,7 +196,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.TimeLimitExceeded">
         /// </seealso>
-        public virtual int ServerTimeLimit
+        public int ServerTimeLimit
         {
             get => _serverTimeLimit;
 

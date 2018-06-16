@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConnection.GetSchemaDN">
     /// </seealso>
-    public class LdapSchema : LdapEntry
+    public sealed class LdapSchema : LdapEntry
     {
         private void InitBlock()
         {
@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute definitions.
         /// </returns>
-        public virtual IEnumerator AttributeSchemas => new EnumeratedIterator(_idTable[Attribute].Values.GetEnumerator());
+        public IEnumerator AttributeSchemas => new EnumeratedIterator(_idTable[Attribute].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule definitions.
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule definitions.
         /// </returns>
-        public virtual IEnumerator DitContentRuleSchemas => new EnumeratedIterator(_idTable[Ditcontent].Values.GetEnumerator());
+        public IEnumerator DitContentRuleSchemas => new EnumeratedIterator(_idTable[Ditcontent].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule definitions.
@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule definitions.
         /// </returns>
-        public virtual IEnumerator DitStructureRuleSchemas => new EnumeratedIterator(_idTable[Ditstructure].Values.GetEnumerator());
+        public IEnumerator DitStructureRuleSchemas => new EnumeratedIterator(_idTable[Ditstructure].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of matching rule definitions.
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule definitions.
         /// </returns>
-        public virtual IEnumerator MatchingRuleSchemas => new EnumeratedIterator(_idTable[Matching].Values.GetEnumerator());
+        public IEnumerator MatchingRuleSchemas => new EnumeratedIterator(_idTable[Matching].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of matching rule use definitions.
@@ -120,7 +120,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use definitions.
         /// </returns>
-        public virtual IEnumerator MatchingRuleUseSchemas => new EnumeratedIterator(_idTable[MatchingUse].Values.GetEnumerator());
+        public IEnumerator MatchingRuleUseSchemas => new EnumeratedIterator(_idTable[MatchingUse].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of name form definitions.
@@ -128,7 +128,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form definitions.
         /// </returns>
-        public virtual IEnumerator NameFormSchemas => new EnumeratedIterator(_idTable[NameForm].Values.GetEnumerator());
+        public IEnumerator NameFormSchemas => new EnumeratedIterator(_idTable[NameForm].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of object class definitions.
@@ -136,7 +136,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class definitions.
         /// </returns>
-        public virtual IEnumerator ObjectClassSchemas => new EnumeratedIterator(_idTable[ObjectClass].Values.GetEnumerator());
+        public IEnumerator ObjectClassSchemas => new EnumeratedIterator(_idTable[ObjectClass].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of syntax definitions.
@@ -144,7 +144,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of syntax definitions.
         /// </returns>
-        public virtual IEnumerator SyntaxSchemas => new EnumeratedIterator(_idTable[Syntax].Values.GetEnumerator());
+        public IEnumerator SyntaxSchemas => new EnumeratedIterator(_idTable[Syntax].Values.GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of attribute names.
@@ -152,7 +152,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public virtual IEnumerator AttributeNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator());
+        public IEnumerator AttributeNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule names.
@@ -160,7 +160,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule names.
         /// </returns>
-        public virtual IEnumerator DitContentRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator());
+        public IEnumerator DitContentRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule names.
@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule names.
         /// </returns>
-        public virtual IEnumerator DitStructureRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator());
+        public IEnumerator DitStructureRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of matching rule names.
@@ -176,7 +176,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule names.
         /// </returns>
-        public virtual IEnumerator MatchingRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator());
+        public IEnumerator MatchingRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of matching rule use names.
@@ -184,7 +184,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use names.
         /// </returns>
-        public virtual IEnumerator MatchingRuleUseNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator());
+        public IEnumerator MatchingRuleUseNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of name form names.
@@ -192,7 +192,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form names.
         /// </returns>
-        public virtual IEnumerator NameFormNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator());
+        public IEnumerator NameFormNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns an enumeration of object class names.
@@ -200,7 +200,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class names.
         /// </returns>
-        public virtual IEnumerator ObjectClassNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
+        public IEnumerator ObjectClassNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
 
         /// <summary>
         ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
@@ -463,7 +463,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute definition, or null if not found.
         /// </returns>
-        public virtual LdapAttributeSchema GetAttributeSchema(string name)
+        public LdapAttributeSchema GetAttributeSchema(string name)
         {
             return (LdapAttributeSchema) GetSchemaElement(Attribute, name);
         }
@@ -478,7 +478,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT content rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDitContentRuleSchema GetDitContentRuleSchema(string name)
+        public LdapDitContentRuleSchema GetDitContentRuleSchema(string name)
         {
             return (LdapDitContentRuleSchema) GetSchemaElement(Ditcontent, name);
         }
@@ -493,7 +493,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT structure rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDitStructureRuleSchema GetDitStructureRuleSchema(string name)
+        public LdapDitStructureRuleSchema GetDitStructureRuleSchema(string name)
         {
             return (LdapDitStructureRuleSchema) GetSchemaElement(Ditstructure, name);
         }
@@ -508,7 +508,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The DIT structure rule definition, or null if not found.
         /// </returns>
-        public virtual LdapDitStructureRuleSchema GetDitStructureRuleSchema(int id)
+        public LdapDitStructureRuleSchema GetDitStructureRuleSchema(int id)
         {
             var idKey = id;
             return (LdapDitStructureRuleSchema) _idTable[Ditstructure][idKey];
@@ -524,7 +524,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The matching rule definition, or null if not found.
         /// </returns>
-        public virtual LdapMatchingRuleSchema GetMatchingRuleSchema(string name)
+        public LdapMatchingRuleSchema GetMatchingRuleSchema(string name)
         {
             return (LdapMatchingRuleSchema) GetSchemaElement(Matching, name);
         }
@@ -539,7 +539,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The matching rule use definition, or null if not found.
         /// </returns>
-        public virtual LdapMatchingRuleUseSchema GetMatchingRuleUseSchema(string name)
+        public LdapMatchingRuleUseSchema GetMatchingRuleUseSchema(string name)
         {
             return (LdapMatchingRuleUseSchema) GetSchemaElement(MatchingUse, name);
         }
@@ -554,7 +554,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The name form definition, or null if not found.
         /// </returns>
-        public virtual LdapNameFormSchema GetNameFormSchema(string name)
+        public LdapNameFormSchema GetNameFormSchema(string name)
         {
             return (LdapNameFormSchema) GetSchemaElement(NameForm, name);
         }
@@ -569,7 +569,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object class definition, or null if not found.
         /// </returns>
-        public virtual LdapObjectClassSchema GetObjectClassSchema(string name)
+        public LdapObjectClassSchema GetObjectClassSchema(string name)
         {
             return (LdapObjectClassSchema) GetSchemaElement(ObjectClass, name);
         }
@@ -584,7 +584,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The syntax definition, or null if not found.
         /// </returns>
-        public virtual LdapSyntaxSchema GetSyntaxSchema(string oid)
+        public LdapSyntaxSchema GetSyntaxSchema(string oid)
         {
             return (LdapSyntaxSchema) GetSchemaElement(Syntax, oid);
         }

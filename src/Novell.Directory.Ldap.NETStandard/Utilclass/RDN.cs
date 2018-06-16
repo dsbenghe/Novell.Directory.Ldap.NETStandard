@@ -47,7 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     /// <seealso cref="Dn">
     /// </seealso>
-    public class Rdn : object
+    public sealed class Rdn : object
     {
         /// <summary>
         ///     Returns the actually Raw String before Normalization
@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The raw string
         /// </returns>
-        protected internal virtual string RawValue => _rawValue;
+        internal string RawValue => _rawValue;
 
         /// <summary>
         ///     Returns the type of this RDN.  This method assumes that only one value
@@ -65,13 +65,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute
         /// </returns>
-        public virtual string Type => (string) _types[0];
+        public string Type => (string) _types[0];
 
         /// <summary> Returns all the types for this RDN.</summary>
         /// <returns>
         ///     list of types
         /// </returns>
-        public virtual string[] Types
+        public string[] Types
         {
             get
             {
@@ -89,13 +89,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute
         /// </returns>
-        public virtual string Value => (string) _values[0];
+        public string Value => (string) _values[0];
 
         /// <summary> Returns all the types for this RDN.</summary>
         /// <returns>
         ///     list of types
         /// </returns>
-        public virtual string[] Values
+        public string[] Values
         {
             get
             {
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if this RDN is multivalued
         /// </returns>
-        public virtual bool Multivalued => _values.Count > 1 ? true : false;
+        public bool Multivalued => _values.Count > 1 ? true : false;
 
         private readonly ArrayList _types; //list of Type strings
         private readonly ArrayList _values; //list of Value strings
@@ -153,7 +153,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     with an OID.
         /// </param>
         [CLSCompliant(false)]
-        public virtual bool Equals(Rdn rdn)
+        public bool Equals(Rdn rdn)
         {
             if (_values.Count != rdn._values.Count)
             {
@@ -208,7 +208,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="rawValue">
         ///     or text before normalization, can be Null
         /// </param>
-        public virtual void Add(string attrType, string attrValue, string rawValue)
+        public void Add(string attrType, string attrValue, string rawValue)
         {
             _types.Add(attrType);
             _values.Add(attrValue);
@@ -237,7 +237,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     An RDN string
         /// </returns>
         [CLSCompliant(false)]
-        public virtual string ToString(bool noTypes)
+        public string ToString(bool noTypes)
         {
             var length = _types.Count;
             var toReturn = "";
@@ -271,7 +271,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     List of multivalued Attributes
         /// </returns>
-        public virtual string[] ExplodeRdn(bool noTypes)
+        public string[] ExplodeRdn(bool noTypes)
         {
             var length = _types.Count;
             if (length < 1)

@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public class LdapObjectClassSchema : LdapSchemaElement
+    public sealed class LdapObjectClassSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the object classes from which this one derives.
@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object classes superior to this class.
         /// </returns>
-        public virtual string[] Superiors => _superiors;
+        public string[] Superiors => _superiors;
 
         /// <summary>
         ///     Returns a list of attributes required for an entry with this object
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of required attributes defined for this class.
         /// </returns>
-        public virtual string[] RequiredAttributes => _required;
+        public string[] RequiredAttributes => _required;
 
         /// <summary>
         ///     Returns a list of optional attributes but not required of an entry
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of optional attributes defined for this class.
         /// </returns>
-        public virtual string[] OptionalAttributes => _optional;
+        public string[] OptionalAttributes => _optional;
 
         /// <summary>
         ///     Returns the type of object class.
@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The type of object class.
         /// </returns>
-        public virtual int Type => _type;
+        public int Type => _type;
 
         private readonly string[] _superiors;
         private readonly string[] _required;

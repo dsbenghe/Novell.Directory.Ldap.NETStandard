@@ -46,11 +46,11 @@ namespace Novell.Directory.Ldap.Asn1
     ///     usual after the Asn1Tagged identifier has been encoded.
     /// </summary>
     [CLSCompliant(true)]
-    public class Asn1Tagged : Asn1Object
+    public sealed class Asn1Tagged : Asn1Object
     {
         /// <summary> Sets the Asn1Object tagged value</summary>
         [CLSCompliant(false)]
-        public virtual Asn1Object TaggedValue
+        public Asn1Object TaggedValue
         {
             set
             {
@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Returns a boolean value indicating if this object uses
         ///     EXPLICIT tagging.
         /// </summary>
-        public virtual bool Explicit => _explicitRenamed;
+        public bool Explicit => _explicitRenamed;
 
         private readonly bool _explicitRenamed;
         private Asn1Object _content;

@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    public class LdapMatchingRuleSchema : LdapSchemaElement
+    public sealed class LdapMatchingRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the OIDs of the attributes to which this rule applies.
@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OIDs of the attributes to which this matching rule applies.
         /// </returns>
-        public virtual string[] Attributes => _attributes;
+        public string[] Attributes => _attributes;
 
         /// <summary>
         ///     Returns the OID of the syntax that this matching rule is valid for.
@@ -66,7 +66,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the syntax that this matching rule is valid for.
         /// </returns>
-        public virtual string SyntaxString { get; }
+        public string SyntaxString { get; }
 
         private readonly string[] _attributes;
 

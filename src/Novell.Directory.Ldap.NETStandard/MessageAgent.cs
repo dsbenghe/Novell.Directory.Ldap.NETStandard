@@ -35,7 +35,7 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    internal class MessageAgent
+    internal sealed class MessageAgent
     {
         private void InitBlock()
         {
@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     empty and return all messages owned by this agent
         /// </summary>
-        internal virtual object[] RemoveAll()
+        private object[] RemoveAll()
         {
             return _messages.RemoveAll();
         }
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an array of integers representing the message ids
         /// </returns>
-        internal virtual int[] MessageIDs
+        internal int[] MessageIDs
         {
             get
             {
@@ -79,14 +79,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the agent number
         /// </returns>
-        internal virtual string AgentName
+        internal string AgentName
         {
             /*packge*/
             get;
         }
 
         /// <summary> Get a count of all messages queued</summary>
-        internal virtual int Count
+        internal int Count
         {
             get
             {

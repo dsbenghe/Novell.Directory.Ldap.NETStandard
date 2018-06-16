@@ -35,7 +35,7 @@ using System.Text;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    public class SchemaParser
+    public sealed class SchemaParser
     {
         private void InitBlock()
         {
@@ -43,58 +43,58 @@ namespace Novell.Directory.Ldap.Utilclass
             _qualifiers = new ArrayList();
         }
 
-        public virtual string RawString
+        public string RawString
         {
             get => _rawString;
 
             set => _rawString = value;
         }
 
-        public virtual string[] Names => _names;
+        public string[] Names => _names;
 
-        public virtual IEnumerator Qualifiers => new ArrayEnumeration(_qualifiers.ToArray());
+        public IEnumerator Qualifiers => new ArrayEnumeration(_qualifiers.ToArray());
 
-        public virtual string Id => _id;
+        public string Id => _id;
 
-        public virtual string Description => _description;
+        public string Description => _description;
 
-        public virtual string Syntax => _syntax;
+        public string Syntax => _syntax;
 
-        public virtual string Superior => _superior;
+        public string Superior => _superior;
 
-        public virtual bool Single => _single;
+        public bool Single => _single;
 
-        public virtual bool Obsolete => _obsolete;
+        public bool Obsolete => _obsolete;
 
-        public virtual string Equality => _equality;
+        public string Equality => _equality;
 
-        public virtual string Ordering => _ordering;
+        public string Ordering => _ordering;
 
-        public virtual string Substring => _substring;
+        public string Substring => _substring;
 
-        public virtual bool Collective => _collective;
+        public bool Collective => _collective;
 
-        public virtual bool UserMod => _userMod;
+        public bool UserMod => _userMod;
 
-        public virtual int Usage => _usage;
+        public int Usage => _usage;
 
-        public virtual int Type => _type;
+        public int Type => _type;
 
-        public virtual string[] Superiors => _superiors;
+        public string[] Superiors => _superiors;
 
-        public virtual string[] Required => _required;
+        public string[] Required => _required;
 
-        public virtual string[] Optional => _optional;
+        public string[] Optional => _optional;
 
-        public virtual string[] Auxiliary => _auxiliary;
+        public string[] Auxiliary => _auxiliary;
 
-        public virtual string[] Precluded => _precluded;
+        public string[] Precluded => _precluded;
 
-        public virtual string[] Applies => _applies;
+        public string[] Applies => _applies;
 
-        public virtual string NameForm => _nameForm;
+        public string NameForm => _nameForm;
 
-        public virtual string ObjectClass => _nameForm;
+        public string ObjectClass => _nameForm;
 
         private string _rawString;
         private readonly string[] _names;

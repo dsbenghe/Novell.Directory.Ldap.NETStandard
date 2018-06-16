@@ -34,7 +34,7 @@ namespace Novell.Directory.Ldap.Controls
     /// <summary>
     ///     Encapsulates parameters for sorting search results.
     /// </summary>
-    public class LdapSortKey
+    public sealed class LdapSortKey
     {
         /// <summary>
         ///     Returns the attribute to used for sorting.
@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <returns>
         ///     The name of the attribute used for sorting.
         /// </returns>
-        public virtual string Key { get; }
+        public string Key { get; }
 
         /// <summary>
         ///     Returns the sorting order, ascending or descending.
@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     True if the sorting is done is descending order; false, if the
         ///     sorting is done is ascending order.
         /// </returns>
-        public virtual bool Reverse { get; }
+        public bool Reverse { get; }
 
         /// <summary>
         ///     Returns the OID to be used as a matching rule.
@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The OID to be used as matching rule, or null if none is to be
         ///     used.
         /// </returns>
-        public virtual string MatchRule { get; }
+        public string MatchRule { get; }
 
         // Constructors
 

@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The getReplicaInfoResponse extension uses the following OID:
     ///     2.16.840.1.113719.1.27.100.18
     /// </summary>
-    public class GetReplicaInfoResponse : LdapExtendedResponse
+    public sealed class GetReplicaInfoResponse : LdapExtendedResponse
     {
         // Other info as returned by the server
         private readonly int _partitionId;
@@ -171,7 +171,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the partition ID.
         /// </returns>
-        public virtual int GetpartitionId()
+        public int GetpartitionId()
         {
             return _partitionId;
         }
@@ -205,7 +205,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.LdapRsTransitionOn">
         /// </seealso>
-        public virtual int GetreplicaState()
+        public int GetreplicaState()
         {
             return _replicaState;
         }
@@ -217,7 +217,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last modification time.
         /// </returns>
-        public virtual int GetmodificationTime()
+        public int GetmodificationTime()
         {
             return _modificationTime;
         }
@@ -229,7 +229,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last purge time.
         /// </returns>
-        public virtual int GetpurgeTime()
+        public int GetpurgeTime()
         {
             return _purgeTime;
         }
@@ -240,7 +240,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the local ID of the partition.
         /// </returns>
-        public virtual int GetlocalPartitionId()
+        public int GetlocalPartitionId()
         {
             return _localPartitionId;
         }
@@ -251,7 +251,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     String value specifying the name of the partition read.
         /// </returns>
-        public virtual string GetpartitionDn()
+        public string GetpartitionDn()
         {
             return _partitionDn;
         }
@@ -276,7 +276,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.LdapRtSparseRead">
         /// </seealso>
-        public virtual int GetreplicaType()
+        public int GetreplicaType()
         {
             return _replicaType;
         }
@@ -293,7 +293,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </seealso>
         /// <seealso cref="ReplicationConstants.LdapDsFlagBoundary">
         /// </seealso>
-        public virtual int Getflags()
+        public int Getflags()
         {
             return _flags;
         }

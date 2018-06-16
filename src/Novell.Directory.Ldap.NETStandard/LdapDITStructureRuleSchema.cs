@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     ///     Structure Rule.  It is used to discover or modify which
     ///     object classes a particular object class may be subordinate to in the DIT.
     /// </summary>
-    public class LdapDitStructureRuleSchema : LdapSchemaElement
+    public sealed class LdapDitStructureRuleSchema : LdapSchemaElement
     {
         /// <summary>
         ///     Returns the rule ID for this structure rule.
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The rule ID for this structure rule.
         /// </returns>
-        public virtual int RuleId { get; }
+        public int RuleId { get; }
 
         /// <summary>
         ///     Returns the NameForm that this structure rule controls.
@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The NameForm that this structure rule controls.
         /// </returns>
-        public virtual string NameForm { get; } = "";
+        public string NameForm { get; } = "";
 
         /// <summary>
         ///     Returns a list of all structure rules that are superior to this
@@ -76,7 +76,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public virtual string[] Superiors => _superiorIDs;
+        public string[] Superiors => _superiorIDs;
 
         private readonly string[] _superiorIDs = {""};
 

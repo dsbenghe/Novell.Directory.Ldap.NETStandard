@@ -70,13 +70,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///     constructor should be package protected. (So the MessageID value
     ///     isn't arbitrarily run up.)
     /// </summary>
-    public class RfcLdapMessage : Asn1Sequence
+    public sealed class RfcLdapMessage : Asn1Sequence
     {
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
-        public virtual int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();
+        public int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();
 
         /// <summary> Returns this RfcLdapMessage's message type</summary>
-        public virtual int Type => get_Renamed(1).GetIdentifier().Tag;
+        public int Type => get_Renamed(1).GetIdentifier().Tag;
 
         /// <summary>
         ///     Returns the response associated with this RfcLdapMessage.
@@ -84,10 +84,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     all which extend RfcResponse. It can also be
         ///     RfcSearchResultEntry, or RfcSearchResultReference
         /// </summary>
-        public virtual Asn1Object Response => get_Renamed(1);
+        public Asn1Object Response => get_Renamed(1);
 
         /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
-        public virtual RfcControls Controls
+        public RfcControls Controls
         {
             get
             {
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Returns the dn of the request, may be null</summary>
-        public virtual string RequestDn => ((IRfcRequest) _op).GetRequestDn();
+        public string RequestDn => ((IRfcRequest) _op).GetRequestDn();
 
         /// <summary>
         ///     returns the original request in this message
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="msg">
         ///     the original request for this response
         /// </param>
-        public virtual LdapMessage RequestingMessage { get; set; }
+        public LdapMessage RequestingMessage { get; set; }
 
         private readonly Asn1Object _op;
         private RfcControls _controls;
@@ -263,7 +263,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             return (IRfcRequest) get_Renamed(1);
         }
 
-        public virtual bool IsRequest()
+        public bool IsRequest()
         {
             return get_Renamed(1) is IRfcRequest;
         }

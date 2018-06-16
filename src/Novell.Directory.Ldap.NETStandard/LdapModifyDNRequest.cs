@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap
      *               deleteoldrdn    BOOLEAN,
      *               newSuperior     [0] LdapDN OPTIONAL }
      */
-    public class LdapModifyDnRequest : LdapMessage
+    public sealed class LdapModifyDnRequest : LdapMessage
     {
         /// <summary>
         ///     Returns the dn of the entry to rename or move in the directory
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to rename or move
         /// </returns>
-        public virtual string Dn => Asn1Object.RequestDn;
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Returns the newRDN of the entry to rename or move in the directory
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the newRDN of the entry to rename or move
         /// </returns>
-        public virtual string NewRdn
+        public string NewRdn
         {
             get
             {
@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the DeleteOldRDN flag for the entry to rename or move
         /// </returns>
-        public virtual bool DeleteOldRdn
+        public bool DeleteOldRdn
         {
             get
             {
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap
         ///     the ParentDN for the entry to move, or <dd>null</dd>
         ///     if the request is not a move.
         /// </returns>
-        public virtual string ParentDn
+        public string ParentDn
         {
             get
             {

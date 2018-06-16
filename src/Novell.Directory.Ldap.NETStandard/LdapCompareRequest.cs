@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
      *               entry           LdapDN,
      *               ava             AttributeValueAssertion }
      */
-    public class LdapCompareRequest : LdapMessage
+    public sealed class LdapCompareRequest : LdapMessage
     {
         /// <summary>
         ///     Returns the LdapAttribute associated with this request.
@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the LdapAttribute
         /// </returns>
-        public virtual string AttributeDescription
+        public string AttributeDescription
         {
             get
             {
@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap
         ///     the LdapAttribute
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] AssertionValue
+        public sbyte[] AssertionValue
         {
             get
             {
@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the dn of the entry to compare
         /// </returns>
-        public virtual string Dn => Asn1Object.RequestDn;
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Constructs an LdapCompareRequest Object.

@@ -43,11 +43,11 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </seealso>
     /// <seealso cref="Novell.Directory.Ldap.LdapSchemaElement.QualifierNames">
     /// </seealso>
-    public class EnumeratedIterator : IEnumerator
+    public sealed class EnumeratedIterator : IEnumerator
     {
         private object _tempAuxObj;
 
-        public virtual bool MoveNext()
+        public bool MoveNext()
         {
             var result = HasMoreElements();
             if (result)
@@ -57,12 +57,12 @@ namespace Novell.Directory.Ldap.Utilclass
             return result;
         }
 
-        public virtual void Reset()
+        public void Reset()
         {
             _tempAuxObj = null;
         }
 
-        public virtual object Current => _tempAuxObj;
+        public object Current => _tempAuxObj;
 
         private readonly IEnumerator _i;
 

@@ -38,11 +38,11 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     Encapsulates a qualifier in a Schema definition.  Definitions that are not
     ///     in rfc2252.  Begins with 'X-'
     /// </summary>
-    public class AttributeQualifier
+    public sealed class AttributeQualifier
     {
-        public virtual string Name => _name;
+        public string Name => _name;
 
-        public virtual string[] Values
+        public string[] Values
         {
             get
             {

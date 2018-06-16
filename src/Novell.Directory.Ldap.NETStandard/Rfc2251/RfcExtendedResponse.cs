@@ -44,14 +44,14 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         response         [11] OCTET STRING OPTIONAL }
     ///     </pre>
     /// </summary>
-    public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
+    public sealed class RfcExtendedResponse : Asn1Sequence, IRfcResponse
     {
         /// <summary> </summary>
-        public virtual RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid) get_Renamed(_responseNameIndex) : null;
+        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid) get_Renamed(_responseNameIndex) : null;
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public virtual Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString) get_Renamed(_responseIndex) : null;
+        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString) get_Renamed(_responseIndex) : null;
 
         /// <summary> Context-specific TAG for optional responseName.</summary>
         public const int ResponseNameTag = 10;

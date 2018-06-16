@@ -63,13 +63,13 @@ namespace Novell.Directory.Ldap.Asn1
     ///     Canonical, and Distinguished Encoding Rules", 1994.
     /// </summary>
     [CLSCompliant(true)]
-    public class LberEncoder : IAsn1Encoder
+    public sealed class LberEncoder : IAsn1Encoder
     {
         /* Encoders for ASN.1 simple type Contents
                 */
 
         /// <summary> BER Encode an Asn1Boolean directly into the specified output stream.</summary>
-        public virtual void Encode(Asn1Boolean b, Stream outRenamed)
+        public void Encode(Asn1Boolean b, Stream outRenamed)
         {
             /* Encode the id */
             Encode(b.GetIdentifier(), outRenamed);
