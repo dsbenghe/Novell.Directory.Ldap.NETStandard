@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.DebugEventData.cs
 //
@@ -45,28 +46,27 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            DsTime = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            DsTime = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
             MilliSeconds =
-                ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+                ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
 
             PerpetratorDn =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
             FormatString =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            Verb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
+            Verb = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
             ParameterCount =
-                ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+                ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
 
             Parameters = new ArrayList();
 
             if (ParameterCount > 0)
             {
-                var seq = (Asn1Sequence) Decoder.Decode(DecodedData, length);
+                var seq = (Asn1Sequence)Decoder.Decode(DecodedData, length);
                 for (var i = 0; i < ParameterCount; i++)
                 {
                     Parameters.Add(
-                        new DebugParameter((Asn1Tagged) seq.get_Renamed(i))
-                    );
+                        new DebugParameter((Asn1Tagged)seq.get_Renamed(i)));
                 }
             }
 

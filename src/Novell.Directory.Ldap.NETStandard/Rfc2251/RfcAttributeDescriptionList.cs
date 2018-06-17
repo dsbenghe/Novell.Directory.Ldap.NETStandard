@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeDescriptionList.cs
 //
@@ -50,7 +51,8 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeDescriptionList : Asn1SequenceOf
     {
         /// <summary> </summary>
-        public RfcAttributeDescriptionList(int size) : base(size)
+        public RfcAttributeDescriptionList(int size)
+            : base(size)
         {
         }
 
@@ -58,7 +60,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Convenience constructor. This constructor will construct an
         ///     AttributeDescriptionList using the supplied array of Strings.
         /// </summary>
-        public RfcAttributeDescriptionList(string[] attrs) : base(attrs == null ? 0 : attrs.Length)
+        public RfcAttributeDescriptionList(string[] attrs)
+            : base(attrs == null ? 0 : attrs.Length)
         {
             if (attrs != null)
             {

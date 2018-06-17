@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.ListReplicasRequest.cs
 //
@@ -45,7 +46,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.19
     ///     The requestValue has the following format:
     ///     requestValue ::=
-    ///     serverName  LdapDN
+    ///     serverName  LdapDN.
     /// </summary>
     public class ListReplicasRequest : LdapExtendedOperation
     {
@@ -68,11 +69,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public ListReplicasRequest(string serverName) : base(ReplicationConstants.ListReplicasReq, null)
+        public ListReplicasRequest(string serverName)
+            : base(ReplicationConstants.ListReplicasReq, null)
         {
             try
             {
-                if ((object) serverName == null)
+                if ((object)serverName == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

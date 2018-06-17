@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapReferralException.cs
 //
@@ -57,7 +58,8 @@ namespace Novell.Directory.Ldap
         /// <param name="message">
         ///     The additional error information.
         /// </param>
-        public LdapReferralException(string message) : base(message, Referral, null)
+        public LdapReferralException(string message)
+            : base(message, Referral, null)
         {
         }
 
@@ -73,7 +75,8 @@ namespace Novell.Directory.Ldap
         /// <param name="message">
         ///     The additional error information.
         /// </param>
-        public LdapReferralException(string message, object[] arguments) : base(message, arguments, Referral, null)
+        public LdapReferralException(string message, object[] arguments)
+            : base(message, arguments, Referral, null)
         {
         }
 
@@ -199,12 +202,13 @@ namespace Novell.Directory.Ldap
         ///     from the server.
         /// </param>
         public LdapReferralException(string message, object[] arguments, int resultCode, string serverMessage,
-            Exception rootException) : base(message, arguments, resultCode, serverMessage, rootException)
+            Exception rootException)
+            : base(message, arguments, resultCode, serverMessage, rootException)
         {
         }
 
         /// <summary>
-        ///     Sets a referral that could not be processed
+        ///     Sets a referral that could not be processed.
         /// </summary>
         /// <param name="url">
         ///     The referral URL that could not be processed.
@@ -227,7 +231,7 @@ namespace Novell.Directory.Ldap
         ///     server (for example, a referral URL other than ldap://something).
         /// </summary>
         /// <returns>
-        ///     The list of URLs that comprise this referral
+        ///     The list of URLs that comprise this referral.
         /// </returns>
         public string[] GetReferrals()
         {
@@ -235,7 +239,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Sets the list of referrals
+        ///     Sets the list of referrals.
         /// </summary>
         /// <param name="urls">
         ///     the list of referrals returned by the Ldap server in a
@@ -258,10 +262,12 @@ namespace Novell.Directory.Ldap
             var msg = GetExceptionString("LdapReferralException");
 
             // Add failed referral information
-            if ((object) FailedReferral != null)
+            if ((object)FailedReferral != null)
             {
-                tmsg = ResourcesHandler.GetMessage("FAILED_REFERRAL",
-                    new object[] {"LdapReferralException", FailedReferral});
+                tmsg = ResourcesHandler.GetMessage(
+                    "FAILED_REFERRAL",
+                    new object[] {"LdapReferralException", FailedReferral });
+
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                 {
@@ -276,8 +282,10 @@ namespace Novell.Directory.Ldap
             {
                 for (var i = 0; i < _referrals.Length; i++)
                 {
-                    tmsg = ResourcesHandler.GetMessage("REFERRAL_ITEM",
-                        new object[] {"LdapReferralException", _referrals[i]});
+                    tmsg = ResourcesHandler.GetMessage(
+                        "REFERRAL_ITEM",
+                        new object[] {"LdapReferralException", _referrals[i] });
+
                     // If found no string from resource file, use a default string
                     if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                     {

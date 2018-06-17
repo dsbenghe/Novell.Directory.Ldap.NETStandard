@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.AbortPartitionOperationRequest.cs
 //
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     flags       INTEGER
-    ///     partitionDN LdapDN
+    ///     partitionDN LdapDN.
     /// </summary>
     public class AbortPartitionOperationRequest : LdapExtendedOperation
     {
@@ -70,14 +71,13 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) partitionDn == null)
+                if ((object)partitionDn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }
 
                 var encodedData = new MemoryStream();
                 var encoder = new LberEncoder();
-
 
                 var asn1Flags = new Asn1Integer(flags);
                 var asn1PartitionDn = new Asn1OctetString(partitionDn);

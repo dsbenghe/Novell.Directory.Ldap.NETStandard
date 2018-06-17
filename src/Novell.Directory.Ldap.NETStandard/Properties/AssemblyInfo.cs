@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.AssemblyInfo.cs
 //
@@ -88,5 +89,6 @@ using System.Reflection;
 //
 
 [assembly: AssemblyDelaySign(false)]
-//[assembly: AssemblyKeyFile("")]
-//[assembly: AssemblyKeyName("")]
+
+// [assembly: AssemblyKeyFile("")]
+// [assembly: AssemblyKeyName("")]

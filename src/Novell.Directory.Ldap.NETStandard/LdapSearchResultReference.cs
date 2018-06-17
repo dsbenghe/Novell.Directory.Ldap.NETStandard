@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchResultReference.cs
 //
@@ -49,6 +50,7 @@ namespace Novell.Directory.Ldap
         {
             _nameLock = new object();
         }
+
         /*package*/
 
         /// <summary>
@@ -57,7 +59,8 @@ namespace Novell.Directory.Ldap
         /// <param name="message">
         ///     The LdapMessage with a search reference.
         /// </param>
-        internal LdapSearchResultReference(RfcLdapMessage message) : base(message)
+        internal LdapSearchResultReference(RfcLdapMessage message)
+            : base(message)
         {
         }
 
@@ -71,11 +74,11 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var references = ((RfcSearchResultReference) Message.Response).ToArray();
+                var references = ((RfcSearchResultReference)Message.Response).ToArray();
                 _srefs = new string[references.Length];
                 for (var i = 0; i < references.Length; i++)
                 {
-                    _srefs[i] = ((Asn1OctetString) references[i]).StringValue();
+                    _srefs[i] = ((Asn1OctetString)references[i]).StringValue();
                 }
 
                 return _srefs;

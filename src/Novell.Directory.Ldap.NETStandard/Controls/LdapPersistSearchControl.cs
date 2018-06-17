@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapPersistSearchControl.cs
 //
@@ -76,10 +77,10 @@ namespace Novell.Directory.Ldap.Controls
 
         private static readonly LberEncoder SEncoder;
 
-        /// <summary> The requestOID of the persistent search control</summary>
+        /// <summary> The requestOID of the persistent search control.</summary>
         private static readonly string RequestOid = "2.16.840.1.113730.3.4.3";
 
-        /// <summary> The responseOID of the psersistent search - entry change control</summary>
+        /// <summary> The responseOID of the psersistent search - entry change control.</summary>
         private static readonly string ResponseOid = "2.16.840.1.113730.3.4.7";
 
         /// <summary>
@@ -113,9 +114,10 @@ namespace Novell.Directory.Ldap.Controls
         /// <summary>
         ///     The default constructor. A control with changes equal to ANY,
         ///     isCritical equal to true, changesOnly equal to true, and
-        ///     returnControls equal to true
+        ///     returnControls equal to true.
         /// </summary>
-        public LdapPersistSearchControl() : this(Any, true, true, true)
+        public LdapPersistSearchControl()
+            : this(Any, true, true, true)
         {
         }
 
@@ -131,14 +133,14 @@ namespace Novell.Directory.Ldap.Controls
         ///     <li>                           LdapPersistSearchControl.DELETE</li>
         ///     <li>                           LdapPersistSearchControl.MODIFY</li>
         ///     <li>                           LdapPersistSearchControl.MODDN</li>
-        ///     To track all changes the value can be set to:
+        ///     To track all changes the value can be set to:.
         ///     <li>                           LdapPersistSearchControl.ANY</li>
         /// </param>
         /// <param name="changesOnly">
         ///     true if you do not want the server to return
         ///     all existing entries in the directory that match the search
         ///     criteria. (Use this if you just want the changed entries to be
-        ///     returned.)
+        ///     returned.).
         /// </param>
         /// <param name="returnControls">
         ///     true if you want the server to return entry
@@ -200,7 +202,7 @@ namespace Novell.Directory.Ldap.Controls
         /// </summary>
         /// <returns>
         ///     true if entry change controls are to be returned with the
-        ///     search results. Otherwise, false is returned
+        ///     search results. Otherwise, false is returned.
         /// </returns>
         /// <summary>
         ///     When set to true, requests that entry change controls be returned with
@@ -226,14 +228,14 @@ namespace Novell.Directory.Ldap.Controls
         ///     Results from the initial search are not returned.
         /// </summary>
         /// <returns>
-        ///     true of only changes are to be returned
+        ///     true of only changes are to be returned.
         /// </returns>
         /// <summary>
         ///     When set to true, requests that only changes be returned, results from
         ///     the initial search are not returned.
         /// </summary>
         /// <param name="changesOnly">
-        ///     true to skip results for the initial search
+        ///     true to skip results for the initial search.
         /// </param>
         public bool ChangesOnly
         {
@@ -265,7 +267,7 @@ namespace Novell.Directory.Ldap.Controls
             return buf.ToString();
         }
 
-        /// <summary>  Sets the encoded value of the LdapControlClass</summary>
+        /// <summary>  Sets the encoded value of the LdapControlClass.</summary>
         private void SetValue()
         {
             base.SetValue(_mSequence.GetEncoding(SEncoder));

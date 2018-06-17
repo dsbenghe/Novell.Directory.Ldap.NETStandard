@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.GeneralDSEventData.cs
 //
@@ -46,41 +47,41 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var length = new int[1];
 
             DsTime = GetTaggedIntValue(
-                (Asn1Tagged) Decoder.Decode(DecodedData, length),
+                (Asn1Tagged)Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenDstime);
             MilliSeconds = GetTaggedIntValue(
-                (Asn1Tagged) Decoder.Decode(DecodedData, length),
+                (Asn1Tagged)Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenMillisec);
 
             Verb = GetTaggedIntValue(
-                (Asn1Tagged) Decoder.Decode(DecodedData, length),
+                (Asn1Tagged)Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenVerb);
             CurrentProcess = GetTaggedIntValue(
-                (Asn1Tagged) Decoder.Decode(DecodedData, length),
+                (Asn1Tagged)Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenCurrproc);
 
             PerpetratorDn = GetTaggedStringValue(
-                (Asn1Tagged) Decoder.Decode(DecodedData, length),
+                (Asn1Tagged)Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenPerp);
 
             var temptaggedvalue =
-                (Asn1Tagged) Decoder.Decode(DecodedData, length);
+                (Asn1Tagged)Decoder.Decode(DecodedData, length);
 
             if (temptaggedvalue.GetIdentifier().Tag
-                == (int) GeneralEventField.EvtTagGenIntegers)
+                == (int)GeneralEventField.EvtTagGenIntegers)
             {
-                //Integer List.
+                // Integer List.
                 var inteseq = GetTaggedSequence(temptaggedvalue, GeneralEventField.EvtTagGenIntegers);
                 var intobject = inteseq.ToArray();
                 IntegerValues = new int[intobject.Length];
 
                 for (var i = 0; i < intobject.Length; i++)
                 {
-                    IntegerValues[i] = ((Asn1Integer) intobject[i]).IntValue();
+                    IntegerValues[i] = ((Asn1Integer)intobject[i]).IntValue();
                 }
 
-                //second decoding for Strings.
-                temptaggedvalue = (Asn1Tagged) Decoder.Decode(DecodedData, length);
+                // second decoding for Strings.
+                temptaggedvalue = (Asn1Tagged)Decoder.Decode(DecodedData, length);
             }
             else
             {
@@ -88,10 +89,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             }
 
             if (temptaggedvalue.GetIdentifier().Tag
-                == (int) GeneralEventField.EvtTagGenStrings
+                == (int)GeneralEventField.EvtTagGenStrings
                 && temptaggedvalue.GetIdentifier().Constructed)
             {
-                //String values.
+                // String values.
                 var inteseq =
                     GetTaggedSequence(temptaggedvalue, GeneralEventField.EvtTagGenStrings);
                 var stringobject = inteseq.ToArray();
@@ -100,7 +101,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 for (var i = 0; i < stringobject.Length; i++)
                 {
                     StringValues[i] =
-                        ((Asn1OctetString) stringobject[i]).StringValue();
+                        ((Asn1OctetString)stringobject[i]).StringValue();
                 }
             }
             else
@@ -129,50 +130,50 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.GetIdentifier().Tag)
+            if ((int)tagid != tagvalue.GetIdentifier().Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).ByteValue());
+            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();
 
             var length = dbytes.Length;
 
-            return (int) dec.DecodeNumeric(data, length);
+            return (int)dec.DecodeNumeric(data, length);
         }
 
         protected string GetTaggedStringValue(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
             var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.GetIdentifier().Tag)
+            if ((int)tagid != tagvalue.GetIdentifier().Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).ByteValue());
+            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();
 
             var length = dbytes.Length;
 
-            return (string) dec.DecodeCharacterString(data, length);
+            return (string)dec.DecodeCharacterString(data, length);
         }
 
         protected Asn1Sequence GetTaggedSequence(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
             var obj = tagvalue.TaggedValue;
 
-            if ((int) tagid != tagvalue.GetIdentifier().Tag)
+            if ((int)tagid != tagvalue.GetIdentifier().Tag)
             {
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString) obj).ByteValue());
+            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();

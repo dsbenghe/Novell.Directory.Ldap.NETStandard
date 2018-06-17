@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAddResponse.cs
 //
@@ -43,16 +44,17 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcAddResponse : RfcLdapResult
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for AddResponse
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     The only time a client will create a AddResponse is when it is
-        ///     decoding it from an InputStream
+        ///     decoding it from an InputStream.
         /// </summary>
         [CLSCompliant(false)]
-        public RfcAddResponse(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
+        public RfcAddResponse(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
         {
         }
 
@@ -60,25 +62,26 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs an RfcAddResponse from parameters.
         /// </summary>
         /// <param name="resultCode">
-        ///     the result code of the operation
+        ///     the result code of the operation.
         /// </param>
         /// <param name="matchedDn">
-        ///     the matched DN returned from the server
+        ///     the matched DN returned from the server.
         /// </param>
         /// <param name="errorMessage">
-        ///     the diagnostic message returned from the server
+        ///     the diagnostic message returned from the server.
         /// </param>
         /// <param name="referral">
-        ///     the referral(s) returned by the server
+        ///     the referral(s) returned by the server.
         /// </param>
         public RfcAddResponse(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
-            RfcReferral referral) : base(resultCode, matchedDn, errorMessage, referral)
+            RfcReferral referral)
+            : base(resultCode, matchedDn, errorMessage, referral)
         {
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
         public override Asn1Identifier GetIdentifier()

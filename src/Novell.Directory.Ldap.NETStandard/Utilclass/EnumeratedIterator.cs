@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.EnumeratedIterator.cs
 //
@@ -37,7 +38,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     wrappers a class of type Iterator and makes it act as an Enumerator.  This
     ///     is used when the API requires enumerations be used but we may be using
     ///     JDK1.2 collections, which return iterators instead of enumerators.  Used by
-    ///     LdapSchema and LdapSchemaElement
+    ///     LdapSchema and LdapSchemaElement.
     /// </summary>
     /// <seealso cref="Novell.Directory.Ldap.LdapSchema.AttributeSchemas">
     /// </seealso>
@@ -70,13 +71,13 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public object Current { get; private set; }
 
-        /// <summary> Enumeration method that maps to Iterator.hasNext()</summary>
+        /// <summary> Enumeration method that maps to Iterator.hasNext().</summary>
         public bool HasMoreElements()
         {
             return _i.MoveNext();
         }
 
-        /// <summary> Enumeration method that maps to Iterator.next()</summary>
+        /// <summary> Enumeration method that maps to Iterator.next().</summary>
         public object NextElement()
         {
             return _i.Current;

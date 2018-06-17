@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetEffectivePrivilegesResponse.cs
 //
@@ -53,11 +54,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     requestValue ::=
         ///     dn         LdapDN
         ///     trusteeDN  LdapDN
-        ///     SEQUENCE of attrNames   LdapDN
+        ///     SEQUENCE of attrNames   LdapDN.
         /// </summary>
         static GetEffectivePrivilegesListRequest()
         {
-            LdapExtendedResponse.Register(ReplicationConstants.GetEffectiveListPrivilegesRes,
+            LdapExtendedResponse.Register(
+                ReplicationConstants.GetEffectiveListPrivilegesRes,
                 typeof(GetEffectivePrivilegesListResponse));
         }
 
@@ -70,7 +72,7 @@ namespace Novell.Directory.Ldap.Extensions
         /// </param>
         /// <param name="trusteeDn">
         ///     The distinguished name of the entry whose trustee rights
-        ///     are being returned
+        ///     are being returned.
         /// </param>
         /// <param name={"attr1","attr2",..., null}>
         ///     The Ldap attribute names list.
@@ -84,7 +86,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) dn == null)
+                if ((object)dn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

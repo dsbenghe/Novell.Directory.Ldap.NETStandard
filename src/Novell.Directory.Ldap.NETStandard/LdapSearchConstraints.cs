@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchConstraints.cs
 //
@@ -48,7 +49,7 @@ namespace Novell.Directory.Ldap
     {
         /// <summary>
         ///     Indicates that aliases are never dereferenced.
-        ///     DEREF_NEVER = 0
+        ///     DEREF_NEVER = 0.
         /// </summary>
         /// <seealso cref="Dereference">
         /// </seealso>
@@ -60,7 +61,7 @@ namespace Novell.Directory.Ldap
         ///     Indicates that aliases are are derefrenced when
         ///     searching the entries beneath the starting point of the search,
         ///     but not when finding the starting entry.
-        ///     DEREF_SEARCHING = 1
+        ///     DEREF_SEARCHING = 1.
         /// </summary>
         /// <seealso cref="Dereference">
         /// </seealso>
@@ -72,7 +73,7 @@ namespace Novell.Directory.Ldap
         ///     Indicates that aliases are dereferenced when
         ///     finding the starting point for the search,
         ///     but not when searching under that starting entry.
-        ///     DEREF_FINDING = 2
+        ///     DEREF_FINDING = 2.
         /// </summary>
         /// <seealso cref="Dereference">
         /// </seealso>
@@ -84,7 +85,7 @@ namespace Novell.Directory.Ldap
         ///     Indicates that aliases are always dereferenced, both when
         ///     finding the starting point for the search, and also when
         ///     searching the entries beneath the starting entry.
-        ///     DEREF_ALWAYS = 3
+        ///     DEREF_ALWAYS = 3.
         /// </summary>
         /// <seealso cref="Dereference">
         /// </seealso>
@@ -109,6 +110,7 @@ namespace Novell.Directory.Ldap
         public LdapSearchConstraints()
         {
             InitBlock();
+
             // Get a unique connection name for debug
         }
 
@@ -132,12 +134,12 @@ namespace Novell.Directory.Ldap
             var lp = cons.Properties;
             if (lp != null)
             {
-                Properties = (Hashtable) lp.Clone();
+                Properties = (Hashtable)lp.Clone();
             }
 
             if (cons is LdapSearchConstraints)
             {
-                var scons = (LdapSearchConstraints) cons;
+                var scons = (LdapSearchConstraints)cons;
                 ServerTimeLimit = scons.ServerTimeLimit;
                 Dereference = scons.Dereference;
                 MaxResults = scons.MaxResults;
@@ -173,7 +175,7 @@ namespace Novell.Directory.Ldap
         ///     Specifies when aliases should be dereferenced.
         ///     Must be either DEREF_NEVER, DEREF_FINDING,
         ///     DEREF_SEARCHING, or DEREF_ALWAYS from this class.
-        ///     Default: DEREF_NEVER
+        ///     Default: DEREF_NEVER.
         /// </param>
         /// <param name="maxResults">
         ///     The maximum number of search results to return
@@ -181,7 +183,7 @@ namespace Novell.Directory.Ldap
         ///     The search operation will be terminated by the server
         ///     with an LdapException.SIZE_LIMIT_EXCEEDED if the
         ///     number of results exceed the maximum.
-        ///     Default: 1000
+        ///     Default: 1000.
         /// </param>
         /// <param name="doReferrals">
         ///     Determines whether to automatically follow
@@ -190,13 +192,13 @@ namespace Novell.Directory.Ldap
         ///     an LdapException.REFERRAL if the server responds
         ///     with a referral.
         ///     It is ignored for asynchronous operations.
-        ///     Default: false
+        ///     Default: false.
         /// </param>
         /// <param name="batchSize">
         ///     The number of results to return in a batch. Specifying
         ///     0 means to block until all results are received.
         ///     Specifying 1 means to return results one result at a
-        ///     time.  Default: 1
+        ///     time.  Default: 1.
         /// </param>
         /// <param name="handler">
         ///     The custom authentication handler called when
@@ -227,13 +229,15 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public LdapSearchConstraints(int msLimit, int serverTimeLimit, int dereference, int maxResults,
             bool doReferrals,
-            int batchSize, ILdapReferralHandler handler, int hopLimit) : base(msLimit, doReferrals, handler, hopLimit)
+            int batchSize, ILdapReferralHandler handler, int hopLimit)
+            : base(msLimit, doReferrals, handler, hopLimit)
         {
             InitBlock();
             ServerTimeLimit = serverTimeLimit;
             Dereference = dereference;
             MaxResults = maxResults;
             BatchSize = batchSize;
+
             // Get a unique connection name for debug
         }
 
@@ -242,7 +246,7 @@ namespace Novell.Directory.Ldap
         ///     results.
         ///     This should be 0 if intermediate reults are not needed,
         ///     and 1 if results are to be processed as they come in. A value of
-        ///     indicates block until all results are received.  Default:
+        ///     indicates block until all results are received.  Default:.
         /// </summary>
         /// <returns>
         ///     The the number of results to block on.
@@ -266,7 +270,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Specifies when aliases should be dereferenced.
-        ///     Returns one of the following:
+        ///     Returns one of the following:.
         ///     <ul>
         ///         <li>DEREF_NEVER</li>
         ///         <li>DEREF_FINDING</li>
@@ -285,7 +289,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="dereference">
         ///     Specifies how aliases are dereference and can be set
-        ///     to one of the following:
+        ///     to one of the following:.
         ///     <ul>
         ///         <li>DEREF_NEVER - do not dereference aliases</li>
         ///         <li>

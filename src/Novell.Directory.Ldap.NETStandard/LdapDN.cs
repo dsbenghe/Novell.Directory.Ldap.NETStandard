@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDN.cs
 //
@@ -76,7 +77,7 @@ namespace Novell.Directory.Ldap
         ///     '#' if it comes at the beginning of the string, and
         ///     ' ' (space) if it comes at the beginning or the end of a string.
         ///     Note that single-valued attributes can be used because of ambiguity. See
-        ///     RFC 2253
+        ///     RFC 2253.
         /// </summary>
         /// <param name="rdn">
         ///     The RDN to escape.
@@ -91,7 +92,7 @@ namespace Novell.Directory.Ldap
 
             while (i < escapedS.Length && escapedS[i] != '=')
             {
-                i++; //advance until we find the separator =
+                i++; // advance until we find the separator =
             }
 
             if (i == escapedS.Length)
@@ -101,13 +102,14 @@ namespace Novell.Directory.Ldap
             }
 
             i++;
-            //check for a space or # at the beginning of a string.
+
+            // check for a space or # at the beginning of a string.
             if (escapedS[i] == ' ' || escapedS[i] == '#')
             {
                 escapedS.Insert(i++, '\\');
             }
 
-            //loop from second char to the second to last
+            // loop from second char to the second to last
             for (; i < escapedS.Length; i++)
             {
                 if (escapedS[i] == ',' || escapedS[i] == '+' || escapedS[i] == '"' || escapedS[i] == '\\' ||
@@ -117,7 +119,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            //check last char for a space
+            // check last char for a space
             if (escapedS[escapedS.Length - 1] == ' ')
             {
                 escapedS.Insert(escapedS.Length - 1, '\\');
@@ -126,13 +128,12 @@ namespace Novell.Directory.Ldap
             return escapedS.ToString();
         }
 
-
         /// <summary>
         ///     Returns the individual components of a distinguished name (DN).
         /// </summary>
         /// <param name="dn">
         ///     The distinguished name, for example, "cn=Babs
-        ///     Jensen,ou=Accounting,o=Acme,c=US"
+        ///     Jensen,ou=Accounting,o=Acme,c=US".
         /// </param>
         /// <param name="noTypes">
         ///     If true, returns only the values of the
@@ -200,14 +201,13 @@ namespace Novell.Directory.Ldap
         ///     as per RFC 2253, section4.
         /// </summary>
         /// <returns>
-        ///     a normalized string
+        ///     a normalized string.
         /// </returns>
         public static string Normalize(string dn)
         {
             var testDn = new Dn(dn);
             return testDn.ToString();
         }
-
 
         /// <summary>
         ///     Returns the RDN after unescaping the characters requiring escaping.
@@ -218,7 +218,7 @@ namespace Novell.Directory.Ldap
         ///     ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
         ///     '#' if it comes at the beginning of the Attribute Name
         ///     (without the '\').
-        ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name
+        ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name.
         /// </summary>
         /// <param name="rdn">
         ///     The RDN to unescape.
@@ -233,7 +233,7 @@ namespace Novell.Directory.Ldap
 
             while (i < rdn.Length && rdn[i] != '=')
             {
-                i++; //advance until we find the separator =
+                i++; // advance until we find the separator =
             }
 
             if (i == rdn.Length)
@@ -243,7 +243,8 @@ namespace Novell.Directory.Ldap
             }
 
             i++;
-            //check if the first two chars are "\ " (slash space) or "\#"
+
+            // check if the first two chars are "\ " (slash space) or "\#"
             if (rdn[i] == '\\' && i + 1 < rdn.Length - 1 && (rdn[i + 1] == ' ' || rdn[i + 1] == '#'))
             {
                 i++;
@@ -251,21 +252,21 @@ namespace Novell.Directory.Ldap
 
             for (; i < rdn.Length; i++)
             {
-                //if the current char is a slash, not the end char, and is followed
+                // if the current char is a slash, not the end char, and is followed
                 // by a special char then...
                 if (rdn[i] == '\\' && i != rdn.Length - 1)
                 {
                     if (rdn[i + 1] == ',' || rdn[i + 1] == '+' || rdn[i + 1] == '"' || rdn[i + 1] == '\\' ||
                         rdn[i + 1] == '<' || rdn[i + 1] == '>' || rdn[i + 1] == ';')
                     {
-                        //I'm not sure if I have to check for these special chars
+                        // I'm not sure if I have to check for these special chars
                         continue;
                     }
 
-                    //check if the last two chars are "\ "
+                    // check if the last two chars are "\ "
                     if (rdn[i + 1] == ' ' && i + 2 == rdn.Length)
                     {
-                        //if the last char is a space
+                        // if the last char is a space
                         continue;
                     }
                 }
@@ -275,5 +276,5 @@ namespace Novell.Directory.Ldap
 
             return unescaped.ToString();
         }
-    } //end class LdapDN
+    } // end class LdapDN
 }

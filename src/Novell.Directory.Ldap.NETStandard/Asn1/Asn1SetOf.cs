@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1SetOf.cs
 //
@@ -58,10 +59,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1SetOf object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1SetOf() : base(Id)
+        public Asn1SetOf()
+            : base(Id)
         {
         }
-
 
         /// <summary>
         ///     Constructs an Asn1SetOf object with the specified
@@ -71,10 +72,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1SetOf(int size) : base(Id, size)
+        public Asn1SetOf(int size)
+            : base(Id, size)
         {
         }
-
 
         /// <summary>
         ///     A copy constructor that creates an Asn1SetOf from an instance of Asn1Set.
@@ -84,7 +85,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Set.
         /// </summary>
-        public Asn1SetOf(Asn1Set setRenamed) : base(Id, setRenamed.ToArray(), setRenamed.Size())
+        public Asn1SetOf(Asn1Set setRenamed)
+            : base(Id, setRenamed.ToArray(), setRenamed.Size())
         {
         }
 

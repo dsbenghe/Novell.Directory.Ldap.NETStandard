@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.PartitionSyncRequest.cs
 //
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     requestValue ::=
     ///     serverName      LdapDN
     ///     partitionRoot   LdapDN
-    ///     delay           INTEGER
+    ///     delay           INTEGER.
     /// </summary>
     public class PartitionSyncRequest : LdapExtendedOperation
     {
@@ -73,7 +74,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverName == null || (object) partitionRoot == null)
+                if ((object)serverName == null || (object)partitionRoot == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDSConstants.cs
 //
@@ -33,7 +34,7 @@ namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     LDAPDSConstants.java contains bit values for [Entry Rights], [All attribute
-    ///     Rights], attribute rights, and entry flags in Novell eDirectory
+    ///     Rights], attribute rights, and entry flags in Novell eDirectory.
     /// </summary>
     public struct LdapDsConstants
     {

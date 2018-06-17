@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.MergePartitionsRequest.cs
 //
@@ -46,7 +47,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     flags   INTEGER
-    ///     dn      LdapDN
+    ///     dn      LdapDN.
     /// </summary>
     public class MergePartitionsRequest : LdapExtendedOperation
     {
@@ -67,11 +68,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public MergePartitionsRequest(string dn, int flags) : base(ReplicationConstants.MergeNamingContextReq, null)
+        public MergePartitionsRequest(string dn, int flags)
+            : base(ReplicationConstants.MergeNamingContextReq, null)
         {
             try
             {
-                if ((object) dn == null)
+                if ((object)dn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

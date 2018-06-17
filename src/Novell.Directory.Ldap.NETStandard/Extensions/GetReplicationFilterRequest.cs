@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicationFilterRequest.cs
 //
@@ -47,7 +48,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.37
     ///     The requestValue has the following format:
     ///     requestValue ::=
-    ///     serverName  LdapDN
+    ///     serverName  LdapDN.
     /// </summary>
     public class GetReplicationFilterRequest : LdapExtendedOperation
     {
@@ -57,7 +58,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.Register(ReplicationConstants.GetReplicationFilterRes,
+            LdapExtendedResponse.Register(
+                ReplicationConstants.GetReplicationFilterRes,
                 typeof(GetReplicationFilterResponse));
         }
 
@@ -66,7 +68,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     replication filter.
         /// </summary>
         /// <param name="serverDn">
-        ///     The server whose replication filter needs to be read
+        ///     The server whose replication filter needs to be read.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
@@ -77,7 +79,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDn == null)
+                if ((object)serverDn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

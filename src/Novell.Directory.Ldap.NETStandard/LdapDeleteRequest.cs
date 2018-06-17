@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDeleteRequest.cs
 //
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap
     public class LdapDeleteRequest : LdapMessage
     {
         /// <summary>
-        ///     Constructs a request to delete an entry from the directory
+        ///     Constructs a request to delete an entry from the directory.
         /// </summary>
         /// <param name="dn">
         ///     the dn of the entry to delete.
@@ -53,21 +54,22 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the abandon request
         ///     or null if none.
         /// </param>
-        public LdapDeleteRequest(string dn, LdapControl[] cont) : base(DelRequest, new RfcDelRequest(dn), cont)
+        public LdapDeleteRequest(string dn, LdapControl[] cont)
+            : base(DelRequest, new RfcDelRequest(dn), cont)
         {
         }
 
         /// <summary>
-        ///     Returns of the dn of the entry to delete from the directory
+        ///     Returns of the dn of the entry to delete from the directory.
         /// </summary>
         /// <returns>
-        ///     the dn of the entry to delete
+        ///     the dn of the entry to delete.
         /// </returns>
         public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Return an Asn1 representation of this delete request
-        ///     #return an Asn1 representation of this object
+        ///     #return an Asn1 representation of this object.
         /// </summary>
         public override string ToString()
         {

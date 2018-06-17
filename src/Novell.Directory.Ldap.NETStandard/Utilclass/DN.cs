@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.DN.cs
 //
@@ -48,13 +49,13 @@ namespace Novell.Directory.Ldap.Utilclass
     ///         <li>oid.2.5.4.3=admin,ou=marketing</li>
     ///     </ul>
     ///     Note: Multivalued attributes are all considered to be one
-    ///     component and are represented in one RDN (see RDN)
+    ///     component and are represented in one RDN (see RDN).
     /// </summary>
     /// <seealso cref="Rdn">
     /// </seealso>
     public class Dn : object
     {
-        //parser state identifiers.
+        // parser state identifiers.
         private const int LookForRdnAttrType = 1;
         private const int AlphaAttrType = 2;
         private const int OidAttrType = 3;
@@ -77,7 +78,6 @@ namespace Novell.Directory.Ldap.Utilclass
 
         */
 
-
         private ArrayList _rdnList;
 
         public Dn()
@@ -91,12 +91,12 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     in RFC 2253.
         /// </summary>
         /// <param name="dnString">
-        ///     a string representation of the distinguished name
+        ///     a string representation of the distinguished name.
         /// </param>
         /// <exception>
         ///     IllegalArgumentException  if the the value of the dnString
         ///     parameter does not adhere to the syntax described in
-        ///     RFC 2253
+        ///     RFC 2253.
         /// </exception>
         public Dn(string dnString)
         {
@@ -115,7 +115,7 @@ namespace Novell.Directory.Ldap.Utilclass
             var hexDigitCount = 0;
             var currRdn = new Rdn();
 
-            //indicates whether an OID number has a first digit of ZERO
+            // indicates whether an OID number has a first digit of ZERO
 
             var tokenIndex = 0;
             var currIndex = 0;
@@ -139,8 +139,8 @@ namespace Novell.Directory.Ldap.Utilclass
                             if (dnString.Substring(currIndex).StartsWith("oid.") ||
                                 dnString.Substring(currIndex).StartsWith("OID."))
                             {
-                                //form is "oid.###.##.###... or OID.###.##.###...
-                                currIndex += 4; //skip oid. prefix and get to actual oid
+                                // form is "oid.###.##.###... or OID.###.##.###...
+                                currIndex += 4; // skip oid. prefix and get to actual oid
                                 if (currIndex > lastIndex)
                                 {
                                     throw new ArgumentException(dnString);
@@ -175,7 +175,6 @@ namespace Novell.Directory.Ldap.Utilclass
 
                         break;
 
-
                     case AlphaAttrType:
                         if (IsAlpha(currChar) || IsDigit(currChar) || currChar == '-')
                         {
@@ -183,7 +182,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         }
                         else
                         {
-                            //skip any spaces
+                            // skip any spaces
                             while (currChar == ' ' && currIndex < lastIndex)
                             {
                                 currChar = dnString[++currIndex];
@@ -202,7 +201,6 @@ namespace Novell.Directory.Ldap.Utilclass
                         }
 
                         break;
-
 
                     case OidAttrType:
                         if (!IsDigit(currChar))
@@ -219,7 +217,7 @@ namespace Novell.Directory.Ldap.Utilclass
                             throw new ArgumentException(dnString);
                         }
 
-                        //consume all numbers.
+                        // consume all numbers.
                         while (IsDigit(currChar) && currIndex < lastIndex)
                         {
                             tokenBuf[tokenIndex++] = currChar;
@@ -229,11 +227,12 @@ namespace Novell.Directory.Ldap.Utilclass
                         if (currChar == '.')
                         {
                             tokenBuf[tokenIndex++] = currChar;
-                            //The state remains at OID_ATTR_TYPE
+
+                            // The state remains at OID_ATTR_TYPE
                         }
                         else
                         {
-                            //skip any spaces
+                            // skip any spaces
                             while (currChar == ' ' && currIndex < lastIndex)
                             {
                                 currChar = dnString[++currIndex];
@@ -252,7 +251,6 @@ namespace Novell.Directory.Ldap.Utilclass
                         }
 
                         break;
-
 
                     case LookForRdnValue:
                         while (currChar == ' ')
@@ -282,13 +280,13 @@ namespace Novell.Directory.Ldap.Utilclass
                         else
                         {
                             valueStart = currIndex;
-                            //check this character again in the UNQUOTED_RDN_VALUE state
+
+                            // check this character again in the UNQUOTED_RDN_VALUE state
                             currIndex--;
                             state = UnquotedRdnValue;
                         }
 
                         break;
-
 
                     case UnquotedRdnValue:
                         if (currChar == '\\')
@@ -358,8 +356,7 @@ namespace Novell.Directory.Ldap.Utilclass
                             tokenBuf[tokenIndex++] = currChar;
                         }
 
-                        break; //end UNQUOTED RDN VALUE
-
+                        break; // end UNQUOTED RDN VALUE
 
                     case QuotedRdnValue:
                         if (currChar == '"')
@@ -370,7 +367,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                 currChar = dnString[++currIndex];
                             }
 
-                            //skip any spaces
+                            // skip any spaces
                             while (currChar == ' ' && currIndex < lastIndex)
                             {
                                 currChar = dnString[++currIndex];
@@ -427,20 +424,20 @@ namespace Novell.Directory.Ldap.Utilclass
                             tokenBuf[tokenIndex++] = currChar;
                         }
 
-                        break; //end QUOTED RDN VALUE
-
+                        break; // end QUOTED RDN VALUE
 
                     case HexRdnValue:
                         if (!IsHexDigit(currChar) || currIndex > lastIndex)
                         {
-                            //check for odd number of hex digits
+                            // check for odd number of hex digits
                             if (hexDigitCount % 2 != 0 || hexDigitCount == 0)
                             {
                                 throw new ArgumentException(dnString);
                             }
 
                             rawValue = dnString.Substring(valueStart, currIndex - valueStart);
-                            //skip any spaces
+
+                            // skip any spaces
                             while (currChar == ' ' && currIndex < lastIndex)
                             {
                                 currChar = dnString[++currIndex];
@@ -450,7 +447,7 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 attrValue = new string(tokenBuf, 0, tokenIndex);
 
-                                //added by cameron
+                                // added by cameron
                                 currRdn.Add(attrType, attrValue, rawValue);
                                 if (currChar != '+')
                                 {
@@ -472,13 +469,13 @@ namespace Novell.Directory.Ldap.Utilclass
                             hexDigitCount++;
                         }
 
-                        break; //end HEX RDN VALUE
-                } //end switch
+                        break; // end HEX RDN VALUE
+                } // end switch
 
                 currIndex++;
-            } //end while
+            } // end while
 
-            //check ending state
+            // check ending state
             if (state == UnquotedRdnValue || state == HexRdnValue && hexDigitCount % 2 == 0 && hexDigitCount != 0)
             {
                 attrValue = new string(tokenBuf, 0, tokenIndex - trailingSpaceCount);
@@ -488,7 +485,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             else if (state == LookForRdnValue)
             {
-                //empty value is valid
+                // empty value is valid
                 attrValue = string.Empty;
                 rawValue = dnString.Substring(valueStart);
                 currRdn.Add(attrType, attrValue, rawValue);
@@ -498,11 +495,11 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new ArgumentException(dnString);
             }
-        } //end DN constructor (string dn)
+        } // end DN constructor (string dn)
 
-        /// <summary> Retrieves a list of RDN Objects, or individual names of the DN</summary>
+        /// <summary> Retrieves a list of RDN Objects, or individual names of the DN.</summary>
         /// <returns>
-        ///     list of RDNs
+        ///     list of RDNs.
         /// </returns>
         public ArrayList RdNs
         {
@@ -519,9 +516,9 @@ namespace Novell.Directory.Ldap.Utilclass
             }
         }
 
-        /// <summary> Returns the Parent of this DN</summary>
+        /// <summary> Returns the Parent of this DN.</summary>
         /// <returns>
-        ///     Parent DN
+        ///     Parent DN.
         /// </returns>
         public Dn Parent
         {
@@ -533,7 +530,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 };
                 if (parent._rdnList.Count >= 1)
                 {
-                    parent._rdnList.Remove(_rdnList[0]); //remove first object
+                    parent._rdnList.Remove(_rdnList[0]); // remove first object
                 }
 
                 return parent;
@@ -545,7 +542,6 @@ namespace Novell.Directory.Ldap.Utilclass
             _rdnList = new ArrayList();
         }
 
-
         /// <summary>
         ///     Checks a character to see if it is an ascii alphabetic character in
         ///     ranges 65-90 or 97-122.
@@ -555,19 +551,19 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         /// <returns>
         ///     <code>true</code> if the character is an ascii alphabetic
-        ///     character
+        ///     character.
         /// </returns>
         private bool IsAlpha(char ch)
         {
             if (ch < 91 && ch > 64 || ch < 123 && ch > 96)
-                //ASCII A-Z
+
+                // ASCII A-Z
             {
                 return true;
             }
 
             return false;
         }
-
 
         /// <summary>
         ///     Checks a character to see if it is an ascii digit (0-9) character in
@@ -578,12 +574,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         /// <returns>
         ///     <code>true</code> if the character is an ascii alphabetic
-        ///     character
+        ///     character.
         /// </returns>
         private bool IsDigit(char ch)
         {
             if (ch < 58 && ch > 47)
-                //ASCII 0-9
+
+                // ASCII 0-9
             {
                 return true;
             }
@@ -599,12 +596,13 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the character to be tested.
         /// </param>
         /// <returns>
-        ///     <code>true</code> if the character is a valid hex digit
+        ///     <code>true</code> if the character is a valid hex digit.
         /// </returns>
         private static bool IsHexDigit(char ch)
         {
             if (ch < 58 && ch > 47 || ch < 71 && ch > 64 || ch < 103 && ch > 96)
-                //ASCII A-F
+
+                // ASCII A-F
             {
                 return true;
             }
@@ -653,17 +651,20 @@ namespace Novell.Directory.Ldap.Utilclass
             int result;
 
             if (hex1 < 58 && hex1 > 47)
-                //ASCII 0-9
+
+                // ASCII 0-9
             {
                 result = (hex1 - 48) * 16;
             }
             else if (hex1 < 71 && hex1 > 64)
-                //ASCII a-f
+
+                // ASCII a-f
             {
                 result = (hex1 - 55) * 16;
             }
             else if (hex1 < 103 && hex1 > 96)
-                //ASCII A-F
+
+                // ASCII A-F
             {
                 result = (hex1 - 87) * 16;
             }
@@ -673,17 +674,20 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             if (hex0 < 58 && hex0 > 47)
-                //ASCII 0-9
+
+                // ASCII 0-9
             {
                 result += hex0 - 48;
             }
             else if (hex0 < 71 && hex0 > 64)
-                //ASCII a-f
+
+                // ASCII a-f
             {
                 result += hex0 - 55;
             }
             else if (hex0 < 103 && hex0 > 96)
-                //ASCII A-F
+
+                // ASCII A-F
             {
                 result += hex0 - 87;
             }
@@ -692,13 +696,13 @@ namespace Novell.Directory.Ldap.Utilclass
                 throw new ArgumentException("Not hex digit");
             }
 
-            return (char) result;
+            return (char)result;
         }
 
         /// <summary>
         ///     Creates and returns a string that represents this DN.  The string
         ///     follows RFC 2253, which describes String representation of DN's and
-        ///     RDN's
+        ///     RDN's.
         /// </summary>
         /// <returns>
         ///     A DN string.
@@ -721,15 +725,14 @@ namespace Novell.Directory.Ldap.Utilclass
             return dn;
         }
 
-
         /// <summary>
         ///     Compares this DN to the specified DN to determine if they are equal.
         /// </summary>
         /// <param name="toDN">
-        ///     the DN to compare to
+        ///     the DN to compare to.
         /// </param>
         /// <returns>
-        ///     <code>true</code> if the DNs are equal; otherwise
+        ///     <code>true</code> if the DNs are equal; otherwise.
         ///     <code>false</code>
         /// </returns>
         public ArrayList GetrdnList()
@@ -739,7 +742,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public override bool Equals(object toDn)
         {
-            return Equals((Dn) toDn);
+            return Equals((Dn)toDn);
         }
 
         public bool Equals(Dn toDn)
@@ -754,7 +757,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             for (var i = 0; i < length; i++)
             {
-                if (!((Rdn) _rdnList[i]).Equals((Rdn) toDn.GetrdnList()[i]))
+                if (!((Rdn)_rdnList[i]).Equals((Rdn)toDn.GetrdnList()[i]))
                 {
                     return false;
                 }
@@ -764,7 +767,7 @@ namespace Novell.Directory.Ldap.Utilclass
         }
 
         /// <summary>
-        ///     return a string array of the individual RDNs contained in the DN
+        ///     return a string array of the individual RDNs contained in the DN.
         /// </summary>
         /// <param name="noTypes">
         ///     If true, returns only the values of the
@@ -775,7 +778,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </param>
         /// <returns>
         ///     <code>String[]</code> containing the rdns in the DN with
-        ///     the leftmost rdn in the first element of the array
+        ///     the leftmost rdn in the first element of the array.
         /// </returns>
         public string[] ExplodeDn(bool noTypes)
         {
@@ -783,15 +786,15 @@ namespace Novell.Directory.Ldap.Utilclass
             var rdns = new string[length];
             for (var i = 0; i < length; i++)
             {
-                rdns[i] = ((Rdn) _rdnList[i]).ToString(noTypes);
+                rdns[i] = ((Rdn)_rdnList[i]).ToString(noTypes);
             }
 
             return rdns;
         }
 
-        /// <summary> Retrieves the count of RDNs, or individule names, in the Distinguished name</summary>
+        /// <summary> Retrieves the count of RDNs, or individule names, in the Distinguished name.</summary>
         /// <returns>
-        ///     the count of RDN
+        ///     the count of RDN.
         /// </returns>
         public int CountRdNs()
         {
@@ -803,21 +806,22 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     example:  "cn=admin, ou=marketing, o=corporation" is contained by
         ///     "o=corporation", "ou=marketing, o=corporation", and "ou=marketing"
         ///     but <B>not</B> by "cn=admin" or "cn=admin,ou=marketing,o=corporation"
-        ///     Note: For users of Netscape's SDK this method is comparable to contains
+        ///     Note: For users of Netscape's SDK this method is comparable to contains.
         /// </summary>
         /// <param name="containerDn">
-        ///     of a container
+        ///     of a container.
         /// </param>
         /// <returns>
-        ///     true if containerDN contains this DN
+        ///     true if containerDN contains this DN.
         /// </returns>
         public bool IsDescendantOf(Dn containerDn)
         {
-            var i = containerDn._rdnList.Count - 1; //index to an RDN of the ContainerDN
-            var j = _rdnList.Count - 1; //index to an RDN of the ContainedDN
-            //Search from the end of the DN for an RDN that matches the end RDN of
-            //containerDN.
-            while (!((Rdn) _rdnList[j]).Equals((Rdn) containerDn._rdnList[i]))
+            var i = containerDn._rdnList.Count - 1; // index to an RDN of the ContainerDN
+            var j = _rdnList.Count - 1; // index to an RDN of the ContainedDN
+
+            // Search from the end of the DN for an RDN that matches the end RDN of
+            // containerDN.
+            while (!((Rdn)_rdnList[j]).Equals((Rdn)containerDn._rdnList[i]))
             {
                 j--;
                 if (j <= 0)
@@ -825,23 +829,25 @@ namespace Novell.Directory.Ldap.Utilclass
                     return false;
                 }
 
-                //if the end RDN of containerDN does not have any equal
-                //RDN in rdnList, then containerDN does not contain this DN
+                // if the end RDN of containerDN does not have any equal
+                // RDN in rdnList, then containerDN does not contain this DN
             }
 
-            i--; //avoid a redundant compare
+            i--; // avoid a redundant compare
             j--;
-            //step backwards to verify that all RDNs in containerDN exist in this DN
+
+            // step backwards to verify that all RDNs in containerDN exist in this DN
             for (; i >= 0 && j >= 0; i--, j--)
             {
-                if (!((Rdn) _rdnList[j]).Equals((Rdn) containerDn._rdnList[i]))
+                if (!((Rdn)_rdnList[j]).Equals((Rdn)containerDn._rdnList[i]))
                 {
                     return false;
                 }
             }
 
             if (j == 0 && i == 0)
-                //the DNs are identical and thus not contained
+
+                // the DNs are identical and thus not contained
             {
                 return false;
             }
@@ -851,7 +857,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         /// <summary> Adds the RDN to the beginning of the current DN.</summary>
         /// <param name="rdn">
-        ///     an RDN to be added
+        ///     an RDN to be added.
         /// </param>
         public void AddRdn(Rdn rdn)
         {
@@ -860,20 +866,20 @@ namespace Novell.Directory.Ldap.Utilclass
 
         /// <summary> Adds the RDN to the beginning of the current DN.</summary>
         /// <param name="rdn">
-        ///     an RDN to be added
+        ///     an RDN to be added.
         /// </param>
         public void AddRdnToFront(Rdn rdn)
         {
             _rdnList.Insert(0, rdn);
         }
 
-        /// <summary> Adds the RDN to the end of the current DN</summary>
+        /// <summary> Adds the RDN to the end of the current DN.</summary>
         /// <param name="rdn">
-        ///     an RDN to be added
+        ///     an RDN to be added.
         /// </param>
         public void AddRdnToBack(Rdn rdn)
         {
             _rdnList.Add(rdn);
         }
-    } //end class DN
+    } // end class DN
 }

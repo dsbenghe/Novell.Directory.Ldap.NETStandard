@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -47,7 +48,6 @@ namespace Novell.Directory.Ldap.Extensions
          * A constant for eDirectory LDAP Based Restore Request OID.
          */
         public const string NldapLdapRestoreRequest = "2.16.840.1.113719.1.27.100.98";
-
 
         /**
          * A constant for eDirectory LDAP Based Restore Response OID.

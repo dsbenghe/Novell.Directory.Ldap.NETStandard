@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
+    /// <inheritdoc />
     /// <summary>
     ///     An ILdapSearchResults interface is returned from a synchronous search
     ///     operation. It provides access to all results received during the
@@ -21,7 +22,7 @@ namespace Novell.Directory.Ldap
         ///     received.
         /// </summary>
         /// <returns>
-        ///     The number of items received but not retrieved by the application
+        ///     The number of items received but not retrieved by the application.
         /// </returns>
         int Count { get; }
 

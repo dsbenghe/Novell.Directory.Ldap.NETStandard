@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapVirtualListResponse.cs
 //
@@ -41,7 +42,7 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     /// <summary>
     ///     In response to a VLV Search request the server returns an error code
-    ///     and if the search was successful returns the following information:
+    ///     and if the search was successful returns the following information:.
     ///     <li> an index into the search results from where the returned list begins</li>
     ///     <li> an estimate of the total number of elements in the search result</li>
     ///     <li>
@@ -79,7 +80,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     sortControlMissing (60),
         ///     offsetRangeError (61),
         ///     other (80) },
-        ///     contextID     OCTET STRING OPTIONAL }
+        ///     contextID     OCTET STRING OPTIONAL }.
         /// </summary>
         /// <param name="oid">
         ///     The OID of the control, as a dotted string.
@@ -93,7 +94,8 @@ namespace Novell.Directory.Ldap.Controls
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapVirtualListResponse(string oid, bool critical, sbyte[] values) : base(oid, critical, values)
+        public LdapVirtualListResponse(string oid, bool critical, sbyte[] values)
+            : base(oid, critical, values)
         {
             /* Create a decoder object */
             var decoder = new LberDecoder();
@@ -114,10 +116,10 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 1st element which should be an integer containing the
             * targetPosition (firstPosition)
             */
-            var asn1FirstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
+            var asn1FirstPosition = ((Asn1Sequence)asnObj).get_Renamed(0);
             if (asn1FirstPosition != null && asn1FirstPosition is Asn1Integer)
             {
-                FirstPosition = ((Asn1Integer) asn1FirstPosition).IntValue();
+                FirstPosition = ((Asn1Integer)asn1FirstPosition).IntValue();
             }
             else
             {
@@ -127,10 +129,10 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 2nd element which should be an integer containing the
             * current estimate of the contentCount
             */
-            var asn1ContentCount = ((Asn1Sequence) asnObj).get_Renamed(1);
+            var asn1ContentCount = ((Asn1Sequence)asnObj).get_Renamed(1);
             if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
             {
-                ContentCount = ((Asn1Integer) asn1ContentCount).IntValue();
+                ContentCount = ((Asn1Integer)asn1ContentCount).IntValue();
             }
             else
             {
@@ -138,10 +140,10 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             /* The 3rd element is an enum containing the errorcode */
-            var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(2);
+            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(2);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
             {
-                ResultCode = ((Asn1Enumerated) asn1Enum).IntValue();
+                ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
             }
             else
             {
@@ -151,12 +153,12 @@ namespace Novell.Directory.Ldap.Controls
             /* Optional 4th element could be the context string that the server
             * wants the client to send back with each subsequent VLV request
             */
-            if (((Asn1Sequence) asnObj).Size() > 3)
+            if (((Asn1Sequence)asnObj).Size() > 3)
             {
-                var asn1String = ((Asn1Sequence) asnObj).get_Renamed(3);
+                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(3);
                 if (asn1String != null && asn1String is Asn1OctetString)
                 {
-                    Context = ((Asn1OctetString) asn1String).StringValue();
+                    Context = ((Asn1OctetString)asn1String).StringValue();
                 }
             }
         }

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.SearchResultEventArgs.cs
 //
@@ -39,14 +40,15 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class SearchResultEventArgs : LdapEventArgs
     {
-        public SearchResultEventArgs(LdapMessage sourceMessage,
+        public SearchResultEventArgs(
+            LdapMessage sourceMessage,
             EventClassifiers aClassification,
             LdapEventType aType)
             : base(sourceMessage, EventClassifiers.ClassificationLdapPsearch, aType)
         {
         }
 
-        public LdapEntry Entry => ((LdapSearchResult) LdapMessage).Entry;
+        public LdapEntry Entry => ((LdapSearchResult)LdapMessage).Entry;
 
         public override string ToString()
         {
@@ -64,12 +66,12 @@ namespace Novell.Directory.Ldap.Events
         private string GetStringRepresentaionOfEventInformation()
         {
             var buf = new StringBuilder();
-            var result = (LdapSearchResult) LdapMessage;
+            var result = (LdapSearchResult)LdapMessage;
 
             buf.AppendFormat("(Entry={0})", result.Entry);
             var controls = result.Controls;
 
-            if (null != controls)
+            if (controls != null)
             {
                 buf.Append("(Controls=");
                 var i = 0;

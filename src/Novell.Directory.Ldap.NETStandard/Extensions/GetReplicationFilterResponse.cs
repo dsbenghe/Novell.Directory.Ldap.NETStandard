@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicationFilterResponse.cs
 //
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     An object in this class is generated from an ExtendedResponse object
     ///     using the ExtendedResponseFactory class.
     ///     The GetReplicationFilterResponse extension uses the following OID:
-    ///     2.16.840.1.113719.1.27.100.38
+    ///     2.16.840.1.113719.1.27.100.38.
     /// </summary>
     public class GetReplicationFilterResponse : LdapExtendedResponse
     {
@@ -58,12 +59,13 @@ namespace Novell.Directory.Ldap.Extensions
         ///     SEQUENCE of ATTRIBUTES
         ///     }
         ///     where
-        ///     ATTRIBUTES:: OCTET STRING
+        ///     ATTRIBUTES:: OCTET STRING.
         /// </summary>
         /// <exception>
         ///     IOException The responseValue could not be decoded.
         /// </exception>
-        public GetReplicationFilterResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public GetReplicationFilterResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             if (ResultCode != LdapException.Success)
             {
@@ -86,7 +88,7 @@ namespace Novell.Directory.Ldap.Extensions
                 var decoder = new LberDecoder();
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
+                var returnedSequence = (Asn1Sequence)decoder.Decode(returnedValue);
 
                 if (returnedSequence == null)
                 {
@@ -101,21 +103,21 @@ namespace Novell.Directory.Ldap.Extensions
                 for (var classNumber = 0; classNumber < numberOfSequences; classNumber++)
                 {
                     // Get the next Asn1Sequence
-                    var asn1InnerSequence = (Asn1Sequence) returnedSequence.get_Renamed(classNumber);
+                    var asn1InnerSequence = (Asn1Sequence)returnedSequence.get_Renamed(classNumber);
                     if (asn1InnerSequence == null)
                     {
                         throw new IOException("Decoding error");
                     }
 
                     // Get the asn1 encoded classname
-                    var asn1ClassName = (Asn1OctetString) asn1InnerSequence.get_Renamed(0);
+                    var asn1ClassName = (Asn1OctetString)asn1InnerSequence.get_Renamed(0);
                     if (asn1ClassName == null)
                     {
                         return;
                     }
 
                     // Get the attribute List
-                    var asn1AttributeList = (Asn1Sequence) asn1InnerSequence.get_Renamed(1);
+                    var asn1AttributeList = (Asn1Sequence)asn1InnerSequence.get_Renamed(1);
                     if (asn1AttributeList == null)
                     {
                         throw new IOException("Decoding error");
@@ -126,7 +128,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                     // Get the classname
                     ReturnedFilter[classNumber][0] = asn1ClassName.StringValue();
-                    if ((object) ReturnedFilter[classNumber][0] == null)
+                    if ((object)ReturnedFilter[classNumber][0] == null)
                     {
                         throw new IOException("Decoding error");
                     }
@@ -134,7 +136,7 @@ namespace Novell.Directory.Ldap.Extensions
                     for (var attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++)
                     {
                         // Get the asn1 encoded attribute name
-                        var asn1AttributeName = (Asn1OctetString) asn1AttributeList.get_Renamed(attributeNumber);
+                        var asn1AttributeName = (Asn1OctetString)asn1AttributeList.get_Renamed(attributeNumber);
                         if (asn1AttributeName == null)
                         {
                             throw new IOException("Decoding error");
@@ -142,7 +144,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                         // Get attributename string
                         ReturnedFilter[classNumber][attributeNumber + 1] = asn1AttributeName.StringValue();
-                        if ((object) ReturnedFilter[classNumber][attributeNumber + 1] == null)
+                        if ((object)ReturnedFilter[classNumber][attributeNumber + 1] == null)
                         {
                             throw new IOException("Decoding error");
                         }
@@ -152,11 +154,11 @@ namespace Novell.Directory.Ldap.Extensions
         }
 
         /// <summary>
-        ///     Returns the replicationFilter as an array of classname-attribute name pairs
+        ///     Returns the replicationFilter as an array of classname-attribute name pairs.
         /// </summary>
         /// <returns>
         ///     String array contining a two dimensional array of strings.  The first
-        ///     element of each array is the class name the others are the attribute names
+        ///     element of each array is the class name the others are the attribute names.
         /// </returns>
         public string[][] ReplicationFilter => ReturnedFilter;
     }

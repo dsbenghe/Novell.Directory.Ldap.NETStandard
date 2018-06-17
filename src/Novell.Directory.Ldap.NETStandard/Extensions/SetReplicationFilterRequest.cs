@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.SetReplicationFilterRequest.cs
 //
@@ -53,7 +54,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     SEQUENCE of ATTRIBUTES
     ///     }
     ///     where
-    ///     ATTRIBUTES:: OCTET STRING
+    ///     ATTRIBUTES:: OCTET STRING.
     /// </summary>
     public class SetReplicationFilterRequest : LdapExtendedOperation
     {
@@ -62,7 +63,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     replication filter.
         /// </summary>
         /// <param name="serverDn">
-        ///     The server on which the replication filter needs to be set
+        ///     The server on which the replication filter needs to be set.
         /// </param>
         /// <param name="replicationFilter">
         ///     An array of String Arrays. Each array starting with
@@ -78,7 +79,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDn == null)
+                if ((object)serverDn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }
@@ -102,6 +103,7 @@ namespace Novell.Directory.Ldap.Extensions
                 }
 
                 var i = 0;
+
                 // for every element in the array
                 while (i < replicationFilter.Length && replicationFilter[i] != null)
                 {
@@ -120,13 +122,12 @@ namespace Novell.Directory.Ldap.Extensions
                     // For every attribute in the array - remember attributes start after
                     // the first element
                     var j = 1;
-                    while (j < replicationFilter[i].Length && (object) replicationFilter[i][j] != null)
+                    while (j < replicationFilter[i].Length && (object)replicationFilter[i][j] != null)
                     {
                         // Add the attribute name to the inner SequenceOf
                         asn1AttributeList.Add(new Asn1OctetString(replicationFilter[i][j]));
                         j++;
                     }
-
 
                     // Add the attributeList to the sequence - extra add due to bug
                     buginAsn1Representation.Add(asn1AttributeList);

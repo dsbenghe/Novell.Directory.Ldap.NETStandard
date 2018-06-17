@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.SearchReferralEventArgs.cs
 //
@@ -29,7 +30,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-
 namespace Novell.Directory.Ldap.Events
 {
     /// <summary>
@@ -38,7 +38,8 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class SearchReferralEventArgs : LdapEventArgs
     {
-        public SearchReferralEventArgs(LdapMessage sourceMessage,
+        public SearchReferralEventArgs(
+            LdapMessage sourceMessage,
             EventClassifiers aClassification,
             LdapEventType aType)
             : base(sourceMessage, EventClassifiers.ClassificationLdapPsearch,
@@ -48,7 +49,7 @@ namespace Novell.Directory.Ldap.Events
 
         public string[] GetUrls()
         {
-            return ((LdapSearchResultReference) LdapMessage).Referrals;
+            return ((LdapSearchResultReference)LdapMessage).Referrals;
         }
     }
 }

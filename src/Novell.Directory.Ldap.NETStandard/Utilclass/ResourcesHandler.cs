@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.ResourcesHandler.cs
 //
@@ -41,7 +42,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ResourcesHandler
     {
-        /// <summary> The default Locale</summary>
+        /// <summary> The default Locale.</summary>
         private static CultureInfo _defaultLocale;
 
         static ResourcesHandler()
@@ -64,7 +65,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     Key string for the resource.
         /// </param>
         /// <param name="">
-        ///     arguments
+        ///     arguments.
         /// </param>
         /// <returns>
         ///     the text for the message specified by the MessageKey or the Key
@@ -80,13 +81,13 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     specified locale using messageOrKey and argments passed into the
         ///     constructor.  If no string exists in the resource then this returns
         ///     the string stored in message.  (This method is identical to
-        ///     getLdapErrorMessage(Locale locale).)
+        ///     getLdapErrorMessage(Locale locale).).
         /// </summary>
         /// <param name="messageOrKey">
         ///     Key string for the resource.
         /// </param>
         /// <param name="">
-        ///     arguments
+        ///     arguments.
         /// </param>
         /// <param name="locale">
         ///     The Locale that should be used to pull message
@@ -121,12 +122,13 @@ namespace Novell.Directory.Ldap.Utilclass
                 var strB = new StringBuilder();
                 strB.AppendFormat(pattern, arguments);
                 pattern = strB.ToString();
-                //				MessageFormat mf = new MessageFormat(pattern);
-                //				pattern=System.String.Format(locale,pattern,arguments);
-                //				mf.setLocale(locale);
-                //this needs to be reset with the new local - i18n defect in java
-                //				mf.applyPattern(pattern);
-                //				pattern = mf.format(arguments);
+
+                // MessageFormat mf = new MessageFormat(pattern);
+                // pattern=System.String.Format(locale,pattern,arguments);
+                // mf.setLocale(locale);
+                // this needs to be reset with the new local - i18n defect in java
+                // mf.applyPattern(pattern);
+                // pattern = mf.format(arguments);
             }
 
             return pattern;
@@ -137,7 +139,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     default ResultCodeMessages resource.
         /// </summary>
         /// <param name="code">
-        ///     the result code
+        ///     the result code.
         /// </param>
         /// <returns>
         ///     the String representing the result code.
@@ -152,7 +154,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     is obtained from the locale specific ResultCodeMessage resource.
         /// </summary>
         /// <param name="code">
-        ///     the result code
+        ///     the result code.
         /// </param>
         /// <param name="locale">
         ///     The Locale that should be used to pull message
@@ -170,10 +172,10 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (ArgumentNullException)
             {
-                result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code}, locale);
+                result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code }, locale);
             }
 
             return result;
         }
-    } //end class ResourcesHandler
+    } // end class ResourcesHandler
 }

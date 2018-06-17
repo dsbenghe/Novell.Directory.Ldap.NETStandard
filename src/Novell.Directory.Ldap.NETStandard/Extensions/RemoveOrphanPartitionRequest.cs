@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.RemoveOrphanPartitionRequest.cs
 //
@@ -46,7 +47,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     serverDN     LdapDN
-    ///     contextName  LdapDN
+    ///     contextName  LdapDN.
     /// </summary>
     public class RemoveOrphanPartitionRequest : LdapExtendedOperation
     {
@@ -70,7 +71,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDn == null || (object) contextName == null)
+                if ((object)serverDn == null || (object)contextName == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

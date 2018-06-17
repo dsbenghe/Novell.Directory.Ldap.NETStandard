@@ -42,7 +42,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             Assert.Equal(expectedAttributeSet.Count, actualAttributeSet.Count);
             foreach (LdapAttribute expectedAttribute in expectedAttributeSet)
             {
-                if (excludeAttributes.Contains(expectedAttribute.Name)) continue;
+                if (excludeAttributes.Contains(expectedAttribute.Name))
+                {
+                    continue;
+                }
+
                 var actualAttribute = actualAttributeSet.GetAttribute(expectedAttribute.Name);
                 expectedAttribute.ByteValues.ShouldBeEquivalentTo(actualAttribute.ByteValues);
             }

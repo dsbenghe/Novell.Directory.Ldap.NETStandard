@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapAttributeSchema.cs
 //
@@ -118,10 +119,10 @@ namespace Novell.Directory.Ldap
         ///     a substring matching rule for this attribute.
         /// </param>
         /// <param name="collective">
-        ///     True of this attribute is a collective attribute
+        ///     True of this attribute is a collective attribute.
         /// </param>
         /// <param name="isUserModifiable">
-        ///     False if this attribute is a read-only attribute
+        ///     False if this attribute is a read-only attribute.
         /// </param>
         /// <param name="usage">
         ///     Describes what the attribute is used for. Must be
@@ -131,7 +132,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapAttributeSchema(string[] names, string oid, string description, string syntaxString, bool single,
             string superior, bool obsolete, string equality, string ordering, string substring, bool collective,
-            bool isUserModifiable, int usage) : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
+            bool isUserModifiable, int usage)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
             InitBlock();
             this.names = names;
@@ -150,7 +152,6 @@ namespace Novell.Directory.Ldap
             Value = FormatString();
         }
 
-
         /// <summary>
         ///     Constructs an attribute definition from the raw string value returned
         ///     on a directory query for "attributetypes".
@@ -159,7 +160,8 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned on a directory
         ///     query for "attributetypes".
         /// </param>
-        public LdapAttributeSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
+        public LdapAttributeSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
             InitBlock();
             try
@@ -171,22 +173,22 @@ namespace Novell.Directory.Ldap
                     names = parser.Names;
                 }
 
-                if ((object) parser.Id != null)
+                if ((object)parser.Id != null)
                 {
                     Oid = parser.Id;
                 }
 
-                if ((object) parser.Description != null)
+                if ((object)parser.Description != null)
                 {
                     Description = parser.Description;
                 }
 
-                if ((object) parser.Syntax != null)
+                if ((object)parser.Syntax != null)
                 {
                     SyntaxString = parser.Syntax;
                 }
 
-                if ((object) parser.Superior != null)
+                if ((object)parser.Superior != null)
                 {
                     Superior = parser.Superior;
                 }
@@ -197,7 +199,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
+                    attrQualifier = (AttributeQualifier)qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -308,7 +310,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = Id) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -334,7 +336,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object) (token = Description) != null)
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -345,31 +347,31 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(" OBSOLETE");
             }
 
-            if ((object) (token = Superior) != null)
+            if ((object)(token = Superior) != null)
             {
                 valueBuffer.Append(" SUP ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            if ((object) (token = EqualityMatchingRule) != null)
+            if ((object)(token = EqualityMatchingRule) != null)
             {
                 valueBuffer.Append(" EQUALITY ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            if ((object) (token = OrderingMatchingRule) != null)
+            if ((object)(token = OrderingMatchingRule) != null)
             {
                 valueBuffer.Append(" ORDERING ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            if ((object) (token = SubstringMatchingRule) != null)
+            if ((object)(token = SubstringMatchingRule) != null)
             {
                 valueBuffer.Append(" SUBSTR ");
                 valueBuffer.Append("'" + token + "'");
             }
 
-            if ((object) (token = SyntaxString) != null)
+            if ((object)(token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
@@ -416,8 +418,8 @@ namespace Novell.Directory.Ldap
 
             while (en.MoveNext())
             {
-                token = (string) en.Current;
-                if ((object) token != null)
+                token = (string)en.Current;
+                if ((object)token != null)
                 {
                     valueBuffer.Append(" " + token);
                     strArray = GetQualifier(token);

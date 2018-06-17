@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EdirEventSource.cs
 //
@@ -28,7 +29,6 @@
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
-
 
 using System;
 
@@ -45,7 +45,8 @@ namespace Novell.Directory.Ldap.Events.Edir
         ///     get corresponding Edir events.
         /// </summary>
         public delegate
-            void EdirEventHandler(object source,
+            void EdirEventHandler(
+                object source,
                 EdirEventArgs objEdirEventArgs);
 
         private readonly LdapConnection _mConnection;
@@ -55,7 +56,7 @@ namespace Novell.Directory.Ldap.Events.Edir
 
         public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
         {
-            if (null == specifier || null == conn)
+            if (specifier == null || conn == null)
             {
                 throw new ArgumentException("Null argument specified");
             }
@@ -86,7 +87,7 @@ namespace Novell.Directory.Ldap.Events.Edir
         protected override int GetListeners()
         {
             var nListeners = 0;
-            if (null != _edirEvent)
+            if (_edirEvent != null)
             {
                 nListeners = _edirEvent.GetInvocationList().Length;
             }
@@ -104,8 +105,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                 throw new LdapException(
                     null,
                     LdapException.LocalError,
-                    "Unable to Obtain Message Id"
-                );
+                    "Unable to Obtain Message Id");
             }
 
             StartEventPolling(_mQueue, _mConnection, ids[0]);
@@ -117,20 +117,23 @@ namespace Novell.Directory.Ldap.Events.Edir
             StopEventPolling();
         }
 
-        protected override bool NotifyEventListeners(LdapMessage sourceMessage,
+        protected override bool NotifyEventListeners(
+            LdapMessage sourceMessage,
             EventClassifiers aClassification,
             int nType)
         {
             var bListenersNotified = false;
-            if (null != _edirEvent)
+            if (_edirEvent != null)
             {
-                if (null != sourceMessage)
+                if (sourceMessage != null)
                 {
                     if (sourceMessage.Type == LdapMessage.IntermediateResponse &&
                         sourceMessage is EdirEventIntermediateResponse)
                     {
-                        _edirEvent(this,
-                            new EdirEventArgs(sourceMessage,
+                        _edirEvent(
+                            this,
+                            new EdirEventArgs(
+                                sourceMessage,
                                 EventClassifiers.ClassificationEdirEvent));
                         bListenersNotified = true;
                     }

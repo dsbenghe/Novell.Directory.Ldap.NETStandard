@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcExtendedRequest.cs
 //
@@ -49,9 +50,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Context-specific TAG for optional requestValue.</summary>
         public const int RequestValue = 1;
 
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for ExtendedRequest
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Constructs an extended request.
@@ -59,7 +60,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="requestName">
         ///     The OID for this extended operation.
         /// </param>
-        public RfcExtendedRequest(RfcLdapOid requestName) : this(requestName, null)
+        public RfcExtendedRequest(RfcLdapOid requestName)
+            : this(requestName, null)
         {
         }
 
@@ -72,7 +74,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="requestValue">
         ///     An optional request value.
         /// </param>
-        public RfcExtendedRequest(RfcLdapOid requestName, Asn1OctetString requestValue) : base(2)
+        public RfcExtendedRequest(RfcLdapOid requestName, Asn1OctetString requestValue)
+            : base(2)
         {
             Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestName), requestName, false));
             if (requestValue != null)
@@ -82,14 +85,14 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
-
         /// <summary>
         ///     Constructs an extended request from an existing request.
         /// </summary>
         /// <param name="origRequest">
-        ///     Asn1Object of existing request
+        ///     Asn1Object of existing request.
         /// </param>
-        public RfcExtendedRequest(Asn1Object[] origRequest) : base(origRequest, origRequest.Length)
+        public RfcExtendedRequest(Asn1Object[] origRequest)
+            : base(origRequest, origRequest.Length)
         {
         }
 
@@ -104,9 +107,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             return null;
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Override getIdentifier to return an application-wide id.

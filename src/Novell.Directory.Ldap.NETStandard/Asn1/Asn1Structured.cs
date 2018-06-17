@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Structured.cs
 //
@@ -52,7 +53,8 @@ namespace Novell.Directory.Ldap.Asn1
         * @param the Asn1Identifier containing the tag for this structured type
         */
 
-        protected internal Asn1Structured(Asn1Identifier id) : this(id, 10)
+        protected internal Asn1Structured(Asn1Identifier id)
+            : this(id, 10)
         {
         }
 
@@ -64,7 +66,8 @@ namespace Novell.Directory.Ldap.Asn1
         * @param size the size to allocate
         */
 
-        protected internal Asn1Structured(Asn1Identifier id, int size) : base(id)
+        protected internal Asn1Structured(Asn1Identifier id, int size)
+            : base(id)
         {
             _content = new Asn1Object[size];
         }
@@ -79,7 +82,8 @@ namespace Novell.Directory.Ldap.Asn1
         * @param size the number of items of content in the array
         */
 
-        protected internal Asn1Structured(Asn1Identifier id, Asn1Object[] newContent, int size) : base(id)
+        protected internal Asn1Structured(Asn1Identifier id, Asn1Object[] newContent, int size)
+            : base(id)
         {
             _content = newContent;
             _contentIndex = size;
@@ -112,7 +116,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     of this Asn1Structed object.
         /// </summary>
         /// <returns>
-        ///     an array of Asn1Objects
+        ///     an array of Asn1Objects.
         /// </returns>
         public Asn1Object[] ToArray()
         {
@@ -196,7 +200,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     object.
         /// </summary>
         /// <param name="type">
-        ///     the Type to put in the String representing this structured object
+        ///     the Type to put in the String representing this structured object.
         /// </param>
         /// <returns>
         ///     the String representation of this object.

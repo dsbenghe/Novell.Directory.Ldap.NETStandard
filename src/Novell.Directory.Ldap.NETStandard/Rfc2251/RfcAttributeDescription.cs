@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeDescription.cs
 //
@@ -42,13 +43,15 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeDescription : RfcLdapString
     {
         /// <summary> </summary>
-        public RfcAttributeDescription(string s) : base(s)
+        public RfcAttributeDescription(string s)
+            : base(s)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
+        public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
         {
         }
     }

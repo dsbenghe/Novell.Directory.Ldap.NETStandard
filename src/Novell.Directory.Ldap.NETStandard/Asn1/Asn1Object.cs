@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Object.cs
 //
@@ -73,7 +74,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="id">
         ///     An Asn1Identifier object representing the CLASS,
-        ///     FORM and TAG)
+        ///     FORM and TAG).
         /// </param>
         public virtual void SetIdentifier(Asn1Identifier id)
         {
@@ -108,7 +109,7 @@ namespace Novell.Directory.Ldap.Asn1
         [CLSCompliant(false)]
         public override string ToString()
         {
-            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE "};
+            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };
 
             var sb = new StringBuilder();
             var id = GetIdentifier(); // could be overridden.

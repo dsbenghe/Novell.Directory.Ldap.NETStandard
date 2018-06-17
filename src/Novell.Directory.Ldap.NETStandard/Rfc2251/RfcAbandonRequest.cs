@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAbandonRequest.cs
 //
@@ -42,18 +43,19 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     internal class RfcAbandonRequest : RfcMessageId, IRfcRequest
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for AbandonRequest
-        //*************************************************************************
+        // *************************************************************************
 
-        /// <summary> Constructs an RfcAbandonRequest</summary>
-        public RfcAbandonRequest(int msgId) : base(msgId)
+        /// <summary> Constructs an RfcAbandonRequest.</summary>
+        public RfcAbandonRequest(int msgId)
+            : base(msgId)
         {
         }
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
         {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon"},
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon" },
                 LdapException.LdapNotSupported, null);
         }
 
@@ -62,9 +64,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             return null;
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Override getIdentifier to return an application-wide id.

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.ReferralInfo.cs
 //
@@ -33,20 +34,20 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
     ///     This class encapsulates the combination of LdapReferral URL and
-    ///     the connection opened to service this URL
+    ///     the connection opened to service this URL.
     /// </summary>
     public class ReferralInfo
     {
-//		private DirectoryEntry conn;
+// private DirectoryEntry conn;
 
         /// <summary>
-        ///     Construct the ReferralInfo class
+        ///     Construct the ReferralInfo class.
         /// </summary>
         /// <param name="lc">
-        ///     The DirectoryEntry opened to process this referral
+        ///     The DirectoryEntry opened to process this referral.
         /// </param>
         /// <param name="refUrl">
-        ///     The URL string associated with this connection
+        ///     The URL string associated with this connection.
         /// </param>
         public ReferralInfo(LdapConnection lc, string[] refList, LdapUrl refUrl)
         {
@@ -56,26 +57,26 @@ namespace Novell.Directory.Ldap.Utilclass
         }
 
         /// <summary>
-        ///     Returns the referral URL
+        ///     Returns the referral URL.
         /// </summary>
         /// <returns>
-        ///     the Referral URL
+        ///     the Referral URL.
         /// </returns>
         public LdapUrl ReferralUrl { get; }
 
         /// <summary>
-        ///     Returns the referral Connection
+        ///     Returns the referral Connection.
         /// </summary>
         /// <returns>
-        ///     the Referral Connection
+        ///     the Referral Connection.
         /// </returns>
         public LdapConnection ReferralConnection { get; }
 
         /// <summary>
-        ///     Returns the referral list
+        ///     Returns the referral list.
         /// </summary>
         /// <returns>
-        ///     the Referral list
+        ///     the Referral list.
         /// </returns>
         public string[] ReferralList { get; }
     }

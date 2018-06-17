@@ -53,8 +53,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     var newAttribute = new LdapAttribute("givenName", "blah");
                     var modification = new LdapModification(LdapModification.Replace, newAttribute);
                     ldapConnection.Modify(ldapEntry.Dn, modification);
-                })
-            );
+                }));
 
             Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
         }

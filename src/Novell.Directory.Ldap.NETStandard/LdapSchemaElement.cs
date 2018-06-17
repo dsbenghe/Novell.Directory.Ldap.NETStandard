@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSchemaElement.cs
 //
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap
     ///     elements (definitions) in Ldap.
     ///     An LdapSchemaElement is read-only, single-valued LdapAttribute.
     ///     Therefore, it does not support the addValue and removeValue methods from
-    ///     LdapAttribute.  This class overrides those methods and throws
+    ///     LdapAttribute.  This class overrides those methods and throws.
     ///     <code>UnsupportedOperationException</code> if either of those methods are
     ///     invoked by an application.
     /// </summary>
@@ -62,10 +63,10 @@ namespace Novell.Directory.Ldap
         ///     These optional qualifiers begin with "X-"; the Novell eDirectory
         ///     specific qualifiers begin with "X-NDS".
         /// </summary>
-        private string[] _qualifier = {string.Empty};
+        private string[] _qualifier = {string.Empty };
 
         /// <summary> The names of the schema element.</summary>
-        protected internal string[] names = {string.Empty};
+        protected internal string[] names = {string.Empty };
 
         /// <summary> The OID for the schema element.</summary>
         protected string Oid = string.Empty;
@@ -81,9 +82,10 @@ namespace Novell.Directory.Ldap
         ///     names are one of the following:
         ///     "attributeTypes", "objectClasses", "ldapSyntaxes",
         ///     "nameForms", "dITContentRules", "dITStructureRules",
-        ///     "matchingRules", or "matchingRuleUse"
+        ///     "matchingRules", or "matchingRuleUse".
         /// </param>
-        protected internal LdapSchemaElement(string attrName) : base(attrName)
+        protected internal LdapSchemaElement(string attrName)
+            : base(attrName)
         {
             InitBlock();
         }
@@ -171,7 +173,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public string[] GetQualifier(string name)
         {
-            var attr = (AttributeQualifier) _hashQualifier[name];
+            var attr = (AttributeQualifier)_hashQualifier[name];
             if (attr != null)
             {
                 return attr.Values;
@@ -229,7 +231,7 @@ namespace Novell.Directory.Ldap
         ///     LdapSchemaElement is read-only and this method is over-ridden to
         ///     throw an exception.
         ///     @throws UnsupportedOperationException always thrown since
-        ///     LdapSchemaElement is read-only
+        ///     LdapSchemaElement is read-only.
         /// </summary>
         public override void AddValue(string valueRenamed)
         {
@@ -240,7 +242,7 @@ namespace Novell.Directory.Ldap
         ///     LdapSchemaElement is read-only and this method is over-ridden to
         ///     throw an exception.
         ///     @throws UnsupportedOperationException always thrown since
-        ///     LdapSchemaElement is read-only
+        ///     LdapSchemaElement is read-only.
         /// </summary>
         public void AddValue(byte[] valueRenamed)
         {
@@ -251,7 +253,7 @@ namespace Novell.Directory.Ldap
         ///     LdapSchemaElement is read-only and this method is over-ridden to
         ///     throw an exception.
         ///     @throws UnsupportedOperationException always thrown since
-        ///     LdapSchemaElement is read-only
+        ///     LdapSchemaElement is read-only.
         /// </summary>
         public override void RemoveValue(string valueRenamed)
         {
@@ -262,7 +264,7 @@ namespace Novell.Directory.Ldap
         ///     LdapSchemaElement is read-only and this method is over-ridden to
         ///     throw an exception.
         ///     @throws UnsupportedOperationException always thrown since
-        ///     LdapSchemaElement is read-only
+        ///     LdapSchemaElement is read-only.
         /// </summary>
         public void RemoveValue(byte[] valueRenamed)
         {

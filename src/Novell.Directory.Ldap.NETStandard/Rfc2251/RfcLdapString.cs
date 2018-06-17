@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcLdapString.cs
 //
@@ -39,19 +40,22 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcLdapString : Asn1OctetString
     {
         /// <summary> </summary>
-        public RfcLdapString(string s) : base(s)
+        public RfcLdapString(string s)
+            : base(s)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcLdapString(sbyte[] ba) : base(ba)
+        public RfcLdapString(sbyte[] ba)
+            : base(ba)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcLdapString(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
+        public RfcLdapString(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
         {
         }
     }

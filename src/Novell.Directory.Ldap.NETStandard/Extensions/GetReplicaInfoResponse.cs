@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicaInfoResponse.cs
 //
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     An object in this class is generated from an ExtendedResponse using the
     ///     ExtendedResponseFactory class.
     ///     The getReplicaInfoResponse extension uses the following OID:
-    ///     2.16.840.1.113719.1.27.100.18
+    ///     2.16.840.1.113719.1.27.100.18.
     /// </summary>
     public class GetReplicaInfoResponse : LdapExtendedResponse
     {
@@ -69,12 +70,13 @@ namespace Novell.Directory.Ldap.Extensions
         ///     localPartitionID    INTEGER
         ///     partitionDN       OCTET STRING
         ///     replicaType         INTEGER
-        ///     flags               INTEGER
+        ///     flags               INTEGER.
         /// </summary>
         /// <exception>
         ///     IOException The response value could not be decoded.
         /// </exception>
-        public GetReplicaInfoResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public GetReplicaInfoResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             if (ResultCode == LdapException.Success)
             {
@@ -97,7 +99,7 @@ namespace Novell.Directory.Ldap.Extensions
                 var currentPtr = new MemoryStream(SupportClass.ToByteArray(returnedValue));
 
                 // Parse partitionID
-                var asn1PartitionId = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1PartitionId = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1PartitionId == null)
                 {
                     throw new IOException("Decoding error");
@@ -105,9 +107,8 @@ namespace Novell.Directory.Ldap.Extensions
 
                 _partitionId = asn1PartitionId.IntValue();
 
-
                 // Parse replicaState
-                var asn1ReplicaState = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1ReplicaState = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1ReplicaState == null)
                 {
                     throw new IOException("Decoding error");
@@ -116,7 +117,7 @@ namespace Novell.Directory.Ldap.Extensions
                 _replicaState = asn1ReplicaState.IntValue();
 
                 // Parse modificationTime
-                var asn1ModificationTime = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1ModificationTime = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1ModificationTime == null)
                 {
                     throw new IOException("Decoding error");
@@ -125,7 +126,7 @@ namespace Novell.Directory.Ldap.Extensions
                 _modificationTime = asn1ModificationTime.IntValue();
 
                 // Parse purgeTime
-                var asn1PurgeTime = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1PurgeTime = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1PurgeTime == null)
                 {
                     throw new IOException("Decoding error");
@@ -134,7 +135,7 @@ namespace Novell.Directory.Ldap.Extensions
                 _purgeTime = asn1PurgeTime.IntValue();
 
                 // Parse localPartitionID
-                var asn1LocalPartitionId = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1LocalPartitionId = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1LocalPartitionId == null)
                 {
                     throw new IOException("Decoding error");
@@ -143,21 +144,20 @@ namespace Novell.Directory.Ldap.Extensions
                 _localPartitionId = asn1LocalPartitionId.IntValue();
 
                 // Parse partitionDN
-                var asn1PartitionDn = (Asn1OctetString) decoder.Decode(currentPtr);
+                var asn1PartitionDn = (Asn1OctetString)decoder.Decode(currentPtr);
                 if (asn1PartitionDn == null)
                 {
                     throw new IOException("Decoding error");
                 }
 
                 _partitionDn = asn1PartitionDn.StringValue();
-                if ((object) _partitionDn == null)
+                if ((object)_partitionDn == null)
                 {
                     throw new IOException("Decoding error");
                 }
 
-
                 // Parse replicaType
-                var asn1ReplicaType = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1ReplicaType = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1ReplicaType == null)
                 {
                     throw new IOException("Decoding error");
@@ -165,9 +165,8 @@ namespace Novell.Directory.Ldap.Extensions
 
                 _replicaType = asn1ReplicaType.IntValue();
 
-
                 // Parse flags
-                var asn1Flags = (Asn1Integer) decoder.Decode(currentPtr);
+                var asn1Flags = (Asn1Integer)decoder.Decode(currentPtr);
                 if (asn1Flags == null)
                 {
                     throw new IOException("Decoding error");
@@ -187,7 +186,6 @@ namespace Novell.Directory.Ldap.Extensions
                 _flags = 0;
             }
         }
-
 
         /// <summary>
         ///     Returns the numeric identifier for the partition.
@@ -234,7 +232,6 @@ namespace Novell.Directory.Ldap.Extensions
             return _replicaState;
         }
 
-
         /// <summary>
         ///     Returns the time of the most recent modification.
         /// </summary>
@@ -245,7 +242,6 @@ namespace Novell.Directory.Ldap.Extensions
         {
             return _modificationTime;
         }
-
 
         /// <summary>
         ///     Returns the most recent time in which all data has been synchronized.

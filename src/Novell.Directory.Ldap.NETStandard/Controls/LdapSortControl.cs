@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapSortControl.cs
 //
@@ -48,10 +49,10 @@ namespace Novell.Directory.Ldap.Controls
         private static readonly int OrderingRule = 0;
         private static readonly int ReverseOrder = 1;
 
-        /// <summary> The requestOID of the sort control</summary>
+        /// <summary> The requestOID of the sort control.</summary>
         private static readonly string RequestOid = "1.2.840.113556.1.4.473";
 
-        /// <summary> The responseOID of the sort control</summary>
+        /// <summary> The responseOID of the sort control.</summary>
         private static readonly string ResponseOid = "1.2.840.113556.1.4.474";
 
         static LdapSortControl()
@@ -82,26 +83,28 @@ namespace Novell.Directory.Ldap.Controls
         ///     A sort key object, which specifies attribute,
         ///     order, and optional matching rule.
         /// </param>
-        /// <param name="critical	True">
+        /// <param name="critical   True">
         ///     if the search operation is to fail if the
         ///     server does not support this control.
         /// </param>
-        public LdapSortControl(LdapSortKey key, bool critical) : this(new[] {key}, critical)
+        public LdapSortControl(LdapSortKey key, bool critical)
+            : this(new[] {key }, critical)
         {
         }
 
         /// <summary>
         ///     Constructs a sort control with multiple sort keys.
         /// </summary>
-        /// <param name="keys		An">
+        /// <param name="keys       An">
         ///     array of sort key objects, to be processed in
         ///     order.
         /// </param>
-        /// <param name="critical	True">
+        /// <param name="critical   True">
         ///     if the search operation is to fail if the
         ///     server does not support this control.
         /// </param>
-        public LdapSortControl(LdapSortKey[] keys, bool critical) : base(RequestOid, critical, null)
+        public LdapSortControl(LdapSortKey[] keys, bool critical)
+            : base(RequestOid, critical, null)
         {
             var sortKeyList = new Asn1SequenceOf();
 
@@ -111,16 +114,18 @@ namespace Novell.Directory.Ldap.Controls
 
                 key.Add(new Asn1OctetString(keys[i].Key));
 
-                if ((object) keys[i].MatchRule != null)
+                if ((object)keys[i].MatchRule != null)
                 {
-                    key.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, OrderingRule),
+                    key.Add(new Asn1Tagged(
+                        new Asn1Identifier(Asn1Identifier.Context, false, OrderingRule),
                         new Asn1OctetString(keys[i].MatchRule), false));
                 }
 
                 if (keys[i].Reverse)
                 {
                     // only add if true
-                    key.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, ReverseOrder),
+                    key.Add(new Asn1Tagged(
+                        new Asn1Identifier(Asn1Identifier.Context, false, ReverseOrder),
                         new Asn1Boolean(true), false));
                 }
 

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Integer.cs
 //
@@ -57,9 +58,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="content">
         ///     The integer value to be contained in the
-        ///     this Asn1Integer object
+        ///     this Asn1Integer object.
         /// </param>
-        public Asn1Integer(int content) : base(Id, content)
+        public Asn1Integer(int content)
+            : base(Id, content)
         {
         }
 
@@ -69,9 +71,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="content">
         ///     The long value to be contained in the
-        ///     this Asn1Integer object
+        ///     this Asn1Integer object.
         /// </param>
-        public Asn1Integer(long content) : base(Id, content)
+        public Asn1Integer(long content)
+            : base(Id, content)
         {
         }
 
@@ -82,14 +85,14 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="dec">
         ///     The decoder object to use when decoding the
         ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object
+        ///     in his/her own decoder object.
         /// </param>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         [CLSCompliant(false)]
         public Asn1Integer(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long) dec.DecodeNumeric(inRenamed, len))
+            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
         {
         }
 

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAuthenticationChoice.cs
 //
@@ -45,31 +46,34 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcAuthenticationChoice : Asn1Choice
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for AuthenticationChoice
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
-        public RfcAuthenticationChoice(Asn1Tagged choice) : base(choice)
+        public RfcAuthenticationChoice(Asn1Tagged choice)
+            : base(choice)
         {
         }
 
         [CLSCompliant(false)]
         public RfcAuthenticationChoice(string mechanism, sbyte[] credentials)
             : base(
-                new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, true, 3),
-                    new RfcSaslCredentials(new RfcLdapString(mechanism),
+                new Asn1Tagged(
+                    new Asn1Identifier(Asn1Identifier.Context, true, 3),
+                    new RfcSaslCredentials(
+                        new RfcLdapString(mechanism),
                         credentials != null ? new Asn1OctetString(credentials) : null), false))
         {
             // implicit tagging
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Mutators
-        //*************************************************************************
+        // *************************************************************************
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
     }
 }

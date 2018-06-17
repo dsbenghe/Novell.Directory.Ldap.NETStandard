@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeValue.cs
 //
@@ -41,13 +42,15 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeValue : Asn1OctetString
     {
         /// <summary> </summary>
-        public RfcAttributeValue(string valueRenamed) : base(valueRenamed)
+        public RfcAttributeValue(string valueRenamed)
+            : base(valueRenamed)
         {
         }
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcAttributeValue(sbyte[] valueRenamed) : base(valueRenamed)
+        public RfcAttributeValue(sbyte[] valueRenamed)
+            : base(valueRenamed)
         {
         }
     }

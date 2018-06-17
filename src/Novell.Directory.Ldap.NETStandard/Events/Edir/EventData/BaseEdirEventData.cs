@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.BaseEdirEventData.cs
 //
@@ -47,7 +48,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             EventDataType = eventDataType;
 
-            var byteData = SupportClass.ToByteArray(((Asn1OctetString) message).ByteValue());
+            var byteData = SupportClass.ToByteArray(((Asn1OctetString)message).ByteValue());
             DecodedData = new MemoryStream(byteData);
             Decoder = new LberDecoder();
         }

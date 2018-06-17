@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Decoder.cs
 //
@@ -54,10 +55,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an encoded value into an Asn1Object from a byte array.
         /// </summary>
         /// <param name="value">
-        ///     A byte array that points to the encoded Asn1 data
+        ///     A byte array that points to the encoded Asn1 data.
         /// </param>
         Asn1Object Decode(sbyte[] valueRenamed);
-
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
@@ -66,7 +66,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         Asn1Object Decode(Stream inRenamed);
-
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
@@ -87,13 +86,13 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary>
         ///     Decode a BOOLEAN directly from a stream. Call this method when you
-        ///     know that the next ASN.1 encoded element is a BOOLEAN
+        ///     know that the next ASN.1 encoded element is a BOOLEAN.
         /// </summary>
         /// <param name="in">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
-        ///     Length in bytes
+        ///     Length in bytes.
         /// </param>
         object DecodeBoolean(Stream inRenamed, int len);
 
@@ -106,10 +105,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
-        ///     Length in bytes
+        ///     Length in bytes.
         /// </param>
         object DecodeNumeric(Stream inRenamed, int len);
-
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode a REAL directly from a stream.
@@ -122,7 +120,6 @@ namespace Novell.Directory.Ldap.Asn1
         * throws IOException;
         */
 
-
         /// <summary>
         ///     Decode an OCTET_STRING directly from a stream. Call this method when you
         ///     know that the next ASN.1 encoded element is a OCTET_STRING.
@@ -131,17 +128,15 @@ namespace Novell.Directory.Ldap.Asn1
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
-        ///     Length in bytes
+        ///     Length in bytes.
         /// </param>
         object DecodeOctetString(Stream inRenamed, int len);
-
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode an OBJECT_IDENTIFIER directly from a stream.
                     * public Object decodeObjectIdentifier(InputStream in, int len)
                     * throws IOException;
                     */
-
 
         /// <summary>
         ///     Decode a CharacterString directly from a stream.
@@ -151,14 +146,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
-        ///     Length in bytes
+        ///     Length in bytes.
         /// </param>
         object DecodeCharacterString(Stream inRenamed, int len);
 
         /* No Decoders for ASN.1 structured types. A structured type's value is a
         * collection of other types.
         */
-
 
         /* Decoders for ASN.1 useful types
         */
@@ -180,7 +174,6 @@ namespace Novell.Directory.Ldap.Asn1
         * public Object decodeExternal(InputStream in, int len)
         * throws IOException;
         */
-
 
         /* Asn1 TYPE NOT YET SUPPORTED
         * Decode an OBJECT_DESCRIPTOR directly from a stream.

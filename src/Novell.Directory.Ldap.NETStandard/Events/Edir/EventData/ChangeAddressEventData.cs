@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.ChangeAddressEventData.cs
 //
@@ -44,12 +45,12 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            Flags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            Proto = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            AddressFamily = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            Address = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            PstkName = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            SourceModule = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            Flags = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            Proto = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            AddressFamily = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            Address = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
+            PstkName = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
+            SourceModule = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }

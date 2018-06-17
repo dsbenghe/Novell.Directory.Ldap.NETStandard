@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Numeric.cs
 //
@@ -43,27 +44,29 @@ namespace Novell.Directory.Ldap.Asn1
     {
         private readonly long _content;
 
-        internal Asn1Numeric(Asn1Identifier id, int valueRenamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, int valueRenamed)
+            : base(id)
         {
             _content = valueRenamed;
         }
 
-        internal Asn1Numeric(Asn1Identifier id, long valueRenamed) : base(id)
+        internal Asn1Numeric(Asn1Identifier id, long valueRenamed)
+            : base(id)
         {
             _content = valueRenamed;
         }
 
-/*		internal Asn1Numeric(Asn1Identifier id, System.Int64 value_Renamed):base(id)
-		{
-			content = value_Renamed;
-			return ;
-		}
+/*      internal Asn1Numeric(Asn1Identifier id, System.Int64 value_Renamed):base(id)
+        {
+            content = value_Renamed;
+            return ;
+        }
 */
 
         /// <summary> Returns the content of this Asn1Numeric object as an int.</summary>
         public int IntValue()
         {
-            return (int) _content;
+            return (int)_content;
         }
 
         /// <summary> Returns the content of this Asn1Numeric object as a long.</summary>

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeValueAssertion.cs
 //
@@ -48,12 +49,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Creates an Attribute Value Assertion.
         /// </summary>
         /// <param name="ad">
-        ///     The assertion description
+        ///     The assertion description.
         /// </param>
         /// <param name="av">
-        ///     The assertion value
+        ///     The assertion value.
         /// </param>
-        public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av) : base(2)
+        public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
+            : base(2)
         {
             Add(ad);
             Add(av);
@@ -63,9 +65,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Returns the attribute description.
         /// </summary>
         /// <returns>
-        ///     the attribute description
+        ///     the attribute description.
         /// </returns>
-        public string AttributeDescription => ((RfcAttributeDescription) get_Renamed(0)).StringValue();
+        public string AttributeDescription => ((RfcAttributeDescription)get_Renamed(0)).StringValue();
 
         /// <summary>
         ///     Returns the assertion value.
@@ -74,6 +76,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     the assertion value.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] AssertionValue => ((RfcAssertionValue) get_Renamed(1)).ByteValue();
+        public sbyte[] AssertionValue => ((RfcAssertionValue)get_Renamed(1)).ByteValue();
     }
 }

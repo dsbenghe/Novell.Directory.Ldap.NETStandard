@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapConstraints.cs
 //
@@ -129,6 +130,7 @@ namespace Novell.Directory.Ldap
             ReferralFollowing = doReferrals;
             _refHandler = handler;
             HopLimit = hopLimit;
+
             // Get a unique constraints name for debug
         }
 
@@ -140,7 +142,7 @@ namespace Novell.Directory.Ldap
         ///     It is ignored for asynchronous operations.
         /// </summary>
         /// <returns>
-        ///     The maximum number of referrals to follow in sequence
+        ///     The maximum number of referrals to follow in sequence.
         /// </returns>
         /// <seealso cref="HopLimit">
         /// </seealso>
@@ -167,7 +169,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Gets all the properties of the constraints object which has been
         ///     assigned with {@link #setProperty(String, Object)}.
-        ///     A value of <code>null</code> is returned if no properties are defined.
+        ///     A value of. <code>null</code> is returned if no properties are defined.
         /// </summary>
         /// <seealso cref="object">
         /// </seealso>
@@ -183,8 +185,7 @@ namespace Novell.Directory.Ldap
         {
             get => _properties;
 
-
-            set => _properties = (Hashtable) value.Clone();
+            set => _properties = (Hashtable)value.Clone();
         }
 
         /// <summary>
@@ -264,7 +265,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <returns>
         ///     the object associated with the property,
-        ///     or <code>null</code> if the property is not set.
+        ///     or. <code>null</code> if the property is not set.
         /// </returns>
         /// <seealso cref="object">
         /// </seealso>
@@ -310,7 +311,7 @@ namespace Novell.Directory.Ldap
             }
 
             _controls = new LdapControl[1];
-            _controls[0] = (LdapControl) control.Clone();
+            _controls[0] = (LdapControl)control.Clone();
         }
 
         /// <summary>
@@ -331,7 +332,7 @@ namespace Novell.Directory.Ldap
             _controls = new LdapControl[controls.Length];
             for (var i = 0; i < controls.Length; i++)
             {
-                _controls[i] = (LdapControl) controls[i].Clone();
+                _controls[i] = (LdapControl)controls[i].Clone();
             }
         }
 
@@ -347,7 +348,7 @@ namespace Novell.Directory.Ldap
         /// <param name="value">
         ///     Value to assign to the property.
         ///     property is not supported.
-        ///     @throws NullPointerException if name or value are null
+        ///     @throws NullPointerException if name or value are null.
         /// </param>
         /// <seealso cref="LdapConnection.GetProperty">
         /// </seealso>
@@ -368,7 +369,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="handler">
         ///     An object that implements LdapBindHandler or
-        ///     LdapAuthHandler
+        ///     LdapAuthHandler.
         /// </param>
         /// <seealso cref="ILdapAuthHandler">
         /// </seealso>
@@ -392,13 +393,13 @@ namespace Novell.Directory.Ldap
                 var newObj = MemberwiseClone();
                 if (_controls != null)
                 {
-                    ((LdapConstraints) newObj)._controls = new LdapControl[_controls.Length];
-                    _controls.CopyTo(((LdapConstraints) newObj)._controls, 0);
+                    ((LdapConstraints)newObj)._controls = new LdapControl[_controls.Length];
+                    _controls.CopyTo(((LdapConstraints)newObj)._controls, 0);
                 }
 
                 if (_properties != null)
                 {
-                    ((LdapConstraints) newObj)._properties = (Hashtable) _properties.Clone();
+                    ((LdapConstraints)newObj)._properties = (Hashtable)_properties.Clone();
                 }
 
                 return newObj;

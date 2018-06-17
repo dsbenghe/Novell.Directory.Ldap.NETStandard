@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.ArrayEnumeration.cs
 //
@@ -40,10 +41,10 @@ namespace Novell.Directory.Ldap.Utilclass
         private int _index;
 
         /// <summary>
-        ///     Constructor to create the Enumeration
+        ///     Constructor to create the Enumeration.
         /// </summary>
         /// <param name="eArray">
-        ///     the array to use for the Enumeration
+        ///     the array to use for the Enumeration.
         /// </param>
         public ArrayEnumeration(object[] eArray)
         {

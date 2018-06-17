@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapUnbindRequest.cs
 //
@@ -47,9 +48,10 @@ namespace Novell.Directory.Ldap
         ///     Constructs an Ldap Unbind Request.
         /// </summary>
         /// <param name="cont">
-        ///     Any controls that apply to the unbind request
+        ///     Any controls that apply to the unbind request.
         /// </param>
-        public LdapUnbindRequest(LdapControl[] cont) : base(UnbindRequest, new RfcUnbindRequest(), cont)
+        public LdapUnbindRequest(LdapControl[] cont)
+            : base(UnbindRequest, new RfcUnbindRequest(), cont)
         {
         }
     }

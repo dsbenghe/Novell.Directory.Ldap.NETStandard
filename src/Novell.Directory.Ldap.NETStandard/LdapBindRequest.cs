@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapBindRequest.cs
 //
@@ -76,7 +77,8 @@ namespace Novell.Directory.Ldap
             : base(
                 BindRequest,
                 new RfcBindRequest(new Asn1Integer(version), new RfcLdapDn(dn),
-                    new RfcAuthenticationChoice(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 0),
+                    new RfcAuthenticationChoice(new Asn1Tagged(
+                        new Asn1Identifier(Asn1Identifier.Context, false, 0),
                         new Asn1OctetString(passwd), false))), cont)
         {
         }
@@ -85,7 +87,7 @@ namespace Novell.Directory.Ldap
         ///     Retrieves the Authentication DN for a bind request.
         /// </summary>
         /// <returns>
-        ///     the Authentication DN for a bind request
+        ///     the Authentication DN for a bind request.
         /// </returns>
         public string AuthenticationDn => Asn1Object.RequestDn;
 

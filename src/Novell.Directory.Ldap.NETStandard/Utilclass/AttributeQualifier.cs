@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.AttributeQualifier.cs
 //
@@ -36,7 +37,7 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
     ///     Encapsulates a qualifier in a Schema definition.  Definitions that are not
-    ///     in rfc2252.  Begins with 'X-'
+    ///     in rfc2252.  Begins with 'X-'.
     /// </summary>
     public class AttributeQualifier
     {
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public AttributeQualifier(string name, string[] valueRenamed)
         {
-            if ((object) name == null || valueRenamed == null)
+            if ((object)name == null || valueRenamed == null)
             {
                 throw new ArgumentException("A null name or value " +
                                             "was passed in for a schema definition qualifier");
@@ -70,7 +71,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     strValues = new string[_values.Count];
                     for (var i = 0; i < _values.Count; i++)
                     {
-                        strValues[i] = (string) _values[i];
+                        strValues[i] = (string)_values[i];
                     }
                 }
 

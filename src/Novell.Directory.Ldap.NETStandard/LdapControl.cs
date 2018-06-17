@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapControl.cs
 //
@@ -74,7 +75,7 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapControl(string oid, bool critical, sbyte[] values)
         {
-            if ((object) oid == null)
+            if ((object)oid == null)
             {
                 throw new ArgumentException("An OID must be specified");
             }
@@ -135,7 +136,7 @@ namespace Novell.Directory.Ldap
             LdapControl cont;
             try
             {
-                cont = (LdapControl) MemberwiseClone();
+                cont = (LdapControl)MemberwiseClone();
             }
             catch (Exception ce)
             {
@@ -146,7 +147,7 @@ namespace Novell.Directory.Ldap
             sbyte[] twin = null;
             if (vals != null)
             {
-                //is this necessary?
+                // is this necessary?
                 // Yes even though the contructor above allocates a
                 // new Asn1OctetString, vals in that constuctor
                 // is only copied by reference
@@ -182,7 +183,6 @@ namespace Novell.Directory.Ldap
 
             return result;
         }
-
 
         /// <summary>
         ///     Sets the control-specific data of the object.  This method is for

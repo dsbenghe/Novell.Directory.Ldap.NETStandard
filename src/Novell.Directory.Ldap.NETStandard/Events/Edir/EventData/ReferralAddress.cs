@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.ReferralAddress.cs
 //
@@ -46,8 +47,8 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         /// </summary>
         public ReferralAddress(Asn1Sequence dseObject)
         {
-            AddressType = ((Asn1Integer) dseObject.get_Renamed(0)).IntValue();
-            _strAddress = ((Asn1OctetString) dseObject.get_Renamed(1)).StringValue();
+            AddressType = ((Asn1Integer)dseObject.get_Renamed(0)).IntValue();
+            _strAddress = ((Asn1OctetString)dseObject.get_Renamed(1)).StringValue();
         }
 
         public int AddressType { get; }

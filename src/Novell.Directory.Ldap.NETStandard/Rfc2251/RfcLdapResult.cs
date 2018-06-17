@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcLdapResult.cs
 //
@@ -97,21 +98,21 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Context-specific TAG for optional Referral.</summary>
         public const int Referral = 3;
 
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for RfcLdapResult
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
-        ///     Constructs an RfcLdapResult from parameters
+        ///     Constructs an RfcLdapResult from parameters.
         /// </summary>
         /// <param name="resultCode">
-        ///     the result code of the operation
+        ///     the result code of the operation.
         /// </param>
         /// <param name="matchedDn">
-        ///     the matched DN returned from the server
+        ///     the matched DN returned from the server.
         /// </param>
         /// <param name="errorMessage">
-        ///     the diagnostic message returned from the server
+        ///     the diagnostic message returned from the server.
         /// </param>
         public RfcLdapResult(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage)
             : this(resultCode, matchedDn, errorMessage, null)
@@ -119,22 +120,23 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary>
-        ///     Constructs an RfcLdapResult from parameters
+        ///     Constructs an RfcLdapResult from parameters.
         /// </summary>
         /// <param name="resultCode">
-        ///     the result code of the operation
+        ///     the result code of the operation.
         /// </param>
         /// <param name="matchedDn">
-        ///     the matched DN returned from the server
+        ///     the matched DN returned from the server.
         /// </param>
         /// <param name="errorMessage">
-        ///     the diagnostic message returned from the server
+        ///     the diagnostic message returned from the server.
         /// </param>
         /// <param name="referral">
-        ///     the referral(s) returned by the server
+        ///     the referral(s) returned by the server.
         /// </param>
         public RfcLdapResult(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
-            RfcReferral referral) : base(4)
+            RfcReferral referral)
+            : base(4)
         {
             Add(resultCode);
             Add(matchedDn);
@@ -145,70 +147,71 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
-        /// <summary> Constructs an RfcLdapResult from the inputstream</summary>
+        /// <summary> Constructs an RfcLdapResult from the inputstream.</summary>
         [CLSCompliant(false)]
-        public RfcLdapResult(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
+        public RfcLdapResult(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
             if (Size() > 3)
             {
-                var obj = (Asn1Tagged) get_Renamed(3);
+                var obj = (Asn1Tagged)get_Renamed(3);
                 var id = obj.GetIdentifier();
                 if (id.Tag == Referral)
                 {
-                    var content = ((Asn1OctetString) obj.TaggedValue).ByteValue();
+                    var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
                     var bais = new MemoryStream(SupportClass.ToByteArray(content));
                     set_Renamed(3, new RfcReferral(dec, bais, content.Length));
                 }
             }
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
-        ///     Returns the result code from the server
+        ///     Returns the result code from the server.
         /// </summary>
         /// <returns>
-        ///     the result code
+        ///     the result code.
         /// </returns>
         public Asn1Enumerated GetResultCode()
         {
-            return (Asn1Enumerated) get_Renamed(0);
+            return (Asn1Enumerated)get_Renamed(0);
         }
 
         /// <summary>
-        ///     Returns the matched DN from the server
+        ///     Returns the matched DN from the server.
         /// </summary>
         /// <returns>
-        ///     the matched DN
+        ///     the matched DN.
         /// </returns>
         public RfcLdapDn GetMatchedDn()
         {
-            return new RfcLdapDn(((Asn1OctetString) get_Renamed(1)).ByteValue());
+            return new RfcLdapDn(((Asn1OctetString)get_Renamed(1)).ByteValue());
         }
 
         /// <summary>
-        ///     Returns the error message from the server
+        ///     Returns the error message from the server.
         /// </summary>
         /// <returns>
-        ///     the server error message
+        ///     the server error message.
         /// </returns>
         public RfcLdapString GetErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).ByteValue());
+            return new RfcLdapString(((Asn1OctetString)get_Renamed(2)).ByteValue());
         }
 
         /// <summary>
-        ///     Returns the referral(s) from the server
+        ///     Returns the referral(s) from the server.
         /// </summary>
         /// <returns>
-        ///     the referral(s)
+        ///     the referral(s).
         /// </returns>
         public RfcReferral GetReferral()
         {
-            return Size() > 3 ? (RfcReferral) get_Renamed(3) : null;
+            return Size() > 3 ? (RfcReferral)get_Renamed(3) : null;
         }
     }
 }

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.SchemaSyncRequest.cs
 //
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     serverName       LdapDN
-    ///     delay            INTEGER
+    ///     delay            INTEGER.
     /// </summary>
     public class SchemaSyncRequest : LdapExtendedOperation
     {
@@ -62,11 +63,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public SchemaSyncRequest(string serverName, int delay) : base(ReplicationConstants.SchemaSyncReq, null)
+        public SchemaSyncRequest(string serverName, int delay)
+            : base(ReplicationConstants.SchemaSyncReq, null)
         {
             try
             {
-                if ((object) serverName == null)
+                if ((object)serverName == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

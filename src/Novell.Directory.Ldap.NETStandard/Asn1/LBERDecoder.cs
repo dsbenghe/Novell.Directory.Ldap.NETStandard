@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.LBERDecoder.cs
 //
@@ -66,8 +67,8 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class LberDecoder : IAsn1Decoder
     {
-        //used to speed up decode, so it doesn't need to recreate an identifier every time
-        //instead just reset is called CANNOT be static for multiple connections
+        // used to speed up decode, so it doesn't need to recreate an identifier every time
+        // instead just reset is called CANNOT be static for multiple connections
         private Asn1Identifier _asn1Id;
         private Asn1Length _asn1Len;
 
@@ -75,7 +76,6 @@ namespace Novell.Directory.Ldap.Asn1
         {
             InitBlock();
         }
-
 
         /* Generic decode routines
         */
@@ -170,14 +170,13 @@ namespace Novell.Directory.Ldap.Asn1
                     return new Asn1GeneralString(this, in, length);
                     */
 
-
                     default:
                         throw new EndOfStreamException("Unknown tag"); // !!! need a better exception
                 }
             }
 
             // APPLICATION or CONTEXT-SPECIFIC tag
-            return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier) _asn1Id.Clone());
+            return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier)_asn1Id.Clone());
         }
 
         /* Decoders for ASN.1 simple type Contents
@@ -263,14 +262,14 @@ namespace Novell.Directory.Ldap.Asn1
                     throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
                 }
 
-                octets[i] = (sbyte) ret;
+                octets[i] = (sbyte)ret;
             }
 
             var encoder = Encoding.GetEncoding("utf-8");
             var dchar = encoder.GetChars(SupportClass.ToByteArray(octets));
             var rval = new string(dchar);
 
-            return rval; //new String( "UTF8");
+            return rval; // new String( "UTF8");
         }
 
         private void InitBlock()

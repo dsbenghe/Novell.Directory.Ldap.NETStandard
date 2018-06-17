@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeTypeAndValues.cs
 //
@@ -43,12 +44,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcAttributeTypeAndValues : Asn1Sequence
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for AttributeTypeAndValues
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
-        public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals) : base(2)
+        public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals)
+            : base(2)
         {
             Add(type);
             Add(vals);

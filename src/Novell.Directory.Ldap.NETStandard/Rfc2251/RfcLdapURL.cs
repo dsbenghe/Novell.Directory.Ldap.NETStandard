@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcLdapURL.cs
 //
@@ -39,12 +40,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcLdapUrl : RfcLdapString
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for RfcLdapURL
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
-        public RfcLdapUrl(string s) : base(s)
+        public RfcLdapUrl(string s)
+            : base(s)
         {
         }
     }

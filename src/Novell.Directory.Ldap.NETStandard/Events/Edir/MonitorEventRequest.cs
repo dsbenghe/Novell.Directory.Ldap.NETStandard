@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.MonitorEventRequest.cs
 //
@@ -28,7 +29,6 @@
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
-
 
 using System;
 using System.IO;
@@ -49,12 +49,13 @@ namespace Novell.Directory.Ldap.Events.Edir
              * server in response to a MonitorEventRequest
              */
             LdapExtendedResponse.Register(EventOids.NldapMonitorEventsResponse, typeof(MonitorEventResponse));
-            //Also try to register EdirEventIntermediateResponse
+
+            // Also try to register EdirEventIntermediateResponse
             LdapIntermediateResponse.Register(EventOids.NldapEventNotification, typeof(EdirEventIntermediateResponse));
         } // end of static constructor
 
-        public MonitorEventRequest(EdirEventSpecifier[] specifiers) :
-            base(EventOids.NldapMonitorEventsRequest, null)
+        public MonitorEventRequest(EdirEventSpecifier[] specifiers)
+            : base(EventOids.NldapMonitorEventsRequest, null)
         {
             if (specifiers == null)
             {
@@ -74,11 +75,11 @@ namespace Novell.Directory.Ldap.Events.Edir
                 for (var nIndex = 0; nIndex < specifiers.Length; nIndex++)
                 {
                     var specifierSequence = new Asn1Sequence();
-                    specifierSequence.Add(new Asn1Integer((int) specifiers[nIndex].EventType));
-                    specifierSequence.Add(new Asn1Enumerated((int) specifiers[nIndex].EventResultType));
-                    if (0 == nIndex)
+                    specifierSequence.Add(new Asn1Integer((int)specifiers[nIndex].EventType));
+                    specifierSequence.Add(new Asn1Enumerated((int)specifiers[nIndex].EventResultType));
+                    if (nIndex == 0)
                     {
-                        bFiltered = null != specifiers[nIndex].EventFilter;
+                        bFiltered = specifiers[nIndex].EventFilter != null;
                         if (bFiltered)
                         {
                             SetId(EventOids.NldapFilteredMonitorEventsRequest);
@@ -88,7 +89,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                     if (bFiltered)
                     {
                         // A filter is expected
-                        if (null == specifiers[nIndex].EventFilter)
+                        if (specifiers[nIndex].EventFilter == null)
                         {
                             throw new ArgumentException("Filter cannot be null,for Filter events");
                         }
@@ -98,7 +99,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                     else
                     {
                         // No filter is expected
-                        if (null != specifiers[nIndex].EventFilter)
+                        if (specifiers[nIndex].EventFilter != null)
                         {
                             throw new ArgumentException("Filter cannot be specified for non Filter events");
                         }
@@ -112,7 +113,8 @@ namespace Novell.Directory.Ldap.Events.Edir
             }
             catch (Exception e)
             {
-                throw new LdapException(ExceptionMessages.EncodingError,
+                throw new LdapException(
+                    ExceptionMessages.EncodingError,
                     LdapException.EncodingError,
                     null, e);
             }

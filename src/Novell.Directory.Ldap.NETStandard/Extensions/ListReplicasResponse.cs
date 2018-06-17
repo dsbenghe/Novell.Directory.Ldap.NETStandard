@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.ListReplicasResponse.cs
 //
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     An object in this class is generated from an ExtendedResponse object
     ///     using the ExtendedResponseFactory class.
     ///     The listReplicaResponse extension uses the following OID:
-    ///     2.16.840.1.113719.1.27.20
+    ///     2.16.840.1.113719.1.27.20.
     /// </summary>
     public class ListReplicasResponse : LdapExtendedResponse
     {
@@ -53,12 +54,13 @@ namespace Novell.Directory.Ldap.Extensions
         ///     format:
         ///     responseValue ::=
         ///     replicaList
-        ///     SEQUENCE OF OCTET STRINGS
+        ///     SEQUENCE OF OCTET STRINGS.
         /// </summary>
         /// <exception>
         ///     IOException  The responseValue could not be decoded.
         /// </exception>
-        public ListReplicasResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public ListReplicasResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             if (ResultCode != LdapException.Success)
             {
@@ -81,7 +83,7 @@ namespace Novell.Directory.Ldap.Extensions
                 }
 
                 // We should get back a sequence
-                var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
+                var returnedSequence = (Asn1Sequence)decoder.Decode(returnedValue);
                 if (returnedSequence == null)
                 {
                     throw new IOException("Decoding error");
@@ -95,7 +97,7 @@ namespace Novell.Directory.Ldap.Extensions
                 for (var i = 0; i < len; i++)
                 {
                     // Get the next Asn1Octet String in the sequence
-                    var asn1NextReplica = (Asn1OctetString) returnedSequence.get_Renamed(i);
+                    var asn1NextReplica = (Asn1OctetString)returnedSequence.get_Renamed(i);
                     if (asn1NextReplica == null)
                     {
                         throw new IOException("Decoding error");
@@ -103,7 +105,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                     // Convert to a string
                     ReplicaList[i] = asn1NextReplica.StringValue();
-                    if ((object) ReplicaList[i] == null)
+                    if ((object)ReplicaList[i] == null)
                     {
                         throw new IOException("Decoding error");
                     }
@@ -115,7 +117,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Returns a list of distinguished names for the replicas on the server.
         /// </summary>
         /// <returns>
-        ///     String value specifying the identity returned by the server
+        ///     String value specifying the identity returned by the server.
         /// </returns>
         public string[] ReplicaList { get; }
     }

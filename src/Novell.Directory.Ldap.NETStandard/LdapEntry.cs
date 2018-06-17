@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapEntry.cs
 //
@@ -51,7 +52,8 @@ namespace Novell.Directory.Ldap
         protected internal LdapAttributeSet Attrs;
 
         /// <summary> Constructs an empty entry.</summary>
-        public LdapEntry() : this(null, null)
+        public LdapEntry()
+            : this(null, null)
         {
         }
 
@@ -64,7 +66,8 @@ namespace Novell.Directory.Ldap
         ///     value is not validated. An invalid distinguished
         ///     name will cause operations using this entry to fail.
         /// </param>
-        public LdapEntry(string dn) : this(dn, null)
+        public LdapEntry(string dn)
+            : this(dn, null)
         {
         }
 
@@ -83,7 +86,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapEntry(string dn, LdapAttributeSet attrs)
         {
-            if ((object) dn == null)
+            if ((object)dn == null)
             {
                 dn = string.Empty;
             }
@@ -114,7 +117,7 @@ namespace Novell.Directory.Ldap
         ///     compareTo method of the String class.
         /// </summary>
         /// <param name="entry">
-        ///     Entry to compare to
+        ///     Entry to compare to.
         /// </param>
         /// <returns>
         ///     A negative integer, zero, or a positive integer as this
@@ -122,7 +125,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int CompareTo(object entry)
         {
-            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry) entry).Dn));
+            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry)entry).Dn));
         }
 
         /// <summary>
@@ -153,7 +156,6 @@ namespace Novell.Directory.Ldap
             return Attrs;
         }
 
-
         /// <summary>
         ///     Returns an attribute set from the entry, consisting of only those
         ///     attributes matching the specified subtypes.
@@ -182,10 +184,10 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns a string representation of this LdapEntry
+        ///     Returns a string representation of this LdapEntry.
         /// </summary>
         /// <returns>
-        ///     a string representation of this LdapEntry
+        ///     a string representation of this LdapEntry.
         /// </returns>
         public override string ToString()
         {

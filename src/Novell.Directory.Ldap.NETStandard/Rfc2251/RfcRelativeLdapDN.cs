@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcRelativeLdapDN.cs
 //
@@ -38,7 +39,8 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcRelativeLdapDn : RfcLdapString
     {
         /// <summary> </summary>
-        public RfcRelativeLdapDn(string s) : base(s)
+        public RfcRelativeLdapDn(string s)
+            : base(s)
         {
         }
     }

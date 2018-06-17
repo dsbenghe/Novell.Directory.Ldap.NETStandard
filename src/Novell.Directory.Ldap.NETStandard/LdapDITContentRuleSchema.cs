@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDITContentRuleSchema.cs
 //
@@ -114,7 +115,8 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a schema query
         ///     for content rules.
         /// </param>
-        public LdapDitContentRuleSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
+        public LdapDitContentRuleSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
         {
             Obsolete = false;
             try
@@ -127,12 +129,12 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object) parser.Id != null)
+                if ((object)parser.Id != null)
                 {
                     Oid = parser.Id;
                 }
 
-                if ((object) parser.Description != null)
+                if ((object)parser.Description != null)
                 {
                     Description = parser.Description;
                 }
@@ -166,7 +168,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
+                    attrQualifier = (AttributeQualifier)qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -183,7 +185,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public string[] AuxiliaryClasses { get; } = {string.Empty};
+        public string[] AuxiliaryClasses { get; } = {string.Empty };
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -192,7 +194,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public string[] RequiredAttributes { get; } = {string.Empty};
+        public string[] RequiredAttributes { get; } = {string.Empty };
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -201,7 +203,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public string[] OptionalAttributes { get; } = {string.Empty};
+        public string[] OptionalAttributes { get; } = {string.Empty };
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -210,7 +212,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public string[] PrecludedAttributes { get; } = {string.Empty};
+        public string[] PrecludedAttributes { get; } = {string.Empty };
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -224,7 +226,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = Id) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -250,7 +252,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object) (token = Description) != null)
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -364,7 +366,7 @@ namespace Novell.Directory.Ldap
                 string[] qualValue;
                 while (en.MoveNext())
                 {
-                    qualName = (string) en.Current;
+                    qualName = (string)en.Current;
                     valueBuffer.Append(" " + qualName + " ");
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {

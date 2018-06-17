@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Length.cs
 //
@@ -47,12 +48,12 @@ namespace Novell.Directory.Ldap.Asn1
         /* Constructors for Asn1Length
         */
 
-        /// <summary> Constructs an empty Asn1Length.  Values are added by calling reset</summary>
+        /// <summary> Constructs an empty Asn1Length.  Values are added by calling reset.</summary>
         public Asn1Length()
         {
         }
 
-        /// <summary> Constructs an Asn1Length</summary>
+        /// <summary> Constructs an Asn1Length.</summary>
         public Asn1Length(int length)
         {
             Length = length;
@@ -63,7 +64,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.
         /// </summary>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public Asn1Length(Stream inRenamed)
         {
@@ -103,10 +104,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary>
         ///     Resets an Asn1Length object by decoding data from an
         ///     input stream.
-        ///     Note: this was added for optimization of Asn1.LBERdecoder.decode()
+        ///     Note: this was added for optimization of Asn1.LBERdecoder.decode().
         /// </summary>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public void Reset(Stream inRenamed)
         {

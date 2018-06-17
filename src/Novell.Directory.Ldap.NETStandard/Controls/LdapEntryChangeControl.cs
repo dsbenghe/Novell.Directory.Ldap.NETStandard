@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapEntryChangeControl.cs
 //
@@ -58,7 +59,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     },
         ///     previousDN   LdapDN OPTIONAL,     -- modifyDN ops. only
         ///     changeNumber INTEGER OPTIONAL     -- if supported
-        ///     }
+        ///     }.
         /// </summary>
         /// <param name="oid">
         ///     The OID of the control, as a dotted string.
@@ -90,8 +91,7 @@ namespace Novell.Directory.Ldap.Controls
                 throw new IOException("Decoding error.");
             }
 
-            var sequence = (Asn1Sequence) asnObj;
-
+            var sequence = (Asn1Sequence)asnObj;
 
             // The first element in the sequence should be an enumerated type
             var asn1Obj = sequence.get_Renamed(0);
@@ -100,11 +100,12 @@ namespace Novell.Directory.Ldap.Controls
                 throw new IOException("Decoding error.");
             }
 
-            ChangeType = ((Asn1Enumerated) asn1Obj).IntValue();
+            ChangeType = ((Asn1Enumerated)asn1Obj).IntValue();
 
-            //check for optional elements
+            // check for optional elements
             if (sequence.Size() > 1 && ChangeType == 8)
-                //8 means modifyDN
+
+                // 8 means modifyDN
             {
                 // get the previous DN - it is encoded as an octet string
                 asn1Obj = sequence.get_Renamed(1);
@@ -113,14 +114,14 @@ namespace Novell.Directory.Ldap.Controls
                     throw new IOException("Decoding error get previous DN");
                 }
 
-                PreviousDn = ((Asn1OctetString) asn1Obj).StringValue();
+                PreviousDn = ((Asn1OctetString)asn1Obj).StringValue();
             }
             else
             {
                 PreviousDn = string.Empty;
             }
 
-            //check for change number
+            // check for change number
             if (sequence.Size() == 3)
             {
                 asn1Obj = sequence.get_Renamed(2);
@@ -129,7 +130,7 @@ namespace Novell.Directory.Ldap.Controls
                     throw new IOException("Decoding error getting change number");
                 }
 
-                ChangeNumber = ((Asn1Integer) asn1Obj).IntValue();
+                ChangeNumber = ((Asn1Integer)asn1Obj).IntValue();
                 HasChangeNumber = true;
             }
             else
@@ -144,7 +145,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <returns>
         ///     the record number of the change in the server's change log.
         ///     The server may not return a change number. In this case the return
-        ///     value is -1
+        ///     value is -1.
         /// </returns>
         public bool HasChangeNumber { get; }
 
@@ -154,12 +155,12 @@ namespace Novell.Directory.Ldap.Controls
         /// <returns>
         ///     the record number of the change in the server's change log.
         ///     The server may not return a change number. In this case the return
-        ///     value is -1
+        ///     value is -1.
         /// </returns>
         public int ChangeNumber { get; }
 
         /// <summary>
-        ///     Returns the type of change that occured
+        ///     Returns the type of change that occured.
         /// </summary>
         /// <returns>
         ///     returns one of the following values indicating the type of
@@ -179,5 +180,5 @@ namespace Novell.Directory.Ldap.Controls
         ///     change type is LdapersistSearchControl.MODDN.
         /// </returns>
         public string PreviousDn { get; }
-    } //end class LdapEntryChangeControl
+    } // end class LdapEntryChangeControl
 }

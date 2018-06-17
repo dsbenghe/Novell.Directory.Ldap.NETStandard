@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.BindProperties.cs
 //
@@ -33,7 +34,7 @@ using System.Collections;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    /// <summary> Encapsulates an Ldap Bind properties</summary>
+    /// <summary> Encapsulates an Ldap Bind properties.</summary>
     public class BindProperties
     {
         public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties,
@@ -47,46 +48,46 @@ namespace Novell.Directory.Ldap.Utilclass
             SaslCallbackHandler = bindCallbackHandler;
         }
 
-        /// <summary> gets the protocol version</summary>
+        /// <summary> gets the protocol version.</summary>
         public int ProtocolVersion { get; } = 3;
 
         /// <summary>
-        ///     Gets the authentication dn
+        ///     Gets the authentication dn.
         /// </summary>
         /// <returns>
-        ///     the authentication dn for this connection
+        ///     the authentication dn for this connection.
         /// </returns>
         public string AuthenticationDn { get; }
 
         /// <summary>
-        ///     Gets the authentication method
+        ///     Gets the authentication method.
         /// </summary>
         /// <returns>
-        ///     the authentication method for this connection
+        ///     the authentication method for this connection.
         /// </returns>
         public string AuthenticationMethod { get; }
 
         /// <summary>
-        ///     Gets the SASL Bind properties
+        ///     Gets the SASL Bind properties.
         /// </summary>
         /// <returns>
-        ///     the sasl bind properties for this connection
+        ///     the sasl bind properties for this connection.
         /// </returns>
         public Hashtable SaslBindProperties { get; }
 
         /// <summary>
-        ///     Gets the SASL callback handler
+        ///     Gets the SASL callback handler.
         /// </summary>
         /// <returns>
-        ///     the sasl callback handler for this connection
+        ///     the sasl callback handler for this connection.
         /// </returns>
         public object SaslCallbackHandler { get; }
 
         /// <summary>
-        ///     Indicates whether or not the bind properties specify an anonymous bind
+        ///     Indicates whether or not the bind properties specify an anonymous bind.
         /// </summary>
         /// <returns>
-        ///     true if the bind properties specify an anonymous bind
+        ///     true if the bind properties specify an anonymous bind.
         /// </returns>
         public bool Anonymous { get; }
     }

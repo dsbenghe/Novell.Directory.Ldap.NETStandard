@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.SecurityEquivalenceEventData.cs
 //
@@ -45,21 +46,21 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            EntryDn = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            RetryCount = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            ValueDn = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            EntryDn = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
+            RetryCount = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            ValueDn = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
 
-            var referalseq = (Asn1Sequence) Decoder.Decode(DecodedData, length);
+            var referalseq = (Asn1Sequence)Decoder.Decode(DecodedData, length);
 
-            ReferralCount = ((Asn1Integer) referalseq.get_Renamed(0)).IntValue();
+            ReferralCount = ((Asn1Integer)referalseq.get_Renamed(0)).IntValue();
             ReferralList = new ArrayList();
             if (ReferralCount > 0)
             {
-                var referalseqof = (Asn1Sequence) referalseq.get_Renamed(1);
+                var referalseqof = (Asn1Sequence)referalseq.get_Renamed(1);
 
                 for (var i = 0; i < ReferralCount; i++)
                 {
-                    ReferralList.Add(new ReferralAddress((Asn1Sequence) referalseqof.get_Renamed(i)));
+                    ReferralList.Add(new ReferralAddress((Asn1Sequence)referalseqof.get_Renamed(i)));
                 }
             }
 

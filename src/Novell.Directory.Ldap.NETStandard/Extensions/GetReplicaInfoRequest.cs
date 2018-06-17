@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicaInfoRequest.cs
 //
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     serverDN     LdapDN
-    ///     partitionDN  LdapDN
+    ///     partitionDN  LdapDN.
     /// </summary>
     public class GetReplicaInfoRequest : LdapExtendedOperation
     {
@@ -80,7 +81,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) serverDn == null || (object) partitionDn == null)
+                if ((object)serverDn == null || (object)partitionDn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

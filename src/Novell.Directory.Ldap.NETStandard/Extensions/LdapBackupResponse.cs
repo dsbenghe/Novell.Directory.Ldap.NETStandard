@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -45,12 +46,11 @@ using Novell.Directory.Ldap.Rfc2251;
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.97</p>
  *
  */
-
 namespace Novell.Directory.Ldap.Extensions
 {
     public class LdapBackupResponse : LdapExtendedResponse
     {
-        private readonly int _bufferLength; //Represents the length of backup data
+        private readonly int _bufferLength; // Represents the length of backup data
 
         /*
          * The String representing the number of chunks and each elements in chunk
@@ -67,12 +67,12 @@ namespace Novell.Directory.Ldap.Extensions
          * Actual data of returned eDirectoty Object in byte[]
         */
         private readonly byte[] _returnedBuffer;
-        private readonly string _stateInfo; //Represent the state Information of data
+        private readonly string _stateInfo; // Represent the state Information of data
 
         /**
         * Constructs an object from the responseValue which contains the backup data.
         *  <p>The constructor parses the responseValue which has the following
-        *  format:<br>
+        *  format:.<br>
         *  responseValue ::=<br>
         *  <p>databufferLength ::= INTEGER <br>
         *  mts(modification time stamp) ::= INTEGER<br>
@@ -87,15 +87,15 @@ namespace Novell.Directory.Ldap.Extensions
         *
         * @exception IOException The responseValue could not be decoded.
         */
-
-        public LdapBackupResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public LdapBackupResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             var modificationTime = 0; // Modifaction timestamp of the Object
             var revision = 0; // Revision number of the Object
             var chunksSize = 0;
-            int[] chunks = null; //Holds size of each chunks returned from server
+            int[] chunks = null; // Holds size of each chunks returned from server
 
-            //Verify if returned ID is not proper
+            // Verify if returned ID is not proper
             if (Id == null || !Id.Equals(BackupRestoreConstants.NldapLdapBackupResponse))
             {
                 throw new IOException("LDAP Extended Operation not supported");
@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap.Extensions
                 var currentPtr = new MemoryStream(returnedValue);
 
                 // Parse bufferLength
-                var asn1BufferLength = (Asn1Integer) decoder
+                var asn1BufferLength = (Asn1Integer)decoder
                     .Decode(currentPtr);
                 if (asn1BufferLength == null)
                 {
@@ -133,7 +133,7 @@ namespace Novell.Directory.Ldap.Extensions
                 _bufferLength = asn1BufferLength.IntValue();
 
                 // Parse modificationTime
-                var asn1ModificationTime = (Asn1Integer) decoder
+                var asn1ModificationTime = (Asn1Integer)decoder
                     .Decode(currentPtr);
                 if (asn1ModificationTime == null)
                 {
@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap.Extensions
                 modificationTime = asn1ModificationTime.IntValue();
 
                 // Parse revision
-                var asn1Revision = (Asn1Integer) decoder
+                var asn1Revision = (Asn1Integer)decoder
                     .Decode(currentPtr);
                 if (asn1Revision == null)
                 {
@@ -152,11 +152,11 @@ namespace Novell.Directory.Ldap.Extensions
 
                 revision = asn1Revision.IntValue();
 
-                //Format stateInfo to contain both modificationTime and revision
+                // Format stateInfo to contain both modificationTime and revision
                 _stateInfo = modificationTime + "+" + revision;
 
                 // Parse returnedBuffer
-                var asn1ReturnedBuffer = (Asn1OctetString) decoder.Decode(currentPtr);
+                var asn1ReturnedBuffer = (Asn1OctetString)decoder.Decode(currentPtr);
                 if (asn1ReturnedBuffer == null)
                 {
                     throw new IOException("Decoding error");
@@ -164,41 +164,41 @@ namespace Novell.Directory.Ldap.Extensions
 
                 _returnedBuffer = SupportClass.ToByteArray(asn1ReturnedBuffer.ByteValue());
 
-
                 /*
                  * Parse chunks array
                  * Chunks returned from server is encoded as shown below::
                  * SEQUENCE{
-                 * 			chunksSize	INTEGER
-                 * 			SET of [
-                 * 				SEQUENCE of {eacChunksize        INTEGER}]
-                 * 	       }
+                 *          chunksSize  INTEGER
+                 *          SET of [
+                 *              SEQUENCE of {eacChunksize        INTEGER}]
+                 *         }
                  */
 
-                var asn1ChunksSeq = (Asn1Sequence) decoder
+                var asn1ChunksSeq = (Asn1Sequence)decoder
                     .Decode(currentPtr);
                 if (asn1ChunksSeq == null)
                 {
                     throw new IOException("Decoding error");
                 }
 
-                //Get number of chunks returned from server
-                chunksSize = ((Asn1Integer) asn1ChunksSeq.get_Renamed(0)).IntValue();
+                // Get number of chunks returned from server
+                chunksSize = ((Asn1Integer)asn1ChunksSeq.get_Renamed(0)).IntValue();
 
-                //Construct chunks array
+                // Construct chunks array
                 chunks = new int[chunksSize];
 
-                var asn1ChunksSet = (Asn1Set) asn1ChunksSeq.get_Renamed(1);
-                //Iterate through asn1_chunksSet and put each size into chunks array
+                var asn1ChunksSet = (Asn1Set)asn1ChunksSeq.get_Renamed(1);
+
+                // Iterate through asn1_chunksSet and put each size into chunks array
 
                 for (var index = 0; index < chunksSize; index++)
                 {
-                    var asn1EachSeq = (Asn1Sequence) asn1ChunksSet.get_Renamed(index);
-                    chunks[index] = ((Asn1Integer) asn1EachSeq.get_Renamed(0)).IntValue();
+                    var asn1EachSeq = (Asn1Sequence)asn1ChunksSet.get_Renamed(index);
+                    chunks[index] = ((Asn1Integer)asn1EachSeq.get_Renamed(0)).IntValue();
                 }
 
-                //Construct a temporary StringBuffer and append chunksSize, each size
-                //element in chunks array and actual data of eDirectoty Object
+                // Construct a temporary StringBuffer and append chunksSize, each size
+                // element in chunks array and actual data of eDirectoty Object
                 var tempBuffer = new StringBuilder();
                 tempBuffer.Append(chunksSize);
                 tempBuffer.Append(";");
@@ -212,12 +212,12 @@ namespace Novell.Directory.Ldap.Extensions
 
                 tempBuffer.Append(chunks[i]);
 
-                //Assign tempBuffer to parsedString to be returned to Application
+                // Assign tempBuffer to parsedString to be returned to Application
                 _chunkSizesString = tempBuffer.ToString();
             }
             else
             {
-                //Intialize all these if getResultCode() != LdapException.SUCCESS
+                // Intialize all these if getResultCode() != LdapException.SUCCESS
                 _bufferLength = 0;
                 _stateInfo = null;
                 _chunkSizesString = null;
@@ -230,7 +230,6 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return bufferLength as integer.
          */
-
         public int GetBufferLength()
         {
             return _bufferLength;
@@ -245,7 +244,6 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return stateInfo as String.
          */
-
         public string GetStatusInfo()
         {
             return _stateInfo;
@@ -253,14 +251,13 @@ namespace Novell.Directory.Ldap.Extensions
 
         /**
          * Returns the data in String as::<br>
-         * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)<br>
+         * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn).<br>
          * where<br>
          * no_of_chunks => Represents the number of chunks of data returned from server<br>
          * sizeOf(chunkn) => Represents the size of data in chunkn<br>
          *
          * @return chunkSizesString as String.
          */
-
         public string GetChunkSizesString()
         {
             return _chunkSizesString;
@@ -271,7 +268,6 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return returnedBuffer as byte[].
          */
-
         public byte[] GetReturnedBuffer()
         {
             return _returnedBuffer;

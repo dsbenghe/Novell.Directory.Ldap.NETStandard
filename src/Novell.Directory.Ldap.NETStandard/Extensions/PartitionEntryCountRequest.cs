@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.PartitionEntryCountRequest.cs
 //
@@ -50,7 +51,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.13
     ///     The requestValue has the following format:
     ///     requestValue ::=
-    ///     dn      LdapDN
+    ///     dn      LdapDN.
     /// </summary>
     public class PartitionEntryCountRequest : LdapExtendedOperation
     {
@@ -60,7 +61,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.Register(ReplicationConstants.NamingContextCountRes,
+            LdapExtendedResponse.Register(
+                ReplicationConstants.NamingContextCountRes,
                 typeof(PartitionEntryCountResponse));
         }
 
@@ -75,11 +77,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an
         ///     error message and an Ldap error code.
         /// </exception>
-        public PartitionEntryCountRequest(string dn) : base(ReplicationConstants.NamingContextCountReq, null)
+        public PartitionEntryCountRequest(string dn)
+            : base(ReplicationConstants.NamingContextCountReq, null)
         {
             try
             {
-                if ((object) dn == null)
+                if ((object)dn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

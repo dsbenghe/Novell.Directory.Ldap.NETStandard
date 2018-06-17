@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapAddRequest.cs
 //
@@ -62,7 +63,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Constructs an LdapEntry that represents the add request
+        ///     Constructs an LdapEntry that represents the add request.
         /// </summary>
         /// <returns>
         ///     an LdapEntry that represents the add request.
@@ -71,7 +72,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var addreq = (RfcAddRequest) Asn1Object.GetRequest();
+                var addreq = (RfcAddRequest)Asn1Object.GetRequest();
 
                 var attrs = new LdapAttributeSet();
 
@@ -79,15 +80,15 @@ namespace Novell.Directory.Ldap
                 var seqArray = addreq.Attributes.ToArray();
                 for (var i = 0; i < seqArray.Length; i++)
                 {
-                    var seq = (RfcAttributeTypeAndValues) seqArray[i];
-                    var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
+                    var seq = (RfcAttributeTypeAndValues)seqArray[i];
+                    var attr = new LdapAttribute(((Asn1OctetString)seq.get_Renamed(0)).StringValue());
 
                     // Add the values to the attribute
-                    var setRenamed = (Asn1SetOf) seq.get_Renamed(1);
+                    var setRenamed = (Asn1SetOf)seq.get_Renamed(1);
                     object[] setArray = setRenamed.ToArray();
                     for (var j = 0; j < setArray.Length; j++)
                     {
-                        attr.AddValue(((Asn1OctetString) setArray[j]).ByteValue());
+                        attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
                     }
 
                     attrs.Add(attr);
@@ -111,12 +112,12 @@ namespace Novell.Directory.Ldap
             var itr = attrSet.GetEnumerator();
             while (itr.MoveNext())
             {
-                var attr = (LdapAttribute) itr.Current;
+                var attr = (LdapAttribute)itr.Current;
                 var vals = new Asn1SetOf(attr.Size());
                 var attrEnum = attr.ByteValues;
                 while (attrEnum.MoveNext())
                 {
-                    vals.Add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
+                    vals.Add(new RfcAttributeValue((sbyte[])attrEnum.Current));
                 }
 
                 attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));

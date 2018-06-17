@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.EntryEventData.cs
 //
@@ -57,18 +58,18 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
             _strPerpetratorDn =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
             _strEntry =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
             _strClassId =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
 
             _timeStampObj =
-                new DseTimeStamp((Asn1Sequence) Decoder.Decode(DecodedData, length));
-            _nVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            _nFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+                new DseTimeStamp((Asn1Sequence)Decoder.Decode(DecodedData, length));
+            _nVerb = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            _nFlags = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
             _strNewDn =
-                ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+                ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }

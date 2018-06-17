@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapModification.cs
 //
@@ -36,7 +37,7 @@ namespace Novell.Directory.Ldap
     ///     An LdapModification contains information on the type of modification
     ///     being performed, the name of the attribute to be replaced, and the new
     ///     value.  Multiple modifications are expressed as an array of modifications,
-    ///     i.e., <code>LdapModification[]</code>.
+    ///     i.e.,. <code>LdapModification[]</code>.
     ///     An LdapModification or an LdapModification array enable you to modify
     ///     an attribute of an Ldap entry. The entire array of modifications must
     ///     be performed by the server as a single atomic operation in the order they
@@ -60,7 +61,7 @@ namespace Novell.Directory.Ldap
     ///     A replace operation with no value will remove the entire attribute if it
     ///     exists, and is ignored if the attribute does not exist.
     ///     Additional information on Ldap modifications is available in section 4.6
-    ///     of <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
+    ///     of. <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
     /// </summary>
     /// <seealso cref="LdapConnection.Modify">
     /// </seealso>
@@ -71,7 +72,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Adds the listed values to the given attribute, creating
         ///     the attribute if it does not already exist.
-        ///     ADD = 0
+        ///     ADD = 0.
         /// </summary>
         public const int Add = 0;
 
@@ -80,7 +81,7 @@ namespace Novell.Directory.Ldap
         ///     removing the entire attribute (1) if no values are listed or
         ///     (2) if all current values of the attribute are listed for
         ///     deletion.
-        ///     DELETE = 1
+        ///     DELETE = 1.
         /// </summary>
         public const int Delete = 1;
 
@@ -90,7 +91,7 @@ namespace Novell.Directory.Ldap
         ///     does not already exist.
         ///     A replace with no value deletes the entire attribute if it
         ///     exists, and is ignored if the attribute does not exist.
-        ///     REPLACE = 2
+        ///     REPLACE = 2.
         /// </summary>
         public const int Replace = 2;
 
@@ -99,7 +100,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="op">
         ///     The type of modification to make, which can be
-        ///     one of the following:
+        ///     one of the following:.
         ///     <ul>
         ///         <li>
         ///             LdapModification.ADD - The value should be added to
@@ -135,7 +136,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Returns the type of modification specified by this object.
-        ///     The type is one of the following:
+        ///     The type is one of the following:.
         ///     <ul>
         ///         <li>LdapModification.ADD</li>
         ///         <li>LdapModification.DELETE</li>

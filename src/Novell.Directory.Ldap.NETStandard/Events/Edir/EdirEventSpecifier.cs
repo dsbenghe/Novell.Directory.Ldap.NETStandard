@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EdirEventSpecifier.cs
 //
@@ -29,7 +30,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-
 namespace Novell.Directory.Ldap.Events.Edir
 {
     /// <summary>
@@ -37,8 +37,8 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSpecifier
     {
-        public EdirEventSpecifier(EdirEventType eventType, EdirEventResultType eventResultType) :
-            this(eventType, eventResultType, null)
+        public EdirEventSpecifier(EdirEventType eventType, EdirEventResultType eventResultType)
+            : this(eventType, eventResultType, null)
         {
         }
 

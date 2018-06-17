@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.ReceiveAllUpdatesRequest.cs
 //
@@ -45,7 +46,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     requestValue ::=
     ///     partitionRoot    LdapDN
     ///     toServerDN       LdapDN
-    ///     fromServerDN     LdapDN
+    ///     fromServerDN     LdapDN.
     /// </summary>
     public class ReceiveAllUpdatesRequest : LdapExtendedOperation
     {
@@ -74,7 +75,7 @@ namespace Novell.Directory.Ldap.Extensions
         {
             try
             {
-                if ((object) partitionRoot == null || (object) toServerDn == null || (object) fromServerDn == null)
+                if ((object)partitionRoot == null || (object)toServerDn == null || (object)fromServerDn == null)
                 {
                     throw new ArgumentException(ExceptionMessages.ParamError);
                 }

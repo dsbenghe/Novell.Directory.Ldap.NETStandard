@@ -20,6 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapIntermediateResponse.cs
 //
@@ -43,11 +44,9 @@ namespace Novell.Directory.Ldap
      *  The response can contain the OID of the extension, an octet string
      *  with the operation's data, both, or neither.
      */
-
     public class LdapIntermediateResponse : LdapResponse
     {
         private static readonly RespExtensionSet RegisteredResponses = new RespExtensionSet();
-
 
         /**
          * Creates an LdapIntermediateResponse object which encapsulates
@@ -56,8 +55,8 @@ namespace Novell.Directory.Ldap
          * @param message  The RfcLdapMessage to convert to an
          *                 LdapIntermediateResponse object.
          */
-
-        public LdapIntermediateResponse(RfcLdapMessage message) : base(message)
+        public LdapIntermediateResponse(RfcLdapMessage message)
+            : base(message)
         {
         }
 
@@ -74,12 +73,10 @@ namespace Novell.Directory.Ldap
          * @param extendedResponseClass  A class which can instantiate an
          *                                LdapIntermediateResponse.
          */
-
         public static void Register(string oid, Type extendedResponseClass)
         {
             RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
         }
-
 
         public static RespExtensionSet GetRegisteredResponses()
         {
@@ -91,11 +88,10 @@ namespace Novell.Directory.Ldap
          *
          * @return OID of the response.
          */
-
         public string GetId()
         {
             var respOid =
-                ((RfcIntermediateResponse) Message.Response).GetResponseName();
+                ((RfcIntermediateResponse)Message.Response).GetResponseName();
             if (respOid == null)
             {
                 return null;
@@ -109,12 +105,11 @@ namespace Novell.Directory.Ldap
          *
          * @return The value of the response.
          */
-
         [CLSCompliant(false)]
         public sbyte[] GetValue()
         {
             var tempString =
-                ((RfcIntermediateResponse) Message.Response).GetResponse();
+                ((RfcIntermediateResponse)Message.Response).GetResponse();
             if (tempString == null)
             {
                 return null;

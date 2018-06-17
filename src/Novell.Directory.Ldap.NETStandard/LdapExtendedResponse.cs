@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapExtendedResponse.cs
 //
@@ -56,7 +57,8 @@ namespace Novell.Directory.Ldap
         ///     The RfcLdapMessage to convert to an
         ///     LdapExtendedResponse object.
         /// </param>
-        public LdapExtendedResponse(RfcLdapMessage message) : base(message)
+        public LdapExtendedResponse(RfcLdapMessage message)
+            : base(message)
         {
         }
 
@@ -70,7 +72,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var respOid = ((RfcExtendedResponse) Message.Response).ResponseName;
+                var respOid = ((RfcExtendedResponse)Message.Response).ResponseName;
                 return respOid?.StringValue();
             }
         }
@@ -88,7 +90,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var tempString = ((RfcExtendedResponse) Message.Response).Response;
+                var tempString = ((RfcExtendedResponse)Message.Response).Response;
                 return tempString?.ByteValue();
             }
         }

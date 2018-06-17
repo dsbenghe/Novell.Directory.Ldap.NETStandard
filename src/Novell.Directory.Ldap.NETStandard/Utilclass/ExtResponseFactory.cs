@@ -33,6 +33,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public static LdapExtendedResponse ConvertToExtendedResponse(RfcLdapMessage inResponse)
         {
             var tempResponse = new LdapExtendedResponse(inResponse);
+
             // Get the oid stored in the Extended response
             var inOid = tempResponse.Id;
             if (inOid == null)
@@ -49,8 +50,8 @@ namespace Novell.Directory.Ldap.Utilclass
                     return tempResponse;
                 }
 
-                Type[] argsClass = {typeof(RfcLdapMessage)};
-                object[] args = {inResponse};
+                Type[] argsClass = {typeof(RfcLdapMessage) };
+                object[] args = {inResponse };
                 Exception ex;
                 try
                 {
@@ -59,7 +60,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         object resp = null;
                         resp = extConstructor.Invoke(args);
-                        return (LdapExtendedResponse) resp;
+                        return (LdapExtendedResponse)resp;
                     }
                     catch (UnauthorizedAccessException e)
                     {

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcMessageID.cs
 //
@@ -62,20 +63,22 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     MessageID zero is never used in this implementation.  Always
         ///     start the messages with one.
         /// </summary>
-        protected internal RfcMessageId() : base(MessageId)
+        protected internal RfcMessageId()
+            : base(MessageId)
         {
         }
 
         /// <summary> Creates a MessageID with a specified int value.</summary>
-        protected internal RfcMessageId(int i) : base(i)
+        protected internal RfcMessageId(int i)
+            : base(i)
         {
         }
 
         /// <summary>
-        ///     Increments the message number atomically
+        ///     Increments the message number atomically.
         /// </summary>
         /// <returns>
-        ///     the new message number
+        ///     the new message number.
         /// </returns>
         private static int MessageId
         {

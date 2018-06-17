@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapAttributeSchema.cs
 //
@@ -82,20 +83,21 @@ namespace Novell.Directory.Ldap.Utilclass
             st2.WordCharacters('{', '}');
             st2.WordCharacters('_', '_');
             st2.WordCharacters(';', ';');
-            //First parse out the OID
+
+            // First parse out the OID
             string currName;
-            if ((int) TokenTypes.Eof != st2.NextToken())
+            if (st2.NextToken() != (int)TokenTypes.Eof)
             {
                 if (st2.Lastttype == '(')
                 {
-                    if ((int) TokenTypes.Word == st2.NextToken())
+                    if (st2.NextToken() == (int)TokenTypes.Word)
                     {
                         Id = st2.StringValue;
                     }
 
-                    while ((int) TokenTypes.Eof != st2.NextToken())
+                    while (st2.NextToken() != (int)TokenTypes.Eof)
                     {
-                        if (st2.Lastttype == (int) TokenTypes.Word)
+                        if (st2.Lastttype == (int)TokenTypes.Word)
                         {
                             if (st2.StringValue.ToUpper().Equals("NAME".ToUpper()))
                             {
@@ -111,7 +113,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                         var nameList = new ArrayList();
                                         while (st2.NextToken() == '\'')
                                         {
-                                            if ((object) st2.StringValue != null)
+                                            if ((object)st2.StringValue != null)
                                             {
                                                 nameList.Add(st2.StringValue);
                                             }
@@ -141,8 +143,9 @@ namespace Novell.Directory.Ldap.Utilclass
                             if (st2.StringValue.ToUpper().Equals("SYNTAX".ToUpper()))
                             {
                                 _result = st2.NextToken();
-                                if (_result == (int) TokenTypes.Word || _result == '\'')
-                                    //Test for non-standard schema
+                                if (_result == (int)TokenTypes.Word || _result == '\'')
+
+                                    // Test for non-standard schema
                                 {
                                     Syntax = st2.StringValue;
                                 }
@@ -152,7 +155,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("EQUALITY".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     Equality = st2.StringValue;
                                 }
@@ -162,7 +165,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("ORDERING".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     Ordering = st2.StringValue;
                                 }
@@ -172,7 +175,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("SUBSTR".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     Substring = st2.StringValue;
                                 }
@@ -182,7 +185,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("FORM".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     NameForm = st2.StringValue;
                                 }
@@ -192,7 +195,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("OC".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     _objectClass = st2.StringValue;
                                 }
@@ -400,7 +403,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.ToUpper().Equals("USAGE".ToUpper()))
                             {
-                                if (st2.NextToken() == (int) TokenTypes.Word)
+                                if (st2.NextToken() == (int)TokenTypes.Word)
                                 {
                                     currName = st2.StringValue;
                                     if (currName.ToUpper().Equals("directoryOperation".ToUpper()))
@@ -540,7 +543,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             var valArray = new string[values.Count];
-            valArray = (string[]) SupportClass.ArrayListSupport.ToArray(values, valArray);
+            valArray = (string[])SupportClass.ArrayListSupport.ToArray(values, valArray);
             return new AttributeQualifier(name, valArray);
         }
     }

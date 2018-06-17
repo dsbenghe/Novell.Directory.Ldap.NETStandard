@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapObjectClassSchema.cs
 //
@@ -94,7 +95,7 @@ namespace Novell.Directory.Ldap
         ///     constants are defined in LdapObjectClassSchema.
         /// </param>
         /// <param name="obsolete">
-        ///     true if this object is obsolete
+        ///     true if this object is obsolete.
         /// </param>
         public LdapObjectClassSchema(string[] names, string oid, string[] superiors, string description,
             string[] required, string[] optional, int type, bool obsolete)
@@ -127,7 +128,6 @@ namespace Novell.Directory.Ldap
             Value = FormatString();
         }
 
-
         /// <summary>
         ///     Constructs an object class definition from the raw string value
         ///     returned from a directory query for "objectClasses".
@@ -136,7 +136,8 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a directory
         ///     query for "objectClasses".
         /// </param>
-        public LdapObjectClassSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.ObjectClass])
+        public LdapObjectClassSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.ObjectClass])
         {
             try
             {
@@ -148,12 +149,12 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object) parser.Id != null)
+                if ((object)parser.Id != null)
                 {
                     Oid = parser.Id;
                 }
 
-                if ((object) parser.Description != null)
+                if ((object)parser.Description != null)
                 {
                     Description = parser.Description;
                 }
@@ -182,7 +183,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
+                    attrQualifier = (AttributeQualifier)qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -249,7 +250,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = Id) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -275,7 +276,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object) (token = Description) != null)
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -381,7 +382,7 @@ namespace Novell.Directory.Ldap
                 string[] qualValue;
                 while (en.MoveNext())
                 {
-                    qualName = (string) en.Current;
+                    qualName = (string)en.Current;
                     valueBuffer.Append(" " + qualName + " ");
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {

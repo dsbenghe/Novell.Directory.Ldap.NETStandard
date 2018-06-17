@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Set.cs
 //
@@ -59,10 +60,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1Set object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1Set() : base(Id)
+        public Asn1Set()
+            : base(Id)
         {
         }
-
 
         /// <summary>
         ///     Constructs an Asn1Set object with the specified
@@ -72,7 +73,8 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1Set(int size) : base(Id, size)
+        public Asn1Set(int size)
+            : base(Id, size)
         {
         }
 
@@ -83,13 +85,14 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="dec">
         ///     The decoder object to use when decoding the
         ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object
+        ///     in his/her own decoder object.
         /// </param>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         [CLSCompliant(false)]
-        public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len) : base(Id)
+        public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(Id)
         {
             DecodeStructured(dec, inRenamed, len);
         }

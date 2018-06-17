@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapLocalException.cs
 //
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and the result code.
+        ///     specified. <code>MessageOrKey</code> String and the result code.
         ///     The String is used either as a message key to obtain a localized
         ///     messsage from ExceptionMessages, or if there is no key in the
         ///     resource matching the text, it is used as the detailed message itself.
@@ -56,13 +57,14 @@ namespace Novell.Directory.Ldap
         /// <param name="resultCode">
         ///     The result code returned.
         /// </param>
-        public LdapLocalException(string messageOrKey, int resultCode) : base(messageOrKey, resultCode, null)
+        public LdapLocalException(string messageOrKey, int resultCode)
+            : base(messageOrKey, resultCode, null)
         {
         }
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and modifying arguments.
+        ///     specified. <code>MessageOrKey</code> String and modifying arguments.
         ///     Additional parameters specify the result code.
         ///     The String is used either as a message key to obtain a localized
         ///     messsage from ExceptionMessages, or if there is no key in the
@@ -89,7 +91,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String.
+        ///     specified. <code>MessageOrKey</code> String.
         ///     Additional parameters specify the result code and a rootException which
         ///     is the underlying cause of an error on the client.
         ///     The String is used either as a message key to obtain a localized
@@ -115,7 +117,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and modifying arguments.
+        ///     specified. <code>MessageOrKey</code> String and modifying arguments.
         ///     Additional parameters specify the result code
         ///     and a rootException which is the underlying cause of an error
         ///     on the client.

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.LdapEventConstants.cs
 //
@@ -34,7 +35,7 @@ using Novell.Directory.Ldap.Controls;
 namespace Novell.Directory.Ldap.Events
 {
     /// <summary>
-    ///     Event Classifiers
+    ///     Event Classifiers.
     /// </summary>
     public enum EventClassifiers
     {
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Events
     }
 
     /// <summary>
-    ///     Types of Ldap Events
+    ///     Types of Ldap Events.
     /// </summary>
     public enum LdapEventType
     {

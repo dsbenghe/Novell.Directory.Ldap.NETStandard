@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EventData.NetworkAddressEventData.cs
 //
@@ -48,8 +49,8 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var length = new int[1];
 
-            NType = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            StrData = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            NType = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
+            StrData = ((Asn1OctetString)Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }

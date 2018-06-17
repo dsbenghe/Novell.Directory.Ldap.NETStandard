@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapAbandonRequest.cs
 //
@@ -34,7 +35,7 @@ using Novell.Directory.Ldap.Rfc2251;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     Represents an Ldap Abandon Request
+    ///     Represents an Ldap Abandon Request.
     /// </summary>
     /// <seealso cref="LdapConnection.SendRequest">
     /// </seealso>
@@ -53,7 +54,8 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the abandon request
         ///     or null if none.
         /// </param>
-        public LdapAbandonRequest(int id, LdapControl[] cont) : base(AbandonRequest, new RfcAbandonRequest(id), cont)
+        public LdapAbandonRequest(int id, LdapControl[] cont)
+            : base(AbandonRequest, new RfcAbandonRequest(id), cont)
         {
         }
     }

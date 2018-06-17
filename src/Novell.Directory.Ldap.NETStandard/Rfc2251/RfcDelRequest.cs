@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcDelRequest.cs
 //
@@ -42,9 +43,9 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcDelRequest : RfcLdapDn, IRfcRequest
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for DelRequest
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Constructs an Ldapv3 delete request protocol operation.
@@ -52,7 +53,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="dn">
         ///     The Distinguished Name of the entry to delete.
         /// </param>
-        public RfcDelRequest(string dn) : base(dn)
+        public RfcDelRequest(string dn)
+            : base(dn)
         {
         }
 
@@ -63,13 +65,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The Distinguished Name of the entry to delete.
         /// </param>
         [CLSCompliant(false)]
-        public RfcDelRequest(sbyte[] dn) : base(dn)
+        public RfcDelRequest(sbyte[] dn)
+            : base(dn)
         {
         }
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            if ((object) baseRenamed == null)
+            if ((object)baseRenamed == null)
             {
                 return new RfcDelRequest(ByteValue());
             }
@@ -86,7 +89,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Override getIdentifier() to return the appropriate application-wide id
         ///     representing this delete request. The getIdentifier() method is called
         ///     when this object is encoded.
-        ///     Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10
+        ///     Identifier = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 10.
         /// </summary>
         public override Asn1Identifier GetIdentifier()
         {

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -28,7 +29,6 @@
 //
 // (C) 2006 Novell, Inc (http://www.novell.com)
 //
-
 
 using System;
 using System.IO;
@@ -57,12 +57,11 @@ using Novell.Directory.Ldap.Asn1;
 * <p>The requestValue has the following format:<br>
 *
 * requestValue ::=<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; objectDN&nbsp;&nbsp;&nbsp; 			LDAPDN<br>
+* &nbsp;&nbsp;&nbsp;&nbsp; objectDN&nbsp;&nbsp;&nbsp;           LDAPDN<br>
 * &nbsp;&nbsp;&nbsp;&nbsp; mts(modification timestamp)         INTEGER<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; revision&nbsp;&nbsp;&nbsp;			INTEGER<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; passwd&nbsp;&nbsp;&nbsp;			OCTET STRING</p>
+* &nbsp;&nbsp;&nbsp;&nbsp; revision&nbsp;&nbsp;&nbsp;           INTEGER<br>
+* &nbsp;&nbsp;&nbsp;&nbsp; passwd&nbsp;&nbsp;&nbsp;         OCTET STRING</p>
 */
-
 namespace Novell.Directory.Ldap.Extensions
 {
     public class LdapBackupRequest : LdapExtendedOperation
@@ -80,10 +79,10 @@ namespace Novell.Directory.Ldap.Extensions
         *
         * Constructs an extended operations object for getting data about any Object.
         *
-        * @param objectDN 		The DN of the object to be backed up
+        * @param objectDN       The DN of the object to be backed up
         * <br>
-        * @param passwd 		The encrypted password required for the object to
-        * be backed up
+        * @param passwd         The encrypted password required for the object to
+        * be backed up.
         * <br>
         * @param stateInfo     The state information of the object to backup.
         * This parameter is a String which contains combination of modification
@@ -96,9 +95,8 @@ namespace Novell.Directory.Ldap.Extensions
         * @exception LdapException A general exception which includes an error
         *                          message and an LDAP error code.
         */
-
-        public LdapBackupRequest(string objectDn, byte[] passwd, string stateInfo) :
-            base(BackupRestoreConstants.NldapLdapBackupRequest, null)
+        public LdapBackupRequest(string objectDn, byte[] passwd, string stateInfo)
+            : base(BackupRestoreConstants.NldapLdapBackupRequest, null)
         {
             int mts; // Modifaction time stamp of the Object
             int revision; // Revision number of the Object
@@ -111,12 +109,11 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new ArgumentException("PARAM_ERROR");
                 }
 
-                //If encrypted password has null reference make it null String
+                // If encrypted password has null reference make it null String
                 if (passwd == null)
                 {
                     passwd = Encoding.UTF8.GetBytes(string.Empty);
                 }
-
 
                 if (stateInfo == null)
                 {
@@ -143,7 +140,8 @@ namespace Novell.Directory.Ldap.Extensions
                     }
                     catch (FormatException e)
                     {
-                        throw new LdapLocalException("Invalid Modification Timestamp send in the request",
+                        throw new LdapLocalException(
+                            "Invalid Modification Timestamp send in the request",
                             LdapException.EncodingError, e);
                     }
 

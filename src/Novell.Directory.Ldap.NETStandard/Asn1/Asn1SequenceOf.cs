@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1SequenceOf.cs
 //
@@ -60,10 +61,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1SequenceOf object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1SequenceOf() : base(Id)
+        public Asn1SequenceOf()
+            : base(Id)
         {
         }
-
 
         /// <summary>
         ///     Constructs an Asn1SequenceOf object with the specified
@@ -73,10 +74,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1SequenceOf(int size) : base(Id, size)
+        public Asn1SequenceOf(int size)
+            : base(Id, size)
         {
         }
-
 
         /// <summary>
         ///     A copy constructor which creates an Asn1SequenceOf from an
@@ -87,10 +88,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Sequence.
         /// </summary>
-        public Asn1SequenceOf(Asn1Sequence sequence) : base(Id, sequence.ToArray(), sequence.Size())
+        public Asn1SequenceOf(Asn1Sequence sequence)
+            : base(Id, sequence.ToArray(), sequence.Size())
         {
         }
-
 
         /// <summary>
         ///     Constructs an Asn1SequenceOf object by decoding data from an
@@ -99,22 +100,22 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="dec">
         ///     The decoder object to use when decoding the
         ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object
+        ///     in his/her own decoder object.
         /// </param>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         [CLSCompliant(false)]
-        public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len) : base(Id)
+        public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(Id)
         {
             DecodeStructured(dec, inRenamed, len);
         }
 
-
         /* Asn1SequenceOf specific methods
         */
 
-        /// <summary> Returns a String representation of this Asn1SequenceOf object</summary>
+        /// <summary> Returns a String representation of this Asn1SequenceOf object.</summary>
         [CLSCompliant(false)]
         public override string ToString()
         {

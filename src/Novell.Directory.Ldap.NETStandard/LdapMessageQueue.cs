@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMessageQueue.cs
 //
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap
 
         internal static int QueueNum = 0;
 
-        /// <summary> The message agent object associated with this queue</summary>
+        /// <summary> The message agent object associated with this queue.</summary>
         internal MessageAgent Agent;
 
         // Queue name used only for debug
@@ -62,10 +63,10 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Constructs a response queue using the specified message agent
+        ///     Constructs a response queue using the specified message agent.
         /// </summary>
         /// <param name="agent">
-        ///     The message agent to associate with this conneciton
+        ///     The message agent to associate with this conneciton.
         /// </param>
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
@@ -74,18 +75,18 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns the name used for debug
+        ///     Returns the name used for debug.
         /// </summary>
         /// <returns>
-        ///     name of object instance used for debug
+        ///     name of object instance used for debug.
         /// </returns>
         internal string DebugName => Name;
 
         /// <summary>
-        ///     Returns the internal client message agent
+        ///     Returns the internal client message agent.
         /// </summary>
         /// <returns>
-        ///     The internal client message agent
+        ///     The internal client message agent.
         /// </returns>
         internal MessageAgent MessageAgent => Agent;
 
@@ -139,7 +140,7 @@ namespace Novell.Directory.Ldap
         ///     returned.
         /// </summary>
         /// <param name="msgid">
-        ///     query for responses for a specific message request
+        ///     query for responses for a specific message request.
         /// </param>
         /// <returns>
         ///     The response from the server.
@@ -162,7 +163,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Private implementation of getResponse.
         ///     Has an Integer object as a parameter so we can distinguish
-        ///     the null and the message number case
+        ///     the null and the message number case.
         /// </summary>
         private LdapMessage GetResponse(Integer32 msgid)
         {
@@ -177,11 +178,11 @@ namespace Novell.Directory.Ldap
             // Local error occurred, contains a LocalException
             if (resp is LdapResponse)
             {
-                return (LdapMessage) resp;
+                return (LdapMessage)resp;
             }
 
             // Normal message handling
-            var message = (RfcLdapMessage) resp;
+            var message = (RfcLdapMessage)resp;
             switch (message.Type)
             {
                 case LdapMessage.SearchResponse:
@@ -248,7 +249,7 @@ namespace Novell.Directory.Ldap
         ///     message id, it reports true.  There may still be messages waiting to be
         ///     retrieved by the applcation with getResponse.
         ///     @throws IllegalArgumentException if there is no outstanding operation
-        ///     for the message ID,
+        ///     for the message ID,.
         /// </summary>
         public bool IsComplete(int msgid)
         {

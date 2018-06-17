@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetEffectivePrivilegesResponse.cs
 //
@@ -42,13 +43,14 @@ namespace Novell.Directory.Ldap.Extensions
         ///     An object in this class is generated from an ExtendedResponse object
         ///     using the ExtendedResponseFactory class.
         ///     The getEffectivePrivilegesListResponse extension uses the following OID:
-        ///     2.16.840.1.113719.1.27.100.104
+        ///     2.16.840.1.113719.1.27.100.104.
         /// </summary>
 
-        //Identity returned by the server
-        private readonly int[] _privileges = {0};
+        // Identity returned by the server
+        private readonly int[] _privileges = {0 };
 
-        public GetEffectivePrivilegesListResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public GetEffectivePrivilegesListResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             /// <summary> Constructs an object from the responseValue which contains the effective
             /// privileges.
@@ -72,24 +74,24 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("No returned value");
                 }
 
-                //Create a decoder object
+                // Create a decoder object
                 var decoder = new LberDecoder();
 
-                var asn1Seq1 = (Asn1Sequence) decoder.Decode(returnedValue);
+                var asn1Seq1 = (Asn1Sequence)decoder.Decode(returnedValue);
                 if (asn1Seq1 == null)
                 {
                     throw new IOException("Decoding error");
                 }
 
-                var asn1Seq2 = (Asn1Sequence) asn1Seq1.get_Renamed(0);
-                var noPrivileges = ((Asn1Integer) asn1Seq2.get_Renamed(0)).IntValue();
+                var asn1Seq2 = (Asn1Sequence)asn1Seq1.get_Renamed(0);
+                var noPrivileges = ((Asn1Integer)asn1Seq2.get_Renamed(0)).IntValue();
 
-                var setPrivilegResponse = (Asn1Set) asn1Seq1.get_Renamed(1);
+                var setPrivilegResponse = (Asn1Set)asn1Seq1.get_Renamed(1);
                 _privileges = new int[noPrivileges];
                 for (var index = 0; index < noPrivileges; index++)
                 {
-                    var seq2 = (Asn1Sequence) setPrivilegResponse.get_Renamed(index);
-                    _privileges[index] = ((Asn1Integer) seq2.get_Renamed(0)).IntValue();
+                    var seq2 = (Asn1Sequence)setPrivilegResponse.get_Renamed(index);
+                    _privileges[index] = ((Asn1Integer)seq2.get_Renamed(0)).IntValue();
                 }
             }
         }

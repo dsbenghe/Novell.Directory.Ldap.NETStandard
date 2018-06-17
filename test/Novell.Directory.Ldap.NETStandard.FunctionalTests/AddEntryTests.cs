@@ -22,8 +22,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var ldapEntry = LdapOps.AddEntry();
 
             var ldapException = Assert.Throws<LdapException>(
-                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Add(ldapEntry); })
-            );
+                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Add(ldapEntry); }));
             Assert.Equal(LdapException.EntryAlreadyExists, ldapException.ResultCode);
         }
     }

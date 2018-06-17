@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAttributeList.cs
 //
@@ -43,10 +44,11 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcAttributeList : Asn1SequenceOf
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for AttributeList
-        //*************************************************************************
-        public RfcAttributeList(int size) : base(size)
+        // *************************************************************************
+        public RfcAttributeList(int size)
+            : base(size)
         {
         }
     }

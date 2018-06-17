@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcModifyDNRequest.cs
 //
@@ -45,9 +46,9 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcModifyDnRequest : Asn1Sequence, IRfcRequest
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for ModifyDNRequest
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
         public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn)
@@ -57,7 +58,8 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn,
-            RfcLdapDn newSuperior) : base(4)
+            RfcLdapDn newSuperior)
+            : base(4)
         {
             Add(entry);
             Add(newrdn);
@@ -77,7 +79,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) baseRenamed != null)
+            if ((object)baseRenamed != null)
             {
                 set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
@@ -90,12 +92,12 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn) get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)get_Renamed(0)).StringValue();
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Override getIdentifier to return an application-wide id.

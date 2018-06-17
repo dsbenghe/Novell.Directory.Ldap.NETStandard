@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EdirEventArgs.cs
 //
@@ -36,7 +37,8 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventArgs : DirectoryEventArgs
     {
-        public EdirEventArgs(LdapMessage sourceMessage,
+        public EdirEventArgs(
+            LdapMessage sourceMessage,
             EventClassifiers aClassification)
             : base(sourceMessage, aClassification)
         {
@@ -53,7 +55,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             {
                 if (LdapMessage is EdirEventIntermediateResponse)
                 {
-                    return (EdirEventIntermediateResponse) LdapMessage;
+                    return (EdirEventIntermediateResponse)LdapMessage;
                 }
 
                 return null;

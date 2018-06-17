@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Events.Edir.EdirEventConstants.cs
 //
@@ -32,7 +33,7 @@
 namespace Novell.Directory.Ldap.Events.Edir
 {
     /// <summary>
-    ///     Enumeration for types of Edir event data
+    ///     Enumeration for types of Edir event data.
     /// </summary>
     public enum EdirEventDataType
     {
@@ -53,7 +54,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     }
 
     /// <summary>
-    ///     Enumeration for types of Edir event results
+    ///     Enumeration for types of Edir event results.
     /// </summary>
     public enum EdirEventResultType
     {
@@ -63,7 +64,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     }
 
     /// <summary>
-    ///     Enumeration for types of Edir events
+    ///     Enumeration for types of Edir events.
     /// </summary>
     public enum EdirEventType
     {
@@ -288,7 +289,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     }
 
     /// <summary>
-    ///     Enumeration for types of Edir event Debug parameters
+    ///     Enumeration for types of Edir event Debug parameters.
     /// </summary>
     public enum DebugParameterType
     {
@@ -302,7 +303,7 @@ namespace Novell.Directory.Ldap.Events.Edir
     }
 
     /// <summary>
-    ///     Enumeration for fields of Edir General event
+    ///     Enumeration for fields of Edir General event.
     /// </summary>
     public enum GeneralEventField
     {

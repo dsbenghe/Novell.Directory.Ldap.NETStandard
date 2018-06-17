@@ -21,8 +21,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public void Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
         {
             var ldapException = Assert.Throws<LdapException>(
-                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(TestHelper.BuildDn(Guid.NewGuid().ToString())); })
-            );
+                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(TestHelper.BuildDn(Guid.NewGuid().ToString())); }));
             Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
         }
     }

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapModifyRequest.cs
 //
@@ -71,35 +72,37 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns of the dn of the entry to modify in the directory
+        ///     Returns of the dn of the entry to modify in the directory.
         /// </summary>
         /// <returns>
-        ///     the dn of the entry to modify
+        ///     the dn of the entry to modify.
         /// </returns>
         public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
-        ///     Constructs the modifications associated with this request
+        ///     Constructs the modifications associated with this request.
         /// </summary>
         /// <returns>
-        ///     an array of LdapModification objects
+        ///     an array of LdapModification objects.
         /// </returns>
         public LdapModification[] Modifications
         {
             get
             {
                 // Get the RFC request object for this request
-                var req = (RfcModifyRequest) Asn1Object.GetRequest();
+                var req = (RfcModifyRequest)Asn1Object.GetRequest();
+
                 // get beginning sequenceOf modifications
                 var seqof = req.Modifications;
                 var mods = seqof.ToArray();
                 var modifications = new LdapModification[mods.Length];
+
                 // Process each modification
                 for (var m = 0; m < mods.Length; m++)
                 {
                     // Each modification consists of a mod type and a sequence
                     // containing the attr name and a set of values
-                    var opSeq = (Asn1Sequence) mods[m];
+                    var opSeq = (Asn1Sequence)mods[m];
                     if (opSeq.Size() != 2)
                     {
                         throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Size());
@@ -107,20 +110,21 @@ namespace Novell.Directory.Ldap
 
                     // Contains operation and sequence for the attribute
                     var opArray = opSeq.ToArray();
-                    var asn1Op = (Asn1Enumerated) opArray[0];
+                    var asn1Op = (Asn1Enumerated)opArray[0];
+
                     // get the operation
                     var op = asn1Op.IntValue();
-                    var attrSeq = (Asn1Sequence) opArray[1];
+                    var attrSeq = (Asn1Sequence)opArray[1];
                     var attrArray = attrSeq.ToArray();
-                    var aname = (RfcAttributeDescription) attrArray[0];
+                    var aname = (RfcAttributeDescription)attrArray[0];
                     var name = aname.StringValue();
-                    var avalue = (Asn1SetOf) attrArray[1];
+                    var avalue = (Asn1SetOf)attrArray[1];
                     var valueArray = avalue.ToArray();
                     var attr = new LdapAttribute(name);
 
                     for (var v = 0; v < valueArray.Length; v++)
                     {
-                        var rfcV = (RfcAttributeValue) valueArray[v];
+                        var rfcV = (RfcAttributeValue)valueArray[v];
                         attr.AddValue(rfcV.ByteValue());
                     }
 
@@ -135,7 +139,7 @@ namespace Novell.Directory.Ldap
         ///     Encode an array of LdapModifications to ASN.1.
         /// </summary>
         /// <param name="mods">
-        ///     an array of LdapModification objects
+        ///     an array of LdapModification objects.
         /// </param>
         /// <returns>
         ///     an Asn1SequenceOf object containing the modifications.
@@ -155,7 +159,7 @@ namespace Novell.Directory.Ldap
                     var attrEnum = attr.ByteValues;
                     while (attrEnum.MoveNext())
                     {
-                        vals.Add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
+                        vals.Add(new RfcAttributeValue((sbyte[])attrEnum.Current));
                     }
                 }
 
@@ -173,7 +177,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Return an Asn1 representation of this modify request
-        ///     #return an Asn1 representation of this object
+        ///     #return an Asn1 representation of this object.
         /// </summary>
         public override string ToString()
         {

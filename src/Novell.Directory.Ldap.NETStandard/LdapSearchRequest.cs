@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchRequest.cs
 //
@@ -60,9 +61,9 @@ namespace Novell.Directory.Ldap
      */
     public class LdapSearchRequest : LdapMessage
     {
-        //*************************************************************************
+        // *************************************************************************
         // Public variables for Filter
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> Search Filter Identifier for an AND component.</summary>
         public const int And = 0;
@@ -120,7 +121,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="scope">
         ///     The scope of the entries to search. The following
-        ///     are the valid options:
+        ///     are the valid options:.
         ///     <ul>
         ///         <li>SCOPE_BASE - searches only the base DN</li>
         ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
@@ -187,7 +188,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="scope">
         ///     The scope of the entries to search. The following
-        ///     are the valid options:
+        ///     are the valid options:.
         ///     <ul>
         ///         <li>SCOPE_BASE - searches only the base DN</li>
         ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
@@ -250,13 +251,13 @@ namespace Novell.Directory.Ldap
         ///     Retrieves the Base DN for a search request.
         /// </summary>
         /// <returns>
-        ///     the base DN for a search request
+        ///     the base DN for a search request.
         /// </returns>
         public string Dn => Asn1Object.RequestDn;
 
         /// <summary> Retrieves the scope of a search request.</summary>
         /// <returns>
-        ///     scope of a search request
+        ///     scope of a search request.
         /// </returns>
         /// <seealso cref="LdapConnection.ScopeBase">
         /// </seealso>
@@ -264,11 +265,11 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
-        public int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
+        public int Scope => ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
 
         /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
         /// <returns>
-        ///     integer representing how to dereference aliases
+        ///     integer representing how to dereference aliases.
         /// </returns>
         /// <seealso cref="LdapSearchConstraints.DerefAlways">
         /// </seealso>
@@ -279,7 +280,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
         public int Dereference =>
-            ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
+            ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
 
         /// <summary>
         ///     Retrieves the maximum number of entries to be returned on a search.
@@ -288,7 +289,7 @@ namespace Novell.Directory.Ldap
         ///     Maximum number of search entries.
         /// </returns>
         public int MaxResults =>
-            ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
 
         /// <summary>
         ///     Retrieves the server time limit for a search request.
@@ -297,7 +298,7 @@ namespace Novell.Directory.Ldap
         ///     server time limit in nanoseconds.
         /// </returns>
         public int ServerTimeLimit =>
-            ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
 
         /// <summary>
         ///     Retrieves whether attribute values or only attribute types(names) should
@@ -308,22 +309,22 @@ namespace Novell.Directory.Ldap
         ///     attributes types and values are to be returned.
         /// </returns>
         public bool TypesOnly =>
-            ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
+            ((Asn1Boolean)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
 
         /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
         /// <returns>
-        ///     Attribute names to be searched
+        ///     Attribute names to be searched.
         /// </returns>
         public string[] Attributes
         {
             get
             {
-                var attrs = (RfcAttributeDescriptionList) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(7);
+                var attrs = (RfcAttributeDescriptionList)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(7);
 
                 var rAttrs = new string[attrs.Size()];
                 for (var i = 0; i < rAttrs.Length; i++)
                 {
-                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).StringValue();
+                    rAttrs[i] = ((RfcAttributeDescription)attrs.get_Renamed(i)).StringValue();
                 }
 
                 return rAttrs;
@@ -332,15 +333,15 @@ namespace Novell.Directory.Ldap
 
         /// <summary> Creates a string representation of the filter in this search request.</summary>
         /// <returns>
-        ///     filter string for this search request
+        ///     filter string for this search request.
         /// </returns>
         public string StringFilter => RfcFilter.FilterToString();
 
-        /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
+        /// <summary> Retrieves an SearchFilter object representing a filter for a search request.</summary>
         /// <returns>
         ///     filter object for a search request.
         /// </returns>
-        private RfcFilter RfcFilter => (RfcFilter) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(6);
+        private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(6);
 
         /// <summary>
         ///     Retrieves an Iterator object representing the parsed filter for
@@ -352,7 +353,7 @@ namespace Novell.Directory.Ldap
         ///     filter.
         ///     Values returned as a byte array may represent UTF-8 characters or may
         ///     be binary values. The possible Integer components of a search filter
-        ///     and the associated values that follow are:
+        ///     and the associated values that follow are:.
         ///     <ul>
         ///         <li>AND - followed by an Iterator value</li>
         ///         <li>OR - followed by an Iterator value</li>
@@ -388,7 +389,7 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         /// </summary>
         /// <returns>
-        ///     Iterator representing filter components
+        ///     Iterator representing filter components.
         /// </returns>
         public IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
     }

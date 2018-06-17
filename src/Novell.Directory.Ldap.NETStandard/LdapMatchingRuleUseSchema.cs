@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMatchingRuleUseSchema.cs
 //
@@ -75,7 +76,8 @@ namespace Novell.Directory.Ldap
         ///     names or numeric oids of the attributes.
         /// </param>
         public LdapMatchingRuleUseSchema(string[] names, string oid, string description, bool obsolete,
-            string[] attributes) : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
+            string[] attributes)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
@@ -87,7 +89,6 @@ namespace Novell.Directory.Ldap
             Value = FormatString();
         }
 
-
         /// <summary>
         ///     Constructs a matching rule use definition from the raw string value
         ///     returned on a schema query for matchingRuleUse.
@@ -96,7 +97,8 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned on a schema
         ///     query for matchingRuleUse.
         /// </param>
-        public LdapMatchingRuleUseSchema(string raw) : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
+        public LdapMatchingRuleUseSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
         {
             try
             {
@@ -136,7 +138,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = Id) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -162,7 +164,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object) (token = Description) != null)
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");

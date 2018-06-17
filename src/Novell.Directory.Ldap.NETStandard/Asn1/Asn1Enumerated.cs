@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Enumerated.cs
 //
@@ -38,7 +39,7 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1Enumerated : Asn1Numeric
     {
-        /// <summary> ASN.1 tag definition for ENUMERATED</summary>
+        /// <summary> ASN.1 tag definition for ENUMERATED.</summary>
         public const int Tag = 0x0a;
 
         /// <summary>
@@ -57,9 +58,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="content">
         ///     The integer value to be contained in the
-        ///     this Asn1Enumerated object
+        ///     this Asn1Enumerated object.
         /// </param>
-        public Asn1Enumerated(int content) : base(Id, content)
+        public Asn1Enumerated(int content)
+            : base(Id, content)
         {
         }
 
@@ -69,9 +71,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="content">
         ///     The long value to be contained in the
-        ///     this Asn1Enumerated object
+        ///     this Asn1Enumerated object.
         /// </param>
-        public Asn1Enumerated(long content) : base(Id, content)
+        public Asn1Enumerated(long content)
+            : base(Id, content)
         {
         }
 
@@ -82,17 +85,16 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="dec">
         ///     The decoder object to use when decoding the
         ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object
+        ///     in his/her own decoder object.
         /// </param>
         /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1
+        ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         [CLSCompliant(false)]
         public Asn1Enumerated(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long) dec.DecodeNumeric(inRenamed, len))
+            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
         {
         }
-
 
         /// <summary>
         ///     Call this method to encode the current instance into the

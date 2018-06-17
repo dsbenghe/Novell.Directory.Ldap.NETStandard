@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapSortKey.cs
 //
@@ -47,7 +48,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     is done in reverse (descending) order.
         ///     An OID for a matching rule may be appended
         ///     following a ":".
-        ///     Examples:
+        ///     Examples:.
         ///     <ul>
         ///         <li> "cn" (sorts in ascending order by the cn attribute)</li>
         ///         <li> "-cn" (sorts in descending order by the cn attribute) </li>
@@ -91,7 +92,8 @@ namespace Novell.Directory.Ldap.Controls
         ///     If true, sorting is done in descending order. If false,
         ///     sorting is done in ascending order.
         /// </param>
-        public LdapSortKey(string key, bool reverse) : this(key, reverse, null)
+        public LdapSortKey(string key, bool reverse)
+            : this(key, reverse, null)
         {
         }
 

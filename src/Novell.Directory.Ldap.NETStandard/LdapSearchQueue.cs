@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchQueue.cs
 //
@@ -42,12 +43,13 @@ namespace Novell.Directory.Ldap
     public class LdapSearchQueue : LdapMessageQueue
     {
         /// <summary>
-        ///     Constructs a response queue using a specific client queue
+        ///     Constructs a response queue using a specific client queue.
         /// </summary>
         /// <param name="agent">
-        ///     The message agent to associate with this queue
+        ///     The message agent to associate with this queue.
         /// </param>
-        internal LdapSearchQueue(MessageAgent agent) : base("LdapSearchQueue", agent)
+        internal LdapSearchQueue(MessageAgent agent)
+            : base("LdapSearchQueue", agent)
         {
         }
 
@@ -69,7 +71,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public void Merge(LdapMessageQueue queue2)
         {
-            var q = (LdapSearchQueue) queue2;
+            var q = (LdapSearchQueue)queue2;
             Agent.Merge(q.MessageAgent);
         }
     }

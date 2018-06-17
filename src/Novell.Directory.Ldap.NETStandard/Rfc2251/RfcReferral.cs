@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcReferral.cs
 //
@@ -43,24 +44,25 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcReferral : Asn1SequenceOf
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for Referral
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     The only time a Referral object is constructed, is when we are
         ///     decoding an RfcLdapResult or COMPONENTS OF RfcLdapResult.
         /// </summary>
         [CLSCompliant(false)]
-        public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
+        public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
         {
-            //convert from Asn1OctetString to RfcLdapURL here (then look at
+            // convert from Asn1OctetString to RfcLdapURL here (then look at
             // LdapResponse.getReferrals())
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         // inherited from SequenceOf
     }

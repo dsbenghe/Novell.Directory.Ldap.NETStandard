@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapAttributeSet.cs
 //
@@ -37,19 +38,19 @@ namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     A set of {@link LdapAttribute} objects.
-    ///     An <code>LdapAttributeSet</code> is a collection of <code>LdapAttribute</code>
-    ///     classes as returned from an <code>LdapEntry</code> on a search or read
+    ///     An. <code>LdapAttributeSet</code> is a collection of. <code>LdapAttribute</code>
+    ///     classes as returned from an. <code>LdapEntry</code> on a search or read
     ///     operation. <code>LdapAttributeSet</code> may be also used to contruct an entry
-    ///     to be added to a directory.  If the <code>add()</code> or <code>addAll()</code>
+    ///     to be added to a directory.  If the. <code>add()</code> or. <code>addAll()</code>
     ///     methods are called and one or more of the objects to be added is not
-    ///     an <code>LdapAttribute, ClassCastException</code> is thrown (as discussed in the
-    ///     documentation for <code>java.util.Collection</code>).
+    ///     an. <code>LdapAttribute, ClassCastException</code> is thrown (as discussed in the
+    ///     documentation for. <code>java.util.Collection</code>).
     /// </summary>
     /// <seealso cref="LdapAttribute">
     /// </seealso>
     /// <seealso cref="LdapEntry">
     /// </seealso>
-    public class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
+    public class LdapAttributeSet : SupportClass.AbstractSetSupport // , SupportClass.SetSupport
     {
         /// <summary>
         ///     This is the underlying data structure for this set.
@@ -90,7 +91,7 @@ namespace Novell.Directory.Ldap
                 var i = GetEnumerator();
                 while (i.MoveNext())
                 {
-                    ((LdapAttributeSet) newObj).Add(((LdapAttribute) i.Current).Clone());
+                    ((LdapAttributeSet)newObj).Add(((LdapAttribute)i.Current).Clone());
                 }
 
                 return newObj;
@@ -111,7 +112,7 @@ namespace Novell.Directory.Ldap
         ///             attribute.
         ///         </li>
         ///     </ul>
-        ///     In both cases, <code>null</code> is returned if there is no exact match to
+        ///     In both cases,. <code>null</code> is returned if there is no exact match to
         ///     the specified attrName.
         ///     Note: Novell eDirectory does not currently support language subtypes.
         ///     It does support the "binary" subtype.
@@ -122,16 +123,16 @@ namespace Novell.Directory.Ldap
         ///     "cn;binary" are valid attribute names.
         /// </param>
         /// <returns>
-        ///     The attribute matching the specified attrName, or <code>null</code>
+        ///     The attribute matching the specified attrName, or. <code>null</code>
         ///     if there is no exact match.
         /// </returns>
         public LdapAttribute GetAttribute(string attrName)
         {
-            return (LdapAttribute) _map[attrName.ToUpper()];
+            return (LdapAttribute)_map[attrName.ToUpper()];
         }
 
         /// <summary>
-        ///     Returns a single best-match attribute, or <code>null</code> if no match is
+        ///     Returns a single best-match attribute, or. <code>null</code> if no match is
         ///     available in the entry.
         ///     Ldap version 3 allows adding a subtype specification to an attribute
         ///     name. For example, "cn;lang-ja" indicates a Japanese language
@@ -140,14 +141,14 @@ namespace Novell.Directory.Ldap
         ///     localizations in the same directory. For attributes which do not vary
         ///     among localizations, only the base attribute may be stored, whereas
         ///     for others there may be varying degrees of specialization.
-        ///     For example, <code>getAttribute(attrName,lang)</code> returns the
+        ///     For example,. <code>getAttribute(attrName,lang)</code> returns the.
         ///     <code>LdapAttribute</code> that exactly matches attrName and that
         ///     best matches lang.
         ///     If there are subtypes other than "lang" subtypes included
         ///     in attrName, for example, "cn;binary", only attributes with all of
-        ///     those subtypes are returned. If lang is <code>null</code> or empty, the
+        ///     those subtypes are returned. If lang is. <code>null</code> or empty, the
         ///     method behaves as getAttribute(attrName). If there are no matching
-        ///     attributes, <code>null</code> is returned.
+        ///     attributes,. <code>null</code> is returned.
         ///     Assume the entry contains only the following attributes:
         ///     <ul>
         ///         <li>cn;lang-en</li>
@@ -189,13 +190,13 @@ namespace Novell.Directory.Ldap
         ///     "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
         /// </param>
         /// <returns>
-        ///     A single best-match <code>LdapAttribute</code>, or <code>null</code>
+        ///     A single best-match. <code>LdapAttribute</code>, or. <code>null</code>
         ///     if no match is found in the entry.
         /// </returns>
         public LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;
-            return (LdapAttribute) _map[key.ToUpper()];
+            return (LdapAttribute)_map[key.ToUpper()];
         }
 
         /// <summary>
@@ -209,9 +210,9 @@ namespace Novell.Directory.Ldap
         ///         <li>    sn;phonetic;lang-ja</li>
         ///         <li>    sn;lang-us</li>
         ///     </ul>
-        ///     Calling the <code>getSubset</code> method and passing lang-ja as the
+        ///     Calling the. <code>getSubset</code> method and passing lang-ja as the
         ///     argument, the method returns an attribute set containing the following
-        ///     attributes:
+        ///     attributes:.
         ///     <ul>
         ///         <li>cn;lang-ja</li>
         ///         <li>sn;phonetic;lang-ja</li>
@@ -244,7 +245,7 @@ namespace Novell.Directory.Ldap
             // Cycle throught this.attributeSet
             while (i.MoveNext())
             {
-                var attr = (LdapAttribute) i.Current;
+                var attr = (LdapAttribute)i.Current;
 
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
@@ -264,7 +265,7 @@ namespace Novell.Directory.Ldap
         ///     returned from this iterator are not in any particular order.
         /// </summary>
         /// <returns>
-        ///     iterator over the attributes in this set
+        ///     iterator over the attributes in this set.
         /// </returns>
         public override IEnumerator GetEnumerator()
         {
@@ -272,10 +273,10 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns <code>true</code> if this set contains no elements
+        ///     Returns. <code>true</code> if this set contains no elements.
         /// </summary>
         /// <returns>
-        ///     <code>true</code> if this set contains no elements
+        ///     <code>true</code> if this set contains no elements.
         /// </returns>
         public override bool IsEmpty()
         {
@@ -283,11 +284,11 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns <code>true</code> if this set contains an attribute of the same name
+        ///     Returns. <code>true</code> if this set contains an attribute of the same name
         ///     as the specified attribute.
         /// </summary>
         /// <param name="attr">
-        ///     Object of type <code>LdapAttribute</code>
+        ///     Object of type. <code>LdapAttribute</code>
         /// </param>
         /// <returns>
         ///     true if this set contains the specified attribute
@@ -296,7 +297,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public override bool Contains(object attr)
         {
-            var attribute = (LdapAttribute) attr;
+            var attribute = (LdapAttribute)attr;
             return _map.ContainsKey(attribute.Name.ToUpper());
         }
 
@@ -306,17 +307,17 @@ namespace Novell.Directory.Ldap
         ///     specified attribute will not be added.
         /// </summary>
         /// <param name="attr">
-        ///     Object of type <code>LdapAttribute</code>
+        ///     Object of type. <code>LdapAttribute</code>
         /// </param>
         /// <returns>
         ///     true if the attribute was added.
         ///     @throws ClassCastException occurs the specified Object
-        ///     is not of type <code>LdapAttribute</code>.
+        ///     is not of type. <code>LdapAttribute</code>.
         /// </returns>
         public override bool Add(object attr)
         {
-            //We must enforce that attr is an LdapAttribute
-            var attribute = (LdapAttribute) attr;
+            // We must enforce that attr is an LdapAttribute
+            var attribute = (LdapAttribute)attr;
             var name = attribute.Name.ToUpper();
             if (_map.ContainsKey(name))
             {
@@ -329,33 +330,33 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Removes the specified object from this set if it is present.
-        ///     If the specified object is of type <code>LdapAttribute</code>, the
-        ///     specified attribute will be removed.  If the specified object is of type
+        ///     If the specified object is of type. <code>LdapAttribute</code>, the
+        ///     specified attribute will be removed.  If the specified object is of type.
         ///     <code>String</code>, the attribute with a name that matches the string will
         ///     be removed.
         /// </summary>
         /// <param name="object">
-        ///     LdapAttribute to be removed or <code>String</code> naming
+        ///     LdapAttribute to be removed or. <code>String</code> naming
         ///     the attribute to be removed.
         /// </param>
         /// <returns>
         ///     true if the object was removed.
         ///     @throws ClassCastException occurs the specified Object
-        ///     is not of type <code>LdapAttribute</code> or of type <code>String</code>.
+        ///     is not of type. <code>LdapAttribute</code> or of type. <code>String</code>.
         /// </returns>
         public override bool Remove(object objectRenamed)
         {
-            string attributeName; //the name is the key to object in the HashMap
+            string attributeName; // the name is the key to object in the HashMap
             if (objectRenamed is string)
             {
-                attributeName = (string) objectRenamed;
+                attributeName = (string)objectRenamed;
             }
             else
             {
-                attributeName = ((LdapAttribute) objectRenamed).Name;
+                attributeName = ((LdapAttribute)objectRenamed).Name;
             }
 
-            if ((object) attributeName == null)
+            if ((object)attributeName == null)
             {
                 return false;
             }
@@ -370,13 +371,13 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Adds all <code>LdapAttribute</code> objects in the specified collection to
+        ///     Adds all. <code>LdapAttribute</code> objects in the specified collection to
         ///     this collection.
         /// </summary>
         /// <param name="c">
-        ///     Collection of <code>LdapAttribute</code> objects.
+        ///     Collection of. <code>LdapAttribute</code> objects.
         ///     @throws ClassCastException occurs when an element in the
-        ///     collection is not of type <code>LdapAttribute</code>.
+        ///     collection is not of type. <code>LdapAttribute</code>.
         /// </param>
         /// <returns>
         ///     true if this set changed as a result of the call.
@@ -400,10 +401,10 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns a string representation of this LdapAttributeSet
+        ///     Returns a string representation of this LdapAttributeSet.
         /// </summary>
         /// <returns>
-        ///     a string representation of this LdapAttributeSet
+        ///     a string representation of this LdapAttributeSet.
         /// </returns>
         public override string ToString()
         {
@@ -418,7 +419,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 first = false;
-                var attr = (LdapAttribute) attrs.Current;
+                var attr = (LdapAttribute)attrs.Current;
                 retValue.Append(attr);
             }
 

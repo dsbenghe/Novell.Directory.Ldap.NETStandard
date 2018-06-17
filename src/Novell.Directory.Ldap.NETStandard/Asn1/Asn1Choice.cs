@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Choice.cs
 //
@@ -54,7 +55,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        public Asn1Choice(Asn1Object content) : base(null)
+        public Asn1Choice(Asn1Object content)
+            : base(null)
         {
             ChoiceValue = content;
         }
@@ -63,7 +65,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     No arg Constructor. This is used by Filter, who subsequently sets the
         ///     content after parsing the RFC 2254 Search Filter String.
         /// </summary>
-        protected internal Asn1Choice() : base(null)
+        protected internal Asn1Choice()
+            : base(null)
         {
             ChoiceValue = null;
         }
@@ -81,7 +84,6 @@ namespace Novell.Directory.Ldap.Asn1
 
         /* Asn1Object implementation
         */
-
 
         /// <summary>
         ///     Call this method to encode the contents of this Asn1Choice

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcCompareRequest.cs
 //
@@ -44,12 +45,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcCompareRequest : Asn1Sequence, IRfcRequest
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for CompareRequest
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
-        public RfcCompareRequest(RfcLdapDn entry, RfcAttributeValueAssertion ava) : base(2)
+        public RfcCompareRequest(RfcLdapDn entry, RfcAttributeValueAssertion ava)
+            : base(2)
         {
             Add(entry);
             Add(ava);
@@ -67,13 +69,13 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) baseRenamed != null)
+            if ((object)baseRenamed != null)
             {
                 set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
         }
 
-        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion) get_Renamed(1);
+        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)get_Renamed(1);
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
@@ -82,12 +84,12 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn) get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)get_Renamed(0)).StringValue();
         }
 
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>
         public override Asn1Identifier GetIdentifier()

@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.CharacterTypes.cs
 //
@@ -36,7 +37,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// <summary>
     ///     Specifies the types of Characters.
     /// </summary>
-//	[Flags]
+// [Flags]
     [CLSCompliant(false)]
     public enum CharacterTypes : sbyte
     {

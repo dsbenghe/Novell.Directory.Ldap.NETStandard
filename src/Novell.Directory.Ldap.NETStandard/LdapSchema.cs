@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSchema.cs
 //
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap
     ///     {@link LdapSchemaElement}.  Schema may be retrieved from a Directory server
     ///     with the fetchSchema method of LdapConnection or by creating an LdapEntry
     ///     containing schema attributes.  The following sample code demonstrates how to
-    ///     retrieve schema elements from LdapSchema
+    ///     retrieve schema elements from LdapSchema.
     ///     <pre>
     ///         <code>
     /// .
@@ -73,35 +74,35 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSchema : LdapEntry
     {
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int Attribute = 0;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int ObjectClass = 1;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int Syntax = 2;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int NameForm = 3;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int Ditcontent = 4;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int Ditstructure = 5;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int Matching = 6;
 
-        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
+        /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int MatchingUse = 7;
 
@@ -109,7 +110,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     The following lists the Ldap names of subschema attributes for
-        ///     schema elements (definitions):
+        ///     schema elements (definitions):.
         /// </summary>
         internal static readonly string[] SchemaTypeNames =
         {
@@ -119,7 +120,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
-        ///     is used for retrieving enumerations
+        ///     is used for retrieving enumerations.
         /// </summary>
         private Hashtable[] _idTable;
 
@@ -130,11 +131,10 @@ namespace Novell.Directory.Ldap
         /// </summary>
         private Hashtable[] _nameTable;
 
-
         /// <summary>
         ///     Constructs an LdapSchema object from attributes of an LdapEntry.
         ///     The object is empty if the entry parameter contains no schema
-        ///     attributes.  The recognized schema attributes are the following:
+        ///     attributes.  The recognized schema attributes are the following:.
         ///     <pre>
         ///         <code>
         /// "attributeTypes", "objectClasses", "ldapSyntaxes",
@@ -146,10 +146,12 @@ namespace Novell.Directory.Ldap
         /// <param name="ent">
         ///     An LdapEntry containing schema information.
         /// </param>
-        public LdapSchema(LdapEntry ent) : base(ent.Dn, ent.GetAttributeSet())
+        public LdapSchema(LdapEntry ent)
+            : base(ent.Dn, ent.GetAttributeSet())
         {
             InitBlock();
-            //reset all definitions
+
+            // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
             {
                 _idTable[i] = new Hashtable();
@@ -159,7 +161,7 @@ namespace Novell.Directory.Ldap
             var itr = GetAttributeSet().GetEnumerator();
             while (itr.MoveNext())
             {
-                var attr = (LdapAttribute) itr.Current;
+                var attr = (LdapAttribute)itr.Current;
                 string valueRenamed, attrName = attr.Name;
                 var enumString = attr.StringValues;
 
@@ -168,7 +170,7 @@ namespace Novell.Directory.Ldap
                     LdapObjectClassSchema classSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         try
                         {
                             classSchema = new LdapObjectClassSchema(valueRenamed);
@@ -176,7 +178,7 @@ namespace Novell.Directory.Ldap
                         catch (Exception e)
                         {
                             Logger.Log.LogWarning("Exception swallowed", e);
-                            continue; //Error parsing: do not add this definition
+                            continue; // Error parsing: do not add this definition
                         }
 
                         AddElement(ObjectClass, classSchema);
@@ -187,7 +189,7 @@ namespace Novell.Directory.Ldap
                     LdapAttributeSchema attrSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         try
                         {
                             attrSchema = new LdapAttributeSchema(valueRenamed);
@@ -195,7 +197,7 @@ namespace Novell.Directory.Ldap
                         catch (Exception e)
                         {
                             Logger.Log.LogWarning("Exception swallowed", e);
-                            continue; //Error parsing: do not add this definition
+                            continue; // Error parsing: do not add this definition
                         }
 
                         AddElement(Attribute, attrSchema);
@@ -206,7 +208,7 @@ namespace Novell.Directory.Ldap
                     LdapSyntaxSchema syntaxSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         syntaxSchema = new LdapSyntaxSchema(valueRenamed);
                         AddElement(Syntax, syntaxSchema);
                     }
@@ -216,7 +218,7 @@ namespace Novell.Directory.Ldap
                     LdapMatchingRuleSchema matchingRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         matchingRuleSchema = new LdapMatchingRuleSchema(valueRenamed, null);
                         AddElement(Matching, matchingRuleSchema);
                     }
@@ -226,7 +228,7 @@ namespace Novell.Directory.Ldap
                     LdapMatchingRuleUseSchema matchingRuleUseSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         matchingRuleUseSchema = new LdapMatchingRuleUseSchema(valueRenamed);
                         AddElement(MatchingUse, matchingRuleUseSchema);
                     }
@@ -236,7 +238,7 @@ namespace Novell.Directory.Ldap
                     LdapDitContentRuleSchema dItContentRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         dItContentRuleSchema = new LdapDitContentRuleSchema(valueRenamed);
                         AddElement(Ditcontent, dItContentRuleSchema);
                     }
@@ -246,7 +248,7 @@ namespace Novell.Directory.Ldap
                     LdapDitStructureRuleSchema dItStructureRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         dItStructureRuleSchema = new LdapDitStructureRuleSchema(valueRenamed);
                         AddElement(Ditstructure, dItStructureRuleSchema);
                     }
@@ -256,13 +258,13 @@ namespace Novell.Directory.Ldap
                     LdapNameFormSchema nameFormSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string) enumString.Current;
+                        valueRenamed = (string)enumString.Current;
                         nameFormSchema = new LdapNameFormSchema(valueRenamed);
                         AddElement(NameForm, nameFormSchema);
                     }
                 }
 
-                //All non schema attributes are ignored.
+                // All non schema attributes are ignored.
             }
         }
 
@@ -412,7 +414,7 @@ namespace Novell.Directory.Ldap
         ///     Type of schema definition, use one of the final
         ///     integers defined at the top of this class:
         ///     ATTRIBUTE, OBJECT_CLASS, SYNTAX, NAME_FORM,
-        ///     DITCONTENT, DITSTRUCTURE, MATCHING, MATCHING_USE
+        ///     DITCONTENT, DITSTRUCTURE, MATCHING, MATCHING_USE.
         /// </param>
         /// <param name="element">
         ///     Schema element definition.
@@ -433,7 +435,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     This function abstracts retrieving LdapSchemaElements from the local
-        ///     copy of schema in this LdapSchema class.  This is used by
+        ///     copy of schema in this LdapSchema class.  This is used by.
         ///     <code>getXXX(String name)</code> functions.
         ///     Note that the nameTable has all keys cast to Upper-case.  This is so
         ///     we can have a case-insensitive HashMap.  The getXXX (String key)
@@ -451,7 +453,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         private LdapSchemaElement GetSchemaElement(int schemaType, string key)
         {
-            if ((object) key == null || key.ToUpper().Equals(string.Empty.ToUpper()))
+            if ((object)key == null || key.ToUpper().Equals(string.Empty.ToUpper()))
             {
                 return null;
             }
@@ -459,12 +461,12 @@ namespace Novell.Directory.Ldap
             var c = key[0];
             if (c >= '0' && c <= '9')
             {
-                //oid lookup
-                return (LdapSchemaElement) _idTable[schemaType][key];
+                // oid lookup
+                return (LdapSchemaElement)_idTable[schemaType][key];
             }
 
-            //name lookup
-            return (LdapSchemaElement) _nameTable[schemaType][key.ToUpper()];
+            // name lookup
+            return (LdapSchemaElement)_nameTable[schemaType][key.ToUpper()];
         }
 
         /// <summary>
@@ -479,7 +481,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapAttributeSchema GetAttributeSchema(string name)
         {
-            return (LdapAttributeSchema) GetSchemaElement(Attribute, name);
+            return (LdapAttributeSchema)GetSchemaElement(Attribute, name);
         }
 
         /// <summary>
@@ -494,7 +496,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapDitContentRuleSchema GetDitContentRuleSchema(string name)
         {
-            return (LdapDitContentRuleSchema) GetSchemaElement(Ditcontent, name);
+            return (LdapDitContentRuleSchema)GetSchemaElement(Ditcontent, name);
         }
 
         /// <summary>
@@ -509,7 +511,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapDitStructureRuleSchema GetDitStructureRuleSchema(string name)
         {
-            return (LdapDitStructureRuleSchema) GetSchemaElement(Ditstructure, name);
+            return (LdapDitStructureRuleSchema)GetSchemaElement(Ditstructure, name);
         }
 
         /// <summary>
@@ -525,7 +527,7 @@ namespace Novell.Directory.Ldap
         public LdapDitStructureRuleSchema GetDitStructureRuleSchema(int id)
         {
             var idKey = id;
-            return (LdapDitStructureRuleSchema) _idTable[Ditstructure][idKey];
+            return (LdapDitStructureRuleSchema)_idTable[Ditstructure][idKey];
         }
 
         /// <summary>
@@ -540,7 +542,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapMatchingRuleSchema GetMatchingRuleSchema(string name)
         {
-            return (LdapMatchingRuleSchema) GetSchemaElement(Matching, name);
+            return (LdapMatchingRuleSchema)GetSchemaElement(Matching, name);
         }
 
         /// <summary>
@@ -555,7 +557,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapMatchingRuleUseSchema GetMatchingRuleUseSchema(string name)
         {
-            return (LdapMatchingRuleUseSchema) GetSchemaElement(MatchingUse, name);
+            return (LdapMatchingRuleUseSchema)GetSchemaElement(MatchingUse, name);
         }
 
         /// <summary>
@@ -570,7 +572,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapNameFormSchema GetNameFormSchema(string name)
         {
-            return (LdapNameFormSchema) GetSchemaElement(NameForm, name);
+            return (LdapNameFormSchema)GetSchemaElement(NameForm, name);
         }
 
         /// <summary>
@@ -585,7 +587,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapObjectClassSchema GetObjectClassSchema(string name)
         {
-            return (LdapObjectClassSchema) GetSchemaElement(ObjectClass, name);
+            return (LdapObjectClassSchema)GetSchemaElement(ObjectClass, name);
         }
 
         /// <summary>
@@ -600,7 +602,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapSyntaxSchema GetSyntaxSchema(string oid)
         {
-            return (LdapSyntaxSchema) GetSchemaElement(Syntax, oid);
+            return (LdapSyntaxSchema)GetSchemaElement(Syntax, oid);
         }
 
         // ########################################################################
@@ -610,7 +612,6 @@ namespace Novell.Directory.Ldap
         // #######################################################################
         //  The following methods retrieve an Enumeration of Names of a schema type
         // #######################################################################
-
 
         /// <summary>
         ///     This helper function returns a number that represents the type of schema
@@ -624,7 +625,7 @@ namespace Novell.Directory.Ldap
         ///     a Number that identifies the type of schema element and
         ///     will be one of the following:
         ///     ATTRIBUTE, OBJECT_CLASS, SYNTAX, NAME_FORM,
-        ///     DITCONTENT, DITSTRUCTURE, MATCHING, MATCHING_USE
+        ///     DITCONTENT, DITSTRUCTURE, MATCHING, MATCHING_USE.
         /// </returns>
         private int GetType(LdapSchemaElement element)
         {

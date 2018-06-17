@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcAssertionValue.cs
 //
@@ -28,7 +29,6 @@
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
-
 
 using System;
 using Novell.Directory.Ldap.Asn1;
@@ -45,7 +45,8 @@ namespace Novell.Directory.Ldap.Rfc2251
     {
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcAssertionValue(sbyte[] valueRenamed) : base(valueRenamed)
+        public RfcAssertionValue(sbyte[] valueRenamed)
+            : base(valueRenamed)
         {
         }
     }

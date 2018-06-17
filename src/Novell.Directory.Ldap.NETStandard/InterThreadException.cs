@@ -20,6 +20,7 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.InterThreadException.cs
 //
@@ -50,7 +51,8 @@ namespace Novell.Directory.Ldap
         ///     The Message class associated with this exception.
         /// </param>
         internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
-            Message request) : base(message, arguments, resultCode, null, rootException)
+            Message request)
+            : base(message, arguments, resultCode, null, rootException)
         {
             _request = request;
         }

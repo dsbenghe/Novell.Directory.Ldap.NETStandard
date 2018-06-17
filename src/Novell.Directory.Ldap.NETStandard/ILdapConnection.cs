@@ -3,7 +3,7 @@
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     Interface for all the minimal operations
+    ///     Interface for all the minimal operations.
     /// </summary>
     public interface ILdapConnection : IDisposable
     {
@@ -24,7 +24,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Stops Transport Layer Security(TLS) on the LDAPConnection and reverts
         ///     back to an anonymous state.
-        ///     @throws LDAPException This can occur for the following reasons:
+        ///     @throws LDAPException This can occur for the following reasons:.
         ///     <UL>
         ///         <LI>StartTLS has not been called before stopTLS</LI>
         ///         <LI>
@@ -499,7 +499,7 @@ namespace Novell.Directory.Ldap
         ///     the LdapEntry read from the server.
         /// </returns>
         /// <exception>
-        ///     LdapException if the object was not found
+        ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn);
 
@@ -515,10 +515,10 @@ namespace Novell.Directory.Ldap
         ///     The constraints specific to the operation.
         /// </param>
         /// <returns>
-        ///     the LdapEntry read from the server
+        ///     the LdapEntry read from the server.
         /// </returns>
         /// <exception>
-        ///     LdapException if the object was not found
+        ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn, LdapSearchConstraints cons);
 
@@ -533,10 +533,10 @@ namespace Novell.Directory.Ldap
         ///     The names of the attributes to retrieve.
         /// </param>
         /// <returns>
-        ///     the LdapEntry read from the server
+        ///     the LdapEntry read from the server.
         /// </returns>
         /// <exception>
-        ///     LdapException if the object was not found
+        ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn, string[] attrs);
 
@@ -555,10 +555,10 @@ namespace Novell.Directory.Ldap
         ///     The constraints specific to the operation.
         /// </param>
         /// <returns>
-        ///     the LdapEntry read from the server
+        ///     the LdapEntry read from the server.
         /// </returns>
         /// <exception>
-        ///     LdapException if the object was not found
+        ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons);
 
@@ -668,7 +668,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="scope">
         ///     The scope of the entries to search. The following
-        ///     are the valid options:
+        ///     are the valid options:.
         ///     <ul>
         ///         <li>SCOPE_BASE - searches only the base DN</li>
         ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
@@ -711,7 +711,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="scope">
         ///     The scope of the entries to search. The following
-        ///     are the valid options:
+        ///     are the valid options:.
         ///     <ul>
         ///         <li>SCOPE_BASE - searches only the base DN</li>
         ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
