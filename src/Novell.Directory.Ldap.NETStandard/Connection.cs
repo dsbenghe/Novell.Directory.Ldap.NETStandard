@@ -118,7 +118,7 @@ namespace Novell.Directory.Ldap
         /// <summary> gets the port used for this connection</summary>
         internal int Port { get; private set; }
 
-        internal int ConnectionTimeout { get; set; } = 0;
+        internal int ConnectionTimeout { get; set; };
 
         /// <summary> gets the writeSemaphore id used for active bind operation</summary>
         internal int BindSemId { get; private set; }

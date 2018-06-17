@@ -169,11 +169,5 @@ namespace Novell.Directory.Ldap.Controls
             else
                 HasChangeNumber = false;
         }
-
-        /// <summary>  Returns a string representation of the control for debugging.</summary>
-        public override string ToString()
-        {
-            return base.ToString();
-        }
     } //end class LdapEntryChangeControl
 }
