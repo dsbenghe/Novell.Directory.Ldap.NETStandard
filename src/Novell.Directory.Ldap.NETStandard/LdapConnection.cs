@@ -3484,10 +3484,6 @@ namespace Novell.Directory.Ldap
                 case LdapMessage.ModifyRdnRequest:
                 case LdapMessage.ModifyRequest:
                     break;
-                // The following return no response
-
-                case LdapMessage.AbandonRequest:
-                case LdapMessage.UnbindRequest:
                 default:
                     throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] {msg.Type},
                         LdapException.LocalError);

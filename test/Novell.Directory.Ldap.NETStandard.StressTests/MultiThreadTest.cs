@@ -103,7 +103,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
-                TestingThreadReportingPeriod = testingThreadReportingPeriod;
+                _testingThreadReportingPeriod = testingThreadReportingPeriod;
                 _logger = logger;
                 Count = 0;
                 ShouldStop = false;
@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public DateTime LastPingDate;
             public int Count;
             public bool ShouldStop;
-            private readonly TimeSpan TestingThreadReportingPeriod;
+            private readonly TimeSpan _testingThreadReportingPeriod;
             private readonly ILogger<ThreadRunner> _logger;
 
             public void RunLoop()
@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                         }
                     }
                     i++;
-                    if (stopWatch.Elapsed > TestingThreadReportingPeriod)
+                    if (stopWatch.Elapsed > _testingThreadReportingPeriod)
                     {
                         stopWatch.Stop();
                         lock (this)

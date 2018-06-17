@@ -127,11 +127,6 @@ namespace Novell.Directory.Ldap.Events
                     // start search and polling if not already started
                     StartSearchAndPolling();
                     break;
-
-                case ListenersCount.Zero:
-                case ListenersCount.MoreThanOne:
-                default:
-                    break;
             }
         }
 
@@ -145,12 +140,7 @@ namespace Novell.Directory.Ldap.Events
                 case ListenersCount.Zero:
                     // stop search and polling if not already stopped
                     StopSearchAndPolling();
-                    break;
-
-                case ListenersCount.One:
-                case ListenersCount.MoreThanOne:
-                default:
-                    break;
+                    break;                    
             }
         }
 

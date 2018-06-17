@@ -39,53 +39,53 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class EntryEventData : BaseEdirEventData
     {
-        private int NFlags;
+        private readonly int _nFlags;
 
-        private int NVerb;
+        private readonly int _nVerb;
 
-        private string StrClassId;
+        private readonly string _strClassId;
 
-        private string StrEntry;
+        private readonly string _strEntry;
 
-        private string StrNewDn;
-        private string StrPerpetratorDn;
+        private readonly string _strNewDn;
+        private readonly string _strPerpetratorDn;
 
-        private DseTimeStamp TimeStampObj;
+        private readonly DseTimeStamp _timeStampObj;
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
-            StrPerpetratorDn =
+            _strPerpetratorDn =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            StrEntry =
+            _strEntry =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            StrClassId =
+            _strClassId =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
-            TimeStampObj =
+            _timeStampObj =
                 new DseTimeStamp((Asn1Sequence) Decoder.Decode(DecodedData, length));
-            NVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            NFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            StrNewDn =
+            _nVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _nFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            _strNewDn =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }
 
-        public string PerpetratorDn => StrPerpetratorDn;
+        public string PerpetratorDn => _strPerpetratorDn;
 
-        public string Entry => StrEntry;
+        public string Entry => _strEntry;
 
-        public string NewDn => StrNewDn;
+        public string NewDn => _strNewDn;
 
-        public string ClassId => StrClassId;
+        public string ClassId => _strClassId;
 
-        public int Verb => NVerb;
+        public int Verb => _nVerb;
 
-        public int Flags => NFlags;
+        public int Flags => _nFlags;
 
-        public DseTimeStamp TimeStamp => TimeStampObj;
+        public DseTimeStamp TimeStamp => _timeStampObj;
 
         /// <summary>
         ///     Returns a string representation of the object.
@@ -94,13 +94,13 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("EntryEventData[");
-            buf.AppendFormat("(Entry={0})", StrEntry);
-            buf.AppendFormat("(Prepetrator={0})", StrPerpetratorDn);
-            buf.AppendFormat("(ClassId={0})", StrClassId);
-            buf.AppendFormat("(Verb={0})", NVerb);
-            buf.AppendFormat("(Flags={0})", NFlags);
-            buf.AppendFormat("(NewDN={0})", StrNewDn);
-            buf.AppendFormat("(TimeStamp={0})", TimeStampObj);
+            buf.AppendFormat("(Entry={0})", _strEntry);
+            buf.AppendFormat("(Prepetrator={0})", _strPerpetratorDn);
+            buf.AppendFormat("(ClassId={0})", _strClassId);
+            buf.AppendFormat("(Verb={0})", _nVerb);
+            buf.AppendFormat("(Flags={0})", _nFlags);
+            buf.AppendFormat("(NewDN={0})", _strNewDn);
+            buf.AppendFormat("(TimeStamp={0})", _timeStampObj);
             buf.Append("]");
 
             return buf.ToString();

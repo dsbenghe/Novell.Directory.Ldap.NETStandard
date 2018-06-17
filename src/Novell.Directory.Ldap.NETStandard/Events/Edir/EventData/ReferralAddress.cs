@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ReferralAddress
     {
-        private string StrAddress;
+        private readonly string _strAddress;
 
         /// <summary>
         ///     Returns a string representation of the object.
@@ -47,11 +47,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         public ReferralAddress(Asn1Sequence dseObject)
         {
             AddressType = ((Asn1Integer) dseObject.get_Renamed(0)).IntValue();
-            StrAddress = ((Asn1OctetString) dseObject.get_Renamed(1)).StringValue();
+            _strAddress = ((Asn1OctetString) dseObject.get_Renamed(1)).StringValue();
         }
 
         public int AddressType { get; }
 
-        public string Address => StrAddress;
+        public string Address => _strAddress;
     }
 }
