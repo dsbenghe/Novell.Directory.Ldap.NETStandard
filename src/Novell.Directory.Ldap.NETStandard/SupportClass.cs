@@ -85,7 +85,10 @@ namespace Novell.Directory.Ldap
         {
             var sbyteArray = new sbyte[byteArray.Length];
             for (var index = 0; index < byteArray.Length; index++)
+            {
                 sbyteArray[index] = (sbyte) byteArray[index];
+            }
+
             return sbyteArray;
         }
 
@@ -101,7 +104,10 @@ namespace Novell.Directory.Ldap
         {
             var byteArray = new byte[sbyteArray.Length];
             for (var index = 0; index < sbyteArray.Length; index++)
+            {
                 byteArray[index] = (byte) sbyteArray[index];
+            }
+
             return byteArray;
         }
 
@@ -114,7 +120,10 @@ namespace Novell.Directory.Ldap
         {
             var byteArray = new byte[sourceString.Length];
             for (var index = 0; index < sourceString.Length; index++)
+            {
                 byteArray[index] = (byte) sourceString[index];
+            }
+
             return byteArray;
         }
 
@@ -127,7 +136,10 @@ namespace Novell.Directory.Ldap
         {
             var byteArray = new byte[tempObjectArray.Length];
             for (var index = 0; index < tempObjectArray.Length; index++)
+            {
                 byteArray[index] = (byte) tempObjectArray[index];
+            }
+
             return byteArray;
         }
 
@@ -151,7 +163,9 @@ namespace Novell.Directory.Ldap
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
+            {
                 return 0;
+            }
 
             var receiver = new byte[target.Length];
             var bytesRead = 0;
@@ -161,17 +175,24 @@ namespace Novell.Directory.Ldap
             {
                 var n = sourceStream.Read(receiver, startIndex, bytesToRead);
                 if (n == 0)
+                {
                     break;
+                }
+
                 bytesRead += n;
                 startIndex += n;
                 bytesToRead -= n;
             }
             // Returns -1 if EOF
             if (bytesRead == 0)
+            {
                 return -1;
+            }
 
             for (var i = start; i < start + bytesRead; i++)
+            {
                 target[i] = (sbyte) receiver[i];
+            }
 
             return bytesRead;
         }
@@ -192,16 +213,24 @@ namespace Novell.Directory.Ldap
         public static int ReadInput(TextReader sourceTextReader, ref sbyte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
-            if (target.Length == 0) return 0;
+            if (target.Length == 0)
+            {
+                return 0;
+            }
 
             var charArray = new char[target.Length];
             var bytesRead = sourceTextReader.Read(charArray, start, count);
 
             // Returns -1 if EOF
-            if (bytesRead == 0) return -1;
+            if (bytesRead == 0)
+            {
+                return -1;
+            }
 
             for (var index = start; index < start + bytesRead; index++)
+            {
                 target[index] = (sbyte) charArray[index];
+            }
 
             return bytesRead;
         }
@@ -299,9 +328,14 @@ namespace Novell.Directory.Ldap
                 _source = source;
                 _returnDelims = retDel;
                 if (_returnDelims)
+                {
                     Tokenize();
+                }
                 else
+                {
                     _elements.AddRange(source.Split(_delimiters.ToCharArray()));
+                }
+
                 RemoveEmptyStrings();
             }
 
@@ -327,7 +361,9 @@ namespace Novell.Directory.Ldap
                             tempstr = tempstr.Substring(1);
                         }
                         else
+                        {
                             tempstr = "";
+                        }
                     }
                     else
                     {
@@ -339,7 +375,9 @@ namespace Novell.Directory.Ldap
                             tempstr = tempstr.Substring(toks.Length + 1);
                         }
                         else
+                        {
                             tempstr = "";
+                        }
                     }
                 }
                 if (tempstr.Length > 0)
@@ -369,7 +407,11 @@ namespace Novell.Directory.Ldap
             public string NextToken()
             {
                 string result;
-                if (_source == "") throw new Exception();
+                if (_source == "")
+                {
+                    throw new Exception();
+                }
+
                 if (_returnDelims)
                 {
 //						Tokenize();
@@ -406,11 +448,13 @@ namespace Novell.Directory.Ldap
             private void RemoveEmptyStrings()
             {
                 for (var index = 0; index < _elements.Count; index++)
+                {
                     if ((string) _elements[index] == "")
                     {
                         _elements.RemoveAt(index);
                         index--;
                     }
+                }
             }
         }
 
@@ -436,7 +480,9 @@ namespace Novell.Directory.Ldap
                 public void SetDateFormatPattern(DateTimeFormatInfo format, string newPattern)
                 {
                     if (this[format] != null)
+                    {
                         ((DateTimeFormatProperties) this[format]).DateFormatPattern = newPattern;
+                    }
                     else
                     {
                         var tempProps = new DateTimeFormatProperties();
@@ -453,7 +499,10 @@ namespace Novell.Directory.Ldap
                 public string GetDateFormatPattern(DateTimeFormatInfo format)
                 {
                     if (this[format] == null)
+                    {
                         return "d-MMM-yy";
+                    }
+
                     return ((DateTimeFormatProperties) this[format]).DateFormatPattern;
                 }
 
@@ -465,7 +514,9 @@ namespace Novell.Directory.Ldap
                 public void SetTimeFormatPattern(DateTimeFormatInfo format, string newPattern)
                 {
                     if (this[format] != null)
+                    {
                         ((DateTimeFormatProperties) this[format]).TimeFormatPattern = newPattern;
+                    }
                     else
                     {
                         var tempProps = new DateTimeFormatProperties();
@@ -482,7 +533,10 @@ namespace Novell.Directory.Ldap
                 public string GetTimeFormatPattern(DateTimeFormatInfo format)
                 {
                     if (this[format] == null)
+                    {
                         return "h:mm:ss tt";
+                    }
+
                     return ((DateTimeFormatProperties) this[format]).TimeFormatPattern;
                 }
 
@@ -546,7 +600,10 @@ namespace Novell.Directory.Ldap
                 var index = 0;
                 var tempEnumerator = collection.GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     objects[index++] = tempEnumerator.Current;
+                }
+
                 return objects;
             }
         }
@@ -664,7 +721,9 @@ namespace Novell.Directory.Ldap
                 set
                 {
                     if (_threadField.Name == null)
+                    {
                         _threadField.Name = value;
+                    }
                 }
             }
 
@@ -771,7 +830,9 @@ namespace Novell.Directory.Ldap
                     while (tempEnumerator.MoveNext())
                     {
                         if (tempEnumerator.Current != null)
+                        {
                             result = Add(tempEnumerator.Current);
+                        }
                     }
                 }
                 return result;
@@ -808,8 +869,13 @@ namespace Novell.Directory.Ldap
                 var result = false;
                 var tempEnumerator = new ArrayList(collection).GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     if (!(result = Contains(tempEnumerator.Current)))
+                    {
                         break;
+                    }
+                }
+
                 return result;
             }
 
@@ -860,7 +926,9 @@ namespace Novell.Directory.Ldap
                 while (tempEnumerator.MoveNext())
                 {
                     if (Contains(tempEnumerator.Current))
+                    {
                         result = Remove(tempEnumerator.Current);
+                    }
                 }
                 return result;
             }
@@ -887,6 +955,7 @@ namespace Novell.Directory.Ldap
                 var tempCollection = new CollectionSupport();
                 tempCollection.AddAll(collection);
                 while (tempEnumerator.MoveNext())
+                {
                     if (!tempCollection.Contains(tempEnumerator.Current))
                     {
                         result = Remove(tempEnumerator.Current);
@@ -896,6 +965,8 @@ namespace Novell.Directory.Ldap
                             tempEnumerator = GetEnumerator();
                         }
                     }
+                }
+
                 return result;
             }
 
@@ -919,7 +990,10 @@ namespace Novell.Directory.Ldap
                 var objects = new object[Count];
                 var tempEnumerator = GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     objects[index++] = tempEnumerator.Current;
+                }
+
                 return objects;
             }
 
@@ -933,7 +1007,10 @@ namespace Novell.Directory.Ldap
                 var index = 0;
                 var tempEnumerator = GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     objects[index++] = tempEnumerator.Current;
+                }
+
                 return objects;
             }
 
@@ -1076,7 +1153,9 @@ namespace Novell.Directory.Ldap
                 {
                     result = true;
                     if (Contains(tempEnumerator.Current))
+                    {
                         Remove(tempEnumerator.Current);
+                    }
                 }
                 return result;
             }
@@ -1152,6 +1231,7 @@ namespace Novell.Directory.Ldap
                 var tempEnumerator = GetEnumerator();
                 var tempCollection = new ListCollectionSupport(collection);
                 while (tempEnumerator.MoveNext())
+                {
                     if (!tempCollection.Contains(tempEnumerator.Current))
                     {
                         result = RemoveElement(tempEnumerator.Current);
@@ -1161,6 +1241,8 @@ namespace Novell.Directory.Ldap
                             tempEnumerator = GetEnumerator();
                         }
                     }
+                }
+
                 return result;
             }
 
@@ -1184,8 +1266,13 @@ namespace Novell.Directory.Ldap
                 var result = false;
                 var tempEnumerator = new ArrayList(collection).GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     if (!(result = Contains(tempEnumerator.Current)))
+                    {
                         break;
+                    }
+                }
+
                 return result;
             }
 
@@ -1211,7 +1298,10 @@ namespace Novell.Directory.Ldap
                 var tempEnumerator = GetEnumerator();
                 var result = new ListCollectionSupport();
                 for (index = startIndex; index < endIndex; index++)
+                {
                     result.Add(this[index]);
+                }
+
                 return result;
             }
 
@@ -1223,11 +1313,17 @@ namespace Novell.Directory.Ldap
             public virtual object[] ToArray(object[] objects)
             {
                 if (objects.Length < Count)
+                {
                     objects = new object[Count];
+                }
+
                 var index = 0;
                 var tempEnumerator = GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     objects[index++] = tempEnumerator.Current;
+                }
+
                 return objects;
             }
 
@@ -1238,13 +1334,19 @@ namespace Novell.Directory.Ldap
             /// <returns>An IEnumerator at the specified position.</returns>
             public virtual IEnumerator ListIterator(int index)
             {
-                if (index < 0 || index > Count) throw new IndexOutOfRangeException();
+                if (index < 0 || index > Count)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+
                 var tempEnumerator = GetEnumerator();
                 if (index > 0)
                 {
                     var i = 0;
                     while (tempEnumerator.MoveNext() && i < index - 1)
+                    {
                         i++;
+                    }
                 }
                 return tempEnumerator;
             }
@@ -1255,7 +1357,11 @@ namespace Novell.Directory.Ldap
             /// <returns>Returns the last element of the list.</returns>
             public virtual object GetLast()
             {
-                if (Count == 0) throw new ArgumentOutOfRangeException();
+                if (Count == 0)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
                 return this[Count - 1];
             }
 
@@ -1310,10 +1416,18 @@ namespace Novell.Directory.Ldap
             public static bool IsArrayEqual(Array array1, Array array2)
             {
                 if (array1.Length != array2.Length)
+                {
                     return false;
+                }
+
                 for (var i = 0; i < array1.Length; i++)
+                {
                     if (!array1.GetValue(i).Equals(array2.GetValue(i)))
+                    {
                         return false;
+                    }
+                }
+
                 return true;
             }
 
@@ -1329,15 +1443,29 @@ namespace Novell.Directory.Ldap
                 var tempObject = val;
                 var elementtype = array.GetType().GetElementType();
                 if (elementtype != val.GetType())
+                {
                     tempObject = Convert.ChangeType(val, elementtype);
+                }
+
                 if (array.Length == 0)
+                {
                     throw new NullReferenceException();
+                }
+
                 if (fromindex > toindex)
+                {
                     throw new ArgumentException();
+                }
+
                 if (fromindex < 0 || array.Length < toindex)
+                {
                     throw new IndexOutOfRangeException();
+                }
+
                 for (var index = fromindex > 0 ? fromindex-- : fromindex; index < toindex; index++)
+                {
                     array.SetValue(tempObject, index);
+                }
             }
 
             /// <summary>
@@ -1390,7 +1518,10 @@ namespace Novell.Directory.Ldap
             public new virtual bool Add(object objectToAdd)
             {
                 if (Contains(objectToAdd))
+                {
                     return false;
+                }
+
                 base.Add(objectToAdd);
                 return true;
             }
@@ -1409,7 +1540,9 @@ namespace Novell.Directory.Ldap
                     while (tempEnumerator.MoveNext())
                     {
                         if (tempEnumerator.Current != null)
+                        {
                             result = Add(tempEnumerator.Current);
+                        }
                     }
                 }
                 return result;
@@ -1435,8 +1568,13 @@ namespace Novell.Directory.Ldap
                 var result = false;
                 var tempEnumerator = collection.GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     if (!(result = Contains(tempEnumerator.Current)))
+                    {
                         break;
+                    }
+                }
+
                 return result;
             }
 
@@ -1468,7 +1606,10 @@ namespace Novell.Directory.Ldap
             {
                 var result = false;
                 if (Contains(elementToRemove))
+                {
                     result = true;
+                }
+
                 base.Remove(elementToRemove);
                 return result;
             }
@@ -1485,7 +1626,10 @@ namespace Novell.Directory.Ldap
                 while (tempEnumerator.MoveNext())
                 {
                     if (result == false && Contains(tempEnumerator.Current))
+                    {
                         result = true;
+                    }
+
                     Remove(tempEnumerator.Current);
                 }
                 return result;
@@ -1512,11 +1656,14 @@ namespace Novell.Directory.Ldap
                 var tempEnumerator = collection.GetEnumerator();
                 var tempSet = (SetSupport) collection;
                 while (tempEnumerator.MoveNext())
+                {
                     if (!tempSet.Contains(tempEnumerator.Current))
                     {
                         result = Remove(tempEnumerator.Current);
                         tempEnumerator = GetEnumerator();
                     }
+                }
+
                 return result;
             }
 
@@ -1540,7 +1687,10 @@ namespace Novell.Directory.Ldap
                 var tempObject = new object[Count];
                 var tempEnumerator = GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     tempObject[index++] = tempEnumerator.Current;
+                }
+
                 return tempObject;
             }
 
@@ -1554,7 +1704,10 @@ namespace Novell.Directory.Ldap
                 var index = 0;
                 var tempEnumerator = GetEnumerator();
                 while (tempEnumerator.MoveNext())
+                {
                     objects[index++] = tempEnumerator.Current;
+                }
+
                 return objects;
             }
         }
@@ -1595,12 +1748,22 @@ namespace Novell.Directory.Ldap
         /// <param name="newSize">The new ArrayList size</param>
         public static void SetSize(ArrayList arrayList, int newSize)
         {
-            if (newSize < 0) throw new ArgumentException();
+            if (newSize < 0)
+            {
+                throw new ArgumentException();
+            }
+
             if (newSize < arrayList.Count)
+            {
                 arrayList.RemoveRange(newSize, arrayList.Count - newSize);
+            }
             else
+            {
                 while (newSize > arrayList.Count)
+                {
                     arrayList.Add(null);
+                }
+            }
         }
 
         /*******************************/
@@ -1654,7 +1817,10 @@ namespace Novell.Directory.Ldap
         public static FileStream GetFileStream(string fileName, bool append)
         {
             if (append)
+            {
                 return new FileStream(fileName, FileMode.Append);
+            }
+
             return new FileStream(fileName, FileMode.Create);
         }
 
@@ -1854,7 +2020,10 @@ namespace Novell.Directory.Ldap
             constructors = classType.GetConstructors();
 
             if (constructors.Length == 0)
+            {
                 throw new UnauthorizedAccessException();
+            }
+
             for (var i = 0; i < constructors.Length; i++)
             {
                 var parameters = constructors[i].GetParameters();
@@ -1865,7 +2034,9 @@ namespace Novell.Directory.Ldap
                     break;
                 }
                 if (i == constructors.Length - 1)
+                {
                     throw new MethodAccessException();
+                }
             }
             return instance;
         }
@@ -1898,10 +2069,18 @@ namespace Novell.Directory.Ldap
             var targetEnumerator = ReverseStack(target);
 
             if (source.Count != target.Count)
+            {
                 return false;
+            }
+
             while (sourceEnumerator.MoveNext() && targetEnumerator.MoveNext())
+            {
                 if (!sourceEnumerator.Current.Equals(targetEnumerator.Current))
+                {
                     return false;
+                }
+            }
+
             return true;
         }
 
@@ -1914,7 +2093,10 @@ namespace Novell.Directory.Ldap
         public static bool EqualsSupport(ICollection source, object target)
         {
             if (target.GetType() != typeof(ICollection))
+            {
                 return false;
+            }
+
             return EqualsSupport(source, (ICollection) target);
         }
 
@@ -1930,7 +2112,10 @@ namespace Novell.Directory.Ldap
         public static bool EqualsSupport(IDictionaryEnumerator source, object target)
         {
             if (target.GetType() != typeof(IDictionaryEnumerator))
+            {
                 return false;
+            }
+
             return EqualsSupport(source, (IDictionaryEnumerator) target);
         }
 
@@ -1946,9 +2131,16 @@ namespace Novell.Directory.Ldap
         public static bool EqualsSupport(IDictionaryEnumerator source, IDictionaryEnumerator target)
         {
             while (source.MoveNext() && target.MoveNext())
+            {
                 if (source.Key.Equals(target.Key))
+                {
                     if (source.Value.Equals(target.Value))
+                    {
                         return true;
+                    }
+                }
+            }
+
             return false;
         }
 
