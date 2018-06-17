@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             else
             {
-                Identity = "";
+                Identity = string.Empty;
             }
         }
 

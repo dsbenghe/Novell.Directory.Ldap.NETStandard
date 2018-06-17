@@ -386,12 +386,12 @@ namespace Novell.Directory.Ldap
 
             if ((object) matchedDn == null)
             {
-                matchedDn = "";
+                matchedDn = string.Empty;
             }
 
             if ((object) serverMessage == null)
             {
-                serverMessage = "";
+                serverMessage = string.Empty;
             }
 
             switch (type)

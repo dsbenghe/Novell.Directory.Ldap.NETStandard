@@ -142,7 +142,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Parses an RFC 2251 filter string into an ASN.1 Ldap Filter object.</summary>
         private Asn1Tagged Parse(string filterExpr)
         {
-            if ((object) filterExpr == null || filterExpr.Equals(""))
+            if ((object) filterExpr == null || filterExpr.Equals(string.Empty))
             {
                 filterExpr = new StringBuilder("(objectclass=*)").ToString();
             }
@@ -287,7 +287,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
 
-                                var lastTok = new StringBuilder("").ToString();
+                                var lastTok = new StringBuilder(string.Empty).ToString();
 
                                 while (sub.HasMoreTokens())
                                 {
@@ -302,7 +302,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                             // '**'
                                             seq.Add(
                                                 new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, Any),
-                                                    new RfcLdapString(UnescapeString("")), false));
+                                                    new RfcLdapString(UnescapeString(string.Empty)), false));
                                         }
                                     }
                                     else
@@ -514,7 +514,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         else
                         {
                             // found invalid character
-                            var escString = "";
+                            var escString = string.Empty;
                             ca[0] = ch;
                             var encoder = Encoding.GetEncoding("utf-8");
                             var ibytes = encoder.GetBytes(new string(ca));

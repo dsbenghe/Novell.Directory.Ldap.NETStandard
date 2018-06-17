@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap.Extensions
                 //If encrypted password has null reference make it null String
                 if (passwd == null)
                 {
-                    passwd = Encoding.UTF8.GetBytes("");
+                    passwd = Encoding.UTF8.GetBytes(string.Empty);
                 }
 
 

@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The NameForm that this structure rule controls.
         /// </returns>
-        public string NameForm { get; } = "";
+        public string NameForm { get; } = string.Empty;
 
         /// <summary>
         ///     Returns a list of all structure rules that are superior to this
@@ -180,7 +180,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public string[] Superiors { get; } = {""};
+        public string[] Superiors { get; } = {string.Empty};
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a

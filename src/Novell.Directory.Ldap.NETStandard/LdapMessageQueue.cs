@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
 
         // Queue name used only for debug
 
-        internal string Name = "";
+        internal string Name = string.Empty;
 
         static LdapMessageQueue()
         {

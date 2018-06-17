@@ -109,9 +109,9 @@ namespace Novell.Directory.Ldap.Utilclass
 
             var tokenBuf = new char[dnString.Length];
             var trailingSpaceCount = 0;
-            var attrType = "";
-            var attrValue = "";
-            var rawValue = "";
+            var attrType = string.Empty;
+            var attrValue = string.Empty;
+            var rawValue = string.Empty;
             var hexDigitCount = 0;
             var currRdn = new Rdn();
 
@@ -489,7 +489,7 @@ namespace Novell.Directory.Ldap.Utilclass
             else if (state == LookForRdnValue)
             {
                 //empty value is valid
-                attrValue = "";
+                attrValue = string.Empty;
                 rawValue = dnString.Substring(valueStart);
                 currRdn.Add(attrType, attrValue, rawValue);
                 _rdnList.Add(currRdn);
@@ -704,7 +704,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public override string ToString()
         {
             var length = _rdnList.Count;
-            var dn = "";
+            var dn = string.Empty;
             if (length < 1)
             {
                 return null;

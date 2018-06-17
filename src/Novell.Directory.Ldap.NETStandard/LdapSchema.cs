@@ -451,7 +451,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         private LdapSchemaElement GetSchemaElement(int schemaType, string key)
         {
-            if ((object) key == null || key.ToUpper().Equals("".ToUpper()))
+            if ((object) key == null || key.ToUpper().Equals(string.Empty.ToUpper()))
             {
                 return null;
             }

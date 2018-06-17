@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             _types = new ArrayList();
             _values = new ArrayList();
-            RawValue = "";
+            RawValue = string.Empty;
         }
 
         /// <summary>
@@ -255,7 +255,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public string ToString(bool noTypes)
         {
             var length = _types.Count;
-            var toReturn = "";
+            var toReturn = string.Empty;
             if (length < 1)
             {
                 return null;

@@ -85,7 +85,7 @@ namespace Novell.Directory.Ldap
         {
             if ((object) dn == null)
             {
-                dn = "";
+                dn = string.Empty;
             }
 
             if (attrs == null)

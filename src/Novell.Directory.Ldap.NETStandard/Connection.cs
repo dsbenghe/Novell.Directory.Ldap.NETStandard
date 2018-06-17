@@ -256,7 +256,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the name of this connection
         /// </returns>
-        internal string ConnectionName { get; } = "";
+        internal string ConnectionName { get; } = string.Empty;
 
         /// <summary>
         ///     Indicates if the conenction is using TLS protection

@@ -62,13 +62,13 @@ namespace Novell.Directory.Ldap
         ///     These optional qualifiers begin with "X-"; the Novell eDirectory
         ///     specific qualifiers begin with "X-NDS".
         /// </summary>
-        private string[] _qualifier = {""};
+        private string[] _qualifier = {string.Empty};
 
         /// <summary> The names of the schema element.</summary>
-        protected internal string[] names = {""};
+        protected internal string[] names = {string.Empty};
 
         /// <summary> The OID for the schema element.</summary>
-        protected string Oid = "";
+        protected string Oid = string.Empty;
 
         /// <summary>
         ///     Creates an LdapSchemaElement by setting the name of the LdapAttribute.

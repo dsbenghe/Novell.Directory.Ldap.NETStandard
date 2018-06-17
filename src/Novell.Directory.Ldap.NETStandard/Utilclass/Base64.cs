@@ -171,7 +171,7 @@ namespace Novell.Directory.Ldap.Utilclass
             if (len == 0)
             {
                 // No data, return no data.
-                return new StringBuilder("").ToString();
+                return new StringBuilder(string.Empty).ToString();
             }
 
             // every three bytes will be encoded into four bytes

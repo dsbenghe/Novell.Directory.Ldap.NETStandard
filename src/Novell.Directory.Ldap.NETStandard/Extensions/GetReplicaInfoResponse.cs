@@ -182,7 +182,7 @@ namespace Novell.Directory.Ldap.Extensions
                 _modificationTime = 0;
                 _purgeTime = 0;
                 _localPartitionId = 0;
-                _partitionDn = "";
+                _partitionDn = string.Empty;
                 _replicaType = 0;
                 _flags = 0;
             }

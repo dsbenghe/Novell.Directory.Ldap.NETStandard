@@ -183,7 +183,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public string[] AuxiliaryClasses { get; } = {""};
+        public string[] AuxiliaryClasses { get; } = {string.Empty};
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -192,7 +192,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public string[] RequiredAttributes { get; } = {""};
+        public string[] RequiredAttributes { get; } = {string.Empty};
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -201,7 +201,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public string[] OptionalAttributes { get; } = {""};
+        public string[] OptionalAttributes { get; } = {string.Empty};
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -210,7 +210,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public string[] PrecludedAttributes { get; } = {""};
+        public string[] PrecludedAttributes { get; } = {string.Empty};
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a

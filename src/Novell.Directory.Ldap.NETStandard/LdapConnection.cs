@@ -2006,7 +2006,7 @@ namespace Novell.Directory.Ldap
 
             if ((object) dn == null)
             {
-                dn = "";
+                dn = string.Empty;
             }
             else
             {
@@ -2022,7 +2022,7 @@ namespace Novell.Directory.Ldap
             if (passwd.Length == 0)
             {
                 anonymous = true; // anonymous, passwd length zero with simple bind
-                dn = ""; // set to null if anonymous
+                dn = string.Empty; // set to null if anonymous
             }
 
             LdapMessage msg = new LdapBindRequest(version, dn, passwd, cons.GetControls());
@@ -3583,7 +3583,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public string GetSchemaDn()
         {
-            return GetSchemaDn("");
+            return GetSchemaDn(string.Empty);
         }
 
         /// <summary>

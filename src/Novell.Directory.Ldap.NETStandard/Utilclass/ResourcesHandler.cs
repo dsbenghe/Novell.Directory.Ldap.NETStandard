@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             if (messageOrKey == null)
             {
-                messageOrKey = "";
+                messageOrKey = string.Empty;
             }
 
             var pattern = ExceptionMessages.GetErrorMessage(messageOrKey);

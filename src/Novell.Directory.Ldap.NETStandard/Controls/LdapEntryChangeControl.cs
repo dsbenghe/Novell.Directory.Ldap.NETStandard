@@ -117,7 +117,7 @@ namespace Novell.Directory.Ldap.Controls
             }
             else
             {
-                PreviousDn = "";
+                PreviousDn = string.Empty;
             }
 
             //check for change number

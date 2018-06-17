@@ -1086,7 +1086,7 @@ namespace Novell.Directory.Ldap
                 scopeStr = url.Substring(scanStart, filterStart - scanStart);
             }
 
-            if (scopeStr.ToUpper().Equals("".ToUpper()))
+            if (scopeStr.ToUpper().Equals(string.Empty.ToUpper()))
 
             {
                 Scope = LdapConnection.ScopeBase;
@@ -1148,7 +1148,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if (!filterStr.Equals(""))
+            if (!filterStr.Equals(string.Empty))
 
             {
                 Filter = filterStr; // Only modify if not the default filter
