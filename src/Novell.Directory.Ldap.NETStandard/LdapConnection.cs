@@ -3128,8 +3128,10 @@ namespace Novell.Directory.Ldap
                     sbyte[] pw = null;
                     try
                     {
-                        rconn = new LdapConnection();
-                        rconn.Constraints = _defSearchCons;
+                        rconn = new LdapConnection
+                        {
+                            Constraints = _defSearchCons
+                        };
                         var url = new LdapUrl(referrals[i]);
                         rconn.Connect(url.Host, url.Port);
                         if (rh is ILdapAuthHandler)

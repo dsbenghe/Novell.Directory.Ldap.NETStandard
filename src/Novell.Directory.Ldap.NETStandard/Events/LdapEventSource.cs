@@ -198,8 +198,10 @@ namespace Novell.Directory.Ldap.Events
 
             if (null == MObjEventsGenerator)
             {
-                MObjEventsGenerator = new EventsGenerator(this, queue, conn, msgid);
-                MObjEventsGenerator.SleepTime = _sleepInterval;
+                MObjEventsGenerator = new EventsGenerator(this, queue, conn, msgid)
+                {
+                    SleepTime = _sleepInterval
+                };
 
                 MObjEventsGenerator.StartEventPolling();
             }

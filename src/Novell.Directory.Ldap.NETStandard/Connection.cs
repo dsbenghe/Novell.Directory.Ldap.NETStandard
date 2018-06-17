@@ -983,8 +983,10 @@ namespace Novell.Directory.Ldap
         internal void StartReader()
         {
             // Start Reader Thread
-            var r = new Thread(new ReaderThread(this).Run);
-            r.IsBackground = true; // If the last thread running, allow exit.
+            var r = new Thread(new ReaderThread(this).Run)
+            {
+                IsBackground = true // If the last thread running, allow exit.
+            };
             r.Start();
             WaitForReader(r);
         }

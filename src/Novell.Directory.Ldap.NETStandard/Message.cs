@@ -276,8 +276,10 @@ namespace Novell.Directory.Ldap
                         break;
 
                     default:
-                        _timer = new Timeout(this, _mslimit, this);
-                        _timer.IsBackground = true; // If this is the last thread running, allow exit.
+                        _timer = new Timeout(this, _mslimit, this)
+                        {
+                            IsBackground = true // If this is the last thread running, allow exit.
+                        };
                         _timer.Start();
                         break;
                 }

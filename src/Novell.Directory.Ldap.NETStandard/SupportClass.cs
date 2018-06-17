@@ -830,8 +830,10 @@ namespace Novell.Directory.Ldap
                     }
                     else
                     {
-                        var tempProps = new DateTimeFormatProperties();
-                        tempProps.DateFormatPattern = newPattern;
+                        var tempProps = new DateTimeFormatProperties
+                        {
+                            DateFormatPattern = newPattern
+                        };
                         Add(format, tempProps);
                     }
                 }
@@ -864,8 +866,10 @@ namespace Novell.Directory.Ldap
                     }
                     else
                     {
-                        var tempProps = new DateTimeFormatProperties();
-                        tempProps.TimeFormatPattern = newPattern;
+                        var tempProps = new DateTimeFormatProperties
+                        {
+                            TimeFormatPattern = newPattern
+                        };
                         Add(format, tempProps);
                     }
                 }
@@ -1090,8 +1094,10 @@ namespace Novell.Directory.Ldap
             /// <returns>The currently running thread</returns>
             public static ThreadClass Current()
             {
-                var currentThread = new ThreadClass();
-                currentThread.Instance = Thread.CurrentThread;
+                var currentThread = new ThreadClass
+                {
+                    Instance = Thread.CurrentThread
+                };
                 return currentThread;
             }
         }

@@ -527,8 +527,10 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             get
             {
-                var parent = new Dn();
-                parent._rdnList = (ArrayList) _rdnList.Clone();
+                var parent = new Dn
+                {
+                    _rdnList = (ArrayList)_rdnList.Clone()
+                };
                 if (parent._rdnList.Count >= 1)
                 {
                     parent._rdnList.Remove(_rdnList[0]); //remove first object
