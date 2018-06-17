@@ -164,10 +164,8 @@ namespace Novell.Directory.Ldap.Utilclass
         public static string Encode(sbyte[] inputBytes)
         {
             int i, j, k;
-            int t, t1, t2;
             int ntb; // number of three-bytes in inputBytes
             bool onePadding = false, twoPaddings = false;
-            char[] encodedChars; // base64 encoded chars
             var len = inputBytes.Length;
 
             if (len == 0)
@@ -199,7 +197,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 onePadding = true;
             }
 
-            encodedChars = new char[ntb * 4];
+            var encodedChars = new char[ntb * 4];
 
             // map of decoded and encoded bits
             //     bits in 3 decoded bytes:   765432  107654  321076  543210
@@ -222,7 +220,7 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < len; i += 3, j += 4, k++)
             {
                 // build encodedChars[j]
-                t = 0x00ff & inputBytes[i];
+                var t = 0x00ff & inputBytes[i];
                 encodedChars[j] = Emap[t >> 2];
 
                 // build encodedChars[j+1]
@@ -234,7 +232,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
 
-                t1 = 0x00ff & inputBytes[i + 1];
+                var t1 = 0x00ff & inputBytes[i + 1];
                 encodedChars[j + 1] = Emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
 
                 // build encodedChars[j+2]
@@ -245,7 +243,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
 
-                t2 = 0x00ff & inputBytes[i + 2];
+                var t2 = 0x00ff & inputBytes[i + 2];
                 encodedChars[j + 2] = Emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
 
                 // build encodedChars[j+3]

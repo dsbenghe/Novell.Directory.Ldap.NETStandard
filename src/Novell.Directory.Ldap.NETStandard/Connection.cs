@@ -181,7 +181,7 @@ namespace Novell.Directory.Ldap
         /// <summary> gets the port used for this connection</summary>
         internal int Port { get; private set; }
 
-        internal int ConnectionTimeout { get; set; };
+        internal int ConnectionTimeout { get; set; }
 
         /// <summary> gets the writeSemaphore id used for active bind operation</summary>
         internal int BindSemId { get; private set; }
@@ -872,7 +872,7 @@ namespace Novell.Directory.Ldap
                     }
                     catch (Exception)
                     {
-                        ; // don't worry about error
+                        // don't worry about error
                     }
                 }
 
@@ -1175,18 +1175,16 @@ namespace Novell.Directory.Ldap
                         // -------------------------------------------------------
                         // Decode an RfcLdapMessage directly from the socket.
                         // -------------------------------------------------------
-                        Asn1Identifier asn1Id;
-                        Stream myIn;
                         /* get current value of in, keep value consistant
                         * though the loop, i.e. even during shutdown
                         */
-                        myIn = _enclosingInstance._inStream;
+                        var myIn = _enclosingInstance._inStream;
                         if (myIn == null)
                         {
                             break;
                         }
 
-                        asn1Id = new Asn1Identifier(myIn);
+                        var asn1Id = new Asn1Identifier(myIn);
                         var tag = asn1Id.Tag;
                         if (asn1Id.Tag != Asn1Sequence.Tag)
                         {

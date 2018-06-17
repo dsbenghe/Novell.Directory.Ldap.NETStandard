@@ -29,7 +29,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             });
         }
 
-        public static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
+        private static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
         {
             return WithLdapConnectionImpl(funcOnConnectedLdapConnection);
         }

@@ -576,7 +576,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                     {
-                        ;
+                        
                     }
 
                     _peekchar = curc;
@@ -586,8 +586,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 if ((_ctype['/'] & (sbyte) CharacterTypes.Commentchar) != 0)
                 {
                     while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
-                    {
-                        ;
+                    {                        
                     }
 
                     _peekchar = curc;
@@ -602,7 +601,6 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                 {
-                    ;
                 }
 
                 _peekchar = curc;

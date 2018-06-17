@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ReferralAddress
     {
-        protected string StrAddress;
+        private string StrAddress;
 
         /// <summary>
         ///     Returns a string representation of the object.

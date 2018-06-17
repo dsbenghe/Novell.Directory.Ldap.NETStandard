@@ -307,14 +307,13 @@ namespace Novell.Directory.Ldap
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
-            string[] strArray;
 
             if ((object) (token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
 
-            strArray = Names;
+            var strArray = Names;
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

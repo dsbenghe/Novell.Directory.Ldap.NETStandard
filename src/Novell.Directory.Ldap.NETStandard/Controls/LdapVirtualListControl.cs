@@ -410,8 +410,7 @@ namespace Novell.Directory.Ldap.Controls
             */
             var byoffset = new Asn1Sequence(2);
             byoffset.Add(new Asn1Integer(_mStartIndex));
-            byoffset.Add(new Asn1Integer(_mContentCount));
-            ;
+            byoffset.Add(new Asn1Integer(_mContentCount));            
 
             /* Add the ASN.1 sequence to the encoded data
             */

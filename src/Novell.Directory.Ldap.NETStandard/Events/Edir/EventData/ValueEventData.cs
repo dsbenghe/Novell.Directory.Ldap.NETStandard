@@ -61,7 +61,6 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             : base(eventDataType, message)
         {
             var length = new int[1];
-            Asn1OctetString octData;
 
             StrPerpetratorDn =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
@@ -78,7 +77,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             TimeStampObj =
                 new DseTimeStamp((Asn1Sequence) Decoder.Decode(DecodedData, length));
 
-            octData = (Asn1OctetString) Decoder.Decode(DecodedData, length);
+            var octData = (Asn1OctetString) Decoder.Decode(DecodedData, length);
             StrData = octData.StringValue();
             BinData = SupportClass.ToByteArray(octData.ByteValue());
 

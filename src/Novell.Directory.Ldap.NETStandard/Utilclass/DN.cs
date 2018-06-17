@@ -107,14 +107,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 return;
             }
 
-            char currChar;
-            char nextChar;
-            int currIndex;
             var tokenBuf = new char[dnString.Length];
-            int tokenIndex;
-            int lastIndex;
-            int valueStart;
-            int state;
             var trailingSpaceCount = 0;
             var attrType = "";
             var attrValue = "";
@@ -123,16 +116,16 @@ namespace Novell.Directory.Ldap.Utilclass
             var currRdn = new Rdn();
 
             //indicates whether an OID number has a first digit of ZERO
-            var firstDigitZero = false;
 
-            tokenIndex = 0;
-            currIndex = 0;
-            valueStart = 0;
-            state = LookForRdnAttrType;
-            lastIndex = dnString.Length - 1;
+            var tokenIndex = 0;
+            var currIndex = 0;
+            var valueStart = 0;
+            var state = LookForRdnAttrType;
+            var lastIndex = dnString.Length - 1;
             while (currIndex <= lastIndex)
             {
-                currChar = dnString[currIndex];
+                var currChar = dnString[currIndex];
+                char nextChar;
                 switch (state)
                 {
                     case LookForRdnAttrType:
@@ -175,7 +168,7 @@ namespace Novell.Directory.Ldap.Utilclass
                             --currIndex;
                             state = OidAttrType;
                         }
-                        else if (!(CharUnicodeInfo.GetUnicodeCategory(currChar) == UnicodeCategory.SpaceSeparator))
+                        else if (CharUnicodeInfo.GetUnicodeCategory(currChar) != UnicodeCategory.SpaceSeparator)
                         {
                             throw new ArgumentException(dnString);
                         }
@@ -217,7 +210,7 @@ namespace Novell.Directory.Ldap.Utilclass
                             throw new ArgumentException(dnString);
                         }
 
-                        firstDigitZero = currChar == '0' ? true : false;
+                        var firstDigitZero = currChar == '0' ? true : false;
                         tokenBuf[tokenIndex++] = currChar;
                         currChar = dnString[++currIndex];
 

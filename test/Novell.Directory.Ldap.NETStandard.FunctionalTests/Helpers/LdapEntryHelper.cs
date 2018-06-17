@@ -32,7 +32,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             expectedAttributes.AssertSameAs(actualAttributes);
         }
 
-        public static void AssertSameAs(this LdapAttributeSet expectedAttributeSet, LdapAttributeSet actualAttributeSet)
+        private static void AssertSameAs(this LdapAttributeSet expectedAttributeSet, LdapAttributeSet actualAttributeSet)
         {
             AssertSameAs(expectedAttributeSet, actualAttributeSet, new List<string>());
         }

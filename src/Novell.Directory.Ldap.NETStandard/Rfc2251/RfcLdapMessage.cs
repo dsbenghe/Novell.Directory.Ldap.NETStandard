@@ -134,15 +134,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         [CLSCompliant(false)]
         public RfcLdapMessage(IAsn1Decoder dec, Stream inRenamed, int len) : base(dec, inRenamed, len)
         {
-            sbyte[] content;
-            MemoryStream bais;
-
             // Decode implicitly tagged protocol operation from an Asn1Tagged type
             // to its appropriate application type.
             var protocolOp = (Asn1Tagged) get_Renamed(1);
             var protocolOpId = protocolOp.GetIdentifier();
-            content = ((Asn1OctetString) protocolOp.TaggedValue).ByteValue();
-            bais = new MemoryStream(SupportClass.ToByteArray(content));
+            var content = ((Asn1OctetString) protocolOp.TaggedValue).ByteValue();
+            var bais = new MemoryStream(SupportClass.ToByteArray(content));
 
             switch (protocolOpId.Tag)
             {

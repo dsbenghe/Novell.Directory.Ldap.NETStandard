@@ -140,11 +140,8 @@ namespace Novell.Directory.Ldap.Asn1
         {
             Encode(os.GetIdentifier(), outRenamed);
             EncodeLength(os.ByteValue().Length, outRenamed);
-            sbyte[] tempSbyteArray;
-            tempSbyteArray = os.ByteValue();
+            var tempSbyteArray = os.ByteValue();
             outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
-            ;
-            ;
         }
 
         /* Asn1 TYPE NOT YET SUPPORTED
@@ -190,11 +187,8 @@ namespace Novell.Directory.Ldap.Asn1
             EncodeLength((int) output.Length, outRenamed);
 
             /* Add each encoded element into the output stream */
-            sbyte[] tempSbyteArray;
-            tempSbyteArray = SupportClass.ToSByteArray(output.ToArray());
-            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
-            ;
-            ;
+            var tempSbyteArray = SupportClass.ToSByteArray(output.ToArray());
+            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);            
         }
 
         /// <summary> Encode an Asn1Tagged directly into the specified outputstream.</summary>
@@ -209,12 +203,8 @@ namespace Novell.Directory.Ldap.Asn1
                 t.TaggedValue.Encode(this, encodedContent);
 
                 EncodeLength((int) encodedContent.Length, outRenamed);
-                sbyte[] tempSbyteArray;
-                tempSbyteArray = SupportClass.ToSByteArray(encodedContent.ToArray());
-                outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
-                ;
-                ;
-                ;
+                var tempSbyteArray = SupportClass.ToSByteArray(encodedContent.ToArray());
+                outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);                
             }
             else
             {

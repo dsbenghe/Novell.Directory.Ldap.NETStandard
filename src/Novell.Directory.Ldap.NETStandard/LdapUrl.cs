@@ -397,10 +397,8 @@ namespace Novell.Directory.Ldap
         {
             var searchStart = 0;
 
-            int fieldStart;
 
-
-            fieldStart = urlEncoded.IndexOf("%", searchStart);
+            var fieldStart = urlEncoded.IndexOf("%", searchStart);
 
             // Return now if no encoded data
 
@@ -744,8 +742,6 @@ namespace Novell.Directory.Ldap
             // end of list + 1
 
         {
-            string[] list;
-
             // Check for and empty string
 
             if (listEnd - listStart < 1)
@@ -788,7 +784,7 @@ namespace Novell.Directory.Ldap
 
             itemStart = listStart;
 
-            list = new string[itemCount];
+            var list = new string[itemCount];
 
             itemCount = 0;
 

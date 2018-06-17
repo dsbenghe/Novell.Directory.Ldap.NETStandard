@@ -399,10 +399,8 @@ namespace Novell.Directory.Ldap
         public static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
             ref char[] destinationArray, int destinationStart)
         {
-            int sourceCounter;
-            int destinationCounter;
-            sourceCounter = sourceStart;
-            destinationCounter = destinationStart;
+            var sourceCounter = sourceStart;
+            var destinationCounter = destinationStart;
             while (sourceCounter < sourceEnd)
             {
                 destinationArray[destinationCounter] = sourceString[sourceCounter];

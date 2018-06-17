@@ -118,9 +118,8 @@ namespace Novell.Directory.Ldap.Extensions
                  * chunkSize => Represents the number of chunks of data returned from server
                  * sizeOf each chunk => int represents the size of each chunk
                 */
-                int index;
                 int chunkSize;
-                index = chunkSizesString.IndexOf(';');
+                var index = chunkSizesString.IndexOf(';');
                 try
                 {
                     chunkSize = int.Parse(chunkSizesString.Substring(0, index));

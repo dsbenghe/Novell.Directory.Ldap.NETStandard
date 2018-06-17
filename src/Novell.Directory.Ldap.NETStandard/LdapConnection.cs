@@ -1999,8 +1999,6 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
             LdapConstraints cons)
         {
-            int msgId;
-            BindProperties bindProps;
             if (cons == null)
             {
                 cons = _defSearchCons;
@@ -2029,8 +2027,8 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapBindRequest(version, dn, passwd, cons.GetControls());
 
-            msgId = msg.MessageId;
-            bindProps = new BindProperties(version, dn, "simple", anonymous, null, null);
+            var msgId = msg.MessageId;
+            var bindProps = new BindProperties(version, dn, "simple", anonymous, null, null);
 
             // For bind requests, if not connected, attempt to reconnect
             if (!Connection.Connected)

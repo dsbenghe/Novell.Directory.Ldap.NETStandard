@@ -39,18 +39,18 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class EntryEventData : BaseEdirEventData
     {
-        protected int NFlags;
+        private int NFlags;
 
-        protected int NVerb;
+        private int NVerb;
 
-        protected string StrClassId;
+        private string StrClassId;
 
-        protected string StrEntry;
+        private string StrEntry;
 
-        protected string StrNewDn;
-        protected string StrPerpetratorDn;
+        private string StrNewDn;
+        private string StrPerpetratorDn;
 
-        protected DseTimeStamp TimeStampObj;
+        private DseTimeStamp TimeStampObj;
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)

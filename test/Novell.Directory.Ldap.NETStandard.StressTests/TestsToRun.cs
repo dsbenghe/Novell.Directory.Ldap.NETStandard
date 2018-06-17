@@ -14,7 +14,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             Tests.AddRange(LoadTests());
         }
 
-        public static List<Action> LoadTests()
+        private static List<Action> LoadTests()
         {
             return GetMethods()
                 .Select(m =>

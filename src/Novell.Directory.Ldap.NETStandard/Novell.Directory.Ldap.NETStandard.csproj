@@ -29,6 +29,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.2" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta008" />
     <PackageReference Include="System.Collections.NonGeneric" Version="4.0.1" />
     <PackageReference Include="System.Net.NameResolution" Version="4.0.0" />
     <PackageReference Include="System.Net.Requests" Version="4.0.11" />

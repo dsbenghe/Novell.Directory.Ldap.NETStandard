@@ -192,13 +192,11 @@ namespace Novell.Directory.Ldap
         protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
-            string token;
-            string[] strArray;
 
-            token = RuleId.ToString();
+            var token = RuleId.ToString();
             valueBuffer.Append(token);
 
-            strArray = Names;
+            var strArray = Names;
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

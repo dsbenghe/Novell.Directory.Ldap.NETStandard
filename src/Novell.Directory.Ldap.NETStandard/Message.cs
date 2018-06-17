@@ -147,8 +147,7 @@ namespace Novell.Directory.Ldap
                         return null; // No data
                     }
 
-                    object tempObject;
-                    tempObject = _replies[0];
+                    var tempObject = _replies[0];
                     _replies.RemoveAt(0);
                     msg = tempObject; // Atomic get and remove
                 }
@@ -235,8 +234,7 @@ namespace Novell.Directory.Ldap
                         break;
                     }
 
-                    object tempObject;
-                    tempObject = _replies[0];
+                    var tempObject = _replies[0];
                     _replies.RemoveAt(0);
                     msg = tempObject; // Atomic get and remove
                     if ((Complete || !_acceptReplies) && _replies.Count == 0)
@@ -377,10 +375,9 @@ namespace Novell.Directory.Ldap
                 // Empty out any accumuluated replies
                 if (_replies != null)
                 {
-                    while (!(_replies.Count == 0))
+                    while (_replies.Count != 0)
                     {
-                        object tempObject;
-                        tempObject = _replies[0];
+                        var tempObject = _replies[0];
                         _replies.RemoveAt(0);
                         var generatedAux = tempObject;
                     }

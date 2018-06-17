@@ -252,10 +252,10 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public override string ToString()
         {
-            string msg, tmsg;
+            string tmsg;
 
             // Format the basic exception information
-            msg = GetExceptionString("LdapReferralException");
+            var msg = GetExceptionString("LdapReferralException");
 
             // Add failed referral information
             if ((object) FailedReferral != null)
