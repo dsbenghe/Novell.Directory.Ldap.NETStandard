@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Extensions
                 asn1Flags.Encode(encoder, encodedData);
                 asn1Dn.Encode(encoder, encodedData);
 
-                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {

@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapControl(string oid, bool critical, sbyte[] values)
+        public LdapControl(string oid, bool critical, byte[] values)
         {
             if ((object)oid == null)
             {
@@ -144,14 +144,14 @@ namespace Novell.Directory.Ldap
             }
 
             var vals = GetValue();
-            sbyte[] twin = null;
+            byte[] twin = null;
             if (vals != null)
             {
                 // is this necessary?
                 // Yes even though the contructor above allocates a
                 // new Asn1OctetString, vals in that constuctor
                 // is only copied by reference
-                twin = new sbyte[vals.Length];
+                twin = new byte[vals.Length];
                 for (var i = 0; i < vals.Length; i++)
                 {
                     twin[i] = vals[i];
@@ -172,9 +172,9 @@ namespace Novell.Directory.Ldap
         ///     or null if the control has no data.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] GetValue()
+        public byte[] GetValue()
         {
-            sbyte[] result = null;
+            byte[] result = null;
             var val = Asn1Object.ControlValue;
             if (val != null)
             {
@@ -189,7 +189,7 @@ namespace Novell.Directory.Ldap
         ///     use by an extension of LdapControl.
         /// </summary>
         [CLSCompliant(false)]
-        protected void SetValue(sbyte[] controlValue)
+        protected void SetValue(byte[] controlValue)
         {
             Asn1Object.ControlValue = new Asn1OctetString(controlValue);
         }

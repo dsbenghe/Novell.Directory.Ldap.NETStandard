@@ -102,7 +102,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         protected int GetTaggedIntValue(Asn1Tagged tagVal)
         {
             var obj = tagVal.TaggedValue;
-            var dataBytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
+            var dataBytes = ((Asn1OctetString)obj).ByteValue();
 
             var decodedData = new MemoryStream(dataBytes);
             var decoder = new LberDecoder();
@@ -115,7 +115,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         protected Asn1Sequence GetTaggedSequence(Asn1Tagged tagVal)
         {
             var obj = tagVal.TaggedValue;
-            var dataBytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
+            var dataBytes = ((Asn1OctetString)obj).ByteValue();
 
             var decodedData = new MemoryStream(dataBytes);
             var decoder = new LberDecoder();

@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     {
                         case RfcLdapResult.Referral:
                             var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
-                            var bais = new MemoryStream(SupportClass.ToByteArray(content));
+                            var bais = new MemoryStream(content);
                             set_Renamed(i, new RfcReferral(dec, bais, content.Length));
                             _referralIndex = i;
                             break;

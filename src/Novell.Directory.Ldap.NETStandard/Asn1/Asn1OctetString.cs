@@ -48,9 +48,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        protected internal static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
 
-        private readonly sbyte[] _content;
+        private readonly byte[] _content;
 
         /* Constructors for Asn1OctetString
                 */
@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     will be contained in the this Asn1OctetString object.
         /// </param>
         [CLSCompliant(false)]
-        public Asn1OctetString(sbyte[] content)
+        public Asn1OctetString(byte[] content)
             : base(Id)
         {
             _content = content;
@@ -85,16 +85,14 @@ namespace Novell.Directory.Ldap.Asn1
             {
 /*                System.Text.UTF8Encoding utf8 = new System.Text.UTF8Encoding();
                 byte[] bytes = utf8.GetBytes (content);
-                sbyte[] sbytes = new sbyte[bytes.Length+1]; //signed bytes
+                byte[] sbytes = new byte[bytes.Length+1]; //signed bytes
                 sbytes[0] = 0; //set sign byte to zero.
                 for(int i=1; i<sbytes.Length; i++)
-                    sbytes[i] = (sbyte) bytes[i-1]; //cast byte-->sbyte
+                    sbytes[i] = (byte) bytes[i-1]; //cast byte-->byte
 */
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(content);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-
-                _content = sbytes;
+                _content = ibytes;
 
 // this.content = content.getBytes("UTF8");
             }
@@ -120,7 +118,7 @@ namespace Novell.Directory.Ldap.Asn1
         public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
-            _content = len > 0 ? (sbyte[])dec.DecodeOctetString(inRenamed, len) : new sbyte[0];
+            _content = len > 0 ? (byte[])dec.DecodeOctetString(inRenamed, len) : new byte[0];
         }
 
         /* Asn1Object implementation
@@ -147,7 +145,7 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary> Returns the content of this Asn1OctetString as a byte array.</summary>
         [CLSCompliant(false)]
-        public sbyte[] ByteValue()
+        public byte[] ByteValue()
         {
             return _content;
         }
@@ -159,10 +157,10 @@ namespace Novell.Directory.Ldap.Asn1
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
-                var dchar = encoder.GetChars(SupportClass.ToByteArray(_content));
+                var dchar = encoder.GetChars(_content);
                 s = new string(dchar);
 
-// sbyte *sb=content;
+// byte *sb=content;
 // s = new  String(sb,0,content.Length, new System.Text.UTF8Encoding());
             }
             catch (IOException uee)

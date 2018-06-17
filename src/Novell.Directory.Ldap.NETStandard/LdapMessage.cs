@@ -255,7 +255,7 @@ namespace Novell.Directory.Ldap
                     {
                         RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
                         System.String oid = rfcCtl.ControlType.stringValue();
-                        sbyte[] value_Renamed = rfcCtl.ControlValue.byteValue();
+                        byte[] value_Renamed = rfcCtl.ControlValue.byteValue();
                         bool critical = rfcCtl.Criticality.booleanValue();
 
                         controls[i] = controlFactory(oid, critical, value_Renamed);
@@ -560,7 +560,7 @@ namespace Novell.Directory.Ldap
         ///     that control by calling its contructor.  Otherwise we default to
         ///     returning a regular LdapControl object.
         /// </summary>
-        private LdapControl ControlFactory(string oid, bool critical, sbyte[] valueRenamed)
+        private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
         {
 // throw new NotImplementedException();
             var regControls = LdapControl.RegisteredControls;
@@ -579,7 +579,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 /* If found, get LDAPControl constructor */
-                Type[] argsClass = {typeof(string), typeof(bool), typeof(sbyte[]) };
+                Type[] argsClass = {typeof(string), typeof(bool), typeof(byte[]) };
                 object[] args = {oid, critical, valueRenamed };
                 Exception ex = null;
                 try

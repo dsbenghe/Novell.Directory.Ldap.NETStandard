@@ -82,11 +82,11 @@ namespace Novell.Directory.Ldap.Asn1
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from a byte array.</summary>
         [CLSCompliant(false)]
-        public Asn1Object Decode(sbyte[] valueRenamed)
+        public Asn1Object Decode(byte[] valueRenamed)
         {
             Asn1Object asn1 = null;
 
-            var inRenamed = new MemoryStream(SupportClass.ToByteArray(valueRenamed));
+            var inRenamed = new MemoryStream(valueRenamed);
             try
             {
                 asn1 = Decode(inRenamed);
@@ -185,7 +185,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Decode a boolean directly from a stream.</summary>
         public object DecodeBoolean(Stream inRenamed, int len)
         {
-            var lber = new sbyte[len];
+            var lber = new byte[len];
 
             var i = SupportClass.ReadInput(inRenamed, ref lber, 0, lber.Length);
 
@@ -236,7 +236,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Decode an OctetString directly from a stream.</summary>
         public object DecodeOctetString(Stream inRenamed, int len)
         {
-            var octets = new sbyte[len];
+            var octets = new byte[len];
             var totalLen = 0;
 
             while (totalLen < len)
@@ -252,7 +252,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Decode a CharacterString directly from a stream.</summary>
         public object DecodeCharacterString(Stream inRenamed, int len)
         {
-            var octets = new sbyte[len];
+            var octets = new byte[len];
 
             for (var i = 0; i < len; i++)
             {
@@ -262,11 +262,11 @@ namespace Novell.Directory.Ldap.Asn1
                     throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
                 }
 
-                octets[i] = (sbyte)ret;
+                octets[i] = (byte)ret;
             }
 
             var encoder = Encoding.GetEncoding("utf-8");
-            var dchar = encoder.GetChars(SupportClass.ToByteArray(octets));
+            var dchar = encoder.GetChars(octets);
             var rval = new string(dchar);
 
             return rval; // new String( "UTF8");

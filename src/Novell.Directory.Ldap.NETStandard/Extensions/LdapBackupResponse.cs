@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap.Extensions
             {
                 // Get the contents of the reply
 
-                var returnedValue = SupportClass.ToByteArray(Value);
+                var returnedValue = Value;
                 if (returnedValue == null)
                 {
                     throw new Exception("LDAP Operations error. No returned value.");
@@ -162,7 +162,7 @@ namespace Novell.Directory.Ldap.Extensions
                     throw new IOException("Decoding error");
                 }
 
-                _returnedBuffer = SupportClass.ToByteArray(asn1ReturnedBuffer.ByteValue());
+                _returnedBuffer = asn1ReturnedBuffer.ByteValue();
 
                 /*
                  * Parse chunks array

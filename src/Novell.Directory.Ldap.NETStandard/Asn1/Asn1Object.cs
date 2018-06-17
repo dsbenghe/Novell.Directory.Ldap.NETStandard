@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the child Asn1 classses.
         /// </summary>
         [CLSCompliant(false)]
-        public sbyte[] GetEncoding(IAsn1Encoder enc)
+        public byte[] GetEncoding(IAsn1Encoder enc)
         {
             var outRenamed = new MemoryStream();
             try
@@ -102,7 +102,7 @@ namespace Novell.Directory.Ldap.Asn1
                 throw new Exception("IOException while encoding to byte array: " + e);
             }
 
-            return SupportClass.ToSByteArray(outRenamed.ToArray());
+            return outRenamed.ToArray();
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>

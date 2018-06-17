@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The Distinguished Name of the entry to delete.
         /// </param>
         [CLSCompliant(false)]
-        public RfcDelRequest(sbyte[] dn)
+        public RfcDelRequest(byte[] dn)
             : base(dn)
         {
         }

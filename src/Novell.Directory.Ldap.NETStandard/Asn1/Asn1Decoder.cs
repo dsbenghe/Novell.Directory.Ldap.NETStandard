@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="value">
         ///     A byte array that points to the encoded Asn1 data.
         /// </param>
-        Asn1Object Decode(sbyte[] valueRenamed);
+        Asn1Object Decode(byte[] valueRenamed);
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.

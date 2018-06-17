@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap
         ///     The value of the response.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] Value
+        public byte[] Value
         {
             get
             {

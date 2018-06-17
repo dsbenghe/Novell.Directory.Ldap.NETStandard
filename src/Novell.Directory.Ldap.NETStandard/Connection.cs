@@ -779,7 +779,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 var ber = msg.Asn1Object.GetEncoding(_encoder);
-                myOut.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
+                myOut.Write(ber, 0, ber.Length);
                 myOut.Flush();
             }
             catch (IOException ioe)
@@ -860,7 +860,7 @@ namespace Novell.Directory.Ldap
                     {
                         var msg = new LdapUnbindRequest(null);
                         var ber = msg.Asn1Object.GetEncoding(_encoder);
-                        _outStream.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
+                        _outStream.Write(ber, 0, ber.Length);
                         _outStream.Flush();
                     }
                     catch (Exception)

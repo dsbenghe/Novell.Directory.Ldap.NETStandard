@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap
         ///     The password to use when authenticating to a server.
         /// </param>
         [CLSCompliant(false)]
-        public LdapAuthProvider(string dn, sbyte[] password)
+        public LdapAuthProvider(string dn, byte[] password)
         {
             Dn = dn;
             Password = password;
@@ -81,6 +81,6 @@ namespace Novell.Directory.Ldap
         ///     The byte[] value (UTF-8) of the password from the object.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] Password { get; }
+        public virtual byte[] Password { get; }
     }
 }

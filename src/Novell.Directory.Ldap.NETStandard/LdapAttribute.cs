@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrName or attrBytes is null.
         /// </param>
         [CLSCompliant(false)]
-        public LdapAttribute(string attrName, sbyte[] attrBytes)
+        public LdapAttribute(string attrName, byte[] attrBytes)
             : this(attrName)
         {
             if (attrBytes == null)
@@ -132,7 +132,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Make our own copy of the byte array to prevent app from changing it
-            var tmp = new sbyte[attrBytes.Length];
+            var tmp = new byte[attrBytes.Length];
             Array.Copy(attrBytes, 0, tmp, 0, attrBytes.Length);
             Add(tmp);
         }
@@ -159,9 +159,8 @@ namespace Novell.Directory.Ldap
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(attrString);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                Add(sbytes);
+                Add(ibytes);
             }
             catch (IOException e)
             {
@@ -199,8 +198,7 @@ namespace Novell.Directory.Ldap
 
                     var encoder = Encoding.GetEncoding("utf-8");
                     var ibytes = encoder.GetBytes(attrStrings[i]);
-                    var sbytes = SupportClass.ToSByteArray(ibytes);
-                    Add(sbytes);
+                    Add(ibytes);
 
 // this.add(attrStrings[i].getBytes("UTF-8"));
                 }
@@ -237,22 +235,22 @@ namespace Novell.Directory.Ldap
         ///     no values.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[][] ByteValueArray
+        public byte[][] ByteValueArray
         {
             get
             {
                 if (_values == null)
                 {
-                    return new sbyte[0][];
+                    return new byte[0][];
                 }
 
                 var size = _values.Length;
-                var bva = new sbyte[size][];
+                var bva = new byte[size][];
 
                 // Deep copy so application cannot change values
                 for (int i = 0, u = size; i < u; i++)
                 {
-                    bva[i] = new sbyte[((sbyte[])_values[i]).Length];
+                    bva[i] = new byte[((byte[])_values[i]).Length];
                     Array.Copy((Array)_values[i], 0, bva[i], 0, bva[i].Length);
                 }
 
@@ -283,12 +281,12 @@ namespace Novell.Directory.Ldap
                     try
                     {
                         var encoder = Encoding.GetEncoding("utf-8");
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[])_values[j]));
+                        var dchar = encoder.GetChars((byte[])_values[j]);
 
 // char[] dchar = encoder.GetChars((byte[])values[j]);
                         sva[j] = new string(dchar);
 
-// sva[j] = new String((sbyte[]) values[j], "UTF-8");
+// sva[j] = new String((byte[]) values[j], "UTF-8");
                     }
                     catch (IOException uee)
                     {
@@ -326,7 +324,7 @@ namespace Novell.Directory.Ldap
                     try
                     {
                         var encoder = Encoding.GetEncoding("utf-8");
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[])_values[0]));
+                        var dchar = encoder.GetChars((byte[])_values[0]);
 
 // char[] dchar = encoder.GetChars((byte[]) this.values[0]);
                         rval = new string(dchar);
@@ -350,15 +348,15 @@ namespace Novell.Directory.Ldap
         ///     If the attribute has no values. <code>null</code> is returned.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] ByteValue
+        public byte[] ByteValue
         {
             get
             {
-                sbyte[] bva = null;
+                byte[] bva = null;
                 if (_values != null)
                 {
                     // Deep copy so app can't change the value
-                    bva = new sbyte[((sbyte[])_values[0]).Length];
+                    bva = new byte[((byte[])_values[0]).Length];
                     Array.Copy((Array)_values[0], 0, bva, 0, bva.Length);
                 }
 
@@ -416,9 +414,8 @@ namespace Novell.Directory.Ldap
                 {
                     var encoder = Encoding.GetEncoding("utf-8");
                     var ibytes = encoder.GetBytes(value);
-                    var sbytes = SupportClass.ToSByteArray(ibytes);
 
-                    Add(sbytes);
+                    Add(ibytes);
                 }
                 catch (IOException ue)
                 {
@@ -487,10 +484,7 @@ namespace Novell.Directory.Ldap
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(attrString);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                Add(sbytes);
-
-// this.add(attrString.getBytes("UTF-8"));
+                Add(ibytes);
             }
             catch (IOException ue)
             {
@@ -507,7 +501,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
         [CLSCompliant(false)]
-        public void AddValue(sbyte[] attrBytes)
+        public void AddValue(byte[] attrBytes)
         {
             if (attrBytes == null)
             {
@@ -625,12 +619,12 @@ namespace Novell.Directory.Ldap
 
                 // Read the bytes into buffers and store the them in an arraylist
                 var bufs = new ArrayList();
-                var buf = new sbyte[4096];
+                var buf = new byte[4096];
                 int len, totalLength = 0;
                 while ((len = SupportClass.ReadInput(inRenamed, ref buf, 0, 4096)) != -1)
                 {
                     bufs.Add(new UrlData(this, buf, len));
-                    buf = new sbyte[4096];
+                    buf = new byte[4096];
                     totalLength += len;
                 }
 
@@ -639,7 +633,7 @@ namespace Novell.Directory.Ldap
                 * the bytes of data and copy the data to that array, store
                 * it in this LdapAttribute
                 */
-                var data = new sbyte[totalLength];
+                var data = new byte[totalLength];
                 var offset = 0; //
                 for (var i = 0; i < bufs.Count; i++)
                 {
@@ -848,8 +842,7 @@ namespace Novell.Directory.Ldap
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(attrString);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                RemoveValue(sbytes);
+                RemoveValue(ibytes);
 
 // this.removeValue(attrString.getBytes("UTF-8"));
             }
@@ -872,7 +865,7 @@ namespace Novell.Directory.Ldap
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
         [CLSCompliant(false)]
-        public void RemoveValue(sbyte[] attrBytes)
+        public void RemoveValue(byte[] attrBytes)
         {
             if (attrBytes == null)
             {
@@ -881,7 +874,7 @@ namespace Novell.Directory.Ldap
 
             for (var i = 0; i < _values.Length; i++)
             {
-                if (Equals(attrBytes, (sbyte[])_values[i]))
+                if (Equals(attrBytes, (byte[])_values[i]))
                 {
                     if (i == 0 && _values.Length == 1)
                     {
@@ -937,7 +930,7 @@ namespace Novell.Directory.Ldap
         ///     that all data added to our list is in binary form.
         ///     Note: If attrBytes represents a string it should be UTF-8 encoded.
         /// </param>
-        private void Add(sbyte[] bytes)
+        private void Add(byte[] bytes)
         {
             if (_values == null)
             {
@@ -948,7 +941,7 @@ namespace Novell.Directory.Ldap
                 // Duplicate attribute values not allowed
                 for (var i = 0; i < _values.Length; i++)
                 {
-                    if (Equals(bytes, (sbyte[])_values[i]))
+                    if (Equals(bytes, (byte[])_values[i]))
                     {
                         return; // Duplicate, don't add
                     }
@@ -976,7 +969,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if the two arrays are equal.
         /// </returns>
-        private bool Equals(sbyte[] e1, sbyte[] e2)
+        private bool Equals(byte[] e1, byte[] e2)
         {
             // If same object, they compare true
             if (e1 == e2)
@@ -1040,7 +1033,7 @@ namespace Novell.Directory.Ldap
                             result.Append("','");
                         }
 
-                        if (((sbyte[])_values[i]).Length == 0)
+                        if (((byte[])_values[i]).Length == 0)
                         {
                             continue;
                         }
@@ -1048,10 +1041,10 @@ namespace Novell.Directory.Ldap
                         var encoder = Encoding.GetEncoding("utf-8");
 
 // char[] dchar = encoder.GetChars((byte[]) values[i]);
-                        var dchar = encoder.GetChars(SupportClass.ToByteArray((sbyte[])_values[i]));
+                        var dchar = encoder.GetChars((byte[])_values[i]);
                         var sval = new string(dchar);
 
-// System.String sval = new String((sbyte[]) values[i], "UTF-8");
+// System.String sval = new String((byte[]) values[i], "UTF-8");
                         if (sval.Length == 0)
                         {
                             // didn't decode well, must be binary
@@ -1077,11 +1070,11 @@ namespace Novell.Directory.Ldap
 
         private class UrlData
         {
-            private readonly sbyte[] _data;
+            private readonly byte[] _data;
 
             private readonly int _length;
 
-            public UrlData(LdapAttribute enclosingInstance, sbyte[] data, int length)
+            public UrlData(LdapAttribute enclosingInstance, byte[] data, int length)
             {
                 InitBlock(enclosingInstance);
                 _length = length;
@@ -1100,7 +1093,7 @@ namespace Novell.Directory.Ldap
                 return _length;
             }
 
-            public sbyte[] GetData()
+            public byte[] GetData()
             {
                 return _data;
             }

@@ -76,42 +76,6 @@ namespace Novell.Directory.Ldap
     public class SupportClass
     {
         /// <summary>
-        ///     Receives a byte array and returns it transformed in an sbyte array.
-        /// </summary>
-        /// <param name="byteArray">Byte array to process.</param>
-        /// <returns>The transformed array.</returns>
-        [CLSCompliant(false)]
-        public static sbyte[] ToSByteArray(byte[] byteArray)
-        {
-            var sbyteArray = new sbyte[byteArray.Length];
-            for (var index = 0; index < byteArray.Length; index++)
-            {
-                sbyteArray[index] = (sbyte)byteArray[index];
-            }
-
-            return sbyteArray;
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Converts an array of sbytes to an array of bytes.
-        /// </summary>
-        /// <param name="sbyteArray">The array of sbytes to be converted.</param>
-        /// <returns>The new array of bytes.</returns>
-        [CLSCompliant(false)]
-        public static byte[] ToByteArray(sbyte[] sbyteArray)
-        {
-            var byteArray = new byte[sbyteArray.Length];
-            for (var index = 0; index < sbyteArray.Length; index++)
-            {
-                byteArray[index] = (byte)sbyteArray[index];
-            }
-
-            return byteArray;
-        }
-
-        /// <summary>
         ///     Converts a string to an array of bytes.
         /// </summary>
         /// <param name="sourceString">The string to be converted.</param>
@@ -158,7 +122,7 @@ namespace Novell.Directory.Ldap
         ///     in the source Stream. Returns -1 if the end of the stream is reached.
         /// </returns>
         [CLSCompliant(false)]
-        public static int ReadInput(Stream sourceStream, ref sbyte[] target, int start, int count)
+        public static int ReadInput(Stream sourceStream, ref byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
@@ -191,7 +155,7 @@ namespace Novell.Directory.Ldap
 
             for (var i = start; i < start + bytesRead; i++)
             {
-                target[i] = (sbyte)receiver[i];
+                target[i] = (byte)receiver[i];
             }
 
             return bytesRead;
@@ -210,7 +174,7 @@ namespace Novell.Directory.Ldap
         ///     in the source TextReader. Returns -1 if the end of the stream is reached.
         /// </returns>
         [CLSCompliant(false)]
-        public static int ReadInput(TextReader sourceTextReader, ref sbyte[] target, int start, int count)
+        public static int ReadInput(TextReader sourceTextReader, ref byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
@@ -229,7 +193,7 @@ namespace Novell.Directory.Ldap
 
             for (var index = start; index < start + bytesRead; index++)
             {
-                target[index] = (sbyte)charArray[index];
+                target[index] = (byte)charArray[index];
             }
 
             return bytesRead;
@@ -425,19 +389,6 @@ namespace Novell.Directory.Ldap
         }
 
         /*******************************/
-
-        /// <summary>
-        ///     Converts an array of sbytes to an array of chars.
-        /// </summary>
-        /// <param name="sByteArray">The array of sbytes to convert.</param>
-        /// <returns>The new array of chars.</returns>
-        [CLSCompliant(false)]
-        public static char[] ToCharArray(sbyte[] sByteArray)
-        {
-            var charArray = new char[sByteArray.Length];
-            sByteArray.CopyTo(charArray, 0);
-            return charArray;
-        }
 
         /// <summary>
         ///     Converts an array of bytes to an array of chars.
@@ -2055,9 +2006,9 @@ namespace Novell.Directory.Ldap
             /// </summary>
             /// <returns>The array of signed bytes with the resulting hash value.</returns>
             [CLSCompliant(false)]
-            public sbyte[] DigestData()
+            public byte[] DigestData()
             {
-                var result = ToSByteArray(Algorithm.ComputeHash(Data));
+                var result = Algorithm.ComputeHash(Data);
                 Reset();
                 return result;
             }
@@ -2069,7 +2020,7 @@ namespace Novell.Directory.Ldap
             /// <param name="newData">The array of bytes for final update to the digest.</param>
             /// <returns>An array of signed bytes with the resulting hash value.</returns>
             [CLSCompliant(false)]
-            public sbyte[] DigestData(byte[] newData)
+            public byte[] DigestData(byte[] newData)
             {
                 Update(newData);
                 return DigestData();
@@ -2148,7 +2099,7 @@ namespace Novell.Directory.Ldap
             /// <param name="secondDigest">An array of signed bytes for comparison.</param>
             /// <returns>True if the input digest arrays are equal.</returns>
             [CLSCompliant(false)]
-            public static bool EquivalentDigest(sbyte[] firstDigest, sbyte[] secondDigest)
+            public static bool EquivalentDigest(byte[] firstDigest, byte[] secondDigest)
             {
                 var result = false;
                 if (firstDigest.Length == secondDigest.Length)

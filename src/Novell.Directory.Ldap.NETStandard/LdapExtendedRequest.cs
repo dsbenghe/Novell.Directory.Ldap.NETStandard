@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap
                 var oid = (RfcLdapOid)tag.TaggedValue;
                 var requestId = oid.StringValue();
 
-                sbyte[] requestValue = null;
+                byte[] requestValue = null;
                 if (xreq.Size() >= 2)
                 {
                     tag = (Asn1Tagged)xreq.get_Renamed(1);

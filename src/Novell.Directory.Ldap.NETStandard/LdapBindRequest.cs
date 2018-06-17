@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         [CLSCompliant(false)]
-        public LdapBindRequest(int version, string dn, sbyte[] passwd, LdapControl[] cont)
+        public LdapBindRequest(int version, string dn, byte[] passwd, LdapControl[] cont)
             : base(
                 BindRequest,
                 new RfcBindRequest(new Asn1Integer(version), new RfcLdapDn(dn),

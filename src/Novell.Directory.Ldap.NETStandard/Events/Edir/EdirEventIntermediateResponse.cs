@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Events.Edir
         public EdirEventIntermediateResponse(byte[] message)
             : base(new RfcLdapMessage(new Asn1Sequence()))
         {
-            ProcessMessage(SupportClass.ToSByteArray(message));
+            ProcessMessage(message);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.Events.Edir
         /// </summary>
         public BaseEdirEventData EventResponseDataObject { get; private set; }
 
-        private void ProcessMessage(sbyte[] returnedValue)
+        private void ProcessMessage(byte[] returnedValue)
         {
             var decoder = new LberDecoder();
             var sequence = (Asn1Sequence)decoder.Decode(returnedValue);

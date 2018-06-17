@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcAttributeValue(sbyte[] valueRenamed)
+        public RfcAttributeValue(byte[] valueRenamed)
             : base(valueRenamed)
         {
         }

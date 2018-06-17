@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapEntryChangeControl(string oid, bool critical, sbyte[] valueRenamed)
+        public LdapEntryChangeControl(string oid, bool critical, byte[] valueRenamed)
             : base(oid, critical, valueRenamed)
         {
             // Create a decoder objet

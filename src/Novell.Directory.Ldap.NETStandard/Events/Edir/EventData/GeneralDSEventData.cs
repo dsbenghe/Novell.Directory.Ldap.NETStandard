@@ -135,7 +135,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
+            var dbytes = ((Asn1OctetString)obj).ByteValue();
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();
@@ -154,7 +154,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
+            var dbytes = ((Asn1OctetString)obj).ByteValue();
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();
@@ -173,7 +173,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 throw new IOException("Unknown Tagged Data");
             }
 
-            var dbytes = SupportClass.ToByteArray(((Asn1OctetString)obj).ByteValue());
+            var dbytes = ((Asn1OctetString)obj).ByteValue();
             var data = new MemoryStream(dbytes);
 
             var dec = new LberDecoder();

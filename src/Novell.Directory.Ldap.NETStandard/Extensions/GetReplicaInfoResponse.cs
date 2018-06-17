@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Parse the parameters in the order
 
-                var currentPtr = new MemoryStream(SupportClass.ToByteArray(returnedValue));
+                var currentPtr = new MemoryStream(returnedValue);
 
                 // Parse partitionID
                 var asn1PartitionId = (Asn1Integer)decoder.Decode(currentPtr);

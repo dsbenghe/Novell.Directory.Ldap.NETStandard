@@ -165,9 +165,9 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
                 var asn1ObjectDn = new Asn1OctetString(objectDn);
-                var asn1Passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1Passwd = new Asn1OctetString(passwd);
                 var asn1BufferLength = new Asn1Integer(bufferLength);
-                var asn1Buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
+                var asn1Buffer = new Asn1OctetString(returnedBuffer);
 
                 // Form the chunks sequence to be passed to Server
                 var asn1ChunksSeq = new Asn1Sequence();
@@ -191,7 +191,7 @@ namespace Novell.Directory.Ldap.Extensions
                 asn1ChunksSeq.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {

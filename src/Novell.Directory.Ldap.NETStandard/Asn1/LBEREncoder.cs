@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            outRenamed.WriteByte((byte)(b.BooleanValue() ? (sbyte)SupportClass.Identity(0xff) : (sbyte)0x00));
+            outRenamed.WriteByte((byte)(b.BooleanValue() ? (byte)SupportClass.Identity(0xff) : (byte)0x00));
         }
 
         /// <summary>
@@ -90,15 +90,15 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         public void Encode(Asn1Numeric n, Stream outRenamed)
         {
-            var octets = new sbyte[8];
-            sbyte len;
+            var octets = new byte[8];
+            byte len;
             var valueRenamed = n.LongValue();
             long endValue = valueRenamed < 0 ? -1 : 0;
             var endSign = endValue & 0x80;
 
             for (len = 0; len == 0 || valueRenamed != endValue || (octets[len - 1] & 0x80) != endSign; len++)
             {
-                octets[len] = (sbyte)(valueRenamed & 0xFF);
+                octets[len] = (byte)(valueRenamed & 0xFF);
                 valueRenamed >>= 8;
             }
 
@@ -142,8 +142,8 @@ namespace Novell.Directory.Ldap.Asn1
         {
             Encode(os.GetIdentifier(), outRenamed);
             EncodeLength(os.ByteValue().Length, outRenamed);
-            var tempSbyteArray = os.ByteValue();
-            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
+            var array = os.ByteValue();
+            outRenamed.Write(array, 0, array.Length);
         }
 
         /* Asn1 TYPE NOT YET SUPPORTED
@@ -189,8 +189,8 @@ namespace Novell.Directory.Ldap.Asn1
             EncodeLength((int)output.Length, outRenamed);
 
             /* Add each encoded element into the output stream */
-            var tempSbyteArray = SupportClass.ToSByteArray(output.ToArray());
-            outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
+            var array = output.ToArray();
+            outRenamed.Write(array, 0, array.Length);
         }
 
         /// <summary> Encode an Asn1Tagged directly into the specified outputstream.</summary>
@@ -205,8 +205,8 @@ namespace Novell.Directory.Ldap.Asn1
                 t.TaggedValue.Encode(this, encodedContent);
 
                 EncodeLength((int)encodedContent.Length, outRenamed);
-                var tempSbyteArray = SupportClass.ToSByteArray(encodedContent.ToArray());
-                outRenamed.Write(SupportClass.ToByteArray(tempSbyteArray), 0, tempSbyteArray.Length);
+                var array = encodedContent.ToArray();
+                outRenamed.Write(array, 0, array.Length);
             }
             else
             {
@@ -224,7 +224,7 @@ namespace Novell.Directory.Ldap.Asn1
         {
             var c = id.Asn1Class;
             var t = id.Tag;
-            var ccf = (sbyte)((c << 6) | (id.Constructed ? 0x20 : 0));
+            var ccf = (byte)((c << 6) | (id.Constructed ? 0x20 : 0));
 
             if (t < 30)
             {
@@ -254,11 +254,11 @@ namespace Novell.Directory.Ldap.Asn1
             }
             else
             {
-                var octets = new sbyte[4]; // 4 bytes sufficient for 32 bit int.
-                sbyte n;
+                var octets = new byte[4]; // 4 bytes sufficient for 32 bit int.
+                byte n;
                 for (n = 0; length != 0; n++)
                 {
-                    octets[n] = (sbyte)(length & 0xFF);
+                    octets[n] = (byte)(length & 0xFF);
                     length >>= 8;
                 }
 
@@ -266,7 +266,7 @@ namespace Novell.Directory.Ldap.Asn1
 
                 for (var i = n - 1; i >= 0; i--)
                 {
-                    outRenamed.WriteByte((byte)octets[i]);
+                    outRenamed.WriteByte(octets[i]);
                 }
             }
         }
@@ -274,11 +274,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Encodes the provided tag into the outputstream.</summary>
         private void EncodeTagInteger(int valueRenamed, Stream outRenamed)
         {
-            var octets = new sbyte[5];
+            var octets = new byte[5];
             int n;
             for (n = 0; valueRenamed != 0; n++)
             {
-                octets[n] = (sbyte)(valueRenamed & 0x7F);
+                octets[n] = (byte)(valueRenamed & 0x7F);
                 valueRenamed = valueRenamed >> 7;
             }
 
@@ -287,7 +287,7 @@ namespace Novell.Directory.Ldap.Asn1
                 outRenamed.WriteByte((byte)(octets[i] | 0x80));
             }
 
-            outRenamed.WriteByte((byte)octets[0]);
+            outRenamed.WriteByte(octets[0]);
         }
     }
 }

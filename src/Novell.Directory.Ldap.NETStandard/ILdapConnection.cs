@@ -239,7 +239,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, sbyte[] passwd);
+        void Bind(int version, string dn, byte[] passwd);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -272,7 +272,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, sbyte[] passwd, LdapConstraints cons);
+        void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
         ///     Connects to the specified host and port.

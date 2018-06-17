@@ -44,8 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAssertionValue : Asn1OctetString
     {
         /// <summary> </summary>
-        [CLSCompliant(false)]
-        public RfcAssertionValue(sbyte[] valueRenamed)
+        public RfcAssertionValue(byte[] valueRenamed)
             : base(valueRenamed)
         {
         }

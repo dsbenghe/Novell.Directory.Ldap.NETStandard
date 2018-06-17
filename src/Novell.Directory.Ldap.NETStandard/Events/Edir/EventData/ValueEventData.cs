@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
 
             var octData = (Asn1OctetString)Decoder.Decode(DecodedData, length);
             StrData = octData.StringValue();
-            BinData = SupportClass.ToByteArray(octData.ByteValue());
+            BinData = octData.ByteValue();
 
             NVerb = ((Asn1Integer)Decoder.Decode(DecodedData, length)).IntValue();
 

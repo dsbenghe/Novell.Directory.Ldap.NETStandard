@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap
          * @return The value of the response.
          */
         [CLSCompliant(false)]
-        public sbyte[] GetValue()
+        public byte[] GetValue()
         {
             var tempString =
                 ((RfcIntermediateResponse)Message.Response).GetResponse();

@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapSortResponse(string oid, bool critical, sbyte[] values)
+        public LdapSortResponse(string oid, bool critical, byte[] values)
             : base(oid, critical, values)
         {
             // Create a decoder object

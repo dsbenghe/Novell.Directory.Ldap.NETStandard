@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
     public class LdapExtendedOperation
     {
         private string _oid;
-        private sbyte[] _vals;
+        private byte[] _vals;
 
         /// <summary>
         ///     Constructs a new object with the specified object ID and data.
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data of the operation.
         /// </param>
         [CLSCompliant(false)]
-        public LdapExtendedOperation(string oid, sbyte[] vals)
+        public LdapExtendedOperation(string oid, byte[] vals)
         {
             _oid = oid;
             _vals = vals;
@@ -102,7 +102,7 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] GetValue()
+        public byte[] GetValue()
         {
             return _vals;
         }
@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap
         ///     The byte array of operation-specific data.
         /// </param>
         [CLSCompliant(false)]
-        protected void SetValue(sbyte[] newVals)
+        protected void SetValue(byte[] newVals)
         {
             _vals = newVals;
         }

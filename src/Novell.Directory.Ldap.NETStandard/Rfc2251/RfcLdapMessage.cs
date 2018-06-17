@@ -146,7 +146,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             var protocolOp = (Asn1Tagged)get_Renamed(1);
             var protocolOpId = protocolOp.GetIdentifier();
             var content = ((Asn1OctetString)protocolOp.TaggedValue).ByteValue();
-            var bais = new MemoryStream(SupportClass.ToByteArray(content));
+            var bais = new MemoryStream(content);
 
             switch (protocolOpId.Tag)
             {
@@ -208,7 +208,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 // we could check to make sure we have controls here....
 
                 content = ((Asn1OctetString)controls.TaggedValue).ByteValue();
-                bais = new MemoryStream(SupportClass.ToByteArray(content));
+                bais = new MemoryStream(content);
                 set_Renamed(2, new RfcControls(dec, bais, content.Length));
             }
         }

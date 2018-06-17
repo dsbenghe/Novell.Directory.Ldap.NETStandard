@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
 // [Flags]
     [CLSCompliant(false)]
-    public enum CharacterTypes : sbyte
+    public enum CharacterTypes : byte
     {
         Whitespace = 1,
         Numeric = 2,

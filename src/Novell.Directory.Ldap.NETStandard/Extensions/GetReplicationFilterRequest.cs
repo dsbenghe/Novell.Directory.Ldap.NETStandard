@@ -91,7 +91,7 @@ namespace Novell.Directory.Ldap.Extensions
 
                 // Add the serverDN to encoded data
                 asn1ServerDn.Encode(encoder, encodedData);
-                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {

@@ -451,10 +451,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     octet-string encoding of the specified string.
         /// </returns>
-        private sbyte[] UnescapeString(string stringRenamed)
+        private byte[] UnescapeString(string stringRenamed)
         {
             // give octets enough space to grow
-            var octets = new sbyte[stringRenamed.Length * 3];
+            var octets = new byte[stringRenamed.Length * 3];
 
             // index for string and octets
             int iString, iOctets;
@@ -466,7 +466,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             var escStart = false;
 
             int ival, length = stringRenamed.Length;
-            sbyte[] utf8Bytes;
+            byte[] utf8Bytes;
             char ch; // Character we are adding to the octet string
             var ca = new char[1]; // used while converting multibyte UTF-8 char
             var temp = (char)0; // holds the value of the escaped sequence
@@ -494,7 +494,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     else
                     {
                         temp |= (char)ival; // all bits of escaped char
-                        octets[iOctets++] = (sbyte)temp;
+                        octets[iOctets++] = (byte)temp;
                         escStart = escape = false;
                     }
                 }
@@ -513,7 +513,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             if (ch <= 0x7f)
                             {
                                 // char = %x01-27 / %x2b-5b / %x5d-7f
-                                octets[iOctets++] = (sbyte)ch;
+                                octets[iOctets++] = (byte)ch;
                             }
                             else
                             {
@@ -521,9 +521,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 ca[0] = ch;
                                 var encoder = Encoding.GetEncoding("utf-8");
                                 var ibytes = encoder.GetBytes(new string(ca));
-                                utf8Bytes = SupportClass.ToSByteArray(ibytes);
+                                utf8Bytes = ibytes;
 
-// utf8Bytes = new System.String(ca).getBytes("UTF-8");
                                 // copy utf8 encoded character into octets
                                 Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
                                 iOctets = iOctets + utf8Bytes.Length;
@@ -538,7 +537,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             ca[0] = ch;
                             var encoder = Encoding.GetEncoding("utf-8");
                             var ibytes = encoder.GetBytes(new string(ca));
-                            utf8Bytes = SupportClass.ToSByteArray(ibytes);
+                            utf8Bytes = ibytes;
 
 // utf8Bytes = new System.String(ca).getBytes("UTF-8");
                             for (var i = 0; i < utf8Bytes.Length; i++)
@@ -572,7 +571,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 throw new LdapLocalException(ExceptionMessages.ShortEscape, LdapException.FilterError);
             }
 
-            var toReturn = new sbyte[iOctets];
+            var toReturn = new byte[iOctets];
 
 // Array.Copy((System.Array)SupportClass.ToByteArray(octets), 0, (System.Array)SupportClass.ToByteArray(toReturn), 0, iOctets);
             Array.Copy(octets, 0, toReturn, 0, iOctets);
@@ -685,7 +684,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     sequence or the type added is out of sequence.
         /// </param>
         [CLSCompliant(false)]
-        public void AddSubstring(int type, sbyte[] valueRenamed)
+        public void AddSubstring(int type, byte[] valueRenamed)
         {
             try
             {
@@ -768,7 +767,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Occurs when the filter type is not a valid attribute assertion.
         /// </param>
         [CLSCompliant(false)]
-        public void AddAttributeValueAssertion(int rfcType, string attrName, sbyte[] valueRenamed)
+        public void AddAttributeValueAssertion(int rfcType, string attrName, byte[] valueRenamed)
         {
             if (_filterStack != null && !(_filterStack.Count == 0) && _filterStack.Peek() is Asn1SequenceOf)
             {
@@ -829,7 +828,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
         [CLSCompliant(false)]
-        public void AddExtensibleMatch(string matchingRule, string attrName, sbyte[] valueRenamed,
+        public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed,
             bool useDnMatching)
         {
             Asn1Object current = new Asn1Tagged(
@@ -959,7 +958,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             filter.Append((string)itr.Current);
                             filter.Append('=');
-                            var valueRenamed = (sbyte[])itr.Current;
+                            var valueRenamed = (byte[])itr.Current;
                             filter.Append(ByteString(valueRenamed));
                             break;
                         }
@@ -968,7 +967,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             filter.Append((string)itr.Current);
                             filter.Append(">=");
-                            var valueRenamed = (sbyte[])itr.Current;
+                            var valueRenamed = (byte[])itr.Current;
                             filter.Append(ByteString(valueRenamed));
                             break;
                         }
@@ -977,7 +976,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             filter.Append((string)itr.Current);
                             filter.Append("<=");
-                            var valueRenamed = (sbyte[])itr.Current;
+                            var valueRenamed = (byte[])itr.Current;
                             filter.Append(ByteString(valueRenamed));
                             break;
                         }
@@ -990,7 +989,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         case ApproxMatch:
                             filter.Append((string)itr.Current);
                             filter.Append("~=");
-                            var valueRenamed2 = (sbyte[])itr.Current;
+                            var valueRenamed2 = (byte[])itr.Current;
                             filter.Append(ByteString(valueRenamed2));
                             break;
 
@@ -1059,7 +1058,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Convert a UTF8 encoded string, or binary data, into a String encoded for
         ///     a string filter.
         /// </summary>
-        private static string ByteString(sbyte[] valueRenamed)
+        private static string ByteString(byte[] valueRenamed)
         {
             string toReturn = null;
             if (Base64.IsValidUtf8(valueRenamed, true))
@@ -1067,7 +1066,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 try
                 {
                     var encoder = Encoding.GetEncoding("utf-8");
-                    var dchar = encoder.GetChars(SupportClass.ToByteArray(valueRenamed));
+                    var dchar = encoder.GetChars(valueRenamed);
                     toReturn = new string(dchar);
 
 // toReturn = new String(value_Renamed, "UTF-8");

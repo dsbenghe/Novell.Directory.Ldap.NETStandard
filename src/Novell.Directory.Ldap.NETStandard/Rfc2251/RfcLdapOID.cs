@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         /// <summary> </summary>
         [CLSCompliant(false)]
-        public RfcLdapOid(sbyte[] s)
+        public RfcLdapOid(byte[] s)
             : base(s)
         {
         }

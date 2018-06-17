@@ -164,7 +164,7 @@ namespace Novell.Directory.Ldap.Extensions
                 var asn1ObjectDn = new Asn1OctetString(objectDn);
                 var asn1Mts = new Asn1Integer(mts);
                 var asn1Revision = new Asn1Integer(revision);
-                var asn1Passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1Passwd = new Asn1OctetString(passwd);
 
                 asn1ObjectDn.Encode(encoder, encodedData);
                 asn1Mts.Encode(encoder, encodedData);
@@ -172,7 +172,7 @@ namespace Novell.Directory.Ldap.Extensions
                 asn1Passwd.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {

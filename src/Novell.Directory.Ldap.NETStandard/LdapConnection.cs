@@ -828,12 +828,12 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Bind(int version, string dn, string passwd, LdapConstraints cons)
         {
-            sbyte[] pw = null;
+            byte[] pw = null;
             if ((object)passwd != null)
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(passwd);
-                pw = SupportClass.ToSByteArray(ibytes);
+                pw = ibytes;
             }
 
             Bind(version, dn, pw, cons);
@@ -868,7 +868,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public void Bind(int version, string dn, sbyte[] passwd)
+        public void Bind(int version, string dn, byte[] passwd)
         {
             Bind(version, dn, passwd, _defSearchCons);
         }
@@ -905,7 +905,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public void Bind(int version, string dn, sbyte[] passwd, LdapConstraints cons)
+        public void Bind(int version, string dn, byte[] passwd, LdapConstraints cons)
         {
             var queue = Bind(version, dn, passwd, null, cons);
             var res = (LdapResponse)queue.GetResponse();
@@ -1948,7 +1948,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue)
+        public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue)
         {
             return Bind(version, dn, passwd, queue, _defSearchCons);
         }
@@ -1990,7 +1990,7 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         [CLSCompliant(false)]
-        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
+        public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             if (cons == null)
@@ -2009,7 +2009,7 @@ namespace Novell.Directory.Ldap
 
             if (passwd == null)
             {
-                passwd = new sbyte[] { };
+                passwd = new byte[] { };
             }
 
             var anonymous = false;
@@ -3117,7 +3117,7 @@ namespace Novell.Directory.Ldap
                 {
                     // dn, pw are null in the default case (anonymous bind)
                     string dn = null;
-                    sbyte[] pw = null;
+                    byte[] pw = null;
                     try
                     {
                         rconn = new LdapConnection

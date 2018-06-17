@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         [CLSCompliant(false)]
-        public LdapCompareRequest(string dn, string name, sbyte[] valueRenamed, LdapControl[] cont)
+        public LdapCompareRequest(string dn, string name, byte[] valueRenamed, LdapControl[] cont)
             : base(
                 CompareRequest,
                 new RfcCompareRequest(
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap
         ///     the LdapAttribute.
         /// </returns>
         [CLSCompliant(false)]
-        public sbyte[] AssertionValue
+        public byte[] AssertionValue
         {
             get
             {

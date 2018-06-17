@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         [CLSCompliant(false)]
-        public RfcAuthenticationChoice(string mechanism, sbyte[] credentials)
+        public RfcAuthenticationChoice(string mechanism, byte[] credentials)
             : base(
                 new Asn1Tagged(
                     new Asn1Identifier(Asn1Identifier.Context, true, 3),

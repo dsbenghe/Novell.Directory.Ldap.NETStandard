@@ -119,7 +119,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                     null, e);
             }
 
-            SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+            SetValue(encodedData.ToArray());
         } // end of the constructor MonitorEventRequest
     }
 }
