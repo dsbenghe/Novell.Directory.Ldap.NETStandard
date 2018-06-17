@@ -183,6 +183,7 @@ namespace Novell.Directory.Ldap
                 startIndex += n;
                 bytesToRead -= n;
             }
+
             // Returns -1 if EOF
             if (bytesRead == 0)
             {
@@ -281,18 +282,361 @@ namespace Novell.Directory.Ldap
         /*******************************/
 
         /// <summary>
+        ///     Gets the DateTimeFormat instance and date instance to obtain the date with the format passed
+        /// </summary>
+        /// <param name="format">The DateTimeFormat to obtain the time and date pattern</param>
+        /// <param name="date">The date instance used to get the date</param>
+        /// <returns>A string representing the date with the time and date patterns</returns>
+        public static string FormatDateTime(DateTimeFormatInfo format, DateTime date)
+        {
+            var timePattern = DateTimeFormatManager.Manager.GetTimeFormatPattern(format);
+            var datePattern = DateTimeFormatManager.Manager.GetDateFormatPattern(format);
+            return date.ToString(datePattern + " " + timePattern, format);
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Adds a new key-and-value pair into the hash table
+        /// </summary>
+        /// <param name="collection">The collection to work with</param>
+        /// <param name="key">Key used to obtain the value</param>
+        /// <param name="newValue">Value asociated with the key</param>
+        /// <returns>The old element associated with the key</returns>
+        public static object PutElement(IDictionary collection, object key, object newValue)
+        {
+            var element = collection[key];
+            collection[key] = newValue;
+            return element;
+        }
+
+
+        /*******************************/
+
+        /// <summary>
+        ///     Removes the first occurrence of an specific object from an ArrayList instance.
+        /// </summary>
+        /// <param name="arrayList">The ArrayList instance</param>
+        /// <param name="element">The element to remove</param>
+        /// <returns>True if item is found in the ArrayList; otherwise, false</returns>
+        public static bool VectorRemoveElement(ArrayList arrayList, object element)
+        {
+            var containsItem = arrayList.Contains(element);
+            arrayList.Remove(element);
+            return containsItem;
+        }
+
+
+        /*******************************/
+
+        /// <summary>
+        ///     Removes the element with the specified key from a Hashtable instance.
+        /// </summary>
+        /// <param name="hashtable">The Hashtable instance</param>
+        /// <param name="key">The key of the element to remove</param>
+        /// <returns>The element removed</returns>
+        public static object HashtableRemove(Hashtable hashtable, object key)
+        {
+            var element = hashtable[key];
+            hashtable.Remove(key);
+            return element;
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Sets the size of the ArrayList. If the new size is greater than the current capacity, then new null items are added
+        ///     to the end of the ArrayList. If the new size is lower than the current size, then all elements after the new size
+        ///     are discarded
+        /// </summary>
+        /// <param name="arrayList">The ArrayList to be changed</param>
+        /// <param name="newSize">The new ArrayList size</param>
+        public static void SetSize(ArrayList arrayList, int newSize)
+        {
+            if (newSize < 0)
+            {
+                throw new ArgumentException();
+            }
+
+            if (newSize < arrayList.Count)
+            {
+                arrayList.RemoveRange(newSize, arrayList.Count - newSize);
+            }
+            else
+            {
+                while (newSize > arrayList.Count)
+                {
+                    arrayList.Add(null);
+                }
+            }
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Adds an element to the top end of a Stack instance.
+        /// </summary>
+        /// <param name="stack">The Stack instance</param>
+        /// <param name="element">The element to add</param>
+        /// <returns>The element added</returns>
+        public static object StackPush(Stack stack, object element)
+        {
+            stack.Push(element);
+            return element;
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Copies an array of chars obtained from a String into a specified array of chars
+        /// </summary>
+        /// <param name="sourceString">The String to get the chars from</param>
+        /// <param name="sourceStart">Position of the String to start getting the chars</param>
+        /// <param name="sourceEnd">Position of the String to end getting the chars</param>
+        /// <param name="destinationArray">Array to return the chars</param>
+        /// <param name="destinationStart">Position of the destination array of chars to start storing the chars</param>
+        /// <returns>An array of chars</returns>
+        public static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
+            ref char[] destinationArray, int destinationStart)
+        {
+            int sourceCounter;
+            int destinationCounter;
+            sourceCounter = sourceStart;
+            destinationCounter = destinationStart;
+            while (sourceCounter < sourceEnd)
+            {
+                destinationArray[destinationCounter] = sourceString[sourceCounter];
+                sourceCounter++;
+                destinationCounter++;
+            }
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Creates an output file stream to write to the file with the specified name.
+        /// </summary>
+        /// <param name="fileName">Name of the file to write.</param>
+        /// <param name="append">True in order to write to the end of the file, false otherwise.</param>
+        /// <returns>New instance of FileStream with the proper file mode.</returns>
+        public static FileStream GetFileStream(string fileName, bool append)
+        {
+            if (append)
+            {
+                return new FileStream(fileName, FileMode.Append);
+            }
+
+            return new FileStream(fileName, FileMode.Create);
+        }
+
+
+        /*******************************/
+
+        /// <summary>
+        ///     Converts an array of sbytes to an array of chars
+        /// </summary>
+        /// <param name="sByteArray">The array of sbytes to convert</param>
+        /// <returns>The new array of chars</returns>
+        [CLSCompliant(false)]
+        public static char[] ToCharArray(sbyte[] sByteArray)
+        {
+            var charArray = new char[sByteArray.Length];
+            sByteArray.CopyTo(charArray, 0);
+            return charArray;
+        }
+
+        /// <summary>
+        ///     Converts an array of bytes to an array of chars
+        /// </summary>
+        /// <param name="byteArray">The array of bytes to convert</param>
+        /// <returns>The new array of chars</returns>
+        public static char[] ToCharArray(byte[] byteArray)
+        {
+            var charArray = new char[byteArray.Length];
+            byteArray.CopyTo(charArray, 0);
+            return charArray;
+        }
+
+
+        /*******************************/
+
+        /// <summary>
+        ///     Creates an instance of a received Type.
+        /// </summary>
+        /// <param name="classType">The Type of the new class instance to return.</param>
+        /// <returns>An Object containing the new instance.</returns>
+        public static object CreateNewInstance(Type classType)
+        {
+            object instance = null;
+            Type[] constructor = { };
+            ConstructorInfo[] constructors = null;
+
+            constructors = classType.GetConstructors();
+
+            if (constructors.Length == 0)
+            {
+                throw new UnauthorizedAccessException();
+            }
+
+            for (var i = 0; i < constructors.Length; i++)
+            {
+                var parameters = constructors[i].GetParameters();
+
+                if (parameters.Length == 0)
+                {
+                    instance = classType.GetConstructor(constructor).Invoke(new object[] { });
+                    break;
+                }
+
+                if (i == constructors.Length - 1)
+                {
+                    throw new MethodAccessException();
+                }
+            }
+
+            return instance;
+        }
+
+
+        /*******************************/
+
+        /// <summary>
+        ///     Writes the exception stack trace to the received stream
+        /// </summary>
+        /// <param name="throwable">Exception to obtain information from</param>
+        /// <param name="stream">Output sream used to write to</param>
+        public static void WriteStackTrace(Exception throwable, TextWriter stream)
+        {
+            stream.Write(throwable.StackTrace);
+            stream.Flush();
+        }
+
+        /*******************************/
+
+        /// <summary>
+        ///     Determines whether two Collections instances are equals.
+        /// </summary>
+        /// <param name="source">The first Collections to compare. </param>
+        /// <param name="target">The second Collections to compare. </param>
+        /// <returns>Return true if the first collection is the same instance as the second collection, otherwise return false.</returns>
+        public static bool EqualsSupport(ICollection source, ICollection target)
+        {
+            var sourceEnumerator = ReverseStack(source);
+            var targetEnumerator = ReverseStack(target);
+
+            if (source.Count != target.Count)
+            {
+                return false;
+            }
+
+            while (sourceEnumerator.MoveNext() && targetEnumerator.MoveNext())
+            {
+                if (!sourceEnumerator.Current.Equals(targetEnumerator.Current))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     Determines if a Collection is equal to the Object.
+        /// </summary>
+        /// <param name="source">The first Collections to compare.</param>
+        /// <param name="target">The Object to compare.</param>
+        /// <returns>Return true if the first collection contains the same values of the second Object, otherwise return false.</returns>
+        public static bool EqualsSupport(ICollection source, object target)
+        {
+            if (target.GetType() != typeof(ICollection))
+            {
+                return false;
+            }
+
+            return EqualsSupport(source, (ICollection) target);
+        }
+
+        /// <summary>
+        ///     Determines if a IDictionaryEnumerator is equal to the Object.
+        /// </summary>
+        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
+        /// <param name="target">The second Object to compare.</param>
+        /// <returns>
+        ///     Return true if the first IDictionaryEnumerator contains the same values of the second Object, otherwise return
+        ///     false.
+        /// </returns>
+        public static bool EqualsSupport(IDictionaryEnumerator source, object target)
+        {
+            if (target.GetType() != typeof(IDictionaryEnumerator))
+            {
+                return false;
+            }
+
+            return EqualsSupport(source, (IDictionaryEnumerator) target);
+        }
+
+        /// <summary>
+        ///     Determines whether two IDictionaryEnumerator instances are equals.
+        /// </summary>
+        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
+        /// <param name="target">The second IDictionaryEnumerator to compare.</param>
+        /// <returns>
+        ///     Return true if the first IDictionaryEnumerator contains the same values as the second IDictionaryEnumerator,
+        ///     otherwise return false.
+        /// </returns>
+        public static bool EqualsSupport(IDictionaryEnumerator source, IDictionaryEnumerator target)
+        {
+            while (source.MoveNext() && target.MoveNext())
+            {
+                if (source.Key.Equals(target.Key))
+                {
+                    if (source.Value.Equals(target.Value))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        ///     Reverses the Stack Collection received.
+        /// </summary>
+        /// <param name="collection">The collection to reverse.</param>
+        /// <returns>
+        ///     The collection received in reverse order if it was a System.Collections.Stack type, otherwise it does
+        ///     nothing to the collection.
+        /// </returns>
+        public static IEnumerator ReverseStack(ICollection collection)
+        {
+            if (collection.GetType() == typeof(Stack))
+            {
+                var collectionStack = new ArrayList(collection);
+                collectionStack.Reverse();
+                return collectionStack.GetEnumerator();
+            }
+
+            return collection.GetEnumerator();
+        }
+
+        /*******************************/
+
+        /// <summary>
         ///     The class performs token processing from strings
         /// </summary>
         public class Tokenizer
         {
-            //Element list identified
-            private ArrayList _elements;
-            //Source string to use
-            private string _source;
+            private readonly bool _returnDelims;
+
             //The tokenizer uses the default delimiter set: the space character, the tab character, the newline character, and the carriage-return character
             private string _delimiters = " \t\n\r";
 
-            private readonly bool _returnDelims;
+            //Element list identified
+            private ArrayList _elements;
+
+            //Source string to use
+            private string _source;
 
             /// <summary>
             ///     Initializes a new class instance with a specified string to process
@@ -339,6 +683,11 @@ namespace Novell.Directory.Ldap
                 RemoveEmptyStrings();
             }
 
+            /// <summary>
+            ///     Current token count for the source string
+            /// </summary>
+            public int Count => _elements.Count;
+
             private void Tokenize()
             {
                 var tempstr = _source;
@@ -351,6 +700,7 @@ namespace Novell.Directory.Ldap
                 {
                     return;
                 }
+
                 while (tempstr.IndexOfAny(_delimiters.ToCharArray()) >= 0)
                 {
                     if (tempstr.IndexOfAny(_delimiters.ToCharArray()) == 0)
@@ -380,16 +730,12 @@ namespace Novell.Directory.Ldap
                         }
                     }
                 }
+
                 if (tempstr.Length > 0)
                 {
                     _elements.Add(tempstr);
                 }
             }
-
-            /// <summary>
-            ///     Current token count for the source string
-            /// </summary>
-            public int Count => _elements.Count;
 
             /// <summary>
             ///     Determines if there are more tokens to return from the source string
@@ -420,6 +766,7 @@ namespace Novell.Directory.Ldap
                     _elements.RemoveAt(0);
                     return result;
                 }
+
                 _elements = new ArrayList();
                 _elements.AddRange(_source.Split(_delimiters.ToCharArray()));
                 RemoveEmptyStrings();
@@ -554,37 +901,6 @@ namespace Novell.Directory.Ldap
         /*******************************/
 
         /// <summary>
-        ///     Gets the DateTimeFormat instance and date instance to obtain the date with the format passed
-        /// </summary>
-        /// <param name="format">The DateTimeFormat to obtain the time and date pattern</param>
-        /// <param name="date">The date instance used to get the date</param>
-        /// <returns>A string representing the date with the time and date patterns</returns>
-        public static string FormatDateTime(DateTimeFormatInfo format, DateTime date)
-        {
-            var timePattern = DateTimeFormatManager.Manager.GetTimeFormatPattern(format);
-            var datePattern = DateTimeFormatManager.Manager.GetDateFormatPattern(format);
-            return date.ToString(datePattern + " " + timePattern, format);
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Adds a new key-and-value pair into the hash table
-        /// </summary>
-        /// <param name="collection">The collection to work with</param>
-        /// <param name="key">Key used to obtain the value</param>
-        /// <param name="newValue">Value asociated with the key</param>
-        /// <returns>The old element associated with the key</returns>
-        public static object PutElement(IDictionary collection, object key, object newValue)
-        {
-            var element = collection[key];
-            collection[key] = newValue;
-            return element;
-        }
-
-        /*******************************/
-
-        /// <summary>
         ///     This class contains static methods to manage arrays.
         /// </summary>
         public class ArrayListSupport
@@ -606,22 +922,6 @@ namespace Novell.Directory.Ldap
 
                 return objects;
             }
-        }
-
-
-        /*******************************/
-
-        /// <summary>
-        ///     Removes the first occurrence of an specific object from an ArrayList instance.
-        /// </summary>
-        /// <param name="arrayList">The ArrayList instance</param>
-        /// <param name="element">The element to remove</param>
-        /// <returns>True if item is found in the ArrayList; otherwise, false</returns>
-        public static bool VectorRemoveElement(ArrayList arrayList, object element)
-        {
-            var containsItem = arrayList.Contains(element);
-            arrayList.Remove(element);
-            return containsItem;
         }
 
         /*******************************/
@@ -675,35 +975,6 @@ namespace Novell.Directory.Ldap
             }
 
             /// <summary>
-            ///     This method has no functionality unless the method is overridden
-            /// </summary>
-            public virtual void Run()
-            {
-            }
-
-            /// <summary>
-            ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running
-            /// </summary>
-            public void Start()
-            {
-                _threadField.Start();
-            }
-
-            ///// <summary>
-            ///// Interrupts a thread that is in the WaitSleepJoin thread state
-            ///// </summary>
-            //public virtual void Interrupt()
-            //{
-            //	threadField.Interrupt();
-            //}
-
-
-            public void Stop()
-            {
-                IsStopping = true;
-            }
-
-            /// <summary>
             ///     Gets the current thread instance
             /// </summary>
             public Thread Instance
@@ -742,6 +1013,35 @@ namespace Novell.Directory.Ldap
             }
 
             public bool IsStopping { get; private set; }
+
+            /// <summary>
+            ///     This method has no functionality unless the method is overridden
+            /// </summary>
+            public virtual void Run()
+            {
+            }
+
+            /// <summary>
+            ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running
+            /// </summary>
+            public void Start()
+            {
+                _threadField.Start();
+            }
+
+            ///// <summary>
+            ///// Interrupts a thread that is in the WaitSleepJoin thread state
+            ///// </summary>
+            //public virtual void Interrupt()
+            //{
+            //	threadField.Interrupt();
+            //}
+
+
+            public void Stop()
+            {
+                IsStopping = true;
+            }
 
             /// <summary>
             ///     Blocks the calling thread until a thread terminates
@@ -835,6 +1135,7 @@ namespace Novell.Directory.Ldap
                         }
                     }
                 }
+
                 return result;
             }
 
@@ -911,6 +1212,7 @@ namespace Novell.Directory.Ldap
                     List.Remove(element);
                     result = true;
                 }
+
                 return result;
             }
 
@@ -930,6 +1232,7 @@ namespace Novell.Directory.Ldap
                         result = Remove(tempEnumerator.Current);
                     }
                 }
+
                 return result;
             }
 
@@ -1087,6 +1390,7 @@ namespace Novell.Directory.Ldap
                         result = true;
                     }
                 }
+
                 return result;
             }
 
@@ -1157,6 +1461,7 @@ namespace Novell.Directory.Ldap
                         Remove(tempEnumerator.Current);
                     }
                 }
+
                 return result;
             }
 
@@ -1195,6 +1500,7 @@ namespace Novell.Directory.Ldap
                     Remove(element);
                     result = true;
                 }
+
                 return result;
             }
 
@@ -1348,6 +1654,7 @@ namespace Novell.Directory.Ldap
                         i++;
                     }
                 }
+
                 return tempEnumerator;
             }
 
@@ -1545,6 +1852,7 @@ namespace Novell.Directory.Ldap
                         }
                     }
                 }
+
                 return result;
             }
 
@@ -1632,6 +1940,7 @@ namespace Novell.Directory.Ldap
 
                     Remove(tempEnumerator.Current);
                 }
+
                 return result;
             }
 
@@ -1719,137 +2028,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public class AbstractSetSupport : SetSupport
         {
-        }
-
-
-        /*******************************/
-
-        /// <summary>
-        ///     Removes the element with the specified key from a Hashtable instance.
-        /// </summary>
-        /// <param name="hashtable">The Hashtable instance</param>
-        /// <param name="key">The key of the element to remove</param>
-        /// <returns>The element removed</returns>
-        public static object HashtableRemove(Hashtable hashtable, object key)
-        {
-            var element = hashtable[key];
-            hashtable.Remove(key);
-            return element;
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Sets the size of the ArrayList. If the new size is greater than the current capacity, then new null items are added
-        ///     to the end of the ArrayList. If the new size is lower than the current size, then all elements after the new size
-        ///     are discarded
-        /// </summary>
-        /// <param name="arrayList">The ArrayList to be changed</param>
-        /// <param name="newSize">The new ArrayList size</param>
-        public static void SetSize(ArrayList arrayList, int newSize)
-        {
-            if (newSize < 0)
-            {
-                throw new ArgumentException();
-            }
-
-            if (newSize < arrayList.Count)
-            {
-                arrayList.RemoveRange(newSize, arrayList.Count - newSize);
-            }
-            else
-            {
-                while (newSize > arrayList.Count)
-                {
-                    arrayList.Add(null);
-                }
-            }
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Adds an element to the top end of a Stack instance.
-        /// </summary>
-        /// <param name="stack">The Stack instance</param>
-        /// <param name="element">The element to add</param>
-        /// <returns>The element added</returns>
-        public static object StackPush(Stack stack, object element)
-        {
-            stack.Push(element);
-            return element;
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Copies an array of chars obtained from a String into a specified array of chars
-        /// </summary>
-        /// <param name="sourceString">The String to get the chars from</param>
-        /// <param name="sourceStart">Position of the String to start getting the chars</param>
-        /// <param name="sourceEnd">Position of the String to end getting the chars</param>
-        /// <param name="destinationArray">Array to return the chars</param>
-        /// <param name="destinationStart">Position of the destination array of chars to start storing the chars</param>
-        /// <returns>An array of chars</returns>
-        public static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
-            ref char[] destinationArray, int destinationStart)
-        {
-            int sourceCounter;
-            int destinationCounter;
-            sourceCounter = sourceStart;
-            destinationCounter = destinationStart;
-            while (sourceCounter < sourceEnd)
-            {
-                destinationArray[destinationCounter] = sourceString[sourceCounter];
-                sourceCounter++;
-                destinationCounter++;
-            }
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Creates an output file stream to write to the file with the specified name.
-        /// </summary>
-        /// <param name="fileName">Name of the file to write.</param>
-        /// <param name="append">True in order to write to the end of the file, false otherwise.</param>
-        /// <returns>New instance of FileStream with the proper file mode.</returns>
-        public static FileStream GetFileStream(string fileName, bool append)
-        {
-            if (append)
-            {
-                return new FileStream(fileName, FileMode.Append);
-            }
-
-            return new FileStream(fileName, FileMode.Create);
-        }
-
-
-        /*******************************/
-
-        /// <summary>
-        ///     Converts an array of sbytes to an array of chars
-        /// </summary>
-        /// <param name="sByteArray">The array of sbytes to convert</param>
-        /// <returns>The new array of chars</returns>
-        [CLSCompliant(false)]
-        public static char[] ToCharArray(sbyte[] sByteArray)
-        {
-            var charArray = new char[sByteArray.Length];
-            sByteArray.CopyTo(charArray, 0);
-            return charArray;
-        }
-
-        /// <summary>
-        ///     Converts an array of bytes to an array of chars
-        /// </summary>
-        /// <param name="byteArray">The array of bytes to convert</param>
-        /// <returns>The new array of chars</returns>
-        public static char[] ToCharArray(byte[] byteArray)
-        {
-            var charArray = new char[byteArray.Length];
-            byteArray.CopyTo(charArray, 0);
-            return charArray;
         }
 
         /*******************************/
@@ -2001,166 +2179,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public interface ISingleThreadModel
         {
-        }
-
-
-        /*******************************/
-
-        /// <summary>
-        ///     Creates an instance of a received Type.
-        /// </summary>
-        /// <param name="classType">The Type of the new class instance to return.</param>
-        /// <returns>An Object containing the new instance.</returns>
-        public static object CreateNewInstance(Type classType)
-        {
-            object instance = null;
-            Type[] constructor = {};
-            ConstructorInfo[] constructors = null;
-
-            constructors = classType.GetConstructors();
-
-            if (constructors.Length == 0)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
-            for (var i = 0; i < constructors.Length; i++)
-            {
-                var parameters = constructors[i].GetParameters();
-
-                if (parameters.Length == 0)
-                {
-                    instance = classType.GetConstructor(constructor).Invoke(new object[] {});
-                    break;
-                }
-                if (i == constructors.Length - 1)
-                {
-                    throw new MethodAccessException();
-                }
-            }
-            return instance;
-        }
-
-
-        /*******************************/
-
-        /// <summary>
-        ///     Writes the exception stack trace to the received stream
-        /// </summary>
-        /// <param name="throwable">Exception to obtain information from</param>
-        /// <param name="stream">Output sream used to write to</param>
-        public static void WriteStackTrace(Exception throwable, TextWriter stream)
-        {
-            stream.Write(throwable.StackTrace);
-            stream.Flush();
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Determines whether two Collections instances are equals.
-        /// </summary>
-        /// <param name="source">The first Collections to compare. </param>
-        /// <param name="target">The second Collections to compare. </param>
-        /// <returns>Return true if the first collection is the same instance as the second collection, otherwise return false.</returns>
-        public static bool EqualsSupport(ICollection source, ICollection target)
-        {
-            var sourceEnumerator = ReverseStack(source);
-            var targetEnumerator = ReverseStack(target);
-
-            if (source.Count != target.Count)
-            {
-                return false;
-            }
-
-            while (sourceEnumerator.MoveNext() && targetEnumerator.MoveNext())
-            {
-                if (!sourceEnumerator.Current.Equals(targetEnumerator.Current))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Determines if a Collection is equal to the Object.
-        /// </summary>
-        /// <param name="source">The first Collections to compare.</param>
-        /// <param name="target">The Object to compare.</param>
-        /// <returns>Return true if the first collection contains the same values of the second Object, otherwise return false.</returns>
-        public static bool EqualsSupport(ICollection source, object target)
-        {
-            if (target.GetType() != typeof(ICollection))
-            {
-                return false;
-            }
-
-            return EqualsSupport(source, (ICollection) target);
-        }
-
-        /// <summary>
-        ///     Determines if a IDictionaryEnumerator is equal to the Object.
-        /// </summary>
-        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
-        /// <param name="target">The second Object to compare.</param>
-        /// <returns>
-        ///     Return true if the first IDictionaryEnumerator contains the same values of the second Object, otherwise return
-        ///     false.
-        /// </returns>
-        public static bool EqualsSupport(IDictionaryEnumerator source, object target)
-        {
-            if (target.GetType() != typeof(IDictionaryEnumerator))
-            {
-                return false;
-            }
-
-            return EqualsSupport(source, (IDictionaryEnumerator) target);
-        }
-
-        /// <summary>
-        ///     Determines whether two IDictionaryEnumerator instances are equals.
-        /// </summary>
-        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
-        /// <param name="target">The second IDictionaryEnumerator to compare.</param>
-        /// <returns>
-        ///     Return true if the first IDictionaryEnumerator contains the same values as the second IDictionaryEnumerator,
-        ///     otherwise return false.
-        /// </returns>
-        public static bool EqualsSupport(IDictionaryEnumerator source, IDictionaryEnumerator target)
-        {
-            while (source.MoveNext() && target.MoveNext())
-            {
-                if (source.Key.Equals(target.Key))
-                {
-                    if (source.Value.Equals(target.Value))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        ///     Reverses the Stack Collection received.
-        /// </summary>
-        /// <param name="collection">The collection to reverse.</param>
-        /// <returns>
-        ///     The collection received in reverse order if it was a System.Collections.Stack type, otherwise it does
-        ///     nothing to the collection.
-        /// </returns>
-        public static IEnumerator ReverseStack(ICollection collection)
-        {
-            if (collection.GetType() == typeof(Stack))
-            {
-                var collectionStack = new ArrayList(collection);
-                collectionStack.Reverse();
-                return collectionStack.GetEnumerator();
-            }
-            return collection.GetEnumerator();
         }
     }
 }

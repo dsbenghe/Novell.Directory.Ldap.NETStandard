@@ -77,6 +77,7 @@ namespace Novell.Directory.Ldap.Events
                 {
                     buf.AppendFormat("(Control{0}={1})", ++i, control.ToString());
                 }
+
                 buf.Append(")");
             }
 

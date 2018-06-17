@@ -51,14 +51,11 @@ namespace Novell.Directory.Ldap
     /// .
     /// LdapSchema schema;
     /// LdapSchemaElement element;
-    /// 
     /// // connect to the server
     /// lc.connect( ldapHost, ldapPort );
     /// lc.bind( ldapVersion, loginDN, password );
-    /// 
     /// // read the schema from the directory
     /// schema = lc.fetchSchema( lc.getSchemaDN() );
-    /// 
     /// // retrieve the definition of common name
     /// element = schema.getAttributeSchema( "cn" );
     /// System.out.println("The attribute cn has an oid of " + element.getID());
@@ -76,157 +73,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSchema : LdapEntry
     {
-        private void InitBlock()
-        {
-            _nameTable = new Hashtable[8];
-            _idTable = new Hashtable[8];
-        }
-
-        /// <summary>
-        ///     Returns an enumeration of attribute definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of attribute definitions.
-        /// </returns>
-        public IEnumerator AttributeSchemas => new EnumeratedIterator(_idTable[Attribute].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of DIT content rule definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of DIT content rule definitions.
-        /// </returns>
-        public IEnumerator DitContentRuleSchemas => new EnumeratedIterator(_idTable[Ditcontent].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of DIT structure rule definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of DIT structure rule definitions.
-        /// </returns>
-        public IEnumerator DitStructureRuleSchemas => new EnumeratedIterator(_idTable[Ditstructure].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of matching rule definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of matching rule definitions.
-        /// </returns>
-        public IEnumerator MatchingRuleSchemas => new EnumeratedIterator(_idTable[Matching].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of matching rule use definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of matching rule use definitions.
-        /// </returns>
-        public IEnumerator MatchingRuleUseSchemas => new EnumeratedIterator(_idTable[MatchingUse].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of name form definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of name form definitions.
-        /// </returns>
-        public IEnumerator NameFormSchemas => new EnumeratedIterator(_idTable[NameForm].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of object class definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of object class definitions.
-        /// </returns>
-        public IEnumerator ObjectClassSchemas => new EnumeratedIterator(_idTable[ObjectClass].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of syntax definitions.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of syntax definitions.
-        /// </returns>
-        public IEnumerator SyntaxSchemas => new EnumeratedIterator(_idTable[Syntax].Values.GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of attribute names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of attribute names.
-        /// </returns>
-        public IEnumerator AttributeNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of DIT content rule names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of DIT content rule names.
-        /// </returns>
-        public IEnumerator DitContentRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of DIT structure rule names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of DIT structure rule names.
-        /// </returns>
-        public IEnumerator DitStructureRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of matching rule names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of matching rule names.
-        /// </returns>
-        public IEnumerator MatchingRuleNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of matching rule use names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of matching rule use names.
-        /// </returns>
-        public IEnumerator MatchingRuleUseNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of name form names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of name form names.
-        /// </returns>
-        public IEnumerator NameFormNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     Returns an enumeration of object class names.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of object class names.
-        /// </returns>
-        public IEnumerator ObjectClassNames => new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
-
-        /// <summary>
-        ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
-        ///     is used for retrieving enumerations
-        /// </summary>
-        private Hashtable[] _idTable;
-
-        /// <summary>
-        ///     The nameTable will hash on the names (if available). To insure
-        ///     case-insensibility, the Keys for this table will be a String cast to
-        ///     Uppercase.
-        /// </summary>
-        private Hashtable[] _nameTable;
-
-        /*package*/
-
-        /// <summary>
-        ///     The following lists the Ldap names of subschema attributes for
-        ///     schema elements (definitions):
-        /// </summary>
-        internal static readonly string[] SchemaTypeNames =
-        {
-            "attributeTypes", "objectClasses", "ldapSyntaxes",
-            "nameForms", "dITContentRules", "dITStructureRules", "matchingRules", "matchingRuleUse"
-        };
-
         /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable </summary>
         /*package*/
         internal const int Attribute = 0;
@@ -259,6 +105,31 @@ namespace Novell.Directory.Ldap
         /*package*/
         internal const int MatchingUse = 7;
 
+        /*package*/
+
+        /// <summary>
+        ///     The following lists the Ldap names of subschema attributes for
+        ///     schema elements (definitions):
+        /// </summary>
+        internal static readonly string[] SchemaTypeNames =
+        {
+            "attributeTypes", "objectClasses", "ldapSyntaxes",
+            "nameForms", "dITContentRules", "dITStructureRules", "matchingRules", "matchingRuleUse"
+        };
+
+        /// <summary>
+        ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
+        ///     is used for retrieving enumerations
+        /// </summary>
+        private Hashtable[] _idTable;
+
+        /// <summary>
+        ///     The nameTable will hash on the names (if available). To insure
+        ///     case-insensibility, the Keys for this table will be a String cast to
+        ///     Uppercase.
+        /// </summary>
+        private Hashtable[] _nameTable;
+
 
         /// <summary>
         ///     Constructs an LdapSchema object from attributes of an LdapEntry.
@@ -284,6 +155,7 @@ namespace Novell.Directory.Ldap
                 _idTable[i] = new Hashtable();
                 _nameTable[i] = new Hashtable();
             }
+
             var itr = GetAttributeSet().GetEnumerator();
             while (itr.MoveNext())
             {
@@ -306,6 +178,7 @@ namespace Novell.Directory.Ldap
                             Logger.Log.LogWarning("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
+
                         AddElement(ObjectClass, classSchema);
                     }
                 }
@@ -324,6 +197,7 @@ namespace Novell.Directory.Ldap
                             Logger.Log.LogWarning("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
+
                         AddElement(Attribute, attrSchema);
                     }
                 }
@@ -387,8 +261,144 @@ namespace Novell.Directory.Ldap
                         AddElement(NameForm, nameFormSchema);
                     }
                 }
+
                 //All non schema attributes are ignored.
             }
+        }
+
+        /// <summary>
+        ///     Returns an enumeration of attribute definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of attribute definitions.
+        /// </returns>
+        public IEnumerator AttributeSchemas => new EnumeratedIterator(_idTable[Attribute].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of DIT content rule definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of DIT content rule definitions.
+        /// </returns>
+        public IEnumerator DitContentRuleSchemas => new EnumeratedIterator(_idTable[Ditcontent].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of DIT structure rule definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of DIT structure rule definitions.
+        /// </returns>
+        public IEnumerator DitStructureRuleSchemas =>
+            new EnumeratedIterator(_idTable[Ditstructure].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of matching rule definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of matching rule definitions.
+        /// </returns>
+        public IEnumerator MatchingRuleSchemas => new EnumeratedIterator(_idTable[Matching].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of matching rule use definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of matching rule use definitions.
+        /// </returns>
+        public IEnumerator MatchingRuleUseSchemas =>
+            new EnumeratedIterator(_idTable[MatchingUse].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of name form definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of name form definitions.
+        /// </returns>
+        public IEnumerator NameFormSchemas => new EnumeratedIterator(_idTable[NameForm].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of object class definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of object class definitions.
+        /// </returns>
+        public IEnumerator ObjectClassSchemas => new EnumeratedIterator(_idTable[ObjectClass].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of syntax definitions.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of syntax definitions.
+        /// </returns>
+        public IEnumerator SyntaxSchemas => new EnumeratedIterator(_idTable[Syntax].Values.GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of attribute names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of attribute names.
+        /// </returns>
+        public IEnumerator AttributeNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of DIT content rule names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of DIT content rule names.
+        /// </returns>
+        public IEnumerator DitContentRuleNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of DIT structure rule names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of DIT structure rule names.
+        /// </returns>
+        public IEnumerator DitStructureRuleNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of matching rule names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of matching rule names.
+        /// </returns>
+        public IEnumerator MatchingRuleNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of matching rule use names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of matching rule use names.
+        /// </returns>
+        public IEnumerator MatchingRuleUseNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of name form names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of name form names.
+        /// </returns>
+        public IEnumerator NameFormNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator());
+
+        /// <summary>
+        ///     Returns an enumeration of object class names.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of object class names.
+        /// </returns>
+        public IEnumerator ObjectClassNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
+
+        private void InitBlock()
+        {
+            _nameTable = new Hashtable[8];
+            _idTable = new Hashtable[8];
         }
 
         /// <summary>
@@ -442,13 +452,17 @@ namespace Novell.Directory.Ldap
         private LdapSchemaElement GetSchemaElement(int schemaType, string key)
         {
             if ((object) key == null || key.ToUpper().Equals("".ToUpper()))
+            {
                 return null;
+            }
+
             var c = key[0];
             if (c >= '0' && c <= '9')
             {
                 //oid lookup
                 return (LdapSchemaElement) _idTable[schemaType][key];
             }
+
             //name lookup
             return (LdapSchemaElement) _nameTable[schemaType][key.ToUpper()];
         }
@@ -615,21 +629,45 @@ namespace Novell.Directory.Ldap
         private int GetType(LdapSchemaElement element)
         {
             if (element is LdapAttributeSchema)
+            {
                 return Attribute;
+            }
+
             if (element is LdapObjectClassSchema)
+            {
                 return ObjectClass;
+            }
+
             if (element is LdapSyntaxSchema)
+            {
                 return Syntax;
+            }
+
             if (element is LdapNameFormSchema)
+            {
                 return NameForm;
+            }
+
             if (element is LdapMatchingRuleSchema)
+            {
                 return Matching;
+            }
+
             if (element is LdapMatchingRuleUseSchema)
+            {
                 return MatchingUse;
+            }
+
             if (element is LdapDitContentRuleSchema)
+            {
                 return Ditcontent;
+            }
+
             if (element is LdapDitStructureRuleSchema)
+            {
                 return Ditstructure;
+            }
+
             throw new ArgumentException("The specified schema element type is not recognized");
         }
     }

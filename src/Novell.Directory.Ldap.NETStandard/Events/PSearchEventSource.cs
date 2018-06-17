@@ -40,45 +40,16 @@ namespace Novell.Directory.Ldap.Events
     /// </summary>
     public class PSearchEventSource : LdapEventSource
     {
-        private SearchResultEventHandler _searchResultEvent;
-
         /// <summary>
-        ///     Caller has to register with this event in order to be notified of
-        ///     corresponding Ldap search result event.
+        ///     SearchReferralEventHandler is the delegate definition for SearchReferralEvent.
+        ///     The client (listener) has to register using this delegate in order to
+        ///     get corresponding Ldap events.
         /// </summary>
-        public event SearchResultEventHandler SearchResultEvent
-        {
-            add
-            {
-                _searchResultEvent += value;
-                ListenerAdded();
-            }
-            remove
-            {
-                _searchResultEvent -= value;
-                ListenerRemoved();
-            }
-        }
-
-        private SearchReferralEventHandler _searchReferralEvent;
-
-        /// <summary>
-        ///     Caller has to register with this event in order to be notified of
-        ///     corresponding Ldap search reference event.
-        /// </summary>
-        public event SearchReferralEventHandler SearchReferralEvent
-        {
-            add
-            {
-                _searchReferralEvent += value;
-                ListenerAdded();
-            }
-            remove
-            {
-                _searchReferralEvent -= value;
-                ListenerRemoved();
-            }
-        }
+        public delegate
+            void SearchReferralEventHandler(
+                object source,
+                SearchReferralEventArgs objArgs
+            );
 
         /// <summary>
         ///     SearchResultEventHandler is the delegate definition for SearchResultEvent.
@@ -91,39 +62,20 @@ namespace Novell.Directory.Ldap.Events
                 SearchResultEventArgs objArgs
             );
 
-        /// <summary>
-        ///     SearchReferralEventHandler is the delegate definition for SearchReferralEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get corresponding Ldap events.
-        /// </summary>
-        public delegate
-            void SearchReferralEventHandler(
-                object source,
-                SearchReferralEventArgs objArgs
-            );
-
-        protected override int GetListeners()
-        {
-            var nListeners = 0;
-            if (null != _searchResultEvent)
-                nListeners = _searchResultEvent.GetInvocationList().Length;
-
-            if (null != _searchReferralEvent)
-                nListeners += _searchReferralEvent.GetInvocationList().Length;
-
-            return nListeners;
-        }
+        private readonly string[] _mAttrs;
 
         private readonly LdapConnection _mConnection;
-        private readonly string _mSearchBase;
-        private readonly int _mScope;
-        private readonly string[] _mAttrs;
         private readonly string _mFilter;
-        private readonly bool _mTypesOnly;
+        private readonly int _mScope;
+        private readonly string _mSearchBase;
         private readonly LdapSearchConstraints _mSearchConstraints;
+        private readonly bool _mTypesOnly;
         private LdapEventType _mEventChangeType;
 
         private LdapSearchQueue _mQueue;
+
+        private SearchReferralEventHandler _searchReferralEvent;
+        private SearchResultEventHandler _searchResultEvent;
 
         // Constructor
         public PSearchEventSource(
@@ -175,6 +127,58 @@ namespace Novell.Directory.Ldap.Events
             // add the persistent search control to the search constraints
             _mSearchConstraints.SetControls(psCtrl);
         } // end of Constructor
+
+        /// <summary>
+        ///     Caller has to register with this event in order to be notified of
+        ///     corresponding Ldap search result event.
+        /// </summary>
+        public event SearchResultEventHandler SearchResultEvent
+        {
+            add
+            {
+                _searchResultEvent += value;
+                ListenerAdded();
+            }
+            remove
+            {
+                _searchResultEvent -= value;
+                ListenerRemoved();
+            }
+        }
+
+        /// <summary>
+        ///     Caller has to register with this event in order to be notified of
+        ///     corresponding Ldap search reference event.
+        /// </summary>
+        public event SearchReferralEventHandler SearchReferralEvent
+        {
+            add
+            {
+                _searchReferralEvent += value;
+                ListenerAdded();
+            }
+            remove
+            {
+                _searchReferralEvent -= value;
+                ListenerRemoved();
+            }
+        }
+
+        protected override int GetListeners()
+        {
+            var nListeners = 0;
+            if (null != _searchResultEvent)
+            {
+                nListeners = _searchResultEvent.GetInvocationList().Length;
+            }
+
+            if (null != _searchReferralEvent)
+            {
+                nListeners += _searchReferralEvent.GetInvocationList().Length;
+            }
+
+            return nListeners;
+        }
 
         protected override void StartSearchAndPolling()
         {
@@ -231,6 +235,7 @@ namespace Novell.Directory.Ldap.Events
                         );
                         bListenersNotified = true;
                     }
+
                     break;
 
                 case LdapMessage.SearchResponse:
@@ -247,6 +252,7 @@ namespace Novell.Directory.Ldap.Events
                                 // TODO: Why are we interested only in the last changeType..?
                             }
                         }
+
                         // if no changeType then value is TYPE_UNKNOWN
                         _searchResultEvent(this,
                             new SearchResultEventArgs(
@@ -256,6 +262,7 @@ namespace Novell.Directory.Ldap.Events
                         );
                         bListenersNotified = true;
                     }
+
                     break;
 
                 case LdapMessage.SearchResult:

@@ -43,22 +43,20 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         protected MemoryStream DecodedData;
         protected LberDecoder Decoder;
 
-        private readonly EdirEventDataType _eventDataType;
-
-        /// <summary>
-        ///     The value for this attribute allows the caller to identify the
-        ///     type of the data object.
-        /// </summary>
-        public EdirEventDataType EventDataType => _eventDataType;
-
         public BaseEdirEventData(EdirEventDataType eventDataType, Asn1Object message)
         {
-            _eventDataType = eventDataType;
+            EventDataType = eventDataType;
 
             var byteData = SupportClass.ToByteArray(((Asn1OctetString) message).ByteValue());
             DecodedData = new MemoryStream(byteData);
             Decoder = new LberDecoder();
         }
+
+        /// <summary>
+        ///     The value for this attribute allows the caller to identify the
+        ///     type of the data object.
+        /// </summary>
+        public EdirEventDataType EventDataType { get; }
 
         protected void DataInitDone()
         {

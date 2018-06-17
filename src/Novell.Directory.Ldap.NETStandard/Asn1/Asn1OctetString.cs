@@ -39,8 +39,6 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1OctetString : Asn1Object
     {
-        private readonly sbyte[] _content;
-
         /// <summary> ASN.1 OCTET STRING tag definition.</summary>
         public const int Tag = 0x04;
 
@@ -50,6 +48,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     thus we create it only once.
         /// </summary>
         protected internal static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+
+        private readonly sbyte[] _content;
 
         /* Constructors for Asn1OctetString
                 */

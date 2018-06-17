@@ -39,7 +39,30 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSource : LdapEventSource
     {
+        /// <summary>
+        ///     EdirEventHandler is the delegate definition for EdirEvent.
+        ///     The client (listener) has to register using this delegate in order to
+        ///     get corresponding Edir events.
+        /// </summary>
+        public delegate
+            void EdirEventHandler(object source,
+                EdirEventArgs objEdirEventArgs);
+
+        private readonly LdapConnection _mConnection;
+        private readonly MonitorEventRequest _mRequestOperation;
         private EdirEventHandler _edirEvent;
+        private LdapResponseQueue _mQueue;
+
+        public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
+        {
+            if (null == specifier || null == conn)
+            {
+                throw new ArgumentException("Null argument specified");
+            }
+
+            _mRequestOperation = new MonitorEventRequest(specifier);
+            _mConnection = conn;
+        }
 
         /// <summary>
         ///     Caller has to register with this event in order to be notified of
@@ -59,35 +82,15 @@ namespace Novell.Directory.Ldap.Events.Edir
             }
         }
 
-        /// <summary>
-        ///     EdirEventHandler is the delegate definition for EdirEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get corresponding Edir events.
-        /// </summary>
-        public delegate
-            void EdirEventHandler(object source,
-                EdirEventArgs objEdirEventArgs);
-
         protected override int GetListeners()
         {
             var nListeners = 0;
             if (null != _edirEvent)
+            {
                 nListeners = _edirEvent.GetInvocationList().Length;
+            }
 
             return nListeners;
-        }
-
-        private readonly LdapConnection _mConnection;
-        private readonly MonitorEventRequest _mRequestOperation;
-        private LdapResponseQueue _mQueue;
-
-        public EdirEventSource(EdirEventSpecifier[] specifier, LdapConnection conn)
-        {
-            if (null == specifier || null == conn)
-                throw new ArgumentException("Null argument specified");
-
-            _mRequestOperation = new MonitorEventRequest(specifier);
-            _mConnection = conn;
         }
 
         protected override void StartSearchAndPolling()

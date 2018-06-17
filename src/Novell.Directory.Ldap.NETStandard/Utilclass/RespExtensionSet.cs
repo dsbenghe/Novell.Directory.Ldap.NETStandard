@@ -41,6 +41,13 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class RespExtensionSet : SupportClass.AbstractSetSupport
     {
+        private readonly Hashtable _map;
+
+        public RespExtensionSet()
+        {
+            _map = new Hashtable();
+        }
+
         /// <summary>
         ///     Returns the number of extensions in this set.
         /// </summary>
@@ -48,13 +55,6 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     number of extensions in this set.
         /// </returns>
         public override int Count => _map.Count;
-
-        private readonly Hashtable _map;
-
-        public RespExtensionSet()
-        {
-            _map = new Hashtable();
-        }
 
 
         /* Adds a responseExtension to the current list of registered responses.
@@ -97,6 +97,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     return (Type) _map[searchOid];
                 }
+
                 /* The requested extension does not have a registered response class */
                 return null;
             }

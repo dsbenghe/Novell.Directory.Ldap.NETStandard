@@ -45,33 +45,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcBindRequest : Asn1Sequence, IRfcRequest
     {
-        /// <summary> </summary>
-        /// <summary> Sets the protocol version</summary>
-        public Asn1Integer Version
-        {
-            get => (Asn1Integer) get_Renamed(0);
-
-            set => set_Renamed(0, value);
-        }
-
-        /// <summary> </summary>
-        /// <summary> </summary>
-        public RfcLdapDn Name
-        {
-            get => (RfcLdapDn) get_Renamed(1);
-
-            set => set_Renamed(1, value);
-        }
-
-        /// <summary> </summary>
-        /// <summary> </summary>
-        public RfcAuthenticationChoice AuthenticationChoice
-        {
-            get => (RfcAuthenticationChoice) get_Renamed(2);
-
-            set => set_Renamed(2, value);
-        }
-
         /// <summary>
         ///     ID is added for Optimization.
         ///     ID needs only be one Value for every instance,
@@ -112,6 +85,43 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
+        /// <summary> </summary>
+        /// <summary> Sets the protocol version</summary>
+        public Asn1Integer Version
+        {
+            get => (Asn1Integer) get_Renamed(0);
+
+            set => set_Renamed(0, value);
+        }
+
+        /// <summary> </summary>
+        /// <summary> </summary>
+        public RfcLdapDn Name
+        {
+            get => (RfcLdapDn) get_Renamed(1);
+
+            set => set_Renamed(1, value);
+        }
+
+        /// <summary> </summary>
+        /// <summary> </summary>
+        public RfcAuthenticationChoice AuthenticationChoice
+        {
+            get => (RfcAuthenticationChoice) get_Renamed(2);
+
+            set => set_Renamed(2, value);
+        }
+
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            return new RfcBindRequest(ToArray(), baseRenamed);
+        }
+
+        public string GetRequestDn()
+        {
+            return ((RfcLdapDn) get_Renamed(1)).StringValue();
+        }
+
         //*************************************************************************
         // Mutators
         //*************************************************************************
@@ -129,16 +139,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return Id;
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcBindRequest(ToArray(), baseRenamed);
-        }
-
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn) get_Renamed(1)).StringValue();
         }
     }
 }

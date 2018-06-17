@@ -42,15 +42,6 @@ namespace Novell.Directory.Ldap.Controls
     public class LdapSortResponse : LdapControl
     {
         /// <summary>
-        ///     If not null, this returns the attribute that caused the sort
-        ///     operation to fail.
-        /// </summary>
-        public virtual string FailedAttribute { get; }
-
-        /// <summary> Returns the result code from the sort</summary>
-        public virtual int ResultCode { get; }
-
-        /// <summary>
         ///     This constructor is usually called by the SDK to instantiate an
         ///     a LdapControl corresponding to the Server response to a Ldap
         ///     Sort Control request.  Application programmers should not have
@@ -101,26 +92,43 @@ namespace Novell.Directory.Ldap.Controls
             // Create a decoder object
             var decoder = new LberDecoder();
             if (decoder == null)
+            {
                 throw new IOException("Decoding error");
+            }
 
             // We should get back an enumerated type
             var asnObj = decoder.Decode(values);
 
             if (asnObj == null || !(asnObj is Asn1Sequence))
+            {
                 throw new IOException("Decoding error");
+            }
 
 
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(0);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
+            {
                 ResultCode = ((Asn1Enumerated) asn1Enum).IntValue();
+            }
 
             // Second element is the attributeType
             if (((Asn1Sequence) asnObj).Size() > 1)
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(1);
                 if (asn1String != null && asn1String is Asn1OctetString)
+                {
                     FailedAttribute = ((Asn1OctetString) asn1String).StringValue();
+                }
             }
         }
+
+        /// <summary>
+        ///     If not null, this returns the attribute that caused the sort
+        ///     operation to fail.
+        /// </summary>
+        public virtual string FailedAttribute { get; }
+
+        /// <summary> Returns the result code from the sort</summary>
+        public virtual int ResultCode { get; }
     }
 }

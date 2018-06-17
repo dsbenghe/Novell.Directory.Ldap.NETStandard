@@ -60,147 +60,6 @@ namespace Novell.Directory.Ldap
      */
     public class LdapSearchRequest : LdapMessage
     {
-        /// <summary>
-        ///     Retrieves the Base DN for a search request.
-        /// </summary>
-        /// <returns>
-        ///     the base DN for a search request
-        /// </returns>
-        public string Dn => Asn1Object.RequestDn;
-
-        /// <summary> Retrieves the scope of a search request.</summary>
-        /// <returns>
-        ///     scope of a search request
-        /// </returns>
-        /// <seealso cref="LdapConnection.ScopeBase">
-        /// </seealso>
-        /// <seealso cref="LdapConnection.ScopeOne">
-        /// </seealso>
-        /// <seealso cref="LdapConnection.ScopeSub">
-        /// </seealso>
-        public int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
-
-        /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
-        /// <returns>
-        ///     integer representing how to dereference aliases
-        /// </returns>
-        /// <seealso cref="LdapSearchConstraints.DerefAlways">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints.DerefFinding">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints.DerefNever">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints.DerefSearching">
-        /// </seealso>
-        public int Dereference => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
-
-        /// <summary>
-        ///     Retrieves the maximum number of entries to be returned on a search.
-        /// </summary>
-        /// <returns>
-        ///     Maximum number of search entries.
-        /// </returns>
-        public int MaxResults => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
-
-        /// <summary>
-        ///     Retrieves the server time limit for a search request.
-        /// </summary>
-        /// <returns>
-        ///     server time limit in nanoseconds.
-        /// </returns>
-        public int ServerTimeLimit => ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
-
-        /// <summary>
-        ///     Retrieves whether attribute values or only attribute types(names) should
-        ///     be returned in a search request.
-        /// </summary>
-        /// <returns>
-        ///     true if only attribute types (names) are returned, false if
-        ///     attributes types and values are to be returned.
-        /// </returns>
-        public bool TypesOnly => ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
-
-        /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
-        /// <returns>
-        ///     Attribute names to be searched
-        /// </returns>
-        public string[] Attributes
-        {
-            get
-            {
-                var attrs = (RfcAttributeDescriptionList) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(7);
-
-                var rAttrs = new string[attrs.Size()];
-                for (var i = 0; i < rAttrs.Length; i++)
-                {
-                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).StringValue();
-                }
-                return rAttrs;
-            }
-        }
-
-        /// <summary> Creates a string representation of the filter in this search request.</summary>
-        /// <returns>
-        ///     filter string for this search request
-        /// </returns>
-        public string StringFilter => RfcFilter.FilterToString();
-
-        /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
-        /// <returns>
-        ///     filter object for a search request.
-        /// </returns>
-        private RfcFilter RfcFilter => (RfcFilter) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(6);
-
-        /// <summary>
-        ///     Retrieves an Iterator object representing the parsed filter for
-        ///     this search request.
-        ///     The first object returned from the Iterator is an Integer indicating
-        ///     the type of filter component. One or more values follow the component
-        ///     type as subsequent items in the Iterator. The pattern of Integer
-        ///     component type followed by values continues until the end of the
-        ///     filter.
-        ///     Values returned as a byte array may represent UTF-8 characters or may
-        ///     be binary values. The possible Integer components of a search filter
-        ///     and the associated values that follow are:
-        ///     <ul>
-        ///         <li>AND - followed by an Iterator value</li>
-        ///         <li>OR - followed by an Iterator value</li>
-        ///         <li>NOT - followed by an Iterator value</li>
-        ///         <li>
-        ///             EQUALITY_MATCH - followed by the attribute name represented as a
-        ///             String, and by the attribute value represented as a byte array
-        ///         </li>
-        ///         <li>
-        ///             GREATER_OR_EQUAL - followed by the attribute name represented as a
-        ///             String, and by the attribute value represented as a byte array
-        ///         </li>
-        ///         <li>
-        ///             LESS_OR_EQUAL - followed by the attribute name represented as a
-        ///             String, and by the attribute value represented as a byte array
-        ///         </li>
-        ///         <li>
-        ///             APPROX_MATCH - followed by the attribute name represented as a
-        ///             String, and by the attribute value represented as a byte array
-        ///         </li>
-        ///         <li>PRESENT - followed by a attribute name respresented as a String</li>
-        ///         <li>
-        ///             EXTENSIBLE_MATCH - followed by the name of the matching rule
-        ///             represented as a String, by the attribute name represented
-        ///             as a String, and by the attribute value represented as a
-        ///             byte array.
-        ///         </li>
-        ///         <li>
-        ///             SUBSTRINGS - followed by the attribute name represented as a
-        ///             String, by one or more SUBSTRING components (INITIAL, ANY,
-        ///             or FINAL) followed by the SUBSTRING value.
-        ///         </li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     Iterator representing filter components
-        /// </returns>
-        public IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
-
         //*************************************************************************
         // Public variables for Filter
         //*************************************************************************
@@ -386,5 +245,151 @@ namespace Novell.Directory.Ldap
                     new Asn1Boolean(typesOnly), filter, new RfcAttributeDescriptionList(attrs)), cont)
         {
         }
+
+        /// <summary>
+        ///     Retrieves the Base DN for a search request.
+        /// </summary>
+        /// <returns>
+        ///     the base DN for a search request
+        /// </returns>
+        public string Dn => Asn1Object.RequestDn;
+
+        /// <summary> Retrieves the scope of a search request.</summary>
+        /// <returns>
+        ///     scope of a search request
+        /// </returns>
+        /// <seealso cref="LdapConnection.ScopeBase">
+        /// </seealso>
+        /// <seealso cref="LdapConnection.ScopeOne">
+        /// </seealso>
+        /// <seealso cref="LdapConnection.ScopeSub">
+        /// </seealso>
+        public int Scope => ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
+
+        /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
+        /// <returns>
+        ///     integer representing how to dereference aliases
+        /// </returns>
+        /// <seealso cref="LdapSearchConstraints.DerefAlways">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints.DerefFinding">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints.DerefNever">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints.DerefSearching">
+        /// </seealso>
+        public int Dereference =>
+            ((Asn1Enumerated) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
+
+        /// <summary>
+        ///     Retrieves the maximum number of entries to be returned on a search.
+        /// </summary>
+        /// <returns>
+        ///     Maximum number of search entries.
+        /// </returns>
+        public int MaxResults =>
+            ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
+
+        /// <summary>
+        ///     Retrieves the server time limit for a search request.
+        /// </summary>
+        /// <returns>
+        ///     server time limit in nanoseconds.
+        /// </returns>
+        public int ServerTimeLimit =>
+            ((Asn1Integer) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
+
+        /// <summary>
+        ///     Retrieves whether attribute values or only attribute types(names) should
+        ///     be returned in a search request.
+        /// </summary>
+        /// <returns>
+        ///     true if only attribute types (names) are returned, false if
+        ///     attributes types and values are to be returned.
+        /// </returns>
+        public bool TypesOnly =>
+            ((Asn1Boolean) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
+
+        /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
+        /// <returns>
+        ///     Attribute names to be searched
+        /// </returns>
+        public string[] Attributes
+        {
+            get
+            {
+                var attrs = (RfcAttributeDescriptionList) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(7);
+
+                var rAttrs = new string[attrs.Size()];
+                for (var i = 0; i < rAttrs.Length; i++)
+                {
+                    rAttrs[i] = ((RfcAttributeDescription) attrs.get_Renamed(i)).StringValue();
+                }
+
+                return rAttrs;
+            }
+        }
+
+        /// <summary> Creates a string representation of the filter in this search request.</summary>
+        /// <returns>
+        ///     filter string for this search request
+        /// </returns>
+        public string StringFilter => RfcFilter.FilterToString();
+
+        /// <summary> Retrieves an SearchFilter object representing a filter for a search request</summary>
+        /// <returns>
+        ///     filter object for a search request.
+        /// </returns>
+        private RfcFilter RfcFilter => (RfcFilter) ((RfcSearchRequest) Asn1Object.get_Renamed(1)).get_Renamed(6);
+
+        /// <summary>
+        ///     Retrieves an Iterator object representing the parsed filter for
+        ///     this search request.
+        ///     The first object returned from the Iterator is an Integer indicating
+        ///     the type of filter component. One or more values follow the component
+        ///     type as subsequent items in the Iterator. The pattern of Integer
+        ///     component type followed by values continues until the end of the
+        ///     filter.
+        ///     Values returned as a byte array may represent UTF-8 characters or may
+        ///     be binary values. The possible Integer components of a search filter
+        ///     and the associated values that follow are:
+        ///     <ul>
+        ///         <li>AND - followed by an Iterator value</li>
+        ///         <li>OR - followed by an Iterator value</li>
+        ///         <li>NOT - followed by an Iterator value</li>
+        ///         <li>
+        ///             EQUALITY_MATCH - followed by the attribute name represented as a
+        ///             String, and by the attribute value represented as a byte array
+        ///         </li>
+        ///         <li>
+        ///             GREATER_OR_EQUAL - followed by the attribute name represented as a
+        ///             String, and by the attribute value represented as a byte array
+        ///         </li>
+        ///         <li>
+        ///             LESS_OR_EQUAL - followed by the attribute name represented as a
+        ///             String, and by the attribute value represented as a byte array
+        ///         </li>
+        ///         <li>
+        ///             APPROX_MATCH - followed by the attribute name represented as a
+        ///             String, and by the attribute value represented as a byte array
+        ///         </li>
+        ///         <li>PRESENT - followed by a attribute name respresented as a String</li>
+        ///         <li>
+        ///             EXTENSIBLE_MATCH - followed by the name of the matching rule
+        ///             represented as a String, by the attribute name represented
+        ///             as a String, and by the attribute value represented as a
+        ///             byte array.
+        ///         </li>
+        ///         <li>
+        ///             SUBSTRINGS - followed by the attribute name represented as a
+        ///             String, by one or more SUBSTRING components (INITIAL, ANY,
+        ///             or FINAL) followed by the SUBSTRING value.
+        ///         </li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     Iterator representing filter components
+        /// </returns>
+        public IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
     }
 }

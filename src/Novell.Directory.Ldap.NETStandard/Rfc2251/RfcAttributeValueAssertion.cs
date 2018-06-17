@@ -45,6 +45,21 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeValueAssertion : Asn1Sequence
     {
         /// <summary>
+        ///     Creates an Attribute Value Assertion.
+        /// </summary>
+        /// <param name="ad">
+        ///     The assertion description
+        /// </param>
+        /// <param name="av">
+        ///     The assertion value
+        /// </param>
+        public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av) : base(2)
+        {
+            Add(ad);
+            Add(av);
+        }
+
+        /// <summary>
         ///     Returns the attribute description.
         /// </summary>
         /// <returns>
@@ -60,20 +75,5 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         [CLSCompliant(false)]
         public sbyte[] AssertionValue => ((RfcAssertionValue) get_Renamed(1)).ByteValue();
-
-        /// <summary>
-        ///     Creates an Attribute Value Assertion.
-        /// </summary>
-        /// <param name="ad">
-        ///     The assertion description
-        /// </param>
-        /// <param name="av">
-        ///     The assertion value
-        /// </param>
-        public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av) : base(2)
-        {
-            Add(ad);
-            Add(av);
-        }
     }
 }

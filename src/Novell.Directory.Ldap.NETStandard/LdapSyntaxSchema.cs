@@ -84,15 +84,22 @@ namespace Novell.Directory.Ldap
                 var parser = new SchemaParser(raw);
 
                 if ((object) parser.Id != null)
+                {
                     Oid = parser.Id;
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = parser.Description;
+                }
+
                 var qualifiers = parser.Qualifiers;
                 while (qualifiers.MoveNext())
                 {
                     var attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException e)
@@ -117,6 +124,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
@@ -143,8 +151,10 @@ namespace Novell.Directory.Ldap
                                 {
                                     valueBuffer.Append(" ");
                                 }
+
                                 valueBuffer.Append("'" + qualValue[i] + "'");
                             }
+
                             if (qualValue.Length > 1)
                             {
                                 valueBuffer.Append(" )");
@@ -153,6 +163,7 @@ namespace Novell.Directory.Ldap
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

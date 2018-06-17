@@ -49,35 +49,6 @@ namespace Novell.Directory.Ldap
     public class LdapNameFormSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns the name of the object class which this name form applies to.
-        /// </summary>
-        /// <returns>
-        ///     The name of the object class.
-        /// </returns>
-        public string ObjectClass { get; }
-
-        /// <summary>
-        ///     Returns the list of required naming attributes for an entry
-        ///     controlled by this name form.
-        /// </summary>
-        /// <returns>
-        ///     The list of required naming attributes.
-        /// </returns>
-        public string[] RequiredNamingAttributes => _required;
-
-        /// <summary>
-        ///     Returns the list of optional naming attributes for an entry
-        ///     controlled by this content rule.
-        /// </summary>
-        /// <returns>
-        ///     The list of the optional naming attributes.
-        /// </returns>
-        public string[] OptionalNamingAttributes => _optional;
-
-        private readonly string[] _required;
-        private readonly string[] _optional;
-
-        /// <summary>
         ///     Constructs a name form for adding to or deleting from the schema.
         /// </summary>
         /// <param name="names">
@@ -119,10 +90,10 @@ namespace Novell.Directory.Ldap
             Description = description;
             Obsolete = obsolete;
             ObjectClass = objectClass;
-            _required = new string[required.Length];
-            required.CopyTo(_required, 0);
-            _optional = new string[optional.Length];
-            optional.CopyTo(_optional, 0);
+            RequiredNamingAttributes = new string[required.Length];
+            required.CopyTo(RequiredNamingAttributes, 0);
+            OptionalNamingAttributes = new string[optional.Length];
+            optional.CopyTo(OptionalNamingAttributes, 0);
             Value = FormatString();
         }
 
@@ -149,22 +120,34 @@ namespace Novell.Directory.Ldap
                     names = new string[parser.Names.Length];
                     parser.Names.CopyTo(names, 0);
                 }
+
                 if ((object) parser.Id != null)
+                {
                     Oid = new StringBuilder(parser.Id).ToString();
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = new StringBuilder(parser.Description).ToString();
+                }
+
                 if (parser.Required != null)
                 {
-                    _required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(_required, 0);
+                    RequiredNamingAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredNamingAttributes, 0);
                 }
+
                 if (parser.Optional != null)
                 {
-                    _optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(_optional, 0);
+                    OptionalNamingAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalNamingAttributes, 0);
                 }
+
                 if ((object) parser.ObjectClass != null)
+                {
                     ObjectClass = parser.ObjectClass;
+                }
+
                 Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
@@ -173,6 +156,7 @@ namespace Novell.Directory.Ldap
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException ex)
@@ -180,6 +164,32 @@ namespace Novell.Directory.Ldap
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
+
+        /// <summary>
+        ///     Returns the name of the object class which this name form applies to.
+        /// </summary>
+        /// <returns>
+        ///     The name of the object class.
+        /// </returns>
+        public string ObjectClass { get; }
+
+        /// <summary>
+        ///     Returns the list of required naming attributes for an entry
+        ///     controlled by this name form.
+        /// </summary>
+        /// <returns>
+        ///     The list of required naming attributes.
+        /// </returns>
+        public string[] RequiredNamingAttributes { get; }
+
+        /// <summary>
+        ///     Returns the list of optional naming attributes for an entry
+        ///     controlled by this content rule.
+        /// </summary>
+        /// <returns>
+        ///     The list of the optional naming attributes.
+        /// </returns>
+        public string[] OptionalNamingAttributes { get; }
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -198,6 +208,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -214,51 +225,76 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((object) (token = ObjectClass) != null)
             {
                 valueBuffer.Append(" OC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((strArray = RequiredNamingAttributes) != null)
             {
                 valueBuffer.Append(" MUST ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if ((strArray = OptionalNamingAttributes) != null)
             {
                 valueBuffer.Append(" MAY ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             IEnumerator en;
             if ((en = QualifierNames) != null)
             {
@@ -271,18 +307,28 @@ namespace Novell.Directory.Ldap
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append("( ");
+                        }
+
                         for (var i = 0; i < qualValue.Length; i++)
                         {
                             if (i > 0)
+                            {
                                 valueBuffer.Append(" ");
+                            }
+
                             valueBuffer.Append("'" + qualValue[i] + "'");
                         }
+
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append(" )");
+                        }
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

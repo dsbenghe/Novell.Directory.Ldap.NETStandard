@@ -45,12 +45,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcSearchResultEntry : Asn1Sequence
     {
-        /// <summary> </summary>
-        public Asn1OctetString ObjectName => (Asn1OctetString) get_Renamed(0);
-
-        /// <summary> </summary>
-        public Asn1Sequence Attributes => (Asn1Sequence) get_Renamed(1);
-
         //*************************************************************************
         // Constructors for SearchResultEntry
         //*************************************************************************
@@ -69,6 +63,12 @@ namespace Novell.Directory.Ldap.Rfc2251
             // typecast.
             //      set(1, new PartitalAttributeList());
         }
+
+        /// <summary> </summary>
+        public Asn1OctetString ObjectName => (Asn1OctetString) get_Renamed(0);
+
+        /// <summary> </summary>
+        public Asn1Sequence Attributes => (Asn1Sequence) get_Renamed(1);
 
         //*************************************************************************
         // Accessors

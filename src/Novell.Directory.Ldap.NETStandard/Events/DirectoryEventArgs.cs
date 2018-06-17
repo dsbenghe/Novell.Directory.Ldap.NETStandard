@@ -42,17 +42,17 @@ namespace Novell.Directory.Ldap.Events
     {
         protected EventClassifiers EClassification;
 
-        public EventClassifiers EventClassification
-        {
-            get => EClassification;
-            set => EClassification = value;
-        }
-
         public DirectoryEventArgs(LdapMessage sourceMessage,
             EventClassifiers aClassification)
             : base(sourceMessage)
         {
             EClassification = aClassification;
+        }
+
+        public EventClassifiers EventClassification
+        {
+            get => EClassification;
+            set => EClassification = value;
         }
     }
 }

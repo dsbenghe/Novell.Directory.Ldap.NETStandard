@@ -52,14 +52,6 @@ namespace Novell.Directory.Ldap
     public class LdapAttributeSet : SupportClass.AbstractSetSupport //, SupportClass.SetSupport
     {
         /// <summary>
-        ///     Returns the number of attributes in this set.
-        /// </summary>
-        /// <returns>
-        ///     number of attributes in this set.
-        /// </returns>
-        public override int Count => _map.Count;
-
-        /// <summary>
         ///     This is the underlying data structure for this set.
         ///     HashSet is similar to the functionality of this set.  The difference
         ///     is we use the name of an attribute as keys in the Map and LdapAttributes
@@ -73,6 +65,14 @@ namespace Novell.Directory.Ldap
         {
             _map = new Hashtable();
         }
+
+        /// <summary>
+        ///     Returns the number of attributes in this set.
+        /// </summary>
+        /// <returns>
+        ///     number of attributes in this set.
+        /// </returns>
+        public override int Count => _map.Count;
 
         // ---  methods not defined in Set ---
 
@@ -92,6 +92,7 @@ namespace Novell.Directory.Ldap
                 {
                     ((LdapAttributeSet) newObj).Add(((LdapAttribute) i.Current).Clone());
                 }
+
                 return newObj;
             }
             catch (Exception ce)
@@ -248,8 +249,11 @@ namespace Novell.Directory.Ldap
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
                 if (attr.HasSubtype(subtype))
+                {
                     tempAttributeSet.Add(attr.Clone());
+                }
             }
+
             return tempAttributeSet;
         }
 
@@ -315,7 +319,10 @@ namespace Novell.Directory.Ldap
             var attribute = (LdapAttribute) attr;
             var name = attribute.Name.ToUpper();
             if (_map.ContainsKey(name))
+            {
                 return false;
+            }
+
             SupportClass.PutElement(_map, name, attribute);
             return true;
         }
@@ -347,10 +354,12 @@ namespace Novell.Directory.Ldap
             {
                 attributeName = ((LdapAttribute) objectRenamed).Name;
             }
+
             if ((object) attributeName == null)
             {
                 return false;
             }
+
             return SupportClass.HashtableRemove(_map, attributeName.ToUpper()) != null;
         }
 
@@ -386,6 +395,7 @@ namespace Novell.Directory.Ldap
                     setChanged = true;
                 }
             }
+
             return setChanged;
         }
 
@@ -406,10 +416,12 @@ namespace Novell.Directory.Ldap
                 {
                     retValue.Append(" ");
                 }
+
                 first = false;
                 var attr = (LdapAttribute) attrs.Current;
                 retValue.Append(attr);
             }
+
             return retValue.ToString();
         }
     }

@@ -51,6 +51,17 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
+        {
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon"},
+                LdapException.LdapNotSupported, null);
+        }
+
+        public string GetRequestDn()
+        {
+            return null;
+        }
+
         //*************************************************************************
         // Accessors
         //*************************************************************************
@@ -64,17 +75,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.AbandonRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
-        {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon"},
-                LdapException.LdapNotSupported, null);
-        }
-
-        public string GetRequestDn()
-        {
-            return null;
         }
     }
 }

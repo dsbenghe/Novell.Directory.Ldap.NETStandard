@@ -44,6 +44,130 @@ namespace Novell.Directory.Ldap.Controls
     public class LdapPersistSearchControl : LdapControl
     {
         /// <summary>
+        ///     Change type specifying that you want to track additions of new entries
+        ///     to the directory.
+        /// </summary>
+        public const int Add = 1;
+
+        /// <summary>
+        ///     Change type specifying that you want to track removals of entries from
+        ///     the directory.
+        /// </summary>
+        public const int Delete = 2;
+
+        /// <summary>
+        ///     Change type specifying that you want to track modifications of entries
+        ///     in the directory.
+        /// </summary>
+        public const int Modify = 4;
+
+        /// <summary>
+        ///     Change type specifying that you want to track modifications of the DNs
+        ///     of entries in the directory.
+        /// </summary>
+        public const int Moddn = 8;
+
+        /* private data members */
+        private static readonly int SequenceSize = 3;
+
+        private static readonly int ChangetypesIndex = 0;
+        private static readonly int ChangesonlyIndex = 1;
+        private static readonly int ReturncontrolsIndex = 2;
+
+        private static readonly LberEncoder SEncoder;
+
+        /// <summary> The requestOID of the persistent search control</summary>
+        private static readonly string RequestOid = "2.16.840.1.113730.3.4.3";
+
+        /// <summary> The responseOID of the psersistent search - entry change control</summary>
+        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.7";
+
+        /// <summary>
+        ///     Change type specifying that you want to track any of the above
+        ///     modifications.
+        /// </summary>
+        public static readonly int Any = Add | Delete | Modify | Moddn;
+
+        private readonly Asn1Sequence _mSequence;
+        private bool _mChangesOnly;
+
+        private int _mChangeTypes;
+        private bool _mReturnControls;
+
+        static LdapPersistSearchControl()
+        {
+            SEncoder = new LberEncoder();
+            /*
+            * This is where we register the control response
+            */
+            {
+                /* Register the Entry Change control class which is returned by the
+                * server in response to a persistent search request
+                */
+                Register(ResponseOid, typeof(LdapEntryChangeControl));
+            }
+        }
+
+        /* public constructors */
+
+        /// <summary>
+        ///     The default constructor. A control with changes equal to ANY,
+        ///     isCritical equal to true, changesOnly equal to true, and
+        ///     returnControls equal to true
+        /// </summary>
+        public LdapPersistSearchControl() : this(Any, true, true, true)
+        {
+        }
+
+        /// <summary>
+        ///     Constructs an LdapPersistSearchControl object according to the
+        ///     supplied parameters. The resulting control is used to specify a
+        ///     persistent search.
+        /// </summary>
+        /// <param name="changeTypes">
+        ///     the change types to monitor. The bitwise OR of any
+        ///     of the following values:
+        ///     <li>                           LdapPersistSearchControl.ADD</li>
+        ///     <li>                           LdapPersistSearchControl.DELETE</li>
+        ///     <li>                           LdapPersistSearchControl.MODIFY</li>
+        ///     <li>                           LdapPersistSearchControl.MODDN</li>
+        ///     To track all changes the value can be set to:
+        ///     <li>                           LdapPersistSearchControl.ANY</li>
+        /// </param>
+        /// <param name="changesOnly">
+        ///     true if you do not want the server to return
+        ///     all existing entries in the directory that match the search
+        ///     criteria. (Use this if you just want the changed entries to be
+        ///     returned.)
+        /// </param>
+        /// <param name="returnControls">
+        ///     true if you want the server to return entry
+        ///     change controls with each entry in the search results. You need to
+        ///     return entry change controls to discover what type of change
+        ///     and other additional information about the change.
+        /// </param>
+        /// <param name="isCritical">
+        ///     true if this control is critical to the search
+        ///     operation. If true and the server does not support this control,
+        ///     the server will not perform the search at all.
+        /// </param>
+        public LdapPersistSearchControl(int changeTypes, bool changesOnly, bool returnControls, bool isCritical)
+            : base(RequestOid, isCritical, null)
+        {
+            _mChangeTypes = changeTypes;
+            _mChangesOnly = changesOnly;
+            _mReturnControls = returnControls;
+
+            _mSequence = new Asn1Sequence(SequenceSize);
+
+            _mSequence.Add(new Asn1Integer(_mChangeTypes));
+            _mSequence.Add(new Asn1Boolean(_mChangesOnly));
+            _mSequence.Add(new Asn1Boolean(_mReturnControls));
+
+            SetValue();
+        }
+
+        /// <summary>
         ///     Returns the change types to be monitored as a logical OR of any or
         ///     all of these values: ADD, DELETE, MODIFY, and/or MODDN.
         /// </summary>
@@ -123,115 +247,6 @@ namespace Novell.Directory.Ldap.Controls
             }
         }
 
-        /* private data members */
-        private static readonly int SequenceSize = 3;
-
-        private static readonly int ChangetypesIndex = 0;
-        private static readonly int ChangesonlyIndex = 1;
-        private static readonly int ReturncontrolsIndex = 2;
-
-        private static readonly LberEncoder SEncoder;
-
-        private int _mChangeTypes;
-        private bool _mChangesOnly;
-        private bool _mReturnControls;
-        private readonly Asn1Sequence _mSequence;
-
-        /// <summary> The requestOID of the persistent search control</summary>
-        private static readonly string RequestOid = "2.16.840.1.113730.3.4.3";
-
-        /// <summary> The responseOID of the psersistent search - entry change control</summary>
-        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.7";
-
-        /// <summary>
-        ///     Change type specifying that you want to track additions of new entries
-        ///     to the directory.
-        /// </summary>
-        public const int Add = 1;
-
-        /// <summary>
-        ///     Change type specifying that you want to track removals of entries from
-        ///     the directory.
-        /// </summary>
-        public const int Delete = 2;
-
-        /// <summary>
-        ///     Change type specifying that you want to track modifications of entries
-        ///     in the directory.
-        /// </summary>
-        public const int Modify = 4;
-
-        /// <summary>
-        ///     Change type specifying that you want to track modifications of the DNs
-        ///     of entries in the directory.
-        /// </summary>
-        public const int Moddn = 8;
-
-        /// <summary>
-        ///     Change type specifying that you want to track any of the above
-        ///     modifications.
-        /// </summary>
-        public static readonly int Any = Add | Delete | Modify | Moddn;
-
-        /* public constructors */
-
-        /// <summary>
-        ///     The default constructor. A control with changes equal to ANY,
-        ///     isCritical equal to true, changesOnly equal to true, and
-        ///     returnControls equal to true
-        /// </summary>
-        public LdapPersistSearchControl() : this(Any, true, true, true)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs an LdapPersistSearchControl object according to the
-        ///     supplied parameters. The resulting control is used to specify a
-        ///     persistent search.
-        /// </summary>
-        /// <param name="changeTypes">
-        ///     the change types to monitor. The bitwise OR of any
-        ///     of the following values:
-        ///     <li>                           LdapPersistSearchControl.ADD</li>
-        ///     <li>                           LdapPersistSearchControl.DELETE</li>
-        ///     <li>                           LdapPersistSearchControl.MODIFY</li>
-        ///     <li>                           LdapPersistSearchControl.MODDN</li>
-        ///     To track all changes the value can be set to:
-        ///     <li>                           LdapPersistSearchControl.ANY</li>
-        /// </param>
-        /// <param name="changesOnly">
-        ///     true if you do not want the server to return
-        ///     all existing entries in the directory that match the search
-        ///     criteria. (Use this if you just want the changed entries to be
-        ///     returned.)
-        /// </param>
-        /// <param name="returnControls">
-        ///     true if you want the server to return entry
-        ///     change controls with each entry in the search results. You need to
-        ///     return entry change controls to discover what type of change
-        ///     and other additional information about the change.
-        /// </param>
-        /// <param name="isCritical">
-        ///     true if this control is critical to the search
-        ///     operation. If true and the server does not support this control,
-        ///     the server will not perform the search at all.
-        /// </param>
-        public LdapPersistSearchControl(int changeTypes, bool changesOnly, bool returnControls, bool isCritical)
-            : base(RequestOid, isCritical, null)
-        {
-            _mChangeTypes = changeTypes;
-            _mChangesOnly = changesOnly;
-            _mReturnControls = returnControls;
-
-            _mSequence = new Asn1Sequence(SequenceSize);
-
-            _mSequence.Add(new Asn1Integer(_mChangeTypes));
-            _mSequence.Add(new Asn1Boolean(_mChangesOnly));
-            _mSequence.Add(new Asn1Boolean(_mReturnControls));
-
-            SetValue();
-        }
-
         public override string ToString()
         {
             var data = _mSequence.GetEncoding(SEncoder);
@@ -242,7 +257,9 @@ namespace Novell.Directory.Ldap.Controls
             {
                 buf.Append(data[i].ToString());
                 if (i < data.Length - 1)
+                {
                     buf.Append(",");
+                }
             }
 
             return buf.ToString();
@@ -252,20 +269,6 @@ namespace Novell.Directory.Ldap.Controls
         private void SetValue()
         {
             base.SetValue(_mSequence.GetEncoding(SEncoder));
-        }
-
-        static LdapPersistSearchControl()
-        {
-            SEncoder = new LberEncoder();
-            /*
-            * This is where we register the control response
-            */
-            {
-                /* Register the Entry Change control class which is returned by the
-                * server in response to a persistent search request
-                */
-                Register(ResponseOid, typeof(LdapEntryChangeControl));
-            }
         }
     } // end class LdapPersistentSearchControl
 }

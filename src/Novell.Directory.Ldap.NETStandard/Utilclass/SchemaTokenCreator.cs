@@ -36,24 +36,59 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     public class SchemaTokenCreator
     {
-        private string _basestring;
-        private readonly bool _cppcomments = false; // C++ style comments enabled
         private readonly bool _ccomments = false; // C style comments enabled
+        private readonly bool _cppcomments = false; // C++ style comments enabled
+        private readonly Stream _input;
         private readonly bool _iseolsig = false;
-        private bool _cidtolower;
-        private bool _pushedback;
-        private int _peekchar;
-        private sbyte[] _ctype;
-        private int _ichar = 1;
-        private char[] _buf;
 
         private readonly StreamReader _reader;
         private readonly StringReader _sreader;
-        private readonly Stream _input;
+        private string _basestring;
+        private char[] _buf;
+        private bool _cidtolower;
+        private sbyte[] _ctype;
+        private int _ichar = 1;
+        private double _numberValue;
+        private int _peekchar;
+        private bool _pushedback;
+        public int Lastttype;
 
         public string StringValue;
-        private double _numberValue;
-        public int Lastttype;
+
+        public SchemaTokenCreator(Stream instream)
+        {
+            Initialise();
+            if (instream == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            _input = instream;
+        }
+
+        public SchemaTokenCreator(StreamReader r)
+        {
+            Initialise();
+            if (r == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            _reader = r;
+        }
+
+        public SchemaTokenCreator(StringReader r)
+        {
+            Initialise();
+            if (r == null)
+            {
+                throw new NullReferenceException();
+            }
+
+            _sreader = r;
+        }
+
+        public int CurrentLine { get; private set; } = 1;
 
         private void Initialise()
         {
@@ -70,42 +105,10 @@ namespace Novell.Directory.Ldap.Utilclass
             ParseNumbers();
         }
 
-        public SchemaTokenCreator(Stream instream)
-        {
-            Initialise();
-            if (instream == null)
-            {
-                throw new NullReferenceException();
-            }
-            _input = instream;
-        }
-
-        public SchemaTokenCreator(StreamReader r)
-        {
-            Initialise();
-            if (r == null)
-            {
-                throw new NullReferenceException();
-            }
-            _reader = r;
-        }
-
-        public SchemaTokenCreator(StringReader r)
-        {
-            Initialise();
-            if (r == null)
-            {
-                throw new NullReferenceException();
-            }
-            _sreader = r;
-        }
-
         public void PushBack()
         {
             _pushedback = true;
         }
-
-        public int CurrentLine { get; private set; } = 1;
 
         public string ToStringValue()
         {
@@ -148,67 +151,103 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
                 }
             }
+
             return strval;
         }
 
         public void WordCharacters(int min, int max)
         {
             if (min < 0)
+            {
                 min = 0;
+            }
+
             if (max >= _ctype.Length)
+            {
                 max = _ctype.Length - 1;
+            }
+
             while (min <= max)
+            {
                 _ctype[min++] |= (sbyte) CharacterTypes.Alphabetic;
+            }
         }
 
         public void WhitespaceCharacters(int min, int max)
         {
             if (min < 0)
+            {
                 min = 0;
+            }
+
             if (max >= _ctype.Length)
+            {
                 max = _ctype.Length - 1;
+            }
+
             while (min <= max)
+            {
                 _ctype[min++] = (sbyte) CharacterTypes.Whitespace;
+            }
         }
 
         public void OrdinaryCharacters(int min, int max)
         {
             if (min < 0)
+            {
                 min = 0;
+            }
+
             if (max >= _ctype.Length)
+            {
                 max = _ctype.Length - 1;
+            }
+
             while (min <= max)
+            {
                 _ctype[min++] = 0;
+            }
         }
 
         public void OrdinaryCharacter(int ch)
         {
             if (ch >= 0 && ch < _ctype.Length)
+            {
                 _ctype[ch] = 0;
+            }
         }
 
         public void CommentCharacter(int ch)
         {
             if (ch >= 0 && ch < _ctype.Length)
+            {
                 _ctype[ch] = (sbyte) CharacterTypes.Commentchar;
+            }
         }
 
         public void InitTable()
         {
             for (var i = _ctype.Length; --i >= 0;)
+            {
                 _ctype[i] = 0;
+            }
         }
 
         public void QuoteCharacter(int ch)
         {
             if (ch >= 0 && ch < _ctype.Length)
+            {
                 _ctype[ch] = (sbyte) CharacterTypes.Stringquote;
+            }
         }
 
         public void ParseNumbers()
         {
             for (int i = '0'; i <= '9'; i++)
+            {
                 _ctype[i] |= (sbyte) CharacterTypes.Numeric;
+            }
+
             _ctype['.'] |= (sbyte) CharacterTypes.Numeric;
             _ctype['-'] |= (sbyte) CharacterTypes.Numeric;
         }
@@ -219,12 +258,17 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 return _sreader.Read();
             }
+
             if (_reader != null)
             {
                 return _reader.Read();
             }
+
             if (_input != null)
+            {
                 return _input.ReadByte();
+            }
+
             throw new Exception();
         }
 
@@ -240,21 +284,33 @@ namespace Novell.Directory.Ldap.Utilclass
 
             var curc = _peekchar;
             if (curc < 0)
+            {
                 curc = int.MaxValue;
+            }
+
             if (curc == int.MaxValue - 1)
             {
                 curc = Read();
                 if (curc < 0)
+                {
                     return Lastttype = (int) TokenTypes.Eof;
+                }
+
                 if (curc == '\n')
+                {
                     curc = int.MaxValue;
+                }
             }
+
             if (curc == int.MaxValue)
             {
                 curc = Read();
                 if (curc < 0)
+                {
                     return Lastttype = (int) TokenTypes.Eof;
+                }
             }
+
             Lastttype = curc;
             _peekchar = int.MaxValue;
 
@@ -269,9 +325,12 @@ namespace Novell.Directory.Ldap.Utilclass
                         _peekchar = int.MaxValue - 1;
                         return Lastttype = (int) TokenTypes.Eol;
                     }
+
                     curc = Read();
                     if (curc == '\n')
+                    {
                         curc = Read();
+                    }
                 }
                 else
                 {
@@ -283,10 +342,15 @@ namespace Novell.Directory.Ldap.Utilclass
                             return Lastttype = (int) TokenTypes.Eol;
                         }
                     }
+
                     curc = Read();
                 }
+
                 if (curc < 0)
+                {
                     return Lastttype = (int) TokenTypes.Eof;
+                }
+
                 ctype = curc < 256 ? _ctype[curc] : (sbyte) CharacterTypes.Alphabetic;
             }
 
@@ -301,24 +365,32 @@ namespace Novell.Directory.Ldap.Utilclass
                         _peekchar = curc;
                         return Lastttype = '-';
                     }
+
                     checkb = true;
                 }
+
                 double dvar = 0;
                 var tempvar = 0;
                 var checkdec = 0;
                 while (true)
                 {
                     if (curc == '.' && checkdec == 0)
+                    {
                         checkdec = 1;
+                    }
                     else if ('0' <= curc && curc <= '9')
                     {
                         dvar = dvar * 10 + (curc - '0');
                         tempvar += checkdec;
                     }
                     else
+                    {
                         break;
+                    }
+
                     curc = Read();
                 }
+
                 _peekchar = curc;
                 if (tempvar != 0)
                 {
@@ -329,8 +401,10 @@ namespace Novell.Directory.Ldap.Utilclass
                         divby *= 10;
                         tempvar--;
                     }
+
                     dvar = dvar / divby;
                 }
+
                 _numberValue = checkb ? -dvar : dvar;
                 return Lastttype = (int) TokenTypes.Number;
             }
@@ -346,16 +420,23 @@ namespace Novell.Directory.Ldap.Utilclass
                         Array.Copy(_buf, 0, nb, 0, _buf.Length);
                         _buf = nb;
                     }
+
                     _buf[i++] = (char) curc;
                     curc = Read();
                     ctype = curc < 0
                         ? (sbyte) CharacterTypes.Whitespace
-                        : curc < 256 ? _ctype[curc] : (sbyte) CharacterTypes.Alphabetic;
+                        : curc < 256
+                            ? _ctype[curc]
+                            : (sbyte) CharacterTypes.Alphabetic;
                 } while ((ctype & ((sbyte) CharacterTypes.Alphabetic | (sbyte) CharacterTypes.Numeric)) != 0);
+
                 _peekchar = curc;
                 StringValue = new string(_buf, 0, i);
                 if (_cidtolower)
+                {
                     StringValue = StringValue.ToLower();
+                }
+
                 return Lastttype = (int) TokenTypes.Word;
             }
 
@@ -384,10 +465,14 @@ namespace Novell.Directory.Ldap.Utilclass
                                     rc = Read();
                                 }
                                 else
+                                {
                                     rc = loopchar;
+                                }
                             }
                             else
+                            {
                                 rc = loopchar;
+                            }
                         }
                         else
                         {
@@ -424,6 +509,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                 default:
                                     break;
                             }
+
                             rc = Read();
                         }
                     }
@@ -432,12 +518,14 @@ namespace Novell.Directory.Ldap.Utilclass
                         curc = rc;
                         rc = Read();
                     }
+
                     if (i >= _buf.Length)
                     {
                         var nb = new char[_buf.Length * 2];
                         Array.Copy(_buf, 0, nb, 0, _buf.Length);
                         _buf = nb;
                     }
+
                     _buf[i++] = (char) curc;
                 }
 
@@ -472,26 +560,40 @@ namespace Novell.Directory.Ldap.Utilclass
                                 curc = Read();
                             }
                         }
+
                         if (curc < 0)
+                        {
                             return Lastttype = (int) TokenTypes.Eof;
+                        }
+
                         prevc = curc;
                     }
+
                     return NextToken();
                 }
+
                 if (curc == '/' && _cppcomments)
                 {
                     while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
+                    {
                         ;
+                    }
+
                     _peekchar = curc;
                     return NextToken();
                 }
+
                 if ((_ctype['/'] & (sbyte) CharacterTypes.Commentchar) != 0)
                 {
                     while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
+                    {
                         ;
+                    }
+
                     _peekchar = curc;
                     return NextToken();
                 }
+
                 _peekchar = curc;
                 return Lastttype = '/';
             }
@@ -499,7 +601,10 @@ namespace Novell.Directory.Ldap.Utilclass
             if ((ctype & (sbyte) CharacterTypes.Commentchar) != 0)
             {
                 while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
+                {
                     ;
+                }
+
                 _peekchar = curc;
                 return NextToken();
             }

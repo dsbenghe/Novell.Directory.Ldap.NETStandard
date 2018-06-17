@@ -37,6 +37,24 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ReferralInfo
     {
+//		private DirectoryEntry conn;
+
+        /// <summary>
+        ///     Construct the ReferralInfo class
+        /// </summary>
+        /// <param name="lc">
+        ///     The DirectoryEntry opened to process this referral
+        /// </param>
+        /// <param name="refUrl">
+        ///     The URL string associated with this connection
+        /// </param>
+        public ReferralInfo(LdapConnection lc, string[] refList, LdapUrl refUrl)
+        {
+            ReferralConnection = lc;
+            ReferralUrl = refUrl;
+            ReferralList = refList;
+        }
+
         /// <summary>
         ///     Returns the referral URL
         /// </summary>
@@ -60,23 +78,5 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the Referral list
         /// </returns>
         public string[] ReferralList { get; }
-
-//		private DirectoryEntry conn;
-
-        /// <summary>
-        ///     Construct the ReferralInfo class
-        /// </summary>
-        /// <param name="lc">
-        ///     The DirectoryEntry opened to process this referral
-        /// </param>
-        /// <param name="refUrl">
-        ///     The URL string associated with this connection
-        /// </param>
-        public ReferralInfo(LdapConnection lc, string[] refList, LdapUrl refUrl)
-        {
-            ReferralConnection = lc;
-            ReferralUrl = refUrl;
-            ReferralList = refList;
-        }
     }
 }

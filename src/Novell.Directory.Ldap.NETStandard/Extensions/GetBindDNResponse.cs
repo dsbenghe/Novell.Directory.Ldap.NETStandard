@@ -44,16 +44,7 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class GetBindDnResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns the identity of the object.
-        /// </summary>
-        /// <returns>
-        ///     A string value specifying the bind dn returned by the server.
-        /// </returns>
-        public string Identity => _identity;
-
         // Identity returned by the server
-        private readonly string _identity;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the bind dn.
@@ -72,27 +63,43 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // The only parameter returned should be an octet string
                 var asn1Identity = (Asn1OctetString) decoder.Decode(returnedValue);
                 if (asn1Identity == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // Convert to normal string object
-                _identity = asn1Identity.StringValue();
-                if ((object) _identity == null)
+                Identity = asn1Identity.StringValue();
+                if ((object) Identity == null)
+                {
                     throw new IOException("Decoding error");
+                }
             }
             else
             {
-                _identity = "";
+                Identity = "";
             }
         }
+
+        /// <summary>
+        ///     Returns the identity of the object.
+        /// </summary>
+        /// <returns>
+        ///     A string value specifying the bind dn returned by the server.
+        /// </returns>
+        public string Identity { get; }
     }
 }

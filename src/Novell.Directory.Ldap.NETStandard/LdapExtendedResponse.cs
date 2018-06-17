@@ -43,6 +43,23 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapExtendedResponse : LdapResponse
     {
+        static LdapExtendedResponse()
+        {
+            RegisteredResponses = new RespExtensionSet();
+        }
+
+        /// <summary>
+        ///     Creates an LdapExtendedResponse object which encapsulates
+        ///     a server response to an asynchronous extended operation request.
+        /// </summary>
+        /// <param name="message">
+        ///     The RfcLdapMessage to convert to an
+        ///     LdapExtendedResponse object.
+        /// </param>
+        public LdapExtendedResponse(RfcLdapMessage message) : base(message)
+        {
+        }
+
         /// <summary>
         ///     Returns the message identifier of the response.
         /// </summary>
@@ -56,11 +73,6 @@ namespace Novell.Directory.Ldap
                 var respOid = ((RfcExtendedResponse) Message.Response).ResponseName;
                 return respOid?.StringValue();
             }
-        }
-
-        static LdapExtendedResponse()
-        {
-            RegisteredResponses = new RespExtensionSet();
         }
 
         public static RespExtensionSet RegisteredResponses { get; }
@@ -79,18 +91,6 @@ namespace Novell.Directory.Ldap
                 var tempString = ((RfcExtendedResponse) Message.Response).Response;
                 return tempString?.ByteValue();
             }
-        }
-
-        /// <summary>
-        ///     Creates an LdapExtendedResponse object which encapsulates
-        ///     a server response to an asynchronous extended operation request.
-        /// </summary>
-        /// <param name="message">
-        ///     The RfcLdapMessage to convert to an
-        ///     LdapExtendedResponse object.
-        /// </param>
-        public LdapExtendedResponse(RfcLdapMessage message) : base(message)
-        {
         }
 
         /// <summary>

@@ -48,54 +48,6 @@ namespace Novell.Directory.Ldap
     public class LdapObjectClassSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns the object classes from which this one derives.
-        /// </summary>
-        /// <returns>
-        ///     The object classes superior to this class.
-        /// </returns>
-        public string[] Superiors => _superiors;
-
-        /// <summary>
-        ///     Returns a list of attributes required for an entry with this object
-        ///     class.
-        /// </summary>
-        /// <returns>
-        ///     The list of required attributes defined for this class.
-        /// </returns>
-        public string[] RequiredAttributes => _required;
-
-        /// <summary>
-        ///     Returns a list of optional attributes but not required of an entry
-        ///     with this object class.
-        /// </summary>
-        /// <returns>
-        ///     The list of optional attributes defined for this class.
-        /// </returns>
-        public string[] OptionalAttributes => _optional;
-
-        /// <summary>
-        ///     Returns the type of object class.
-        ///     The getType method returns one of the following constants defined in
-        ///     LdapObjectClassSchema:
-        ///     <ul>
-        ///         <li>ABSTRACT</li>
-        ///         <li>AUXILIARY</li>
-        ///         <li>STRUCTURAL</li>
-        ///     </ul>
-        ///     See the LdapSchemaElement.getQualifier method for information on
-        ///     obtaining the X-NDS flags.
-        /// </summary>
-        /// <returns>
-        ///     The type of object class.
-        /// </returns>
-        public int Type => _type;
-
-        private readonly string[] _superiors;
-        private readonly string[] _required;
-        private readonly string[] _optional;
-        private readonly int _type = -1;
-
-        /// <summary>
         ///     This class definition defines an abstract schema class.
         ///     This is equivalent to setting the Novell eDirectory effective class
         ///     flag to true.
@@ -152,23 +104,26 @@ namespace Novell.Directory.Ldap
             names.CopyTo(this.names, 0);
             Oid = oid;
             Description = description;
-            _type = type;
+            Type = type;
             Obsolete = obsolete;
             if (superiors != null)
             {
-                _superiors = new string[superiors.Length];
-                superiors.CopyTo(_superiors, 0);
+                Superiors = new string[superiors.Length];
+                superiors.CopyTo(Superiors, 0);
             }
+
             if (required != null)
             {
-                _required = new string[required.Length];
-                required.CopyTo(_required, 0);
+                RequiredAttributes = new string[required.Length];
+                required.CopyTo(RequiredAttributes, 0);
             }
+
             if (optional != null)
             {
-                _optional = new string[optional.Length];
-                optional.CopyTo(_optional, 0);
+                OptionalAttributes = new string[optional.Length];
+                optional.CopyTo(OptionalAttributes, 0);
             }
+
             Value = FormatString();
         }
 
@@ -194,26 +149,35 @@ namespace Novell.Directory.Ldap
                 }
 
                 if ((object) parser.Id != null)
+                {
                     Oid = parser.Id;
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = parser.Description;
+                }
+
                 Obsolete = parser.Obsolete;
                 if (parser.Required != null)
                 {
-                    _required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(_required, 0);
+                    RequiredAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredAttributes, 0);
                 }
+
                 if (parser.Optional != null)
                 {
-                    _optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(_optional, 0);
+                    OptionalAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalAttributes, 0);
                 }
+
                 if (parser.Superiors != null)
                 {
-                    _superiors = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(_superiors, 0);
+                    Superiors = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(Superiors, 0);
                 }
-                _type = parser.Type;
+
+                Type = parser.Type;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
@@ -221,6 +185,7 @@ namespace Novell.Directory.Ldap
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException ex)
@@ -228,6 +193,49 @@ namespace Novell.Directory.Ldap
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
+
+        /// <summary>
+        ///     Returns the object classes from which this one derives.
+        /// </summary>
+        /// <returns>
+        ///     The object classes superior to this class.
+        /// </returns>
+        public string[] Superiors { get; }
+
+        /// <summary>
+        ///     Returns a list of attributes required for an entry with this object
+        ///     class.
+        /// </summary>
+        /// <returns>
+        ///     The list of required attributes defined for this class.
+        /// </returns>
+        public string[] RequiredAttributes { get; }
+
+        /// <summary>
+        ///     Returns a list of optional attributes but not required of an entry
+        ///     with this object class.
+        /// </summary>
+        /// <returns>
+        ///     The list of optional attributes defined for this class.
+        /// </returns>
+        public string[] OptionalAttributes { get; }
+
+        /// <summary>
+        ///     Returns the type of object class.
+        ///     The getType method returns one of the following constants defined in
+        ///     LdapObjectClassSchema:
+        ///     <ul>
+        ///         <li>ABSTRACT</li>
+        ///         <li>AUXILIARY</li>
+        ///         <li>STRUCTURAL</li>
+        ///     </ul>
+        ///     See the LdapSchemaElement.getQualifier method for information on
+        ///     obtaining the X-NDS flags.
+        /// </summary>
+        /// <returns>
+        ///     The type of object class.
+        /// </returns>
+        public int Type { get; } = -1;
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -246,6 +254,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -262,69 +271,110 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((strArray = Superiors) != null)
             {
                 valueBuffer.Append(" SUP ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if (Type != -1)
             {
                 if (Type == Abstract)
+                {
                     valueBuffer.Append(" ABSTRACT");
+                }
                 else if (Type == Auxiliary)
+                {
                     valueBuffer.Append(" AUXILIARY");
+                }
                 else if (Type == Structural)
+                {
                     valueBuffer.Append(" STRUCTURAL");
+                }
             }
+
             if ((strArray = RequiredAttributes) != null)
             {
                 valueBuffer.Append(" MUST ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if ((strArray = OptionalAttributes) != null)
             {
                 valueBuffer.Append(" MAY ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             IEnumerator en;
             if ((en = QualifierNames) != null)
             {
@@ -337,18 +387,28 @@ namespace Novell.Directory.Ldap
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append("( ");
+                        }
+
                         for (var i = 0; i < qualValue.Length; i++)
                         {
                             if (i > 0)
+                            {
                                 valueBuffer.Append(" ");
+                            }
+
                             valueBuffer.Append("'" + qualValue[i] + "'");
                         }
+
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append(" )");
+                        }
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

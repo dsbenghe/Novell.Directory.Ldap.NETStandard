@@ -39,6 +39,28 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapSearchResultReference : LdapMessage
     {
+        private static object _nameLock; // protect agentNum
+        private static int _refNum = 0; // Debug, LdapConnection number
+        private string _name; // String name for debug
+
+        private string[] _srefs;
+
+        static LdapSearchResultReference()
+        {
+            _nameLock = new object();
+        }
+        /*package*/
+
+        /// <summary>
+        ///     Constructs an LdapSearchResultReference object.
+        /// </summary>
+        /// <param name="message">
+        ///     The LdapMessage with a search reference.
+        /// </param>
+        internal LdapSearchResultReference(RfcLdapMessage message) : base(message)
+        {
+        }
+
         /// <summary>
         ///     Returns any URLs in the object.
         /// </summary>
@@ -55,29 +77,9 @@ namespace Novell.Directory.Ldap
                 {
                     _srefs[i] = ((Asn1OctetString) references[i]).StringValue();
                 }
+
                 return _srefs;
             }
-        }
-
-        private string[] _srefs;
-        private static object _nameLock; // protect agentNum
-        private static int _refNum = 0; // Debug, LdapConnection number
-        private string _name; // String name for debug
-        /*package*/
-
-        /// <summary>
-        ///     Constructs an LdapSearchResultReference object.
-        /// </summary>
-        /// <param name="message">
-        ///     The LdapMessage with a search reference.
-        /// </param>
-        internal LdapSearchResultReference(RfcLdapMessage message) : base(message)
-        {
-        }
-
-        static LdapSearchResultReference()
-        {
-            _nameLock = new object();
         }
     }
 }

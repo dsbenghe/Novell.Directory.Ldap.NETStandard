@@ -80,14 +80,18 @@ namespace Novell.Directory.Ldap.Events.Edir
                     {
                         bFiltered = null != specifiers[nIndex].EventFilter;
                         if (bFiltered)
+                        {
                             SetId(EventOids.NldapFilteredMonitorEventsRequest);
+                        }
                     }
 
                     if (bFiltered)
                     {
                         // A filter is expected
                         if (null == specifiers[nIndex].EventFilter)
+                        {
                             throw new ArgumentException("Filter cannot be null,for Filter events");
+                        }
 
                         specifierSequence.Add(new Asn1OctetString(specifiers[nIndex].EventFilter));
                     }
@@ -95,7 +99,9 @@ namespace Novell.Directory.Ldap.Events.Edir
                     {
                         // No filter is expected
                         if (null != specifiers[nIndex].EventFilter)
+                        {
                             throw new ArgumentException("Filter cannot be specified for non Filter events");
+                        }
                     }
 
                     asnSet.Add(specifierSequence);

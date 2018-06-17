@@ -53,17 +53,6 @@ namespace Novell.Directory.Ldap
     public class LdapMatchingRuleUseSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns an array of all the attributes which this matching rule
-        ///     applies to.
-        /// </summary>
-        /// <returns>
-        ///     An array of all the attributes which this matching rule applies to.
-        /// </returns>
-        public string[] Attributes => _attributes;
-
-        private readonly string[] _attributes;
-
-        /// <summary>
         ///     Constructs a matching rule use definition for adding to or deleting
         ///     from the schema.
         /// </summary>
@@ -93,8 +82,8 @@ namespace Novell.Directory.Ldap
             Oid = oid;
             Description = description;
             Obsolete = obsolete;
-            _attributes = new string[attributes.Length];
-            attributes.CopyTo(_attributes, 0);
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
             Value = FormatString();
         }
 
@@ -117,7 +106,7 @@ namespace Novell.Directory.Ldap
                 Oid = matchParser.Id;
                 Description = matchParser.Description;
                 Obsolete = matchParser.Obsolete;
-                _attributes = matchParser.Applies;
+                Attributes = matchParser.Applies;
                 Value = FormatString();
             }
             catch (IOException ex)
@@ -125,6 +114,15 @@ namespace Novell.Directory.Ldap
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
+
+        /// <summary>
+        ///     Returns an array of all the attributes which this matching rule
+        ///     applies to.
+        /// </summary>
+        /// <returns>
+        ///     An array of all the attributes which this matching rule applies to.
+        /// </returns>
+        public string[] Attributes { get; }
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -143,6 +141,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -159,32 +158,46 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((strArray = Attributes) != null)
             {
                 valueBuffer.Append(" APPLIES ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

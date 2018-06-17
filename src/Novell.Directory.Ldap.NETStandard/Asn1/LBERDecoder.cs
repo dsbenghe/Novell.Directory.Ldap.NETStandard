@@ -66,21 +66,15 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class LberDecoder : IAsn1Decoder
     {
-        public LberDecoder()
-        {
-            InitBlock();
-        }
-
-        private void InitBlock()
-        {
-            _asn1Id = new Asn1Identifier();
-            _asn1Len = new Asn1Length();
-        }
-
         //used to speed up decode, so it doesn't need to recreate an identifier every time
         //instead just reset is called CANNOT be static for multiple connections
         private Asn1Identifier _asn1Id;
         private Asn1Length _asn1Len;
+
+        public LberDecoder()
+        {
+            InitBlock();
+        }
 
 
         /* Generic decode routines
@@ -101,6 +95,7 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 Logger.Log.LogWarning("Exception swallowed", ioe);
             }
+
             return asn1;
         }
 
@@ -180,6 +175,7 @@ namespace Novell.Directory.Ldap.Asn1
                         throw new EndOfStreamException("Unknown tag"); // !!! need a better exception
                 }
             }
+
             // APPLICATION or CONTEXT-SPECIFIC tag
             return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier) _asn1Id.Clone());
         }
@@ -195,7 +191,9 @@ namespace Novell.Directory.Ldap.Asn1
             var i = SupportClass.ReadInput(inRenamed, ref lber, 0, lber.Length);
 
             if (i != len)
+            {
                 throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
+            }
 
             return lber[0] == 0x00 ? false : true;
         }
@@ -210,7 +208,9 @@ namespace Novell.Directory.Ldap.Asn1
             var r = inRenamed.ReadByte();
 
             if (r < 0)
+            {
                 throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
+            }
 
             if ((r & 0x80) != 0)
             {
@@ -224,9 +224,13 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 r = inRenamed.ReadByte();
                 if (r < 0)
+                {
                     throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
+                }
+
                 l = (l << 8) | r;
             }
+
             return l;
         }
 
@@ -255,14 +259,24 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 var ret = inRenamed.ReadByte(); // blocks
                 if (ret == -1)
+                {
                     throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
+                }
+
                 octets[i] = (sbyte) ret;
             }
+
             var encoder = Encoding.GetEncoding("utf-8");
             var dchar = encoder.GetChars(SupportClass.ToByteArray(octets));
             var rval = new string(dchar);
 
             return rval; //new String( "UTF8");
+        }
+
+        private void InitBlock()
+        {
+            _asn1Id = new Asn1Identifier();
+            _asn1Len = new Asn1Length();
         }
     }
 }

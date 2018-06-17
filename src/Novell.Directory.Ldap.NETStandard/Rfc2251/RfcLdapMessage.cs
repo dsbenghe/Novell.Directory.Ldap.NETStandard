@@ -72,48 +72,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcLdapMessage : Asn1Sequence
     {
-        /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
-        public int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();
-
-        /// <summary> Returns this RfcLdapMessage's message type</summary>
-        public int Type => get_Renamed(1).GetIdentifier().Tag;
-
-        /// <summary>
-        ///     Returns the response associated with this RfcLdapMessage.
-        ///     Can be one of RfcLdapResult, RfcBindResponse, RfcExtendedResponse
-        ///     all which extend RfcResponse. It can also be
-        ///     RfcSearchResultEntry, or RfcSearchResultReference
-        /// </summary>
-        public Asn1Object Response => get_Renamed(1);
-
-        /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
-        public RfcControls Controls
-        {
-            get
-            {
-                if (Size() > 2)
-                    return (RfcControls) get_Renamed(2);
-                return null;
-            }
-        }
-
-        /// <summary> Returns the dn of the request, may be null</summary>
-        public string RequestDn => ((IRfcRequest) _op).GetRequestDn();
-
-        /// <summary>
-        ///     returns the original request in this message
-        /// </summary>
-        /// <returns>
-        ///     the original msg request for this response
-        /// </returns>
-        /// <summary>
-        ///     sets the original request in this message
-        /// </summary>
-        /// <param name="msg">
-        ///     the original request for this response
-        /// </param>
-        public LdapMessage RequestingMessage { get; set; }
-
         private readonly Asn1Object _op;
         private RfcControls _controls;
 
@@ -249,6 +207,51 @@ namespace Novell.Directory.Ldap.Rfc2251
                 set_Renamed(2, new RfcControls(dec, bais, content.Length));
             }
         }
+
+        /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
+        public int MessageId => ((Asn1Integer) get_Renamed(0)).IntValue();
+
+        /// <summary> Returns this RfcLdapMessage's message type</summary>
+        public int Type => get_Renamed(1).GetIdentifier().Tag;
+
+        /// <summary>
+        ///     Returns the response associated with this RfcLdapMessage.
+        ///     Can be one of RfcLdapResult, RfcBindResponse, RfcExtendedResponse
+        ///     all which extend RfcResponse. It can also be
+        ///     RfcSearchResultEntry, or RfcSearchResultReference
+        /// </summary>
+        public Asn1Object Response => get_Renamed(1);
+
+        /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
+        public RfcControls Controls
+        {
+            get
+            {
+                if (Size() > 2)
+                {
+                    return (RfcControls) get_Renamed(2);
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary> Returns the dn of the request, may be null</summary>
+        public string RequestDn => ((IRfcRequest) _op).GetRequestDn();
+
+        /// <summary>
+        ///     returns the original request in this message
+        /// </summary>
+        /// <returns>
+        ///     the original msg request for this response
+        /// </returns>
+        /// <summary>
+        ///     sets the original request in this message
+        /// </summary>
+        /// <param name="msg">
+        ///     the original request for this response
+        /// </param>
+        public LdapMessage RequestingMessage { get; set; }
 
         //*************************************************************************
         // Accessors

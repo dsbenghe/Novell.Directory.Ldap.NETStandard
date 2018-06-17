@@ -39,25 +39,14 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ModuleStateEventData : BaseEdirEventData
     {
-        protected string StrConnectionDn;
-
-        public string ConnectionDn => StrConnectionDn;
-
         protected int NFlags;
-
-        public int Flags => NFlags;
-
-        protected string StrName;
-
-        public string Name => StrName;
+        protected string StrConnectionDn;
 
         protected string StrDescription;
 
-        public string Description => StrDescription;
+        protected string StrName;
 
         protected string StrSource;
-
-        public string Source => StrSource;
 
         public ModuleStateEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
@@ -72,6 +61,16 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
 
             DataInitDone();
         }
+
+        public string ConnectionDn => StrConnectionDn;
+
+        public int Flags => NFlags;
+
+        public string Name => StrName;
+
+        public string Description => StrDescription;
+
+        public string Source => StrSource;
 
         /// <summary>
         ///     Returns a string representation of the object.

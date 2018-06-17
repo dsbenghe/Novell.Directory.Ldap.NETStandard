@@ -53,6 +53,24 @@ namespace Novell.Directory.Ldap
     public class LdapModifyRequest : LdapMessage
     {
         /// <summary>
+        ///     Constructs an Ldap Modify request.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mods">
+        ///     The changes to be made to the entry.
+        /// </param>
+        /// <param name="cont">
+        ///     Any controls that apply to the modify request,
+        ///     or null if none.
+        /// </param>
+        public LdapModifyRequest(string dn, LdapModification[] mods, LdapControl[] cont)
+            : base(ModifyRequest, new RfcModifyRequest(new RfcLdapDn(dn), EncodeModifications(mods)), cont)
+        {
+        }
+
+        /// <summary>
         ///     Returns of the dn of the entry to modify in the directory
         /// </summary>
         /// <returns>
@@ -86,6 +104,7 @@ namespace Novell.Directory.Ldap
                     {
                         throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Size());
                     }
+
                     // Contains operation and sequence for the attribute
                     var opArray = opSeq.ToArray();
                     var asn1Op = (Asn1Enumerated) opArray[0];
@@ -107,26 +126,9 @@ namespace Novell.Directory.Ldap
 
                     modifications[m] = new LdapModification(op, attr);
                 }
+
                 return modifications;
             }
-        }
-
-        /// <summary>
-        ///     Constructs an Ldap Modify request.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to modify.
-        /// </param>
-        /// <param name="mods">
-        ///     The changes to be made to the entry.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the modify request,
-        ///     or null if none.
-        /// </param>
-        public LdapModifyRequest(string dn, LdapModification[] mods, LdapControl[] cont)
-            : base(ModifyRequest, new RfcModifyRequest(new RfcLdapDn(dn), EncodeModifications(mods)), cont)
-        {
         }
 
         /// <summary>
@@ -165,6 +167,7 @@ namespace Novell.Directory.Ldap
                 // place SEQUENCE into SEQUENCE OF
                 rfcMods.Add(rfcMod);
             }
+
             return rfcMods;
         }
 

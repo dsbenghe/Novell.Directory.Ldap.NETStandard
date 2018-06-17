@@ -85,7 +85,9 @@ namespace Novell.Directory.Ldap.Extensions
             try
             {
                 if ((object) dn == null)
+                {
                     throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
                 var encoder = new LberEncoder();
@@ -101,6 +103,7 @@ namespace Novell.Directory.Ldap.Extensions
                     var asn1AttrName = new Asn1OctetString(attrName[i]);
                     asn1Seqattr.Add(asn1AttrName);
                 }
+
                 asn1Seqattr.Encode(encoder, encodedData);
                 SetValue(SupportClass.ToSByteArray(encodedData.ToArray()));
             }

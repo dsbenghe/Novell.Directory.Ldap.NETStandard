@@ -44,50 +44,6 @@ namespace Novell.Directory.Ldap.Controls
     public class LdapEntryChangeControl : LdapControl
     {
         /// <summary>
-        ///     returns the record number of the change in the servers change log.
-        /// </summary>
-        /// <returns>
-        ///     the record number of the change in the server's change log.
-        ///     The server may not return a change number. In this case the return
-        ///     value is -1
-        /// </returns>
-        public bool HasChangeNumber { get; }
-
-        /// <summary>
-        ///     returns the record number of the change in the servers change log.
-        /// </summary>
-        /// <returns>
-        ///     the record number of the change in the server's change log.
-        ///     The server may not return a change number. In this case the return
-        ///     value is -1
-        /// </returns>
-        public int ChangeNumber { get; }
-
-        /// <summary>
-        ///     Returns the type of change that occured
-        /// </summary>
-        /// <returns>
-        ///     returns one of the following values indicating the type of
-        ///     change that occurred:
-        ///     LdapPersistSearchControl.ADD
-        ///     LdapPersistSearchControl.DELETE
-        ///     LdapPersistSearchControl.MODIFY
-        ///     LdapPersistSearchControl.MODDN.
-        /// </returns>
-        public int ChangeType => _mChangeType;
-
-        /// <summary>
-        ///     Returns the previous DN of the entry, if it was renamed.
-        /// </summary>
-        /// <returns>
-        ///     the previous DN of the entry if the entry was renamed (ie. if the
-        ///     change type is LdapersistSearchControl.MODDN.
-        /// </returns>
-        public string PreviousDn { get; }
-
-        private readonly int _mChangeType;
-
-        /// <summary>
         ///     This constructor is called by the SDK to create an
         ///     LdapEntryChangeControl. This constructor should NOT be called by
         ///     application developers. It must be public since it resides in a
@@ -122,13 +78,17 @@ namespace Novell.Directory.Ldap.Controls
             // Create a decoder objet
             var decoder = new LberDecoder();
             if (decoder == null)
+            {
                 throw new IOException("Decoding error.");
+            }
 
             // We should get a sequence initially
             var asnObj = decoder.Decode(valueRenamed);
 
             if (asnObj == null || !(asnObj is Asn1Sequence))
+            {
                 throw new IOException("Decoding error.");
+            }
 
             var sequence = (Asn1Sequence) asnObj;
 
@@ -136,18 +96,22 @@ namespace Novell.Directory.Ldap.Controls
             // The first element in the sequence should be an enumerated type
             var asn1Obj = sequence.get_Renamed(0);
             if (asn1Obj == null || !(asn1Obj is Asn1Enumerated))
+            {
                 throw new IOException("Decoding error.");
+            }
 
-            _mChangeType = ((Asn1Enumerated) asn1Obj).IntValue();
+            ChangeType = ((Asn1Enumerated) asn1Obj).IntValue();
 
             //check for optional elements
-            if (sequence.Size() > 1 && _mChangeType == 8)
+            if (sequence.Size() > 1 && ChangeType == 8)
                 //8 means modifyDN
             {
                 // get the previous DN - it is encoded as an octet string
                 asn1Obj = sequence.get_Renamed(1);
                 if (asn1Obj == null || !(asn1Obj is Asn1OctetString))
+                {
                     throw new IOException("Decoding error get previous DN");
+                }
 
                 PreviousDn = ((Asn1OctetString) asn1Obj).StringValue();
             }
@@ -161,13 +125,59 @@ namespace Novell.Directory.Ldap.Controls
             {
                 asn1Obj = sequence.get_Renamed(2);
                 if (asn1Obj == null || !(asn1Obj is Asn1Integer))
+                {
                     throw new IOException("Decoding error getting change number");
+                }
 
                 ChangeNumber = ((Asn1Integer) asn1Obj).IntValue();
                 HasChangeNumber = true;
             }
             else
+            {
                 HasChangeNumber = false;
+            }
         }
+
+        /// <summary>
+        ///     returns the record number of the change in the servers change log.
+        /// </summary>
+        /// <returns>
+        ///     the record number of the change in the server's change log.
+        ///     The server may not return a change number. In this case the return
+        ///     value is -1
+        /// </returns>
+        public bool HasChangeNumber { get; }
+
+        /// <summary>
+        ///     returns the record number of the change in the servers change log.
+        /// </summary>
+        /// <returns>
+        ///     the record number of the change in the server's change log.
+        ///     The server may not return a change number. In this case the return
+        ///     value is -1
+        /// </returns>
+        public int ChangeNumber { get; }
+
+        /// <summary>
+        ///     Returns the type of change that occured
+        /// </summary>
+        /// <returns>
+        ///     returns one of the following values indicating the type of
+        ///     change that occurred:
+        ///     LdapPersistSearchControl.ADD
+        ///     LdapPersistSearchControl.DELETE
+        ///     LdapPersistSearchControl.MODIFY
+        ///     LdapPersistSearchControl.MODDN.
+        /// </returns>
+        public int ChangeType { get; }
+
+        /// <summary>
+        ///     Returns the previous DN of the entry, if it was renamed.
+        /// </summary>
+        /// <returns>
+        ///     the previous DN of the entry if the entry was renamed (ie. if the
+        ///     change type is LdapersistSearchControl.MODDN.
+        /// </returns>
+        public string PreviousDn { get; }
     } //end class LdapEntryChangeControl
 }

@@ -36,6 +36,12 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventArgs : DirectoryEventArgs
     {
+        public EdirEventArgs(LdapMessage sourceMessage,
+            EventClassifiers aClassification)
+            : base(sourceMessage, aClassification)
+        {
+        }
+
         /// <summary>
         ///     This property gives the contained event information in the form
         ///     of an IntermediateResponse if the contained information is of correct
@@ -46,15 +52,12 @@ namespace Novell.Directory.Ldap.Events.Edir
             get
             {
                 if (LdapMessage is EdirEventIntermediateResponse)
+                {
                     return (EdirEventIntermediateResponse) LdapMessage;
+                }
+
                 return null;
             }
-        }
-
-        public EdirEventArgs(LdapMessage sourceMessage,
-            EventClassifiers aClassification)
-            : base(sourceMessage, aClassification)
-        {
         }
     }
 }

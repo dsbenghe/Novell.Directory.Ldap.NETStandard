@@ -44,16 +44,6 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class GetReplicationFilterResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns the replicationFilter as an array of classname-attribute name pairs
-        /// </summary>
-        /// <returns>
-        ///     String array contining a two dimensional array of strings.  The first
-        ///     element of each array is the class name the others are the attribute names
-        /// </returns>
-        public string[][] ReplicationFilter => ReturnedFilter;
-
-
         // Replication filter returned by the server goes here
         internal string[][] ReturnedFilter;
 
@@ -88,7 +78,9 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
@@ -97,7 +89,9 @@ namespace Novell.Directory.Ldap.Extensions
                 var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
                 if (returnedSequence == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // How many sequences in this list
                 var numberOfSequences = returnedSequence.Size();
@@ -109,17 +103,23 @@ namespace Novell.Directory.Ldap.Extensions
                     // Get the next Asn1Sequence
                     var asn1InnerSequence = (Asn1Sequence) returnedSequence.get_Renamed(classNumber);
                     if (asn1InnerSequence == null)
+                    {
                         throw new IOException("Decoding error");
+                    }
 
                     // Get the asn1 encoded classname
                     var asn1ClassName = (Asn1OctetString) asn1InnerSequence.get_Renamed(0);
                     if (asn1ClassName == null)
+                    {
                         return;
+                    }
 
                     // Get the attribute List
                     var asn1AttributeList = (Asn1Sequence) asn1InnerSequence.get_Renamed(1);
                     if (asn1AttributeList == null)
+                    {
                         throw new IOException("Decoding error");
+                    }
 
                     var numberOfAttributes = asn1AttributeList.Size();
                     ReturnedFilter[classNumber] = new string[numberOfAttributes + 1];
@@ -127,22 +127,37 @@ namespace Novell.Directory.Ldap.Extensions
                     // Get the classname
                     ReturnedFilter[classNumber][0] = asn1ClassName.StringValue();
                     if ((object) ReturnedFilter[classNumber][0] == null)
+                    {
                         throw new IOException("Decoding error");
+                    }
 
                     for (var attributeNumber = 0; attributeNumber < numberOfAttributes; attributeNumber++)
                     {
                         // Get the asn1 encoded attribute name
                         var asn1AttributeName = (Asn1OctetString) asn1AttributeList.get_Renamed(attributeNumber);
                         if (asn1AttributeName == null)
+                        {
                             throw new IOException("Decoding error");
+                        }
 
                         // Get attributename string
                         ReturnedFilter[classNumber][attributeNumber + 1] = asn1AttributeName.StringValue();
                         if ((object) ReturnedFilter[classNumber][attributeNumber + 1] == null)
+                        {
                             throw new IOException("Decoding error");
+                        }
                     }
                 }
             }
         }
+
+        /// <summary>
+        ///     Returns the replicationFilter as an array of classname-attribute name pairs
+        /// </summary>
+        /// <returns>
+        ///     String array contining a two dimensional array of strings.  The first
+        ///     element of each array is the class name the others are the attribute names
+        /// </returns>
+        public string[][] ReplicationFilter => ReturnedFilter;
     }
 }

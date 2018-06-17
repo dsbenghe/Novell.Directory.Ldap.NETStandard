@@ -45,31 +45,6 @@ namespace Novell.Directory.Ldap.Utilclass
         {
         }
 
-        /// <summary>
-        ///     Inner class defined to create a temporary object to encapsulate
-        ///     all registration information about a response control.  This class
-        ///     cannot be used outside this class
-        /// </summary>
-        private class RegisteredControl
-        {
-            private void InitBlock(RespControlVector enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
-
-            public RespControlVector EnclosingInstance { get; private set; }
-
-            public readonly string MyOid;
-            public readonly Type MyClass;
-
-            public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
-            {
-                InitBlock(enclosingInstance);
-                MyOid = oid;
-                MyClass = controlClass;
-            }
-        }
-
         /* Adds a control to the current list of registered response controls.
         *
         */
@@ -109,8 +84,35 @@ namespace Novell.Directory.Ldap.Utilclass
                         return ctl.MyClass;
                     }
                 }
+
                 /* The requested control does not have a registered response class */
                 return null;
+            }
+        }
+
+        /// <summary>
+        ///     Inner class defined to create a temporary object to encapsulate
+        ///     all registration information about a response control.  This class
+        ///     cannot be used outside this class
+        /// </summary>
+        private class RegisteredControl
+        {
+            public readonly Type MyClass;
+
+            public readonly string MyOid;
+
+            public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
+            {
+                InitBlock(enclosingInstance);
+                MyOid = oid;
+                MyClass = controlClass;
+            }
+
+            public RespControlVector EnclosingInstance { get; private set; }
+
+            private void InitBlock(RespControlVector enclosingInstance)
+            {
+                EnclosingInstance = enclosingInstance;
             }
         }
     }

@@ -184,7 +184,10 @@ namespace Novell.Directory.Ldap.Utilclass
         public static string GetErrorMessage(string code)
         {
             if (MessageMap.ContainsKey(code))
+            {
                 return MessageMap[code];
+            }
+
             return code;
         }
     } //End ExceptionMessages

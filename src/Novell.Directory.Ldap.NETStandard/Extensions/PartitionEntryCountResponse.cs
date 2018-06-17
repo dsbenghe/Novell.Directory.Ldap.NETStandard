@@ -45,14 +45,6 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class PartitionEntryCountResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns the number of entries in the naming context.
-        /// </summary>
-        /// <returns>
-        ///     The count of the number of objects returned.
-        /// </returns>
-        public int Count { get; }
-
         //The count of the objects returned by the server is saved here
 
         /// <summary>
@@ -73,16 +65,22 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 var asn1Count = (Asn1Integer) decoder.Decode(returnedValue);
                 if (asn1Count == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 Count = asn1Count.IntValue();
             }
@@ -91,5 +89,13 @@ namespace Novell.Directory.Ldap.Extensions
                 Count = -1;
             }
         }
+
+        /// <summary>
+        ///     Returns the number of entries in the naming context.
+        /// </summary>
+        /// <returns>
+        ///     The count of the number of objects returned.
+        /// </returns>
+        public int Count { get; }
     }
 }

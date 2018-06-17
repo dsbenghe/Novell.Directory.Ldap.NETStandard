@@ -61,8 +61,10 @@ namespace Novell.Directory.Ldap.Utilclass
         private static readonly char[] Emap =
         {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k',
+            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
+            '6',
             '7', '8', '9', '+', '/'
         }; // 4-9, + /;  56-63
 
@@ -91,6 +93,29 @@ namespace Novell.Directory.Ldap.Utilclass
             0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30,
             0x31, 0x32, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00
         }; // 120-127 'xyz     '
+
+        /// <summary>
+        ///     Bit masks used to determine if a the value of UTF-8 byte sequence
+        ///     is less than the minimum value.
+        ///     If the value of a byte sequence is less than the minimum value then
+        ///     the number should be encoded in fewer bytes and is invalid.  For example
+        ///     If the first byte indicates that a sequence has three bytes in a
+        ///     sequence. Then the top five bits cannot be zero.  Notice the index into
+        ///     the array is one less than the number of bytes in a sequence.
+        ///     A validity test for this could be:
+        /// </summary>
+        private static readonly sbyte[][] LowerBoundMask =
+        {
+            new sbyte[] {0, 0}, new[] {(sbyte) 0x1E, (sbyte) 0x00},
+            new[] {(sbyte) 0x0F, (sbyte) 0x20}, new[] {(sbyte) 0x07, (sbyte) 0x30}, new[] {(sbyte) 0x02, (sbyte) 0x38},
+            new[] {(sbyte) 0x01, (sbyte) 0x3C}
+        };
+
+        /// <summary>mask to AND with a continuation byte: should equal continuationResult </summary>
+        private static readonly sbyte ContinuationMask = (sbyte) SupportClass.Identity(0xC0);
+
+        /// <summary>expected result of ANDing a continuation byte with continuationMask </summary>
+        private static readonly sbyte ContinuationResult = (sbyte) SupportClass.Identity(0x80);
 
         /// <summary>
         ///     Default constructor, don't allow instances of the
@@ -208,6 +233,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     encodedChars[j + 3] = '=';
                     break;
                 }
+
                 t1 = 0x00ff & inputBytes[i + 1];
                 encodedChars[j + 1] = Emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
 
@@ -218,12 +244,14 @@ namespace Novell.Directory.Ldap.Utilclass
                     encodedChars[j + 3] = '=';
                     break;
                 }
+
                 t2 = 0x00ff & inputBytes[i + 2];
                 encodedChars[j + 2] = Emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
 
                 // build encodedChars[j+3]
                 encodedChars[j + 3] = Emap[t2 & 0x3f];
             }
+
             return new string(encodedChars);
         }
 
@@ -270,6 +298,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 return new sbyte[0];
             }
+
             // the number of encoded bytes should be multiple of 4
             if (ecLen % 4 != 0)
             {
@@ -332,6 +361,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     break;
                 }
+
                 decodedBytes[j + 1] =
                     (sbyte) (((Dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((Dmap[encodedChars[i + 2]] & 0x3c) >> 2));
 
@@ -340,9 +370,11 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     break;
                 }
+
                 decodedBytes[j + 2] =
                     (sbyte) (((Dmap[encodedChars[i + 2]] & 0x03) << 6) | (Dmap[encodedChars[i + 3]] & 0x3f));
             }
+
             return decodedBytes;
         }
 
@@ -379,6 +411,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 return new sbyte[0];
             }
+
             // the number of encoded bytes should be multiple of number 4
             if (esbLen % 4 != 0)
             {
@@ -441,19 +474,23 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     break;
                 }
+
                 decodedBytes[j + 1] =
                     (sbyte)
-                    (((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) | ((Dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
+                    (((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) |
+                     ((Dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
                 {
                     break;
                 }
+
                 decodedBytes[j + 2] =
                     (sbyte)
                     (((Dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (Dmap[encodedSBuf[start + i + 3]] & 0x3f));
             }
+
             return decodedBytes;
         }
 
@@ -504,11 +541,13 @@ namespace Novell.Directory.Ldap.Utilclass
                     // non ascii (>127 is negative)
                     return false;
                 }
+
                 // unsafe if last character is a space
                 if (bytes[len - 1] == ' ')
                 {
                     return false;
                 }
+
                 // unsafe if contains any non safe character
                 if (len > 1)
                 {
@@ -523,6 +562,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                 }
             }
+
             return true;
         }
 
@@ -619,52 +659,37 @@ namespace Novell.Directory.Ldap.Utilclass
         private static int GetByteCount(sbyte b)
         {
             if (b > 0)
+            {
                 return 0;
+            }
+
             if ((b & 0xE0) == 0xC0)
             {
                 return 1; //one additional byte (2 bytes total)
             }
+
             if ((b & 0xF0) == 0xE0)
             {
                 return 2; //two additional bytes (3 bytes total)
             }
+
             if ((b & 0xF8) == 0xF0)
             {
                 return 3; //three additional bytes (4 bytes total)
             }
+
             if ((b & 0xFC) == 0xF8)
             {
                 return 4; //four additional bytes (5 bytes total)
             }
+
             if ((b & 0xFF) == 0xFC)
             {
                 return 5; //five additional bytes (6 bytes total)
             }
+
             return -1;
         }
-
-        /// <summary>
-        ///     Bit masks used to determine if a the value of UTF-8 byte sequence
-        ///     is less than the minimum value.
-        ///     If the value of a byte sequence is less than the minimum value then
-        ///     the number should be encoded in fewer bytes and is invalid.  For example
-        ///     If the first byte indicates that a sequence has three bytes in a
-        ///     sequence. Then the top five bits cannot be zero.  Notice the index into
-        ///     the array is one less than the number of bytes in a sequence.
-        ///     A validity test for this could be:
-        /// </summary>
-        private static readonly sbyte[][] LowerBoundMask =
-        {
-            new sbyte[] {0, 0}, new[] {(sbyte) 0x1E, (sbyte) 0x00},
-            new[] {(sbyte) 0x0F, (sbyte) 0x20}, new[] {(sbyte) 0x07, (sbyte) 0x30}, new[] {(sbyte) 0x02, (sbyte) 0x38},
-            new[] {(sbyte) 0x01, (sbyte) 0x3C}
-        };
-
-        /// <summary>mask to AND with a continuation byte: should equal continuationResult </summary>
-        private static readonly sbyte ContinuationMask = (sbyte) SupportClass.Identity(0xC0);
-
-        /// <summary>expected result of ANDing a continuation byte with continuationMask </summary>
-        private static readonly sbyte ContinuationResult = (sbyte) SupportClass.Identity(0x80);
 
         /// <summary>
         ///     Determines if an array of bytes contains only valid UTF-8 characters.
@@ -716,7 +741,8 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 /* Tests if the first and second byte are below the minimum bound */
-                if ((LowerBoundMask[count][0] & array[index]) == 0 && (LowerBoundMask[count][1] & array[index + 1]) == 0)
+                if ((LowerBoundMask[count][0] & array[index]) == 0 &&
+                    (LowerBoundMask[count][1] & array[index + 1]) == 0)
                 {
                     return false;
                 }
@@ -729,8 +755,10 @@ namespace Novell.Directory.Ldap.Utilclass
                         return false;
                     }
                 }
+
                 index += count + 1;
             }
+
             return true;
         }
     }

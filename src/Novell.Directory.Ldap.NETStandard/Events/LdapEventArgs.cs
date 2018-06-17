@@ -44,12 +44,6 @@ namespace Novell.Directory.Ldap.Events
     {
         protected LdapEventType EType;
 
-        public LdapEventType EventType
-        {
-            get => EType;
-            set => EType = value;
-        }
-
         public LdapEventArgs(
             LdapMessage sourceMessage,
             EventClassifiers aClassification,
@@ -57,6 +51,12 @@ namespace Novell.Directory.Ldap.Events
             : base(sourceMessage, aClassification)
         {
             EType = aType;
+        }
+
+        public LdapEventType EventType
+        {
+            get => EType;
+            set => EType = value;
         }
 
         public override string ToString()

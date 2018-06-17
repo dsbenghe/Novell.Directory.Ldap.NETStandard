@@ -103,11 +103,15 @@ namespace Novell.Directory.Ldap.Extensions
                 //Verify the validity of arguments
                 if (objectDn == null || bufferLength == 0 ||
                     chunkSizesString == null || returnedBuffer == null)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
                 //If encrypted password has null reference make it null String
                 if (passwd == null)
+                {
                     passwd = Encoding.UTF8.GetBytes("");
+                }
 
                 /*
                  * From the input argument chunkSizesString get::
@@ -127,9 +131,12 @@ namespace Novell.Directory.Ldap.Extensions
                         "Invalid data buffer send in the request",
                         LdapException.EncodingError, e);
                 }
+
                 //Return exception if chunkSize == 0
                 if (chunkSize == 0)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
                 chunkSizesString = chunkSizesString.Substring(index + 1);
 
@@ -148,6 +155,7 @@ namespace Novell.Directory.Ldap.Extensions
                         chunks[i] = int.Parse(chunkSizesString);
                         break;
                     }
+
                     chunks[i] = int.Parse(chunkSizesString.Substring(0,
                         chunkIndex));
                     chunkSizesString = chunkSizesString.Substring(chunkIndex + 1);
@@ -173,6 +181,7 @@ namespace Novell.Directory.Ldap.Extensions
                     tmpSeq.Add(tmpChunk);
                     asn1ChunksSet.Add(tmpSeq);
                 }
+
                 asn1ChunksSeq.Add(asn1ChunksSet);
 
                 //Encode data to send to server

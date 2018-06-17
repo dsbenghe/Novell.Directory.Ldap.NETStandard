@@ -49,43 +49,11 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapCompareAttrNames : IComparer
     {
-        private void InitBlock()
-        {
-//			location = Locale.getDefault();
-            _location = CultureInfo.CurrentCulture;
-            _collator = CultureInfo.CurrentCulture.CompareInfo;
-        }
-
-        /// <summary>
-        ///     Returns the locale to be used for sorting, if a locale has been
-        ///     specified.
-        ///     If locale is null, a basic String.compareTo method is used for
-        ///     collation.  If non-null, a locale-specific collation is used.
-        /// </summary>
-        /// <returns>
-        ///     The locale if one has been specified
-        /// </returns>
-        /// <summary>
-        ///     Sets the locale to be used for sorting.
-        /// </summary>
-        /// <param name="locale">
-        ///     The locale to be used for sorting.
-        /// </param>
-        public virtual CultureInfo Locale
-        {
-            get => _location;
-
-            set
-            {
-                _collator = value.CompareInfo;
-                _location = value;
-            }
-        }
+        private readonly bool[] _sortAscending; //true if sorting ascending
 
         private readonly string[] _sortByNames; //names to to sort by.
-        private readonly bool[] _sortAscending; //true if sorting ascending
-        private CultureInfo _location;
         private CompareInfo _collator;
+        private CultureInfo _location;
 
         /// <summary>
         ///     Constructs an object that sorts results by a single attribute, in
@@ -176,12 +144,39 @@ namespace Novell.Directory.Ldap
                 throw new LdapException(ExceptionMessages.UnequalLengths, LdapException.InappropriateMatching, null);
                 //"Length of attribute Name array does not equal length of Flags array"
             }
+
             _sortByNames = new string[attrNames.Length];
             _sortAscending = new bool[ascendingFlags.Length];
             for (var i = 0; i < attrNames.Length; i++)
             {
                 _sortByNames[i] = attrNames[i];
                 _sortAscending[i] = ascendingFlags[i];
+            }
+        }
+
+        /// <summary>
+        ///     Returns the locale to be used for sorting, if a locale has been
+        ///     specified.
+        ///     If locale is null, a basic String.compareTo method is used for
+        ///     collation.  If non-null, a locale-specific collation is used.
+        /// </summary>
+        /// <returns>
+        ///     The locale if one has been specified
+        /// </returns>
+        /// <summary>
+        ///     Sets the locale to be used for sorting.
+        /// </summary>
+        /// <param name="locale">
+        ///     The locale to be used for sorting.
+        /// </param>
+        public virtual CultureInfo Locale
+        {
+            get => _location;
+
+            set
+            {
+                _collator = value.CompareInfo;
+                _location = value;
             }
         }
 
@@ -232,13 +227,19 @@ namespace Novell.Directory.Ldap
                 else
                 {
                     if (one != null)
+                    {
                         compare = -1;
+                    }
                     //one is greater than two
                     else if (two != null)
+                    {
                         compare = 1;
+                    }
                     //one is lesser than two
                     else
+                    {
                         compare = 0; //tie - break it with the next attribute name
+                    }
                 }
 
                 i++;
@@ -249,8 +250,16 @@ namespace Novell.Directory.Ldap
                 // return the normal ascending comparison.
                 return compare;
             }
+
             // negate the comparison for a descending comparison.
             return -compare;
+        }
+
+        private void InitBlock()
+        {
+//			location = Locale.getDefault();
+            _location = CultureInfo.CurrentCulture;
+            _collator = CultureInfo.CurrentCulture.CompareInfo;
         }
 
         /// <summary>
@@ -268,6 +277,7 @@ namespace Novell.Directory.Ldap
             {
                 return false;
             }
+
             var comp = (LdapCompareAttrNames) comparator;
 
             // Test to see if the attribute to compare are the same length
@@ -280,10 +290,16 @@ namespace Novell.Directory.Ldap
             for (var i = 0; i < _sortByNames.Length; i++)
             {
                 if (comp._sortAscending[i] != _sortAscending[i])
+                {
                     return false;
+                }
+
                 if (!comp._sortByNames[i].ToUpper().Equals(_sortByNames[i].ToUpper()))
+                {
                     return false;
+                }
             }
+
             return true;
         }
     }

@@ -54,6 +54,27 @@ namespace Novell.Directory.Ldap.Controls
         /// <summary> The responseOID of the sort control</summary>
         private static readonly string ResponseOid = "1.2.840.113556.1.4.474";
 
+        static LdapSortControl()
+        {
+            /*
+            * This is where we register the control responses
+            */
+            {
+                /*
+                * Register the Server Sort Control class which is returned by the
+                * server in response to a Sort Request
+                */
+                try
+                {
+                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
+                }
+                catch (Exception e)
+                {
+                    Logger.Log.LogWarning("Exception swallowed", e);
+                }
+            }
+        }
+
         /// <summary>
         ///     Constructs a sort control with a single key.
         /// </summary>
@@ -107,27 +128,6 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             SetValue(sortKeyList.GetEncoding(new LberEncoder()));
-        }
-
-        static LdapSortControl()
-        {
-            /*
-            * This is where we register the control responses
-            */
-            {
-                /*
-                * Register the Server Sort Control class which is returned by the
-                * server in response to a Sort Request
-                */
-                try
-                {
-                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
-                }
-                catch (Exception e)
-                {
-                    Logger.Log.LogWarning("Exception swallowed", e);
-                }
-            }
         }
     }
 }

@@ -41,13 +41,18 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ResourcesHandler
     {
+        /// <summary> The default Locale</summary>
+        private static CultureInfo _defaultLocale;
+
+        static ResourcesHandler()
+        {
+            _defaultLocale = CultureInfo.CurrentUICulture;
+        }
+
         // Cannot create an instance of this class
         private ResourcesHandler()
         {
         }
-
-        /// <summary> The default Locale</summary>
-        private static CultureInfo _defaultLocale;
 
         /// <summary>
         ///     Returns a string using the MessageOrKey as a key into
@@ -94,10 +99,14 @@ namespace Novell.Directory.Ldap.Utilclass
         public static string GetMessage(string messageOrKey, object[] arguments, CultureInfo locale)
         {
             if (_defaultLocale == null)
+            {
                 _defaultLocale = CultureInfo.CurrentUICulture;
+            }
 
             if (locale == null)
+            {
                 locale = _defaultLocale;
+            }
 
             if (messageOrKey == null)
             {
@@ -119,6 +128,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 //				mf.applyPattern(pattern);
                 //				pattern = mf.format(arguments);
             }
+
             return pattern;
         }
 
@@ -162,12 +172,8 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code}, locale);
             }
-            return result;
-        }
 
-        static ResourcesHandler()
-        {
-            _defaultLocale = CultureInfo.CurrentUICulture;
+            return result;
         }
     } //end class ResourcesHandler
 }

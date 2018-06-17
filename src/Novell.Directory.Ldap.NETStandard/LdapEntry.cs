@@ -48,14 +48,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapEntry : IComparable
     {
-        /// <summary>
-        ///     Returns the distinguished name of the entry.
-        /// </summary>
-        /// <returns>
-        ///     The distinguished name of the entry.
-        /// </returns>
-        [CLSCompliant(false)]
-        public string Dn { get; set; }
         protected internal LdapAttributeSet Attrs;
 
         /// <summary> Constructs an empty entry.</summary>
@@ -95,12 +87,42 @@ namespace Novell.Directory.Ldap
             {
                 dn = "";
             }
+
             if (attrs == null)
             {
                 attrs = new LdapAttributeSet();
             }
+
             Dn = dn;
             Attrs = attrs;
+        }
+
+        /// <summary>
+        ///     Returns the distinguished name of the entry.
+        /// </summary>
+        /// <returns>
+        ///     The distinguished name of the entry.
+        /// </returns>
+        [CLSCompliant(false)]
+        public string Dn { get; set; }
+
+        /// <summary>
+        ///     Compares this object with the specified object for order.
+        ///     Ordering is determined by comparing normalized DN values
+        ///     (see {@link LdapEntry#getDN() } and
+        ///     {@link LdapDN#normalize(java.lang.String)}) using the
+        ///     compareTo method of the String class.
+        /// </summary>
+        /// <param name="entry">
+        ///     Entry to compare to
+        /// </param>
+        /// <returns>
+        ///     A negative integer, zero, or a positive integer as this
+        ///     object is less than, equal to, or greater than the specified object.
+        /// </returns>
+        public virtual int CompareTo(object entry)
+        {
+            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry) entry).Dn));
         }
 
         /// <summary>
@@ -160,25 +182,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Compares this object with the specified object for order.
-        ///     Ordering is determined by comparing normalized DN values
-        ///     (see {@link LdapEntry#getDN() } and
-        ///     {@link LdapDN#normalize(java.lang.String)}) using the
-        ///     compareTo method of the String class.
-        /// </summary>
-        /// <param name="entry">
-        ///     Entry to compare to
-        /// </param>
-        /// <returns>
-        ///     A negative integer, zero, or a positive integer as this
-        ///     object is less than, equal to, or greater than the specified object.
-        /// </returns>
-        public virtual int CompareTo(object entry)
-        {
-            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry) entry).Dn));
-        }
-
-        /// <summary>
         ///     Returns a string representation of this LdapEntry
         /// </summary>
         /// <returns>
@@ -191,10 +194,12 @@ namespace Novell.Directory.Ldap
             {
                 result.Append(Dn + "; ");
             }
+
             if (Attrs != null)
             {
                 result.Append(Attrs);
             }
+
             return result.ToString();
         }
     }

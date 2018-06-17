@@ -43,43 +43,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSearchResult : LdapMessage
     {
-        /// <summary>
-        ///     Returns the entry of a server's search response.
-        /// </summary>
-        /// <returns>
-        ///     The LdapEntry associated with this LdapSearchResult
-        /// </returns>
-        public LdapEntry Entry
-        {
-            get
-            {
-                if (_entry == null)
-                {
-                    var attrs = new LdapAttributeSet();
-
-                    var attrList = ((RfcSearchResultEntry) Message.Response).Attributes;
-
-                    var seqArray = attrList.ToArray();
-                    for (var i = 0; i < seqArray.Length; i++)
-                    {
-                        var seq = (Asn1Sequence) seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
-
-                        var setRenamed = (Asn1Set) seq.get_Renamed(1);
-                        object[] setArray = setRenamed.ToArray();
-                        for (var j = 0; j < setArray.Length; j++)
-                        {
-                            attr.AddValue(((Asn1OctetString) setArray[j]).ByteValue());
-                        }
-                        attrs.Add(attr);
-                    }
-
-                    _entry = new LdapEntry(((RfcSearchResultEntry) Message.Response).ObjectName.StringValue(), attrs);
-                }
-                return _entry;
-            }
-        }
-
         private LdapEntry _entry;
 
         /// <summary>
@@ -108,7 +71,47 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("Argument \"entry\" cannot be null");
             }
+
             _entry = entry;
+        }
+
+        /// <summary>
+        ///     Returns the entry of a server's search response.
+        /// </summary>
+        /// <returns>
+        ///     The LdapEntry associated with this LdapSearchResult
+        /// </returns>
+        public LdapEntry Entry
+        {
+            get
+            {
+                if (_entry == null)
+                {
+                    var attrs = new LdapAttributeSet();
+
+                    var attrList = ((RfcSearchResultEntry) Message.Response).Attributes;
+
+                    var seqArray = attrList.ToArray();
+                    for (var i = 0; i < seqArray.Length; i++)
+                    {
+                        var seq = (Asn1Sequence) seqArray[i];
+                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).StringValue());
+
+                        var setRenamed = (Asn1Set) seq.get_Renamed(1);
+                        object[] setArray = setRenamed.ToArray();
+                        for (var j = 0; j < setArray.Length; j++)
+                        {
+                            attr.AddValue(((Asn1OctetString) setArray[j]).ByteValue());
+                        }
+
+                        attrs.Add(attr);
+                    }
+
+                    _entry = new LdapEntry(((RfcSearchResultEntry) Message.Response).ObjectName.StringValue(), attrs);
+                }
+
+                return _entry;
+            }
         }
 
         /// <summary>
@@ -128,6 +131,7 @@ namespace Novell.Directory.Ldap
             {
                 str = _entry.ToString();
             }
+
             return str;
         }
     }

@@ -47,6 +47,21 @@ namespace Novell.Directory.Ldap
     public class LdapAddRequest : LdapMessage
     {
         /// <summary>
+        ///     Constructs a request to add an entry to the directory.
+        /// </summary>
+        /// <param name="entry">
+        ///     The LdapEntry to add to the directory.
+        /// </param>
+        /// <param name="cont">
+        ///     Any controls that apply to the add request,
+        ///     or null if none.
+        /// </param>
+        public LdapAddRequest(LdapEntry entry, LdapControl[] cont)
+            : base(AddRequest, new RfcAddRequest(new RfcLdapDn(entry.Dn), MakeRfcAttrList(entry)), cont)
+        {
+        }
+
+        /// <summary>
         ///     Constructs an LdapEntry that represents the add request
         /// </summary>
         /// <returns>
@@ -74,26 +89,12 @@ namespace Novell.Directory.Ldap
                     {
                         attr.AddValue(((Asn1OctetString) setArray[j]).ByteValue());
                     }
+
                     attrs.Add(attr);
                 }
 
                 return new LdapEntry(Asn1Object.RequestDn, attrs);
             }
-        }
-
-        /// <summary>
-        ///     Constructs a request to add an entry to the directory.
-        /// </summary>
-        /// <param name="entry">
-        ///     The LdapEntry to add to the directory.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the add request,
-        ///     or null if none.
-        /// </param>
-        public LdapAddRequest(LdapEntry entry, LdapControl[] cont)
-            : base(AddRequest, new RfcAddRequest(new RfcLdapDn(entry.Dn), MakeRfcAttrList(entry)), cont)
-        {
         }
 
         /// <summary>
@@ -117,8 +118,10 @@ namespace Novell.Directory.Ldap
                 {
                     vals.Add(new RfcAttributeValue((sbyte[]) attrEnum.Current));
                 }
+
                 attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
             }
+
             return attrList;
         }
 

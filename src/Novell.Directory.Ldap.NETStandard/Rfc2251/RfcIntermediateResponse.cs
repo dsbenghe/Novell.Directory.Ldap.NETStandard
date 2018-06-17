@@ -50,14 +50,15 @@ namespace Novell.Directory.Ldap.Rfc2251
          * Context-specific TAG for optional responseName.
          */
         public const int TagResponseName = 0;
+
         /**
          * Context-specific TAG for optional response.
          */
         public const int TagResponse = 1;
-
-        private int _mReferralIndex;
         private readonly int _mResponseNameIndex;
         private readonly int _mResponseValueIndex;
+
+        private int _mReferralIndex;
 
 
         //*************************************************************************
@@ -110,9 +111,13 @@ namespace Novell.Directory.Ldap.Rfc2251
             // stored as an ASN1OctectString object.
 
             if (Size() >= 3) //the incorrectly encoded case, LDAPResult contains 
+            {
                 i = 3; //at least 3 components
+            }
             else
+            {
                 i = 0; //correctly encoded case, can have zero components
+            }
 
             for (; i < Size(); i++)
             {
@@ -137,21 +142,30 @@ namespace Novell.Directory.Ldap.Rfc2251
         public Asn1Enumerated GetResultCode()
         {
             if (Size() > 3)
+            {
                 return (Asn1Enumerated) get_Renamed(0);
+            }
+
             return null;
         }
 
         public RfcLdapDn GetMatchedDn()
         {
             if (Size() > 3)
+            {
                 return new RfcLdapDn(((Asn1OctetString) get_Renamed(1)).ByteValue());
+            }
+
             return null;
         }
 
         public RfcLdapString GetErrorMessage()
         {
             if (Size() > 3)
+            {
                 return new RfcLdapString(((Asn1OctetString) get_Renamed(2)).ByteValue());
+            }
+
             return null;
         }
 

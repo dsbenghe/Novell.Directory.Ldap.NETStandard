@@ -68,14 +68,19 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 //Create a decoder object
                 var decoder = new LberDecoder();
 
                 var asn1Seq1 = (Asn1Sequence) decoder.Decode(returnedValue);
                 if (asn1Seq1 == null)
+                {
                     throw new IOException("Decoding error");
+                }
+
                 var asn1Seq2 = (Asn1Sequence) asn1Seq1.get_Renamed(0);
                 var noPrivileges = ((Asn1Integer) asn1Seq2.get_Renamed(0)).IntValue();
 

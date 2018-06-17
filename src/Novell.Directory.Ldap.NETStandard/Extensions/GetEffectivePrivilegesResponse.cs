@@ -44,16 +44,6 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class GetEffectivePrivilegesResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns the effective privileges.
-        ///     See the ReplicationConstants class for the privilege flags.
-        /// </summary>
-        /// <returns>
-        ///     A flag which is a combination of zero or more privilege flags as
-        ///     returned by the server.
-        /// </returns>
-        public int Privileges { get; }
-
         // Identity returned by the server
 
         /// <summary>
@@ -74,16 +64,22 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 var asn1Privileges = (Asn1Integer) decoder.Decode(returnedValue);
                 if (asn1Privileges == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 Privileges = asn1Privileges.IntValue();
             }
@@ -92,5 +88,15 @@ namespace Novell.Directory.Ldap.Extensions
                 Privileges = 0;
             }
         }
+
+        /// <summary>
+        ///     Returns the effective privileges.
+        ///     See the ReplicationConstants class for the privilege flags.
+        /// </summary>
+        /// <returns>
+        ///     A flag which is a combination of zero or more privilege flags as
+        ///     returned by the server.
+        /// </returns>
+        public int Privileges { get; }
     }
 }

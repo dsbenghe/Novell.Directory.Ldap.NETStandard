@@ -37,12 +37,6 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventSpecifier
     {
-        public EdirEventType EventType { get; }
-
-        public EdirEventResultType EventResultType { get; }
-
-        public string EventFilter { get; }
-
         public EdirEventSpecifier(EdirEventType eventType, EdirEventResultType eventResultType) :
             this(eventType, eventResultType, null)
         {
@@ -54,5 +48,11 @@ namespace Novell.Directory.Ldap.Events.Edir
             EventResultType = eventResultType;
             EventFilter = filter;
         }
+
+        public EdirEventType EventType { get; }
+
+        public EdirEventResultType EventResultType { get; }
+
+        public string EventFilter { get; }
     }
 }

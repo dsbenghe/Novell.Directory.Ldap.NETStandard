@@ -35,7 +35,10 @@ namespace Novell.Directory.Ldap.Utilclass
             var tempResponse = new LdapExtendedResponse(inResponse);
             // Get the oid stored in the Extended response
             var inOid = tempResponse.Id;
-            if(inOid == null) return tempResponse;
+            if (inOid == null)
+            {
+                return tempResponse;
+            }
 
             var regExtResponses = LdapExtendedResponse.RegisteredResponses;
             try
@@ -45,6 +48,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     return tempResponse;
                 }
+
                 Type[] argsClass = {typeof(RfcLdapMessage)};
                 object[] args = {inResponse};
                 Exception ex;
@@ -84,6 +88,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
+
             // If we get here we did not have a registered extendedresponse
             // for this oid.  Return a default LdapExtendedResponse object.
             return tempResponse;

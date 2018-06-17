@@ -76,7 +76,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestName), requestName, false));
             if (requestValue != null)
-                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestValue), requestValue, false));
+            {
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, RequestValue), requestValue,
+                    false));
+            }
         }
 
 
@@ -88,6 +91,17 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </param>
         public RfcExtendedRequest(Asn1Object[] origRequest) : base(origRequest, origRequest.Length)
         {
+        }
+
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            // Just dup the original request
+            return new RfcExtendedRequest(ToArray());
+        }
+
+        public string GetRequestDn()
+        {
+            return null;
         }
 
         //*************************************************************************
@@ -103,17 +117,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ExtendedRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            // Just dup the original request
-            return new RfcExtendedRequest(ToArray());
-        }
-
-        public string GetRequestDn()
-        {
-            return null;
         }
     }
 }

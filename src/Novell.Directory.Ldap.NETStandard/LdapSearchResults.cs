@@ -36,28 +36,48 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    /// <inheritdoc />    
+    /// <inheritdoc />
     public class LdapSearchResults : ILdapSearchResults
     {
+        private readonly int _batchSize; // Application specified batch size
+        private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
+
+        private readonly ArrayList _entries; // Search entries
+        private readonly LdapSearchQueue _queue;
+        private readonly ArrayList _references; // Search Result References
+        private bool _completed; // All entries received
+        private int _entryCount; // # Search entries in vector
+        private int _entryIndex; // Current position in vector
+        private int _referenceCount; // # Search Result Reference in vector
+
+        private int _referenceIndex; // Current position in vector
+        //private ArrayList referralConn = null; // Referral Connections
+
         /// <summary>
-        ///     Returns a count of the items in the search result.
-        ///     Returns a count of the entries and exceptions remaining in the object.
-        ///     If the search was submitted with a batch size greater than zero,
-        ///     getCount reports the number of results received so far but not enumerated
-        ///     with next().  If batch size equals zero, getCount reports the number of
-        ///     items received, since the application thread blocks until all results are
-        ///     received.
+        ///     Constructs a queue object for search results.
         /// </summary>
-        /// <returns>
-        ///     The number of items received but not retrieved by the application
-        /// </returns>
-        public int Count
+        /// <param name="queue">
+        ///     The queue for the search results.
+        /// </param>
+        /// <param name="cons">
+        ///     The LdapSearchConstraints associated with this search
+        /// </param>
+        internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
         {
-            get
-            {
-                var qCount = _queue.MessageAgent.Count;
-                return _entryCount - _entryIndex + _referenceCount - _referenceIndex + qCount;
-            }
+            // setup entry Vector
+            _cons = cons;
+            var requestedBatchSize = cons.BatchSize;
+            _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
+            _entryCount = 0;
+            _entryIndex = 0;
+
+            // setup search reference Vector
+            _references = new ArrayList(5);
+            _referenceCount = 0;
+            _referenceIndex = 0;
+
+            _queue = queue;
+            _batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
         }
 
         /// <summary>
@@ -150,6 +170,7 @@ namespace Novell.Directory.Ldap
                                     _entries.Add(resp);
                                     _entryCount++;
                                 }
+
                                 // We are done only when we have read all messages
                                 // including those received from following referrals
                                 var msgIDs = _queue.MessageIDs;
@@ -176,47 +197,30 @@ namespace Novell.Directory.Ldap
                         _entries.Add(e);
                     }
                 }
+
                 return false; // search not completed
             }
         }
 
-        private readonly ArrayList _entries; // Search entries
-        private int _entryCount; // # Search entries in vector
-        private int _entryIndex; // Current position in vector
-        private readonly ArrayList _references; // Search Result References
-        private int _referenceCount; // # Search Result Reference in vector
-        private int _referenceIndex; // Current position in vector
-        private readonly int _batchSize; // Application specified batch size
-        private bool _completed; // All entries received
-        private readonly LdapSearchQueue _queue;
-        private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
-        //private ArrayList referralConn = null; // Referral Connections
-
         /// <summary>
-        ///     Constructs a queue object for search results.
+        ///     Returns a count of the items in the search result.
+        ///     Returns a count of the entries and exceptions remaining in the object.
+        ///     If the search was submitted with a batch size greater than zero,
+        ///     getCount reports the number of results received so far but not enumerated
+        ///     with next().  If batch size equals zero, getCount reports the number of
+        ///     items received, since the application thread blocks until all results are
+        ///     received.
         /// </summary>
-        /// <param name="queue">
-        ///     The queue for the search results.
-        /// </param>
-        /// <param name="cons">
-        ///     The LdapSearchConstraints associated with this search
-        /// </param>
-        internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
+        /// <returns>
+        ///     The number of items received but not retrieved by the application
+        /// </returns>
+        public int Count
         {
-            // setup entry Vector
-            _cons = cons;
-            var requestedBatchSize = cons.BatchSize;
-            _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
-            _entryCount = 0;
-            _entryIndex = 0;
-
-            // setup search reference Vector
-            _references = new ArrayList(5);
-            _referenceCount = 0;
-            _referenceIndex = 0;
-
-            _queue = queue;
-            _batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
+            get
+            {
+                var qCount = _queue.MessageAgent.Count;
+                return _entryCount - _entryIndex + _referenceCount - _referenceIndex + qCount;
+            }
         }
 
         /// <summary>
@@ -239,38 +243,8 @@ namespace Novell.Directory.Ldap
                 ResetVectors();
                 ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
-            return ret;
-        }
 
-        /*
-        * If both of the vectors are empty, get more data for them.
-        */
-        private void ResetVectors()
-        {
-            // If we're done, no further checking needed
-            if (_completed)
-            {
-                return;
-            }
-            // Checks if we have run out of references
-            if (_referenceIndex != 0 && _referenceIndex >= _referenceCount)
-            {
-                SupportClass.SetSize(_references, 0);
-                _referenceCount = 0;
-                _referenceIndex = 0;
-            }
-            // Checks if we have run out of entries
-            if (_entryIndex != 0 && _entryIndex >= _entryCount)
-            {
-                SupportClass.SetSize(_entries, 0);
-                _entryCount = 0;
-                _entryIndex = 0;
-            }
-            // If no data at all, must reload enumeration
-            if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
-            {
-                _completed = BatchOfResults;
-            }
+            return ret;
         }
 
         /// <summary>
@@ -296,6 +270,7 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentOutOfRangeException("LdapSearchResults.Next() no more results");
             }
+
             // Check if the enumeration is empty and must be reloaded
             ResetVectors();
 
@@ -309,6 +284,7 @@ namespace Novell.Directory.Ldap
                 rex.SetReferrals(refs);
                 throw rex;
             }
+
             if (_entryIndex < _entryCount)
             {
                 // Check for Search Entries and the Search Result
@@ -330,6 +306,7 @@ namespace Novell.Directory.Ldap
                             throw rex;
                         }
                     }
+
                     // Throw an exception if not success
                     ((LdapResponse) element).ChkResultCode();
                 }
@@ -346,7 +323,58 @@ namespace Novell.Directory.Ldap
                 throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next"},
                     LdapException.LocalError, null);
             }
+
             return (LdapEntry) element;
+        }
+
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+        /// <filterpriority>2</filterpriority>
+        public IEnumerator<LdapEntry> GetEnumerator()
+        {
+            while (HasMore())
+            {
+                yield return Next();
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /*
+        * If both of the vectors are empty, get more data for them.
+        */
+        private void ResetVectors()
+        {
+            // If we're done, no further checking needed
+            if (_completed)
+            {
+                return;
+            }
+
+            // Checks if we have run out of references
+            if (_referenceIndex != 0 && _referenceIndex >= _referenceCount)
+            {
+                SupportClass.SetSize(_references, 0);
+                _referenceCount = 0;
+                _referenceIndex = 0;
+            }
+
+            // Checks if we have run out of entries
+            if (_entryIndex != 0 && _entryIndex >= _entryCount)
+            {
+                SupportClass.SetSize(_entries, 0);
+                _entryCount = 0;
+                _entryIndex = 0;
+            }
+
+            // If no data at all, must reload enumeration
+            if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
+            {
+                _completed = BatchOfResults;
+            }
         }
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
@@ -359,20 +387,6 @@ namespace Novell.Directory.Ldap
             // next, clear out enumeration
             ResetVectors();
             _completed = true;
-        }
-
-        /// <summary>Returns an enumerator that iterates through a collection.</summary>
-        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
-        /// <filterpriority>2</filterpriority>
-        public IEnumerator<LdapEntry> GetEnumerator()
-        {
-            while (HasMore())
-                yield return Next();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

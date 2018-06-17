@@ -107,11 +107,15 @@ namespace Novell.Directory.Ldap.Extensions
             try
             {
                 if (objectDn == null)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
                 //If encrypted password has null reference make it null String
                 if (passwd == null)
+                {
                     passwd = Encoding.UTF8.GetBytes("");
+                }
 
 
                 if (stateInfo == null)
@@ -127,7 +131,10 @@ namespace Novell.Directory.Ldap.Extensions
                     stateInfo = stateInfo.Trim();
                     var index = stateInfo.IndexOf('+');
                     if (index == -1)
+                    {
                         throw new ArgumentException("PARAM_ERROR");
+                    }
+
                     mtsStr = stateInfo.Substring(0, index);
                     revisionStr = stateInfo.Substring(index + 1);
                     try
@@ -139,6 +146,7 @@ namespace Novell.Directory.Ldap.Extensions
                         throw new LdapLocalException("Invalid Modification Timestamp send in the request",
                             LdapException.EncodingError, e);
                     }
+
                     try
                     {
                         revision = int.Parse(revisionStr);

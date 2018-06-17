@@ -41,11 +41,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     {
         protected int NType;
 
-        public int ValueType => NType;
-
         protected string StrData;
-
-        public string Data => StrData;
 
         public NetworkAddressEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
@@ -57,6 +53,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
 
             DataInitDone();
         }
+
+        public int ValueType => NType;
+
+        public string Data => StrData;
 
         /// <summary>
         ///     Returns a string representation of the object.

@@ -40,59 +40,31 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugEventData : BaseEdirEventData
     {
-        private readonly int _dsTime;
-
-        public int DsTime => _dsTime;
-
-        private readonly int _milliSeconds;
-
-        public int MilliSeconds => _milliSeconds;
-
-        private readonly string _strPerpetratorDn;
-
-        public string PerpetratorDn => _strPerpetratorDn;
-
-        private readonly string _strFormatString;
-
-        public string FormatString => _strFormatString;
-
-        private readonly int _nVerb;
-
-        public int Verb => _nVerb;
-
-        private readonly int _parameterCount;
-
-        public int ParameterCount => _parameterCount;
-
-        private readonly ArrayList _parameterCollection;
-
-        public ArrayList Parameters => _parameterCollection;
-
         public DebugEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            _dsTime = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            _milliSeconds =
+            DsTime = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            MilliSeconds =
                 ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
 
-            _strPerpetratorDn =
+            PerpetratorDn =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            _strFormatString =
+            FormatString =
                 ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            _nVerb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            _parameterCount =
+            Verb = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            ParameterCount =
                 ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
 
-            _parameterCollection = new ArrayList();
+            Parameters = new ArrayList();
 
-            if (_parameterCount > 0)
+            if (ParameterCount > 0)
             {
                 var seq = (Asn1Sequence) Decoder.Decode(DecodedData, length);
-                for (var i = 0; i < _parameterCount; i++)
+                for (var i = 0; i < ParameterCount; i++)
                 {
-                    _parameterCollection.Add(
+                    Parameters.Add(
                         new DebugParameter((Asn1Tagged) seq.get_Renamed(i))
                     );
                 }
@@ -101,6 +73,20 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             DataInitDone();
         }
 
+        public int DsTime { get; }
+
+        public int MilliSeconds { get; }
+
+        public string PerpetratorDn { get; }
+
+        public string FormatString { get; }
+
+        public int Verb { get; }
+
+        public int ParameterCount { get; }
+
+        public ArrayList Parameters { get; }
+
         /// <summary>
         ///     Returns a string representation of the object.
         /// </summary>
@@ -108,15 +94,16 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[DebugEventData");
-            buf.AppendFormat("(Millseconds={0})", _milliSeconds);
-            buf.AppendFormat("(DSTime={0})", _dsTime);
-            buf.AppendFormat("(PerpetratorDN={0})", _strPerpetratorDn);
-            buf.AppendFormat("(Verb={0})", _nVerb);
-            buf.AppendFormat("(ParameterCount={0})", _parameterCount);
-            for (var i = 0; i < _parameterCount; i++)
+            buf.AppendFormat("(Millseconds={0})", MilliSeconds);
+            buf.AppendFormat("(DSTime={0})", DsTime);
+            buf.AppendFormat("(PerpetratorDN={0})", PerpetratorDn);
+            buf.AppendFormat("(Verb={0})", Verb);
+            buf.AppendFormat("(ParameterCount={0})", ParameterCount);
+            for (var i = 0; i < ParameterCount; i++)
             {
-                buf.AppendFormat("(Parameter[{0}]={1})", i, _parameterCollection[i]);
+                buf.AppendFormat("(Parameter[{0}]={1})", i, Parameters[i]);
             }
+
             buf.Append("]");
 
             return buf.ToString();

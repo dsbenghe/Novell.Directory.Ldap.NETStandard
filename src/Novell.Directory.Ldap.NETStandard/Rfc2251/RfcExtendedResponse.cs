@@ -46,13 +46,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
     {
-        /// <summary> </summary>
-        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid) get_Renamed(_responseNameIndex) : null;
-
-        /// <summary> </summary>
-        [CLSCompliant(false)]
-        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString) get_Renamed(_responseIndex) : null;
-
         /// <summary> Context-specific TAG for optional responseName.</summary>
         public const int ResponseNameTag = 10;
 
@@ -60,8 +53,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         public const int ResponseTag = 11;
 
         private readonly int _referralIndex;
-        private readonly int _responseNameIndex;
         private readonly int _responseIndex;
+        private readonly int _responseNameIndex;
 
         //*************************************************************************
         // Constructors for ExtendedResponse
@@ -103,6 +96,13 @@ namespace Novell.Directory.Ldap.Rfc2251
                 }
             }
         }
+
+        /// <summary> </summary>
+        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid) get_Renamed(_responseNameIndex) : null;
+
+        /// <summary> </summary>
+        [CLSCompliant(false)]
+        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString) get_Renamed(_responseIndex) : null;
 
         //*************************************************************************
         // Accessors

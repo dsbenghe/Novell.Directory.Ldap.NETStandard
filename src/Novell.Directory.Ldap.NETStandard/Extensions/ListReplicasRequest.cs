@@ -73,7 +73,9 @@ namespace Novell.Directory.Ldap.Extensions
             try
             {
                 if ((object) serverName == null)
+                {
                     throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
                 var encoder = new LberEncoder();

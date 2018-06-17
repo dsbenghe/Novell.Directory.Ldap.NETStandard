@@ -51,30 +51,6 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapVirtualListResponse : LdapControl
     {
-        /// <summary>
-        ///     Returns the size of the virtual search results list.  This integer as
-        ///     the servers current estimate of what the search result size.
-        /// </summary>
-        public virtual int ContentCount { get; }
-
-        /// <summary>
-        ///     Returns the index of the first entry in the returned list.  The server uses
-        ///     the clients request information in conjunction with its current search result
-        ///     list to estimate what list of entries the client is requesting.  This integer
-        ///     is the index into the search results that is returned to the client.
-        /// </summary>
-        public virtual int FirstPosition { get; }
-
-        /// <summary> Returns the result code for the virtual list search request.</summary>
-        public virtual int ResultCode { get; }
-
-        /// <summary>
-        ///     Returns the cookie used by some servers to optimize the processing of
-        ///     virtual list requests. Subsequent VLV requests to the same server
-        ///     should return this String to the server.
-        /// </summary>
-        public virtual string Context { get; }
-
         /* The parsed fields are stored in these private variables */
 
         /* The context field if one was returned by the server */
@@ -122,12 +98,16 @@ namespace Novell.Directory.Ldap.Controls
             /* Create a decoder object */
             var decoder = new LberDecoder();
             if (decoder == null)
+            {
                 throw new IOException("Decoding error");
+            }
 
             /* We should get back an ASN.1 Sequence object */
             var asnObj = decoder.Decode(values);
             if (asnObj == null || !(asnObj is Asn1Sequence))
+            {
                 throw new IOException("Decoding error");
+            }
 
             /* Else we got back a ASN.1 sequence - print it if running debug code */
 
@@ -136,25 +116,37 @@ namespace Novell.Directory.Ldap.Controls
             */
             var asn1FirstPosition = ((Asn1Sequence) asnObj).get_Renamed(0);
             if (asn1FirstPosition != null && asn1FirstPosition is Asn1Integer)
+            {
                 FirstPosition = ((Asn1Integer) asn1FirstPosition).IntValue();
+            }
             else
+            {
                 throw new IOException("Decoding error");
+            }
 
             /* Get the 2nd element which should be an integer containing the
             * current estimate of the contentCount
             */
             var asn1ContentCount = ((Asn1Sequence) asnObj).get_Renamed(1);
             if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
+            {
                 ContentCount = ((Asn1Integer) asn1ContentCount).IntValue();
+            }
             else
+            {
                 throw new IOException("Decoding error");
+            }
 
             /* The 3rd element is an enum containing the errorcode */
             var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(2);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
+            {
                 ResultCode = ((Asn1Enumerated) asn1Enum).IntValue();
+            }
             else
+            {
                 throw new IOException("Decoding error");
+            }
 
             /* Optional 4th element could be the context string that the server
             * wants the client to send back with each subsequent VLV request
@@ -163,8 +155,34 @@ namespace Novell.Directory.Ldap.Controls
             {
                 var asn1String = ((Asn1Sequence) asnObj).get_Renamed(3);
                 if (asn1String != null && asn1String is Asn1OctetString)
+                {
                     Context = ((Asn1OctetString) asn1String).StringValue();
+                }
             }
         }
+
+        /// <summary>
+        ///     Returns the size of the virtual search results list.  This integer as
+        ///     the servers current estimate of what the search result size.
+        /// </summary>
+        public virtual int ContentCount { get; }
+
+        /// <summary>
+        ///     Returns the index of the first entry in the returned list.  The server uses
+        ///     the clients request information in conjunction with its current search result
+        ///     list to estimate what list of entries the client is requesting.  This integer
+        ///     is the index into the search results that is returned to the client.
+        /// </summary>
+        public virtual int FirstPosition { get; }
+
+        /// <summary> Returns the result code for the virtual list search request.</summary>
+        public virtual int ResultCode { get; }
+
+        /// <summary>
+        ///     Returns the cookie used by some servers to optimize the processing of
+        ///     virtual list requests. Subsequent VLV requests to the same server
+        ///     should return this String to the server.
+        /// </summary>
+        public virtual string Context { get; }
     }
 }

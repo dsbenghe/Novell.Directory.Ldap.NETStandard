@@ -49,14 +49,6 @@ namespace Novell.Directory.Ldap
     public class LdapBindRequest : LdapMessage
     {
         /// <summary>
-        ///     Retrieves the Authentication DN for a bind request.
-        /// </summary>
-        /// <returns>
-        ///     the Authentication DN for a bind request
-        /// </returns>
-        public string AuthenticationDn => Asn1Object.RequestDn;
-
-        /// <summary>
         ///     Constructs a simple bind request.
         /// </summary>
         /// <param name="version">
@@ -88,6 +80,14 @@ namespace Novell.Directory.Ldap
                         new Asn1OctetString(passwd), false))), cont)
         {
         }
+
+        /// <summary>
+        ///     Retrieves the Authentication DN for a bind request.
+        /// </summary>
+        /// <returns>
+        ///     the Authentication DN for a bind request
+        /// </returns>
+        public string AuthenticationDn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Return an Asn1 representation of this add request.

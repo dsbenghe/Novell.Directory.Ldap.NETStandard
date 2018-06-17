@@ -139,6 +139,7 @@ namespace Novell.Directory.Ldap.Asn1
                 Array.Copy(_content, 0, newArray, 0, _contentIndex);
                 _content = newArray;
             }
+
             _content[_contentIndex++] = valueRenamed;
         }
 
@@ -160,6 +161,7 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 throw new IndexOutOfRangeException("Asn1Structured: get: index " + index + ", size " + _contentIndex);
             }
+
             _content[index] = valueRenamed;
         }
 
@@ -176,6 +178,7 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 throw new IndexOutOfRangeException("Asn1Structured: set: index " + index + ", size " + _contentIndex);
             }
+
             return _content[index];
         }
 
@@ -209,8 +212,11 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 sb.Append(_content[i]);
                 if (i != _contentIndex - 1)
+                {
                     sb.Append(", ");
+                }
             }
+
             sb.Append(" }");
 
             return base.ToString() + sb;

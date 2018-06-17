@@ -46,171 +46,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSearchConstraints : LdapConstraints
     {
-        private void InitBlock()
-        {
-            _dereference = DerefNever;
-        }
-
-        /// <summary>
-        ///     Returns the number of results to block on during receipt of search
-        ///     results.
-        ///     This should be 0 if intermediate reults are not needed,
-        ///     and 1 if results are to be processed as they come in. A value of
-        ///     indicates block until all results are received.  Default:
-        /// </summary>
-        /// <returns>
-        ///     The the number of results to block on.
-        /// </returns>
-        /// <seealso cref="BatchSize">
-        /// </seealso>
-        /// <summary>
-        ///     Specifies the number of results to return in a batch.
-        ///     Specifying 0 means to block until all results are received.
-        ///     Specifying 1 means to return results one result at a time.  Default: 1
-        ///     This should be 0 if intermediate results are not needed,
-        ///     and 1 if results are to be processed as they come in.  The
-        ///     default is 1.
-        /// </summary>
-        /// <param name="batchSize">
-        ///     The number of results to block on.
-        /// </param>
-        /// <seealso cref="BatchSize">
-        /// </seealso>
-        public int BatchSize
-        {
-            get => _batchSize;
-
-            set => _batchSize = value;
-        }
-
-        /// <summary>
-        ///     Specifies when aliases should be dereferenced.
-        ///     Returns one of the following:
-        ///     <ul>
-        ///         <li>DEREF_NEVER</li>
-        ///         <li>DEREF_FINDING</li>
-        ///         <li>DEREF_SEARCHING</li>
-        ///         <li>DEREF_ALWAYS</li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     The setting for dereferencing aliases.
-        /// </returns>
-        /// <seealso cref="Dereference">
-        /// </seealso>
-        /// <summary>
-        ///     Sets a preference indicating whether or not aliases should be
-        ///     dereferenced, and if so, when.
-        /// </summary>
-        /// <param name="dereference">
-        ///     Specifies how aliases are dereference and can be set
-        ///     to one of the following:
-        ///     <ul>
-        ///         <li>DEREF_NEVER - do not dereference aliases</li>
-        ///         <li>
-        ///             DEREF_FINDING - dereference aliases when finding
-        ///             the base object to start the search
-        ///         </li>
-        ///         <li>
-        ///             DEREF_SEARCHING - dereference aliases when
-        ///             searching but not when finding the base
-        ///             object to start the search
-        ///         </li>
-        ///         <li>
-        ///             DEREF_ALWAYS - dereference aliases when finding
-        ///             the base object and when searching
-        ///         </li>
-        ///     </ul>
-        /// </param>
-        /// <seealso cref="Dereference">
-        /// </seealso>
-        public int Dereference
-        {
-            get => _dereference;
-
-            set => _dereference = value;
-        }
-
-        /// <summary>
-        ///     Returns the maximum number of search results to be returned for
-        ///     a search operation. A value of 0 means no limit.  Default: 1000
-        ///     The search operation will be terminated with an
-        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
-        ///     exceed the maximum.
-        /// </summary>
-        /// <returns>
-        ///     The value for the maximum number of results to return.
-        /// </returns>
-        /// <seealso cref="MaxResults">
-        /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
-        /// </seealso>
-        /// <summary>
-        ///     Sets the maximum number of search results to be returned from a
-        ///     search operation. The value 0 means no limit.  The default is 1000.
-        ///     The search operation will be terminated with an
-        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
-        ///     exceed the maximum.
-        /// </summary>
-        /// <param name="maxResults">
-        ///     Maximum number of search results to return.
-        /// </param>
-        /// <seealso cref="MaxResults">
-        /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
-        /// </seealso>
-        public int MaxResults
-        {
-            get => _maxResults;
-
-            set => _maxResults = value;
-        }
-
-        /// <summary>
-        ///     Returns the maximum number of seconds that the server waits when
-        ///     returning search results.
-        ///     The search operation will be terminated with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
-        ///     limit.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of seconds the server waits for search'
-        ///     results.
-        /// </returns>
-        /// <seealso cref="ServerTimeLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
-        /// </seealso>
-        /// <summary>
-        ///     Sets the maximum number of seconds that the server is to wait when
-        ///     returning search results.
-        ///     The search operation will be terminated with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
-        ///     limit.
-        ///     The parameter is only recognized on search operations.
-        /// </summary>
-        /// <param name="seconds">
-        ///     The number of seconds to wait for search results.
-        /// </param>
-        /// <seealso cref="ServerTimeLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
-        /// </seealso>
-        public int ServerTimeLimit
-        {
-            get => _serverTimeLimit;
-
-            set => _serverTimeLimit = value;
-        }
-
-        private int _dereference;
-        private int _serverTimeLimit;
-        private int _maxResults = 1000;
-        private int _batchSize = 1;
-        private static object _nameLock; // protect agentNum
-        private static int _lSConsNum = 0; // Debug, LdapConnection number
-        private string _name; // String name for debug
-
         /// <summary>
         ///     Indicates that aliases are never dereferenced.
         ///     DEREF_NEVER = 0
@@ -257,6 +92,16 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public const int DerefAlways = 3;
 
+        private static object _nameLock; // protect agentNum
+        private static int _lSConsNum = 0; // Debug, LdapConnection number
+
+        private string _name; // String name for debug
+
+        static LdapSearchConstraints()
+        {
+            _nameLock = new object();
+        }
+
         /// <summary>
         ///     Constructs an LdapSearchConstraints object with a default set
         ///     of search constraints.
@@ -283,6 +128,7 @@ namespace Novell.Directory.Ldap
                 lsc.CopyTo(generatedVar, 0);
                 SetControls(generatedVar);
             }
+
             var lp = cons.Properties;
             if (lp != null)
             {
@@ -292,11 +138,12 @@ namespace Novell.Directory.Ldap
             if (cons is LdapSearchConstraints)
             {
                 var scons = (LdapSearchConstraints) cons;
-                _serverTimeLimit = scons.ServerTimeLimit;
-                _dereference = scons.Dereference;
-                _maxResults = scons.MaxResults;
-                _batchSize = scons.BatchSize;
+                ServerTimeLimit = scons.ServerTimeLimit;
+                Dereference = scons.Dereference;
+                MaxResults = scons.MaxResults;
+                BatchSize = scons.BatchSize;
             }
+
             // Get a unique connection name for debug
         }
 
@@ -378,20 +225,153 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.TimeLimitExceeded">
         /// </seealso>
-        public LdapSearchConstraints(int msLimit, int serverTimeLimit, int dereference, int maxResults, bool doReferrals,
+        public LdapSearchConstraints(int msLimit, int serverTimeLimit, int dereference, int maxResults,
+            bool doReferrals,
             int batchSize, ILdapReferralHandler handler, int hopLimit) : base(msLimit, doReferrals, handler, hopLimit)
         {
             InitBlock();
-            _serverTimeLimit = serverTimeLimit;
-            _dereference = dereference;
-            _maxResults = maxResults;
-            _batchSize = batchSize;
+            ServerTimeLimit = serverTimeLimit;
+            Dereference = dereference;
+            MaxResults = maxResults;
+            BatchSize = batchSize;
             // Get a unique connection name for debug
         }
 
-        static LdapSearchConstraints()
+        /// <summary>
+        ///     Returns the number of results to block on during receipt of search
+        ///     results.
+        ///     This should be 0 if intermediate reults are not needed,
+        ///     and 1 if results are to be processed as they come in. A value of
+        ///     indicates block until all results are received.  Default:
+        /// </summary>
+        /// <returns>
+        ///     The the number of results to block on.
+        /// </returns>
+        /// <seealso cref="BatchSize">
+        /// </seealso>
+        /// <summary>
+        ///     Specifies the number of results to return in a batch.
+        ///     Specifying 0 means to block until all results are received.
+        ///     Specifying 1 means to return results one result at a time.  Default: 1
+        ///     This should be 0 if intermediate results are not needed,
+        ///     and 1 if results are to be processed as they come in.  The
+        ///     default is 1.
+        /// </summary>
+        /// <param name="batchSize">
+        ///     The number of results to block on.
+        /// </param>
+        /// <seealso cref="BatchSize">
+        /// </seealso>
+        public int BatchSize { get; set; } = 1;
+
+        /// <summary>
+        ///     Specifies when aliases should be dereferenced.
+        ///     Returns one of the following:
+        ///     <ul>
+        ///         <li>DEREF_NEVER</li>
+        ///         <li>DEREF_FINDING</li>
+        ///         <li>DEREF_SEARCHING</li>
+        ///         <li>DEREF_ALWAYS</li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     The setting for dereferencing aliases.
+        /// </returns>
+        /// <seealso cref="Dereference">
+        /// </seealso>
+        /// <summary>
+        ///     Sets a preference indicating whether or not aliases should be
+        ///     dereferenced, and if so, when.
+        /// </summary>
+        /// <param name="dereference">
+        ///     Specifies how aliases are dereference and can be set
+        ///     to one of the following:
+        ///     <ul>
+        ///         <li>DEREF_NEVER - do not dereference aliases</li>
+        ///         <li>
+        ///             DEREF_FINDING - dereference aliases when finding
+        ///             the base object to start the search
+        ///         </li>
+        ///         <li>
+        ///             DEREF_SEARCHING - dereference aliases when
+        ///             searching but not when finding the base
+        ///             object to start the search
+        ///         </li>
+        ///         <li>
+        ///             DEREF_ALWAYS - dereference aliases when finding
+        ///             the base object and when searching
+        ///         </li>
+        ///     </ul>
+        /// </param>
+        /// <seealso cref="Dereference">
+        /// </seealso>
+        public int Dereference { get; set; }
+
+        /// <summary>
+        ///     Returns the maximum number of search results to be returned for
+        ///     a search operation. A value of 0 means no limit.  Default: 1000
+        ///     The search operation will be terminated with an
+        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
+        ///     exceed the maximum.
+        /// </summary>
+        /// <returns>
+        ///     The value for the maximum number of results to return.
+        /// </returns>
+        /// <seealso cref="MaxResults">
+        /// </seealso>
+        /// <seealso cref="LdapException.SizeLimitExceeded">
+        /// </seealso>
+        /// <summary>
+        ///     Sets the maximum number of search results to be returned from a
+        ///     search operation. The value 0 means no limit.  The default is 1000.
+        ///     The search operation will be terminated with an
+        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
+        ///     exceed the maximum.
+        /// </summary>
+        /// <param name="maxResults">
+        ///     Maximum number of search results to return.
+        /// </param>
+        /// <seealso cref="MaxResults">
+        /// </seealso>
+        /// <seealso cref="LdapException.SizeLimitExceeded">
+        /// </seealso>
+        public int MaxResults { get; set; } = 1000;
+
+        /// <summary>
+        ///     Returns the maximum number of seconds that the server waits when
+        ///     returning search results.
+        ///     The search operation will be terminated with an
+        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
+        ///     limit.
+        /// </summary>
+        /// <returns>
+        ///     The maximum number of seconds the server waits for search'
+        ///     results.
+        /// </returns>
+        /// <seealso cref="ServerTimeLimit">
+        /// </seealso>
+        /// <seealso cref="LdapException.TimeLimitExceeded">
+        /// </seealso>
+        /// <summary>
+        ///     Sets the maximum number of seconds that the server is to wait when
+        ///     returning search results.
+        ///     The search operation will be terminated with an
+        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
+        ///     limit.
+        ///     The parameter is only recognized on search operations.
+        /// </summary>
+        /// <param name="seconds">
+        ///     The number of seconds to wait for search results.
+        /// </param>
+        /// <seealso cref="ServerTimeLimit">
+        /// </seealso>
+        /// <seealso cref="LdapException.TimeLimitExceeded">
+        /// </seealso>
+        public int ServerTimeLimit { get; set; }
+
+        private void InitBlock()
         {
-            _nameLock = new object();
+            Dereference = DerefNever;
         }
     }
 }

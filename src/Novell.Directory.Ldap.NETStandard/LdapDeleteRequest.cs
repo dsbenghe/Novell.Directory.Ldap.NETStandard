@@ -44,14 +44,6 @@ namespace Novell.Directory.Ldap
     public class LdapDeleteRequest : LdapMessage
     {
         /// <summary>
-        ///     Returns of the dn of the entry to delete from the directory
-        /// </summary>
-        /// <returns>
-        ///     the dn of the entry to delete
-        /// </returns>
-        public string Dn => Asn1Object.RequestDn;
-
-        /// <summary>
         ///     Constructs a request to delete an entry from the directory
         /// </summary>
         /// <param name="dn">
@@ -64,6 +56,14 @@ namespace Novell.Directory.Ldap
         public LdapDeleteRequest(string dn, LdapControl[] cont) : base(DelRequest, new RfcDelRequest(dn), cont)
         {
         }
+
+        /// <summary>
+        ///     Returns of the dn of the entry to delete from the directory
+        /// </summary>
+        /// <returns>
+        ///     the dn of the entry to delete
+        /// </returns>
+        public string Dn => Asn1Object.RequestDn;
 
         /// <summary>
         ///     Return an Asn1 representation of this delete request

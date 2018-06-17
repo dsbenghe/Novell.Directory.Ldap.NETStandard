@@ -99,11 +99,22 @@ namespace Novell.Directory.Ldap.Rfc2251
                     set_Renamed(1, new Asn1Enumerated(LdapConnection.ScopeBase));
                 }
             }
+
             // Replace the filter if specified, otherwise keep original filter
             if ((object) filter != null)
             {
                 set_Renamed(6, new RfcFilter(filter));
             }
+        }
+
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            return new RfcSearchRequest(ToArray(), baseRenamed, filter, request);
+        }
+
+        public string GetRequestDn()
+        {
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
 
         //*************************************************************************
@@ -119,16 +130,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcSearchRequest(ToArray(), baseRenamed, filter, request);
-        }
-
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }

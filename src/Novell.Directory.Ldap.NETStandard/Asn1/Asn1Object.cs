@@ -100,6 +100,7 @@ namespace Novell.Directory.Ldap.Asn1
                 // a encode method. 
                 throw new Exception("IOException while encoding to byte array: " + e);
             }
+
             return SupportClass.ToSByteArray(outRenamed.ToArray());
         }
 

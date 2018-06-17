@@ -69,28 +69,6 @@ namespace Novell.Directory.Ldap
     public class LdapModification
     {
         /// <summary>
-        ///     Returns the attribute to modify, with any existing values.
-        /// </summary>
-        /// <returns>
-        ///     The attribute to modify.
-        /// </returns>
-        public LdapAttribute Attribute { get; }
-
-        /// <summary>
-        ///     Returns the type of modification specified by this object.
-        ///     The type is one of the following:
-        ///     <ul>
-        ///         <li>LdapModification.ADD</li>
-        ///         <li>LdapModification.DELETE</li>
-        ///         <li>LdapModification.REPLACE</li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     The type of modification specified by this object.
-        /// </returns>
-        public int Op { get; }
-
-        /// <summary>
         ///     Adds the listed values to the given attribute, creating
         ///     the attribute if it does not already exist.
         ///     ADD = 0
@@ -146,5 +124,27 @@ namespace Novell.Directory.Ldap
             Op = op;
             Attribute = attr;
         }
+
+        /// <summary>
+        ///     Returns the attribute to modify, with any existing values.
+        /// </summary>
+        /// <returns>
+        ///     The attribute to modify.
+        /// </returns>
+        public LdapAttribute Attribute { get; }
+
+        /// <summary>
+        ///     Returns the type of modification specified by this object.
+        ///     The type is one of the following:
+        ///     <ul>
+        ///         <li>LdapModification.ADD</li>
+        ///         <li>LdapModification.DELETE</li>
+        ///         <li>LdapModification.REPLACE</li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     The type of modification specified by this object.
+        /// </returns>
+        public int Op { get; }
     }
 }

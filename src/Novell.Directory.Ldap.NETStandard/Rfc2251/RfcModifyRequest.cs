@@ -48,14 +48,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcModifyRequest : Asn1Sequence, IRfcRequest
     {
-        /// <summary>
-        ///     Return the Modifications for this request
-        /// </summary>
-        /// <returns>
-        ///     the modifications for this request.
-        /// </returns>
-        public Asn1SequenceOf Modifications => (Asn1SequenceOf) get_Renamed(1);
-
         //*************************************************************************
         // Constructor for ModifyRequest
         //*************************************************************************
@@ -80,15 +72,13 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
-        //*************************************************************************
-        // Accessors
-        //*************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
-        }
+        /// <summary>
+        ///     Return the Modifications for this request
+        /// </summary>
+        /// <returns>
+        ///     the modifications for this request.
+        /// </returns>
+        public Asn1SequenceOf Modifications => (Asn1SequenceOf) get_Renamed(1);
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
@@ -104,6 +94,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         public string GetRequestDn()
         {
             return ((RfcLdapDn) get_Renamed(0)).StringValue();
+        }
+
+        //*************************************************************************
+        // Accessors
+        //*************************************************************************
+
+        /// <summary> Override getIdentifier to return an application-wide id.</summary>
+        public override Asn1Identifier GetIdentifier()
+        {
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
         }
     }
 }

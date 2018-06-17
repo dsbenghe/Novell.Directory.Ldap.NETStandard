@@ -83,6 +83,16 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            return new RfcModifyDnRequest(ToArray(), baseRenamed);
+        }
+
+        public string GetRequestDn()
+        {
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
+        }
+
         //*************************************************************************
         // Accessors
         //*************************************************************************
@@ -96,16 +106,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRdnRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcModifyDnRequest(ToArray(), baseRenamed);
-        }
-
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }

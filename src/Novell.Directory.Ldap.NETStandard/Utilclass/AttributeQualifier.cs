@@ -40,7 +40,25 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class AttributeQualifier
     {
-        public string Name => _name;
+        private readonly ArrayList _values;
+
+        public AttributeQualifier(string name, string[] valueRenamed)
+        {
+            if ((object) name == null || valueRenamed == null)
+            {
+                throw new ArgumentException("A null name or value " +
+                                            "was passed in for a schema definition qualifier");
+            }
+
+            Name = name;
+            _values = new ArrayList(5);
+            for (var i = 0; i < valueRenamed.Length; i++)
+            {
+                _values.Add(valueRenamed[i]);
+            }
+        }
+
+        public string Name { get; }
 
         public string[] Values
         {
@@ -55,24 +73,8 @@ namespace Novell.Directory.Ldap.Utilclass
                         strValues[i] = (string) _values[i];
                     }
                 }
+
                 return strValues;
-            }
-        }
-
-        private readonly string _name;
-        private readonly ArrayList _values;
-
-        public AttributeQualifier(string name, string[] valueRenamed)
-        {
-            if ((object) name == null || valueRenamed == null)
-            {
-                throw new ArgumentException("A null name or value " + "was passed in for a schema definition qualifier");
-            }
-            _name = name;
-            _values = new ArrayList(5);
-            for (var i = 0; i < valueRenamed.Length; i++)
-            {
-                _values.Add(valueRenamed[i]);
             }
         }
     }

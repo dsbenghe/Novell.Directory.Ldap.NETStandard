@@ -40,54 +40,26 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class GeneralDsEventData : BaseEdirEventData
     {
-        private readonly int _dsTime;
-
-        public int DsTime => _dsTime;
-
-        private readonly int _milliSeconds;
-
-        public int MilliSeconds => _milliSeconds;
-
-        private readonly int _nVerb;
-
-        public int Verb => _nVerb;
-
-        private readonly int _currentProcess;
-
-        public int CurrentProcess => _currentProcess;
-
-        private readonly string _strPerpetratorDn;
-
-        public string PerpetratorDn => _strPerpetratorDn;
-
-        private readonly int[] _integerValues;
-
-        public int[] IntegerValues => _integerValues;
-
-        private readonly string[] _stringValues;
-
-        public string[] StringValues => _stringValues;
-
         public GeneralDsEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            _dsTime = GetTaggedIntValue(
+            DsTime = GetTaggedIntValue(
                 (Asn1Tagged) Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenDstime);
-            _milliSeconds = GetTaggedIntValue(
+            MilliSeconds = GetTaggedIntValue(
                 (Asn1Tagged) Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenMillisec);
 
-            _nVerb = GetTaggedIntValue(
+            Verb = GetTaggedIntValue(
                 (Asn1Tagged) Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenVerb);
-            _currentProcess = GetTaggedIntValue(
+            CurrentProcess = GetTaggedIntValue(
                 (Asn1Tagged) Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenCurrproc);
 
-            _strPerpetratorDn = GetTaggedStringValue(
+            PerpetratorDn = GetTaggedStringValue(
                 (Asn1Tagged) Decoder.Decode(DecodedData, length),
                 GeneralEventField.EvtTagGenPerp);
 
@@ -100,11 +72,11 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 //Integer List.
                 var inteseq = GetTaggedSequence(temptaggedvalue, GeneralEventField.EvtTagGenIntegers);
                 var intobject = inteseq.ToArray();
-                _integerValues = new int[intobject.Length];
+                IntegerValues = new int[intobject.Length];
 
                 for (var i = 0; i < intobject.Length; i++)
                 {
-                    _integerValues[i] = ((Asn1Integer) intobject[i]).IntValue();
+                    IntegerValues[i] = ((Asn1Integer) intobject[i]).IntValue();
                 }
 
                 //second decoding for Strings.
@@ -112,7 +84,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             }
             else
             {
-                _integerValues = null;
+                IntegerValues = null;
             }
 
             if (temptaggedvalue.GetIdentifier().Tag
@@ -123,21 +95,35 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                 var inteseq =
                     GetTaggedSequence(temptaggedvalue, GeneralEventField.EvtTagGenStrings);
                 var stringobject = inteseq.ToArray();
-                _stringValues = new string[stringobject.Length];
+                StringValues = new string[stringobject.Length];
 
                 for (var i = 0; i < stringobject.Length; i++)
                 {
-                    _stringValues[i] =
+                    StringValues[i] =
                         ((Asn1OctetString) stringobject[i]).StringValue();
                 }
             }
             else
             {
-                _stringValues = null;
+                StringValues = null;
             }
 
             DataInitDone();
         }
+
+        public int DsTime { get; }
+
+        public int MilliSeconds { get; }
+
+        public int Verb { get; }
+
+        public int CurrentProcess { get; }
+
+        public string PerpetratorDn { get; }
+
+        public int[] IntegerValues { get; }
+
+        public string[] StringValues { get; }
 
         protected int GetTaggedIntValue(Asn1Tagged tagvalue, GeneralEventField tagid)
         {
@@ -203,13 +189,13 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var buf = new StringBuilder();
 
             buf.Append("[GeneralDSEventData");
-            buf.AppendFormat("(DSTime={0})", _dsTime);
-            buf.AppendFormat("(MilliSeconds={0})", _milliSeconds);
-            buf.AppendFormat("(verb={0})", _nVerb);
-            buf.AppendFormat("(currentProcess={0})", _currentProcess);
-            buf.AppendFormat("(PerpetartorDN={0})", _strPerpetratorDn);
-            buf.AppendFormat("(Integer Values={0})", _integerValues);
-            buf.AppendFormat("(String Values={0})", _stringValues);
+            buf.AppendFormat("(DSTime={0})", DsTime);
+            buf.AppendFormat("(MilliSeconds={0})", MilliSeconds);
+            buf.AppendFormat("(verb={0})", Verb);
+            buf.AppendFormat("(currentProcess={0})", CurrentProcess);
+            buf.AppendFormat("(PerpetartorDN={0})", PerpetratorDn);
+            buf.AppendFormat("(Integer Values={0})", IntegerValues);
+            buf.AppendFormat("(String Values={0})", StringValues);
             buf.Append("]");
 
             return buf.ToString();

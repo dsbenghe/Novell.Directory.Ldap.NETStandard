@@ -250,6 +250,7 @@ namespace Novell.Directory.Ldap.Events.Edir
         EvtReplicaInTransition = 208,
         EvtDbSyncDetail = 209,
         EvtDbConnTrace = 210,
+
         /*
         EVT_CHANGE_CONFIG_PARM = 211,
         EVT_COMPUTE_CONN_SEV_INLINE = 212,

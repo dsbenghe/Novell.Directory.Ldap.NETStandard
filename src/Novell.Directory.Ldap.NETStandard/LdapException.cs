@@ -284,87 +284,6 @@ namespace Novell.Directory.Ldap
     public class LdapException : Exception
     {
         /// <summary>
-        ///     Returns the error message from the Ldap server, if this message is
-        ///     available (that is, if this message was set). If the message was not set,
-        ///     this method returns null.
-        /// </summary>
-        /// <returns>
-        ///     The error message or null if the message was not set.
-        /// </returns>
-        public string LdapErrorMessage
-        {
-            get
-            {
-                if ((object) _serverMessage != null && _serverMessage.Length == 0)
-                {
-                    return null;
-                }
-                return _serverMessage;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the lower level Exception which caused the failure, if any.
-        ///     For example, an IOException with additional information may be returned
-        ///     on a CONNECT_ERROR failure.
-        /// </summary>
-        public Exception Cause => _rootException;
-
-        /// <summary>
-        ///     Returns the result code from the exception.
-        ///     The codes are defined as <code>public final static int</code> members
-        ///     of the Ldap Exception class. If the exception is a
-        ///     result of error information returned from a directory operation, the
-        ///     code will be one of those defined for the class. Otherwise, a local error
-        ///     code is returned.
-        /// </summary>
-        public int ResultCode => _resultCode;
-
-        /// <summary>
-        ///     Returns the part of a submitted distinguished name which could be
-        ///     matched by the server.
-        ///     If the exception was caused by a local error, such as no server
-        ///     available, the return value is null. If the exception resulted from
-        ///     an operation being executed on a server, the value is an empty string
-        ///     except when the result of the operation was one of the following:
-        ///     <ul>
-        ///         <li>NO_SUCH_OBJECT</li>
-        ///         <li>ALIAS_PROBLEM</li>
-        ///         <li>INVALID_DN_SYNTAX</li>
-        ///         <li>ALIAS_DEREFERENCING_PROBLEM</li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     The part of a submitted distinguished name which could be
-        ///     matched by the server or null if the error is a local error.
-        /// </returns>
-        public string MatchedDn => _matchedDn;
-
-        public override string Message => ResultCodeToString();
-
-        /*	public override System.String Message
-                {
-                    get
-                    {
-                        return resultCodeToString();
-                    }
-                    
-                }
-            */
-        // The Result Code
-        private readonly int _resultCode;
-        // The localized message
-        private string _messageOrKey;
-        // The arguments associated with the localized message
-        private object[] _arguments;
-        // The Matched DN
-        private readonly string _matchedDn;
-        // The Root Cause
-        private readonly Exception _rootException;
-        // A message from the server
-        private readonly string _serverMessage;
-
-        /// <summary>
         ///     Indicates the requested client operation completed successfully.
         ///     SUCCESS = 0<p />
         /// </summary>
@@ -900,6 +819,30 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public const int SslProviderNotFound = 114;
 
+        // The Matched DN
+
+        /*	public override System.String Message
+                {
+                    get
+                    {
+                        return resultCodeToString();
+                    }
+                    
+                }
+            */
+        // The Result Code
+
+        // The Root Cause
+
+        // A message from the server
+        private readonly string _serverMessage;
+
+        // The arguments associated with the localized message
+        private object[] _arguments;
+
+        // The localized message
+        private string _messageOrKey;
+
         /*
                 * Note: Error strings have been pulled out into
                 * ResultCodeMessages.txt
@@ -1094,7 +1037,8 @@ namespace Novell.Directory.Ldap
         ///     The maximal subset of a specified DN which could
         ///     be matched by the server on a search operation.
         /// </param>
-        public LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg, string matchedDn)
+        public LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg,
+            string matchedDn)
             : this(messageOrKey, arguments, resultCode, serverMsg, matchedDn, null)
         {
         }
@@ -1142,11 +1086,71 @@ namespace Novell.Directory.Ldap
         {
             _messageOrKey = messageOrKey;
             _arguments = arguments;
-            _resultCode = resultCode;
-            _rootException = rootException;
-            _matchedDn = matchedDn;
+            ResultCode = resultCode;
+            Cause = rootException;
+            MatchedDn = matchedDn;
             _serverMessage = serverMsg;
         }
+
+        /// <summary>
+        ///     Returns the error message from the Ldap server, if this message is
+        ///     available (that is, if this message was set). If the message was not set,
+        ///     this method returns null.
+        /// </summary>
+        /// <returns>
+        ///     The error message or null if the message was not set.
+        /// </returns>
+        public string LdapErrorMessage
+        {
+            get
+            {
+                if ((object) _serverMessage != null && _serverMessage.Length == 0)
+                {
+                    return null;
+                }
+
+                return _serverMessage;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the lower level Exception which caused the failure, if any.
+        ///     For example, an IOException with additional information may be returned
+        ///     on a CONNECT_ERROR failure.
+        /// </summary>
+        public Exception Cause { get; }
+
+        /// <summary>
+        ///     Returns the result code from the exception.
+        ///     The codes are defined as <code>public final static int</code> members
+        ///     of the Ldap Exception class. If the exception is a
+        ///     result of error information returned from a directory operation, the
+        ///     code will be one of those defined for the class. Otherwise, a local error
+        ///     code is returned.
+        /// </summary>
+        public int ResultCode { get; }
+
+        /// <summary>
+        ///     Returns the part of a submitted distinguished name which could be
+        ///     matched by the server.
+        ///     If the exception was caused by a local error, such as no server
+        ///     available, the return value is null. If the exception resulted from
+        ///     an operation being executed on a server, the value is an empty string
+        ///     except when the result of the operation was one of the following:
+        ///     <ul>
+        ///         <li>NO_SUCH_OBJECT</li>
+        ///         <li>ALIAS_PROBLEM</li>
+        ///         <li>INVALID_DN_SYNTAX</li>
+        ///         <li>ALIAS_DEREFERENCING_PROBLEM</li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     The part of a submitted distinguished name which could be
+        ///     matched by the server or null if the error is a local error.
+        /// </returns>
+        public string MatchedDn { get; }
+
+        public override string Message => ResultCodeToString();
 
         /// <summary>
         ///     Returns a string representing the result code in the default
@@ -1157,7 +1161,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public string ResultCodeToString()
         {
-            return ResourcesHandler.GetResultString(_resultCode);
+            return ResourcesHandler.GetResultString(ResultCode);
         }
 
         /// <summary>
@@ -1190,7 +1194,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public string ResultCodeToString(CultureInfo locale)
         {
-            return ResourcesHandler.GetResultString(_resultCode, locale);
+            return ResourcesHandler.GetResultString(ResultCode, locale);
         }
 
         /// <summary>
@@ -1238,11 +1242,11 @@ namespace Novell.Directory.Ldap
 
             // Craft a string from the resouce file
             var msg = ResourcesHandler.GetMessage("TOSTRING",
-                new object[] {exception, base.Message, _resultCode, ResultCodeToString()});
+                new object[] {exception, base.Message, ResultCode, ResultCodeToString()});
             // If found no string from resource file, use a default string
             if (msg.ToUpper().Equals("TOSTRING".ToUpper()))
             {
-                msg = exception + ": (" + _resultCode + ") " + ResultCodeToString();
+                msg = exception + ": (" + ResultCode + ") " + ResultCodeToString();
             }
 
             // Add server message
@@ -1259,22 +1263,23 @@ namespace Novell.Directory.Ldap
             }
 
             // Add Matched DN message
-            if ((object) _matchedDn != null)
+            if ((object) MatchedDn != null)
             {
-                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, _matchedDn});
+                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, MatchedDn});
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("MATCHED_DN".ToUpper()))
                 {
-                    tmsg = exception + ": Matched DN: " + _matchedDn;
+                    tmsg = exception + ": Matched DN: " + MatchedDn;
                 }
 
                 msg = msg + '\n' + tmsg;
             }
 
-            if (_rootException != null)
+            if (Cause != null)
             {
-                msg = msg + '\n' + _rootException;
+                msg = msg + '\n' + Cause;
             }
+
             return msg;
         }
     }

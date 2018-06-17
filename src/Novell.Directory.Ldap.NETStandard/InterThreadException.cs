@@ -35,6 +35,26 @@ namespace Novell.Directory.Ldap
 {
     public class InterThreadException : LdapException
     {
+        private readonly Message _request;
+
+        /// <summary>
+        ///     Constructs a InterThreadException with its associated message.
+        /// </summary>
+        /// <param name="message">
+        ///     The text providign additional error information.
+        /// </param>
+        /// <param name="resultCode">
+        ///     The error result code.
+        /// </param>
+        /// <param name="request">
+        ///     The Message class associated with this exception.
+        /// </param>
+        internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
+            Message request) : base(message, arguments, resultCode, null, rootException)
+        {
+            _request = request;
+        }
+
         /// <summary>
         ///     Returns the message ID of this message request.
         /// </summary>
@@ -50,6 +70,7 @@ namespace Novell.Directory.Ldap
                 {
                     return -1;
                 }
+
                 return _request.MessageId;
             }
         }
@@ -70,6 +91,7 @@ namespace Novell.Directory.Ldap
                 {
                     return -1;
                 }
+
                 var reqType = _request.MessageType;
                 var responseType = -1;
                 switch (reqType)
@@ -114,28 +136,9 @@ namespace Novell.Directory.Ldap
                         responseType = LdapMessage.ExtendedResponse;
                         break;
                 }
+
                 return responseType;
             }
-        }
-
-        private readonly Message _request;
-
-        /// <summary>
-        ///     Constructs a InterThreadException with its associated message.
-        /// </summary>
-        /// <param name="message">
-        ///     The text providign additional error information.
-        /// </param>
-        /// <param name="resultCode">
-        ///     The error result code.
-        /// </param>
-        /// <param name="request">
-        ///     The Message class associated with this exception.
-        /// </param>
-        internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
-            Message request) : base(message, arguments, resultCode, null, rootException)
-        {
-            _request = request;
         }
     }
 }

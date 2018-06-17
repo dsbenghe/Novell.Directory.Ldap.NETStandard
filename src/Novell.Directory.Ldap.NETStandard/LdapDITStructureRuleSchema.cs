@@ -46,41 +46,6 @@ namespace Novell.Directory.Ldap
     public class LdapDitStructureRuleSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns the rule ID for this structure rule.
-        ///     The getRuleID method returns an integer rather than a dotted
-        ///     decimal OID. Objects of this class do not have an OID,
-        ///     thus getID can return null.
-        /// </summary>
-        /// <returns>
-        ///     The rule ID for this structure rule.
-        /// </returns>
-        public int RuleId { get; }
-
-        /// <summary>
-        ///     Returns the NameForm that this structure rule controls.
-        ///     You can get the actual object class that this structure rule controls
-        ///     by calling the getNameForm.getObjectClass method.
-        /// </summary>
-        /// <returns>
-        ///     The NameForm that this structure rule controls.
-        /// </returns>
-        public string NameForm { get; } = "";
-
-        /// <summary>
-        ///     Returns a list of all structure rules that are superior to this
-        ///     structure rule.
-        ///     To resolve to an object class, you need to first
-        ///     resolve the superior ID to another structure rule, then call
-        ///     the getNameForm.getObjectClass method on that structure rule.
-        /// </summary>
-        /// <returns>
-        ///     A list of all structure rules that are superior to this structure rule.
-        /// </returns>
-        public string[] Superiors => _superiorIDs;
-
-        private readonly string[] _superiorIDs = {""};
-
-        /// <summary>
         ///     Constructs a DIT structure rule for adding to or deleting from the
         ///     schema.
         /// </summary>
@@ -112,7 +77,8 @@ namespace Novell.Directory.Ldap
         ///     the DIT to object classes of those represented
         ///     by the structure rules here; it may be null.
         /// </param>
-        public LdapDitStructureRuleSchema(string[] names, int ruleId, string description, bool obsolete, string nameForm,
+        public LdapDitStructureRuleSchema(string[] names, int ruleId, string description, bool obsolete,
+            string nameForm,
             string[] superiorIDs) : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditstructure])
         {
             this.names = new string[names.Length];
@@ -121,7 +87,7 @@ namespace Novell.Directory.Ldap
             Description = description;
             Obsolete = obsolete;
             NameForm = nameForm;
-            _superiorIDs = superiorIDs;
+            Superiors = superiorIDs;
             Value = FormatString();
         }
 
@@ -147,16 +113,26 @@ namespace Novell.Directory.Ldap
                 }
 
                 if ((object) parser.Id != null)
+                {
                     RuleId = int.Parse(parser.Id);
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = parser.Description;
+                }
+
                 if (parser.Superiors != null)
                 {
-                    _superiorIDs = new string[parser.Superiors.Length];
-                    parser.Superiors.CopyTo(_superiorIDs, 0);
+                    Superiors = new string[parser.Superiors.Length];
+                    parser.Superiors.CopyTo(Superiors, 0);
                 }
+
                 if ((object) parser.NameForm != null)
+                {
                     NameForm = parser.NameForm;
+                }
+
                 Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
@@ -165,12 +141,46 @@ namespace Novell.Directory.Ldap
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException)
             {
             }
         }
+
+        /// <summary>
+        ///     Returns the rule ID for this structure rule.
+        ///     The getRuleID method returns an integer rather than a dotted
+        ///     decimal OID. Objects of this class do not have an OID,
+        ///     thus getID can return null.
+        /// </summary>
+        /// <returns>
+        ///     The rule ID for this structure rule.
+        /// </returns>
+        public int RuleId { get; }
+
+        /// <summary>
+        ///     Returns the NameForm that this structure rule controls.
+        ///     You can get the actual object class that this structure rule controls
+        ///     by calling the getNameForm.getObjectClass method.
+        /// </summary>
+        /// <returns>
+        ///     The NameForm that this structure rule controls.
+        /// </returns>
+        public string NameForm { get; } = "";
+
+        /// <summary>
+        ///     Returns a list of all structure rules that are superior to this
+        ///     structure rule.
+        ///     To resolve to an object class, you need to first
+        ///     resolve the superior ID to another structure rule, then call
+        ///     the getNameForm.getObjectClass method on that structure rule.
+        /// </summary>
+        /// <returns>
+        ///     A list of all structure rules that are superior to this structure rule.
+        /// </returns>
+        public string[] Superiors { get; } = {""};
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -204,36 +214,50 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((object) (token = NameForm) != null)
             {
                 valueBuffer.Append(" FORM ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((strArray = Superiors) != null)
             {
                 valueBuffer.Append(" SUP ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
 
             IEnumerator en;
@@ -248,18 +272,28 @@ namespace Novell.Directory.Ldap
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append("( ");
+                        }
+
                         for (var i = 0; i < qualValue.Length; i++)
                         {
                             if (i > 0)
+                            {
                                 valueBuffer.Append(" ");
+                            }
+
                             valueBuffer.Append("'" + qualValue[i] + "'");
                         }
+
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append(" )");
+                        }
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

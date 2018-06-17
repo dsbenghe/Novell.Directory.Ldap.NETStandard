@@ -105,7 +105,9 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte((byte) len); // Length
             for (var i = len - 1; i >= 0; i--)
                 // Content
+            {
                 outRenamed.WriteByte((byte) octets[i]);
+            }
         }
 
         /* Asn1 TYPE NOT YET SUPPORTED
@@ -271,7 +273,9 @@ namespace Novell.Directory.Ldap.Asn1
                 outRenamed.WriteByte((byte) (0x80 | n));
 
                 for (var i = n - 1; i >= 0; i--)
+                {
                     outRenamed.WriteByte((byte) octets[i]);
+                }
             }
         }
 
@@ -285,10 +289,12 @@ namespace Novell.Directory.Ldap.Asn1
                 octets[n] = (sbyte) (valueRenamed & 0x7F);
                 valueRenamed = valueRenamed >> 7;
             }
+
             for (var i = n - 1; i > 0; i--)
             {
                 outRenamed.WriteByte((byte) (octets[i] | 0x80));
             }
+
             outRenamed.WriteByte((byte) octets[0]);
         }
     }

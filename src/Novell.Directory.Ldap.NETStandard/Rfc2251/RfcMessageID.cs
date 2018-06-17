@@ -48,25 +48,13 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     internal class RfcMessageId : Asn1Integer
     {
-        /// <summary>
-        ///     Increments the message number atomically
-        /// </summary>
-        /// <returns>
-        ///     the new message number
-        /// </returns>
-        private static int MessageId
-        {
-            get
-            {
-                lock (LockRenamed)
-                {
-                    return _messageId < int.MaxValue ? ++_messageId : (_messageId = 1);
-                }
-            }
-        }
-
         private static int _messageId;
         private static readonly object LockRenamed;
+
+        static RfcMessageId()
+        {
+            LockRenamed = new object();
+        }
 
         /// <summary>
         ///     Creates a MessageID with an auto incremented Asn1Integer value.
@@ -83,9 +71,21 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
-        static RfcMessageId()
+        /// <summary>
+        ///     Increments the message number atomically
+        /// </summary>
+        /// <returns>
+        ///     the new message number
+        /// </returns>
+        private static int MessageId
         {
-            LockRenamed = new object();
+            get
+            {
+                lock (LockRenamed)
+                {
+                    return _messageId < int.MaxValue ? ++_messageId : (_messageId = 1);
+                }
+            }
         }
     }
 }

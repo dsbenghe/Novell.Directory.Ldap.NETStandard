@@ -40,24 +40,21 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DseTimeStamp
     {
-        protected int NSeconds;
-
-        public int Seconds => NSeconds;
-
-        private readonly int _replicaNumber;
-
-        public int ReplicaNumber => _replicaNumber;
-
         protected int NEvent;
-
-        public int Event => NEvent;
+        protected int NSeconds;
 
         public DseTimeStamp(Asn1Sequence dseObject)
         {
             NSeconds = ((Asn1Integer) dseObject.get_Renamed(0)).IntValue();
-            _replicaNumber = ((Asn1Integer) dseObject.get_Renamed(1)).IntValue();
+            ReplicaNumber = ((Asn1Integer) dseObject.get_Renamed(1)).IntValue();
             NEvent = ((Asn1Integer) dseObject.get_Renamed(2)).IntValue();
         }
+
+        public int Seconds => NSeconds;
+
+        public int ReplicaNumber { get; }
+
+        public int Event => NEvent;
 
         /// <summary>
         ///     Returns a string representation of the object.
@@ -67,7 +64,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
             var buf = new StringBuilder();
 
             buf.AppendFormat("[TimeStamp (seconds={0})", NSeconds);
-            buf.AppendFormat("(replicaNumber={0})", _replicaNumber);
+            buf.AppendFormat("(replicaNumber={0})", ReplicaNumber);
             buf.AppendFormat("(event={0})", NEvent);
             buf.Append("]");
 

@@ -41,10 +41,6 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class MonitorEventResponse : LdapExtendedResponse
     {
-        private readonly EdirEventSpecifier[] _specifierList;
-
-        public EdirEventSpecifier[] SpecifierList => _specifierList;
-
         public MonitorEventResponse(RfcLdapMessage message)
             : base(message)
         {
@@ -63,7 +59,7 @@ namespace Novell.Directory.Ldap.Events.Edir
 
             var length = ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
             var sequenceSet = (Asn1Set) sequence.get_Renamed(1);
-            _specifierList = new EdirEventSpecifier[length];
+            SpecifierList = new EdirEventSpecifier[length];
 
             for (var i = 0; i < length; i++)
             {
@@ -73,9 +69,11 @@ namespace Novell.Directory.Ldap.Events.Edir
                     ((Asn1Integer) eventspecifiersequence.get_Renamed(0)).IntValue();
                 var enumtype =
                     ((Asn1Enumerated) eventspecifiersequence.get_Renamed(1)).IntValue();
-                _specifierList[i] =
+                SpecifierList[i] =
                     new EdirEventSpecifier((EdirEventType) classfication, (EdirEventResultType) enumtype);
             }
         }
+
+        public EdirEventSpecifier[] SpecifierList { get; }
     }
 }

@@ -41,6 +41,38 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public abstract class LdapMessageQueue
     {
+        // nameLock used to protect queueNum during increment
+
+        internal static object NameLock;
+
+        // Queue number used only for debug
+
+        internal static int QueueNum = 0;
+
+        /// <summary> The message agent object associated with this queue</summary>
+        internal MessageAgent Agent;
+
+        // Queue name used only for debug
+
+        internal string Name = "";
+
+        static LdapMessageQueue()
+        {
+            NameLock = new object();
+        }
+
+        /// <summary>
+        ///     Constructs a response queue using the specified message agent
+        /// </summary>
+        /// <param name="agent">
+        ///     The message agent to associate with this conneciton
+        /// </param>
+        internal LdapMessageQueue(string myname, MessageAgent agent)
+        {
+            // Get a unique connection name for debug
+            Agent = agent;
+        }
+
         /// <summary>
         ///     Returns the name used for debug
         /// </summary>
@@ -68,33 +100,6 @@ namespace Novell.Directory.Ldap
         ///     The message IDs for all outstanding requests.
         /// </returns>
         public int[] MessageIDs => Agent.MessageIDs;
-
-        /// <summary> The message agent object associated with this queue</summary>
-        internal MessageAgent Agent;
-
-        // Queue name used only for debug
-
-        internal string Name = "";
-
-        // nameLock used to protect queueNum during increment
-
-        internal static object NameLock;
-
-        // Queue number used only for debug
-
-        internal static int QueueNum = 0;
-
-        /// <summary>
-        ///     Constructs a response queue using the specified message agent
-        /// </summary>
-        /// <param name="agent">
-        ///     The message agent to associate with this conneciton
-        /// </param>
-        internal LdapMessageQueue(string myname, MessageAgent agent)
-        {
-            // Get a unique connection name for debug
-            Agent = agent;
-        }
 
         /// <summary>
         ///     Returns the response from an Ldap request.
@@ -168,11 +173,13 @@ namespace Novell.Directory.Ldap
                 // blocks
                 return null; // no messages from this agent
             }
+
             // Local error occurred, contains a LocalException
             if (resp is LdapResponse)
             {
                 return (LdapMessage) resp;
             }
+
             // Normal message handling
             var message = (RfcLdapMessage) resp;
             switch (message.Type)
@@ -197,6 +204,7 @@ namespace Novell.Directory.Ldap
                     response = new LdapResponse(message);
                     break;
             }
+
             return response;
         }
 
@@ -245,11 +253,6 @@ namespace Novell.Directory.Ldap
         public bool IsComplete(int msgid)
         {
             return Agent.IsComplete(msgid);
-        }
-
-        static LdapMessageQueue()
-        {
-            NameLock = new object();
         }
     }
 }

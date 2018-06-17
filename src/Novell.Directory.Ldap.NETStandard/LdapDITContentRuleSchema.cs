@@ -46,46 +46,6 @@ namespace Novell.Directory.Ldap
     public class LdapDitContentRuleSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns the list of allowed auxiliary classes.
-        /// </summary>
-        /// <returns>
-        ///     The list of allowed auxiliary classes.
-        /// </returns>
-        public string[] AuxiliaryClasses => _auxiliary;
-
-        /// <summary>
-        ///     Returns the list of additional required attributes for an entry
-        ///     controlled by this content rule.
-        /// </summary>
-        /// <returns>
-        ///     The list of additional required attributes.
-        /// </returns>
-        public string[] RequiredAttributes => _required;
-
-        /// <summary>
-        ///     Returns the list of additional optional attributes for an entry
-        ///     controlled by this content rule.
-        /// </summary>
-        /// <returns>
-        ///     The list of additional optional attributes.
-        /// </returns>
-        public string[] OptionalAttributes => _optional;
-
-        /// <summary>
-        ///     Returns the list of precluded attributes for an entry controlled by
-        ///     this content rule.
-        /// </summary>
-        /// <returns>
-        ///     The list of precluded attributes.
-        /// </returns>
-        public string[] PrecludedAttributes => _precluded;
-
-        private readonly string[] _auxiliary = {""};
-        private readonly string[] _required = {""};
-        private readonly string[] _optional = {""};
-        private readonly string[] _precluded = {""};
-
-        /// <summary>
         ///     Constructs a DIT content rule for adding to or deleting from the
         ///     schema.
         /// </summary>
@@ -139,10 +99,10 @@ namespace Novell.Directory.Ldap
             Oid = oid;
             Description = description;
             Obsolete = obsolete;
-            _auxiliary = auxiliary;
-            _required = required;
-            _optional = optional;
-            _precluded = precluded;
+            AuxiliaryClasses = auxiliary;
+            RequiredAttributes = required;
+            OptionalAttributes = optional;
+            PrecludedAttributes = precluded;
             Value = FormatString();
         }
 
@@ -168,29 +128,39 @@ namespace Novell.Directory.Ldap
                 }
 
                 if ((object) parser.Id != null)
+                {
                     Oid = parser.Id;
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = parser.Description;
+                }
+
                 if (parser.Auxiliary != null)
                 {
-                    _auxiliary = new string[parser.Auxiliary.Length];
-                    parser.Auxiliary.CopyTo(_auxiliary, 0);
+                    AuxiliaryClasses = new string[parser.Auxiliary.Length];
+                    parser.Auxiliary.CopyTo(AuxiliaryClasses, 0);
                 }
+
                 if (parser.Required != null)
                 {
-                    _required = new string[parser.Required.Length];
-                    parser.Required.CopyTo(_required, 0);
+                    RequiredAttributes = new string[parser.Required.Length];
+                    parser.Required.CopyTo(RequiredAttributes, 0);
                 }
+
                 if (parser.Optional != null)
                 {
-                    _optional = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(_optional, 0);
+                    OptionalAttributes = new string[parser.Optional.Length];
+                    parser.Optional.CopyTo(OptionalAttributes, 0);
                 }
+
                 if (parser.Precluded != null)
                 {
-                    _precluded = new string[parser.Precluded.Length];
-                    parser.Precluded.CopyTo(_precluded, 0);
+                    PrecludedAttributes = new string[parser.Precluded.Length];
+                    parser.Precluded.CopyTo(PrecludedAttributes, 0);
                 }
+
                 Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
                 AttributeQualifier attrQualifier;
@@ -199,12 +169,48 @@ namespace Novell.Directory.Ldap
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException)
             {
             }
         }
+
+        /// <summary>
+        ///     Returns the list of allowed auxiliary classes.
+        /// </summary>
+        /// <returns>
+        ///     The list of allowed auxiliary classes.
+        /// </returns>
+        public string[] AuxiliaryClasses { get; } = {""};
+
+        /// <summary>
+        ///     Returns the list of additional required attributes for an entry
+        ///     controlled by this content rule.
+        /// </summary>
+        /// <returns>
+        ///     The list of additional required attributes.
+        /// </returns>
+        public string[] RequiredAttributes { get; } = {""};
+
+        /// <summary>
+        ///     Returns the list of additional optional attributes for an entry
+        ///     controlled by this content rule.
+        /// </summary>
+        /// <returns>
+        ///     The list of additional optional attributes.
+        /// </returns>
+        public string[] OptionalAttributes { get; } = {""};
+
+        /// <summary>
+        ///     Returns the list of precluded attributes for an entry controlled by
+        ///     this content rule.
+        /// </summary>
+        /// <returns>
+        ///     The list of precluded attributes.
+        /// </returns>
+        public string[] PrecludedAttributes { get; } = {""};
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -223,6 +229,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -239,74 +246,118 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((strArray = AuxiliaryClasses) != null)
             {
                 valueBuffer.Append(" AUX ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if ((strArray = RequiredAttributes) != null)
             {
                 valueBuffer.Append(" MUST ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if ((strArray = OptionalAttributes) != null)
             {
                 valueBuffer.Append(" MAY ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             if ((strArray = PrecludedAttributes) != null)
             {
                 valueBuffer.Append(" NOT ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             IEnumerator en;
             if ((en = QualifierNames) != null)
             {
@@ -319,18 +370,28 @@ namespace Novell.Directory.Ldap
                     if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append("( ");
+                        }
+
                         for (var i = 0; i < qualValue.Length; i++)
                         {
                             if (i > 0)
+                            {
                                 valueBuffer.Append(" ");
+                            }
+
                             valueBuffer.Append("'" + qualValue[i] + "'");
                         }
+
                         if (qualValue.Length > 1)
+                        {
                             valueBuffer.Append(" )");
+                        }
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

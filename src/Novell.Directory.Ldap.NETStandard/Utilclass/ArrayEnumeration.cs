@@ -36,25 +36,6 @@ namespace Novell.Directory.Ldap.Utilclass
 {
     public class ArrayEnumeration : IEnumerator
     {
-        private object _tempAuxObj;
-
-        public bool MoveNext()
-        {
-            var result = HasMoreElements();
-            if (result)
-            {
-                _tempAuxObj = NextElement();
-            }
-            return result;
-        }
-
-        public void Reset()
-        {
-            _tempAuxObj = null;
-        }
-
-        public object Current => _tempAuxObj;
-
         private readonly object[] _eArray;
         private int _index;
 
@@ -69,10 +50,31 @@ namespace Novell.Directory.Ldap.Utilclass
             _eArray = eArray;
         }
 
+        public bool MoveNext()
+        {
+            var result = HasMoreElements();
+            if (result)
+            {
+                Current = NextElement();
+            }
+
+            return result;
+        }
+
+        public void Reset()
+        {
+            Current = null;
+        }
+
+        public object Current { get; private set; }
+
         public bool HasMoreElements()
         {
             if (_eArray == null)
+            {
                 return false;
+            }
+
             return _index < _eArray.Length;
         }
 
@@ -82,6 +84,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 throw new ArgumentOutOfRangeException();
             }
+
             return _eArray[_index++];
         }
     }

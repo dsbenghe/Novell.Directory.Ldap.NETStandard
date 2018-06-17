@@ -51,95 +51,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapAttributeSchema : LdapSchemaElement
     {
-        private void InitBlock()
-        {
-            _usage = UserApplications;
-        }
-
-        /// <summary>
-        ///     Returns the object identifer of the syntax of the attribute, in
-        ///     dotted numerical format.
-        /// </summary>
-        /// <returns>
-        ///     The object identifer of the attribute's syntax.
-        /// </returns>
-        public string SyntaxString { get; }
-
-        /// <summary>
-        ///     Returns the name of the attribute type which this attribute derives
-        ///     from, or null if there is no superior attribute.
-        /// </summary>
-        /// <returns>
-        ///     The attribute's superior attribute, or null if there is none.
-        /// </returns>
-        public string Superior { get; }
-
-        /// <summary>
-        ///     Returns true if the attribute is single-valued.
-        /// </summary>
-        /// <returns>
-        ///     True if the attribute is single-valued; false if the attribute
-        ///     is multi-valued.
-        /// </returns>
-        public bool SingleValued { get; }
-
-        /// <summary>
-        ///     Returns the matching rule for this attribute.
-        /// </summary>
-        /// <returns>
-        ///     The attribute's equality matching rule; null if it has no equality
-        ///     matching rule.
-        /// </returns>
-        public string EqualityMatchingRule { get; }
-
-        /// <summary>
-        ///     Returns the ordering matching rule for this attribute.
-        /// </summary>
-        /// <returns>
-        ///     The attribute's ordering matching rule; null if it has no ordering
-        ///     matching rule.
-        /// </returns>
-        public string OrderingMatchingRule { get; }
-
-        /// <summary>
-        ///     Returns the substring matching rule for this attribute.
-        /// </summary>
-        /// <returns>
-        ///     The attribute's substring matching rule; null if it has no substring
-        ///     matching rule.
-        /// </returns>
-        public string SubstringMatchingRule { get; }
-
-        /// <summary>
-        ///     Returns true if the attribute is a collective attribute.
-        /// </summary>
-        /// <returns>
-        ///     True if the attribute is a collective; false if the attribute
-        ///     is not a collective attribute.
-        /// </returns>
-        public bool Collective { get; }
-
-        /// <summary>
-        ///     Returns false if the attribute is read-only.
-        /// </summary>
-        /// <returns>
-        ///     False if the attribute is read-only; true if the attribute
-        ///     is read-write.
-        /// </returns>
-        public bool UserModifiable { get; } = true;
-
-        /// <summary>
-        ///     Returns the usage of the attribute.
-        /// </summary>
-        /// <returns>
-        ///     One of the following values: USER_APPLICATIONS,
-        ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
-        ///     DSA_OPERATION.
-        /// </returns>
-        public int Usage => _usage;
-
-        private int _usage;
-
         /// <summary>
         ///     Indicates that the attribute usage is for ordinary application
         ///     or user data.
@@ -234,7 +145,7 @@ namespace Novell.Directory.Ldap
             SubstringMatchingRule = substring;
             Collective = collective;
             UserModifiable = isUserModifiable;
-            _usage = usage;
+            Usage = usage;
             Superior = superior;
             Value = FormatString();
         }
@@ -256,15 +167,30 @@ namespace Novell.Directory.Ldap
                 var parser = new SchemaParser(raw);
 
                 if (parser.Names != null)
+                {
                     names = parser.Names;
+                }
+
                 if ((object) parser.Id != null)
+                {
                     Oid = parser.Id;
+                }
+
                 if ((object) parser.Description != null)
+                {
                     Description = parser.Description;
+                }
+
                 if ((object) parser.Syntax != null)
+                {
                     SyntaxString = parser.Syntax;
+                }
+
                 if ((object) parser.Superior != null)
+                {
                     Superior = parser.Superior;
+                }
+
                 SingleValued = parser.Single;
                 Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
@@ -274,12 +200,100 @@ namespace Novell.Directory.Ldap
                     attrQualifier = (AttributeQualifier) qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
+
                 Value = FormatString();
             }
             catch (IOException e)
             {
                 throw new Exception(e.ToString());
             }
+        }
+
+        /// <summary>
+        ///     Returns the object identifer of the syntax of the attribute, in
+        ///     dotted numerical format.
+        /// </summary>
+        /// <returns>
+        ///     The object identifer of the attribute's syntax.
+        /// </returns>
+        public string SyntaxString { get; }
+
+        /// <summary>
+        ///     Returns the name of the attribute type which this attribute derives
+        ///     from, or null if there is no superior attribute.
+        /// </summary>
+        /// <returns>
+        ///     The attribute's superior attribute, or null if there is none.
+        /// </returns>
+        public string Superior { get; }
+
+        /// <summary>
+        ///     Returns true if the attribute is single-valued.
+        /// </summary>
+        /// <returns>
+        ///     True if the attribute is single-valued; false if the attribute
+        ///     is multi-valued.
+        /// </returns>
+        public bool SingleValued { get; }
+
+        /// <summary>
+        ///     Returns the matching rule for this attribute.
+        /// </summary>
+        /// <returns>
+        ///     The attribute's equality matching rule; null if it has no equality
+        ///     matching rule.
+        /// </returns>
+        public string EqualityMatchingRule { get; }
+
+        /// <summary>
+        ///     Returns the ordering matching rule for this attribute.
+        /// </summary>
+        /// <returns>
+        ///     The attribute's ordering matching rule; null if it has no ordering
+        ///     matching rule.
+        /// </returns>
+        public string OrderingMatchingRule { get; }
+
+        /// <summary>
+        ///     Returns the substring matching rule for this attribute.
+        /// </summary>
+        /// <returns>
+        ///     The attribute's substring matching rule; null if it has no substring
+        ///     matching rule.
+        /// </returns>
+        public string SubstringMatchingRule { get; }
+
+        /// <summary>
+        ///     Returns true if the attribute is a collective attribute.
+        /// </summary>
+        /// <returns>
+        ///     True if the attribute is a collective; false if the attribute
+        ///     is not a collective attribute.
+        /// </returns>
+        public bool Collective { get; }
+
+        /// <summary>
+        ///     Returns false if the attribute is read-only.
+        /// </summary>
+        /// <returns>
+        ///     False if the attribute is read-only; true if the attribute
+        ///     is read-write.
+        /// </returns>
+        public bool UserModifiable { get; } = true;
+
+        /// <summary>
+        ///     Returns the usage of the attribute.
+        /// </summary>
+        /// <returns>
+        ///     One of the following values: USER_APPLICATIONS,
+        ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
+        ///     DSA_OPERATION.
+        /// </returns>
+        public int Usage { get; private set; }
+
+        private void InitBlock()
+        {
+            Usage = UserApplications;
         }
 
         /// <summary>
@@ -299,6 +313,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -315,55 +330,67 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((object) (token = Superior) != null)
             {
                 valueBuffer.Append(" SUP ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((object) (token = EqualityMatchingRule) != null)
             {
                 valueBuffer.Append(" EQUALITY ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((object) (token = OrderingMatchingRule) != null)
             {
                 valueBuffer.Append(" ORDERING ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((object) (token = SubstringMatchingRule) != null)
             {
                 valueBuffer.Append(" SUBSTR ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if ((object) (token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
             }
+
             if (SingleValued)
             {
                 valueBuffer.Append(" SINGLE-VALUE");
             }
+
             if (Collective)
             {
                 valueBuffer.Append(" COLLECTIVE");
             }
+
             if (UserModifiable == false)
             {
                 valueBuffer.Append(" NO-USER-MODIFICATION");
             }
+
             int useType;
             if ((useType = Usage) != UserApplications)
             {
@@ -385,6 +412,7 @@ namespace Novell.Directory.Ldap
                         break;
                 }
             }
+
             var en = QualifierNames;
 
             while (en.MoveNext())
@@ -397,16 +425,23 @@ namespace Novell.Directory.Ldap
                     if (strArray != null)
                     {
                         if (strArray.Length > 1)
+                        {
                             valueBuffer.Append("(");
+                        }
+
                         for (var i = 0; i < strArray.Length; i++)
                         {
                             valueBuffer.Append(" '" + strArray[i] + "'");
                         }
+
                         if (strArray.Length > 1)
+                        {
                             valueBuffer.Append(" )");
+                        }
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

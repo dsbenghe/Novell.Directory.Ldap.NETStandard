@@ -42,6 +42,16 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcUnbindRequest : Asn1Null, IRfcRequest
     {
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"unbind"},
+                LdapException.LdapNotSupported, null);
+        }
+
+        public string GetRequestDn()
+        {
+            return null;
+        }
         //*************************************************************************
         // Constructor for UnbindRequest
         //*************************************************************************
@@ -59,17 +69,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.UnbindRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"unbind"},
-                LdapException.LdapNotSupported, null);
-        }
-
-        public string GetRequestDn()
-        {
-            return null;
         }
     }
 }

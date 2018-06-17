@@ -84,6 +84,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw new FieldAccessException();
                 }
+
                 return message;
             }
         }

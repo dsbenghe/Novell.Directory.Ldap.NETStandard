@@ -44,16 +44,7 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class ListReplicasResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns a list of distinguished names for the replicas on the server.
-        /// </summary>
-        /// <returns>
-        ///     String value specifying the identity returned by the server
-        /// </returns>
-        public string[] ReplicaList => _replicaList;
-
         // Identity returned by the server
-        private readonly string[] _replicaList;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the list
@@ -71,28 +62,34 @@ namespace Novell.Directory.Ldap.Extensions
         {
             if (ResultCode != LdapException.Success)
             {
-                _replicaList = new string[0];
+                ReplicaList = new string[0];
             }
             else
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // We should get back a sequence
                 var returnedSequence = (Asn1Sequence) decoder.Decode(returnedValue);
                 if (returnedSequence == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // How many replicas were returned
                 var len = returnedSequence.Size();
-                _replicaList = new string[len];
+                ReplicaList = new string[len];
 
                 // Copy each one into our String array
                 for (var i = 0; i < len; i++)
@@ -100,14 +97,26 @@ namespace Novell.Directory.Ldap.Extensions
                     // Get the next Asn1Octet String in the sequence
                     var asn1NextReplica = (Asn1OctetString) returnedSequence.get_Renamed(i);
                     if (asn1NextReplica == null)
+                    {
                         throw new IOException("Decoding error");
+                    }
 
                     // Convert to a string
-                    _replicaList[i] = asn1NextReplica.StringValue();
-                    if ((object) _replicaList[i] == null)
+                    ReplicaList[i] = asn1NextReplica.StringValue();
+                    if ((object) ReplicaList[i] == null)
+                    {
                         throw new IOException("Decoding error");
+                    }
                 }
             }
         }
+
+        /// <summary>
+        ///     Returns a list of distinguished names for the replicas on the server.
+        /// </summary>
+        /// <returns>
+        ///     String value specifying the identity returned by the server
+        /// </returns>
+        public string[] ReplicaList { get; }
     }
 }

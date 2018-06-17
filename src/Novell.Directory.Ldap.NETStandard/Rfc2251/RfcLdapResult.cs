@@ -140,7 +140,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             Add(matchedDn);
             Add(errorMessage);
             if (referral != null)
+            {
                 Add(referral);
+            }
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream</summary>

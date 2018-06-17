@@ -39,34 +39,26 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class ConnectionStateEventData : BaseEdirEventData
     {
-        private readonly string _strConnectionDn;
-
-        public string ConnectionDn => _strConnectionDn;
-
-        private readonly int _oldFlags;
-
-        public int OldFlags => _oldFlags;
-
-        private readonly int _newFlags;
-
-        public int NewFlags => _newFlags;
-
-        private readonly string _sourceModule;
-
-        public string SourceModule => _sourceModule;
-
         public ConnectionStateEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
         {
             var length = new int[1];
 
-            _strConnectionDn = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
-            _oldFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            _newFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
-            _sourceModule = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            ConnectionDn = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
+            OldFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            NewFlags = ((Asn1Integer) Decoder.Decode(DecodedData, length)).IntValue();
+            SourceModule = ((Asn1OctetString) Decoder.Decode(DecodedData, length)).StringValue();
 
             DataInitDone();
         }
+
+        public string ConnectionDn { get; }
+
+        public int OldFlags { get; }
+
+        public int NewFlags { get; }
+
+        public string SourceModule { get; }
 
         /// <summary>
         ///     Returns a string representation of the object.
@@ -75,10 +67,10 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[ConnectionStateEvent");
-            buf.AppendFormat("(ConnectionDN={0})", _strConnectionDn);
-            buf.AppendFormat("(oldFlags={0})", _oldFlags);
-            buf.AppendFormat("(newFlags={0})", _newFlags);
-            buf.AppendFormat("(SourceModule={0})", _sourceModule);
+            buf.AppendFormat("(ConnectionDN={0})", ConnectionDn);
+            buf.AppendFormat("(oldFlags={0})", OldFlags);
+            buf.AppendFormat("(newFlags={0})", NewFlags);
+            buf.AppendFormat("(SourceModule={0})", SourceModule);
             buf.Append("]");
 
             return buf.ToString();

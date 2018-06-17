@@ -93,6 +93,7 @@ namespace Novell.Directory.Ldap
             {
                 i++; //advance until we find the separator =
             }
+
             if (i == escapedS.Length)
             {
                 throw new ArgumentException("Could not parse RDN: Attribute " +
@@ -121,6 +122,7 @@ namespace Novell.Directory.Ldap
             {
                 escapedS.Insert(escapedS.Length - 1, '\\');
             }
+
             return escapedS.ToString();
         }
 
@@ -189,6 +191,7 @@ namespace Novell.Directory.Ldap
             {
                 return false;
             }
+
             return true;
         }
 
@@ -232,17 +235,20 @@ namespace Novell.Directory.Ldap
             {
                 i++; //advance until we find the separator =
             }
+
             if (i == rdn.Length)
             {
                 throw new ArgumentException("Could not parse rdn: Attribute " +
                                             "type and name must be separated by an equal symbol, '='");
             }
+
             i++;
             //check if the first two chars are "\ " (slash space) or "\#"
             if (rdn[i] == '\\' && i + 1 < rdn.Length - 1 && (rdn[i + 1] == ' ' || rdn[i + 1] == '#'))
             {
                 i++;
             }
+
             for (; i < rdn.Length; i++)
             {
                 //if the current char is a slash, not the end char, and is followed
@@ -255,6 +261,7 @@ namespace Novell.Directory.Ldap
                         //I'm not sure if I have to check for these special chars
                         continue;
                     }
+
                     //check if the last two chars are "\ "
                     if (rdn[i + 1] == ' ' && i + 2 == rdn.Length)
                     {
@@ -262,8 +269,10 @@ namespace Novell.Directory.Ldap
                         continue;
                     }
                 }
+
                 unescaped.Append(rdn[i]);
             }
+
             return unescaped.ToString();
         }
     } //end class LdapDN

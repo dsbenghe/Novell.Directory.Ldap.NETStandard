@@ -45,31 +45,30 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </seealso>
     public class EnumeratedIterator : IEnumerator
     {
-        private object _tempAuxObj;
-
-        public bool MoveNext()
-        {
-            var result = HasMoreElements();
-            if (result)
-            {
-                _tempAuxObj = NextElement();
-            }
-            return result;
-        }
-
-        public void Reset()
-        {
-            _tempAuxObj = null;
-        }
-
-        public object Current => _tempAuxObj;
-
         private readonly IEnumerator _i;
 
         public EnumeratedIterator(IEnumerator iterator)
         {
             _i = iterator;
         }
+
+        public bool MoveNext()
+        {
+            var result = HasMoreElements();
+            if (result)
+            {
+                Current = NextElement();
+            }
+
+            return result;
+        }
+
+        public void Reset()
+        {
+            Current = null;
+        }
+
+        public object Current { get; private set; }
 
         /// <summary> Enumeration method that maps to Iterator.hasNext()</summary>
         public bool HasMoreElements()

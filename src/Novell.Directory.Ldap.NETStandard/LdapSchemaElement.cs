@@ -50,9 +50,42 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public abstract class LdapSchemaElement : LdapAttribute
     {
-        private void InitBlock()
+        /// <summary>
+        ///     A hash table that contains the vendor-specific qualifiers (for example,
+        ///     the X-NDS flags).
+        /// </summary>
+        private Hashtable _hashQualifier;
+
+        /// <summary>
+        ///     A string array of optional, or vendor-specific, qualifiers for the
+        ///     schema element.
+        ///     These optional qualifiers begin with "X-"; the Novell eDirectory
+        ///     specific qualifiers begin with "X-NDS".
+        /// </summary>
+        private string[] _qualifier = {""};
+
+        /// <summary> The names of the schema element.</summary>
+        protected internal string[] names = {""};
+
+        /// <summary> The OID for the schema element.</summary>
+        protected string Oid = "";
+
+        /// <summary>
+        ///     Creates an LdapSchemaElement by setting the name of the LdapAttribute.
+        ///     Because this is the only constructor, all extended classes are expected
+        ///     to call this constructor.  The value of the LdapAttribute must be set
+        ///     by the setValue method.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The attribute name of the schema definition. Valid
+        ///     names are one of the following:
+        ///     "attributeTypes", "objectClasses", "ldapSyntaxes",
+        ///     "nameForms", "dITContentRules", "dITStructureRules",
+        ///     "matchingRules", or "matchingRuleUse"
+        /// </param>
+        protected internal LdapSchemaElement(string attrName) : base(attrName)
         {
-            _hashQualifier = new Hashtable();
+            InitBlock();
         }
 
         /// <summary>
@@ -71,7 +104,10 @@ namespace Novell.Directory.Ldap
             get
             {
                 if (names == null)
+                {
                     return null;
+                }
+
                 var generatedVar = new string[names.Length];
                 names.CopyTo(generatedVar, 0);
                 return generatedVar;
@@ -103,7 +139,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames => new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator());
+        public IEnumerator QualifierNames =>
+            new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator());
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier
@@ -115,43 +152,10 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool Obsolete { get; set; }
 
-        /// <summary>
-        ///     Creates an LdapSchemaElement by setting the name of the LdapAttribute.
-        ///     Because this is the only constructor, all extended classes are expected
-        ///     to call this constructor.  The value of the LdapAttribute must be set
-        ///     by the setValue method.
-        /// </summary>
-        /// <param name="attrName">
-        ///     The attribute name of the schema definition. Valid
-        ///     names are one of the following:
-        ///     "attributeTypes", "objectClasses", "ldapSyntaxes",
-        ///     "nameForms", "dITContentRules", "dITStructureRules",
-        ///     "matchingRules", or "matchingRuleUse"
-        /// </param>
-        protected internal LdapSchemaElement(string attrName) : base(attrName)
+        private void InitBlock()
         {
-            InitBlock();
+            _hashQualifier = new Hashtable();
         }
-
-        /// <summary> The names of the schema element.</summary>
-        protected internal string[] names = {""};
-
-        /// <summary> The OID for the schema element.</summary>
-        protected string Oid = "";
-
-        /// <summary>
-        ///     A string array of optional, or vendor-specific, qualifiers for the
-        ///     schema element.
-        ///     These optional qualifiers begin with "X-"; the Novell eDirectory
-        ///     specific qualifiers begin with "X-NDS".
-        /// </summary>
-        private string[] _qualifier = {""};
-
-        /// <summary>
-        ///     A hash table that contains the vendor-specific qualifiers (for example,
-        ///     the X-NDS flags).
-        /// </summary>
-        private Hashtable _hashQualifier;
 
         /// <summary>
         ///     Returns an array of all values of a specified optional or non-
@@ -172,6 +176,7 @@ namespace Novell.Directory.Ldap
             {
                 return attr.Values;
             }
+
             return null;
         }
 

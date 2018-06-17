@@ -44,15 +44,17 @@ namespace Novell.Directory.Ldap.Extensions
     /// </summary>
     public class GetReplicaInfoResponse : LdapExtendedResponse
     {
+        private readonly int _flags;
+        private readonly int _localPartitionId;
+        private readonly int _modificationTime;
+
+        private readonly string _partitionDn;
+
         // Other info as returned by the server
         private readonly int _partitionId;
-        private readonly int _replicaState;
-        private readonly int _modificationTime;
         private readonly int _purgeTime;
-        private readonly int _localPartitionId;
-        private readonly string _partitionDn;
+        private readonly int _replicaState;
         private readonly int _replicaType;
-        private readonly int _flags;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -79,12 +81,16 @@ namespace Novell.Directory.Ldap.Extensions
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
                 var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // Parse the parameters in the order
 
@@ -93,7 +99,9 @@ namespace Novell.Directory.Ldap.Extensions
                 // Parse partitionID
                 var asn1PartitionId = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1PartitionId == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _partitionId = asn1PartitionId.IntValue();
 
@@ -101,45 +109,59 @@ namespace Novell.Directory.Ldap.Extensions
                 // Parse replicaState
                 var asn1ReplicaState = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1ReplicaState == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _replicaState = asn1ReplicaState.IntValue();
 
                 // Parse modificationTime
                 var asn1ModificationTime = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1ModificationTime == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _modificationTime = asn1ModificationTime.IntValue();
 
                 // Parse purgeTime
                 var asn1PurgeTime = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1PurgeTime == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _purgeTime = asn1PurgeTime.IntValue();
 
                 // Parse localPartitionID
                 var asn1LocalPartitionId = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1LocalPartitionId == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _localPartitionId = asn1LocalPartitionId.IntValue();
 
                 // Parse partitionDN
                 var asn1PartitionDn = (Asn1OctetString) decoder.Decode(currentPtr);
                 if (asn1PartitionDn == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _partitionDn = asn1PartitionDn.StringValue();
                 if ((object) _partitionDn == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
 
                 // Parse replicaType
                 var asn1ReplicaType = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1ReplicaType == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _replicaType = asn1ReplicaType.IntValue();
 
@@ -147,7 +169,9 @@ namespace Novell.Directory.Ldap.Extensions
                 // Parse flags
                 var asn1Flags = (Asn1Integer) decoder.Decode(currentPtr);
                 if (asn1Flags == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 _flags = asn1Flags.IntValue();
             }

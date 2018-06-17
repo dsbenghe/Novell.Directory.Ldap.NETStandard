@@ -43,13 +43,7 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class DebugParameter
     {
-        private readonly DebugParameterType _debugType;
-
-        public DebugParameterType DebugType => _debugType;
-
         protected object ObjData;
-
-        public object Data => ObjData;
 
         public DebugParameter(Asn1Tagged dseObject)
         {
@@ -97,8 +91,12 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
                     throw new IOException("Unknown Tag in DebugParameter..");
             }
 
-            _debugType = (DebugParameterType) dseObject.GetIdentifier().Tag;
+            DebugType = (DebugParameterType) dseObject.GetIdentifier().Tag;
         }
+
+        public DebugParameterType DebugType { get; }
+
+        public object Data => ObjData;
 
         protected int GetTaggedIntValue(Asn1Tagged tagVal)
         {
@@ -131,15 +129,16 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
         {
             var buf = new StringBuilder();
             buf.Append("[DebugParameter");
-            if (Enum.IsDefined(_debugType.GetType(), _debugType))
+            if (Enum.IsDefined(DebugType.GetType(), DebugType))
             {
-                buf.AppendFormat("(type={0},", _debugType);
+                buf.AppendFormat("(type={0},", DebugType);
                 buf.AppendFormat("value={0})", ObjData);
             }
             else
             {
                 buf.Append("(type=Unknown)");
             }
+
             buf.Append("]");
 
             return buf.ToString();

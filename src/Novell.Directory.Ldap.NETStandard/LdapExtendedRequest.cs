@@ -46,6 +46,27 @@ namespace Novell.Directory.Ldap
      */
     public class LdapExtendedRequest : LdapMessage
     {
+        /// <summary>
+        ///     Constructs an LdapExtendedRequest.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to, and (2) an operation-
+        ///     specific sequence of octet strings or BER-encoded values.
+        /// </param>
+        /// <param name="cont">
+        ///     Any controls that apply to the extended request
+        ///     or null if none.
+        /// </param>
+        public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
+            : base(
+                ExtendedRequest,
+                new RfcExtendedRequest(new RfcLdapOid(op.GetId()),
+                    op.GetValue() != null ? new Asn1OctetString(op.GetValue()) : null), cont)
+        {
+        }
+
         /// <summary> Retrieves an extended operation from this request</summary>
         /// <returns>
         ///     extended operation represented in this request.
@@ -68,29 +89,9 @@ namespace Novell.Directory.Ldap
                     var valueRenamed = (Asn1OctetString) tag.TaggedValue;
                     requestValue = valueRenamed.ByteValue();
                 }
+
                 return new LdapExtendedOperation(requestId, requestValue);
             }
-        }
-
-        /// <summary>
-        ///     Constructs an LdapExtendedRequest.
-        /// </summary>
-        /// <param name="op">
-        ///     The object which contains (1) an identifier of an extended
-        ///     operation which should be recognized by the particular Ldap
-        ///     server this client is connected to, and (2) an operation-
-        ///     specific sequence of octet strings or BER-encoded values.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the extended request
-        ///     or null if none.
-        /// </param>
-        public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
-            : base(
-                ExtendedRequest,
-                new RfcExtendedRequest(new RfcLdapOid(op.GetId()),
-                    op.GetValue() != null ? new Asn1OctetString(op.GetValue()) : null), cont)
-        {
         }
     }
 }

@@ -45,29 +45,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcBindResponse : Asn1Sequence, IRfcResponse
     {
-        /// <summary>
-        ///     Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
-        ///     otherwise null.
-        /// </summary>
-        public Asn1OctetString ServerSaslCreds
-        {
-            get
-            {
-                if (Size() == 5)
-                    return (Asn1OctetString) ((Asn1Tagged) get_Renamed(4)).TaggedValue;
-
-                if (Size() == 4)
-                {
-                    // could be referral or serverSaslCreds
-                    var obj = get_Renamed(3);
-                    if (obj is Asn1Tagged)
-                        return (Asn1OctetString) ((Asn1Tagged) obj).TaggedValue;
-                }
-
-                return null;
-            }
-        }
-
         //*************************************************************************
         // Constructors for BindResponse
         //*************************************************************************
@@ -92,6 +69,33 @@ namespace Novell.Directory.Ldap.Rfc2251
                     var bais = new MemoryStream(SupportClass.ToByteArray(content));
                     set_Renamed(3, new RfcReferral(dec, bais, content.Length));
                 }
+            }
+        }
+
+        /// <summary>
+        ///     Returns the OPTIONAL serverSaslCreds of a BindResponse if it exists
+        ///     otherwise null.
+        /// </summary>
+        public Asn1OctetString ServerSaslCreds
+        {
+            get
+            {
+                if (Size() == 5)
+                {
+                    return (Asn1OctetString) ((Asn1Tagged) get_Renamed(4)).TaggedValue;
+                }
+
+                if (Size() == 4)
+                {
+                    // could be referral or serverSaslCreds
+                    var obj = get_Renamed(3);
+                    if (obj is Asn1Tagged)
+                    {
+                        return (Asn1OctetString) ((Asn1Tagged) obj).TaggedValue;
+                    }
+                }
+
+                return null;
             }
         }
 
@@ -124,8 +128,11 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 var obj = get_Renamed(3);
                 if (obj is RfcReferral)
+                {
                     return (RfcReferral) obj;
+                }
             }
+
             return null;
         }
 

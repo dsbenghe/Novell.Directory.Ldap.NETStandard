@@ -42,27 +42,6 @@ namespace Novell.Directory.Ldap.Events.Edir
     /// </summary>
     public class EdirEventIntermediateResponse : LdapIntermediateResponse
     {
-        private EdirEventType _eventType;
-
-        /// <summary>
-        ///     Type of Edir event.
-        /// </summary>
-        public EdirEventType EventType => _eventType;
-
-        private EdirEventResultType _eventResultType;
-
-        /// <summary>
-        ///     Type of Edir event result.
-        /// </summary>
-        public EdirEventResultType EventResultType => _eventResultType;
-
-        private BaseEdirEventData _eventResponseData;
-
-        /// <summary>
-        ///     The response data object associated with Edir event.
-        /// </summary>
-        public BaseEdirEventData EventResponseDataObject => _eventResponseData;
-
         public EdirEventIntermediateResponse(RfcLdapMessage message)
             : base(message)
         {
@@ -75,13 +54,28 @@ namespace Novell.Directory.Ldap.Events.Edir
             ProcessMessage(SupportClass.ToSByteArray(message));
         }
 
+        /// <summary>
+        ///     Type of Edir event.
+        /// </summary>
+        public EdirEventType EventType { get; private set; }
+
+        /// <summary>
+        ///     Type of Edir event result.
+        /// </summary>
+        public EdirEventResultType EventResultType { get; private set; }
+
+        /// <summary>
+        ///     The response data object associated with Edir event.
+        /// </summary>
+        public BaseEdirEventData EventResponseDataObject { get; private set; }
+
         private void ProcessMessage(sbyte[] returnedValue)
         {
             var decoder = new LberDecoder();
             var sequence = (Asn1Sequence) decoder.Decode(returnedValue);
 
-            _eventType = (EdirEventType) ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
-            _eventResultType = (EdirEventResultType) ((Asn1Integer) sequence.get_Renamed(1)).IntValue();
+            EventType = (EdirEventType) ((Asn1Integer) sequence.get_Renamed(0)).IntValue();
+            EventResultType = (EdirEventResultType) ((Asn1Integer) sequence.get_Renamed(1)).IntValue();
 
             if (sequence.Size() > 2)
             {
@@ -90,56 +84,56 @@ namespace Novell.Directory.Ldap.Events.Edir
                 switch ((EdirEventDataType) objTagged.GetIdentifier().Tag)
                 {
                     case EdirEventDataType.EdirTagEntryEventData:
-                        _eventResponseData = new EntryEventData(EdirEventDataType.EdirTagEntryEventData,
+                        EventResponseDataObject = new EntryEventData(EdirEventDataType.EdirTagEntryEventData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagValueEventData:
-                        _eventResponseData = new ValueEventData(EdirEventDataType.EdirTagValueEventData,
+                        EventResponseDataObject = new ValueEventData(EdirEventDataType.EdirTagValueEventData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagDebugEventData:
-                        _eventResponseData = new DebugEventData(EdirEventDataType.EdirTagDebugEventData,
+                        EventResponseDataObject = new DebugEventData(EdirEventDataType.EdirTagDebugEventData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagGeneralEventData:
-                        _eventResponseData = new GeneralDsEventData(EdirEventDataType.EdirTagGeneralEventData,
+                        EventResponseDataObject = new GeneralDsEventData(EdirEventDataType.EdirTagGeneralEventData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagSkulkData:
-                        _eventResponseData = null;
+                        EventResponseDataObject = null;
                         break;
 
                     case EdirEventDataType.EdirTagBinderyEventData:
-                        _eventResponseData = new BinderyObjectEventData(EdirEventDataType.EdirTagBinderyEventData,
+                        EventResponseDataObject = new BinderyObjectEventData(EdirEventDataType.EdirTagBinderyEventData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagDsesevInfo:
-                        _eventResponseData = new SecurityEquivalenceEventData(EdirEventDataType.EdirTagDsesevInfo,
+                        EventResponseDataObject = new SecurityEquivalenceEventData(EdirEventDataType.EdirTagDsesevInfo,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagModuleStateData:
-                        _eventResponseData = new ModuleStateEventData(EdirEventDataType.EdirTagModuleStateData,
+                        EventResponseDataObject = new ModuleStateEventData(EdirEventDataType.EdirTagModuleStateData,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagNetworkAddress:
-                        _eventResponseData = new NetworkAddressEventData(EdirEventDataType.EdirTagNetworkAddress,
+                        EventResponseDataObject = new NetworkAddressEventData(EdirEventDataType.EdirTagNetworkAddress,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagConnectionState:
-                        _eventResponseData = new ConnectionStateEventData(EdirEventDataType.EdirTagConnectionState,
+                        EventResponseDataObject = new ConnectionStateEventData(EdirEventDataType.EdirTagConnectionState,
                             objTagged.TaggedValue);
                         break;
 
                     case EdirEventDataType.EdirTagChangeServerAddress:
-                        _eventResponseData =
+                        EventResponseDataObject =
                             new ChangeAddressEventData(EdirEventDataType.EdirTagChangeServerAddress,
                                 objTagged.TaggedValue);
                         break;
@@ -159,7 +153,7 @@ namespace Novell.Directory.Ldap.Events.Edir
                               break;
                     */
                     case EdirEventDataType.EdirTagNoData:
-                        _eventResponseData = null;
+                        EventResponseDataObject = null;
                         break;
 
                     default:
@@ -170,7 +164,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             else
             {
                 //NO DATA
-                _eventResponseData = null;
+                EventResponseDataObject = null;
             }
         }
     }

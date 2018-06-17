@@ -49,6 +49,36 @@ namespace Novell.Directory.Ldap
     public class LdapModifyDnRequest : LdapMessage
     {
         /// <summary>
+        ///     Constructs a ModifyDN (rename) Request.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="cont">
+        ///     Any controls that apply to the modifyDN request,
+        ///     or null if none.
+        /// </param>
+        public LdapModifyDnRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
+            : base(
+                ModifyRdnRequest,
+                new RfcModifyDnRequest(new RfcLdapDn(dn), new RfcRelativeLdapDn(newRdn), new Asn1Boolean(deleteOldRdn),
+                    (object) newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
+        {
+        }
+
+        /// <summary>
         ///     Returns the dn of the entry to rename or move in the directory
         /// </summary>
         /// <returns>
@@ -109,39 +139,10 @@ namespace Novell.Directory.Ldap
                 {
                     return null;
                 }
+
                 var parentDn = (RfcLdapDn) req.ToArray()[3];
                 return parentDn.StringValue();
             }
-        }
-
-        /// <summary>
-        ///     Constructs a ModifyDN (rename) Request.
-        /// </summary>
-        /// <param name="dn">
-        ///     The current distinguished name of the entry.
-        /// </param>
-        /// <param name="newRdn">
-        ///     The new relative distinguished name for the entry.
-        /// </param>
-        /// <param name="newParentdn">
-        ///     The distinguished name of an existing entry which
-        ///     is to be the new parent of the entry.
-        /// </param>
-        /// <param name="deleteOldRdn">
-        ///     If true, the old name is not retained as an
-        ///     attribute value. If false, the old name is
-        ///     retained as an attribute value.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the modifyDN request,
-        ///     or null if none.
-        /// </param>
-        public LdapModifyDnRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
-            : base(
-                ModifyRdnRequest,
-                new RfcModifyDnRequest(new RfcLdapDn(dn), new RfcRelativeLdapDn(newRdn), new Asn1Boolean(deleteOldRdn),
-                    (object) newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
-        {
         }
 
         /// <summary>

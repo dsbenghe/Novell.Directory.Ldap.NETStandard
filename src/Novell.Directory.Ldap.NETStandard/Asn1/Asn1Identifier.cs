@@ -72,68 +72,6 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1Identifier : object
     {
         /// <summary>
-        ///     Returns the CLASS of this Asn1Identifier as an int value.
-        /// </summary>
-        /// <seealso cref="Universal">
-        /// </seealso>
-        /// <seealso cref="Application">
-        /// </seealso>
-        /// <seealso cref="Context">
-        /// </seealso>
-        /// <seealso cref="Private">
-        /// </seealso>
-        public int Asn1Class => _tagClass;
-
-        /// <summary>
-        ///     Return a boolean indicating if the constructed bit is set.
-        /// </summary>
-        /// <returns>
-        ///     true if constructed and false if primitive.
-        /// </returns>
-        public bool Constructed => _constructed;
-
-        /// <summary> Returns the TAG of this Asn1Identifier.</summary>
-        public int Tag => _tag;
-
-        /// <summary> Returns the encoded length of this Asn1Identifier.</summary>
-        public int EncodedLength => _encodedLength;
-
-        /// <summary>
-        ///     Returns a boolean value indicating whether or not this Asn1Identifier
-        ///     has a TAG CLASS of UNIVERSAL.
-        /// </summary>
-        /// <seealso cref="Universal">
-        /// </seealso>
-        [CLSCompliant(false)]
-        public bool IsUniversal => _tagClass == Universal;
-
-        /// <summary>
-        ///     Returns a boolean value indicating whether or not this Asn1Identifier
-        ///     has a TAG CLASS of APPLICATION.
-        /// </summary>
-        /// <seealso cref="Application">
-        /// </seealso>
-        [CLSCompliant(false)]
-        public bool IsApplication => _tagClass == Application;
-
-        /// <summary>
-        ///     Returns a boolean value indicating whether or not this Asn1Identifier
-        ///     has a TAG CLASS of CONTEXT-SPECIFIC.
-        /// </summary>
-        /// <seealso cref="Context">
-        /// </seealso>
-        [CLSCompliant(false)]
-        public bool IsContext => _tagClass == Context;
-
-        /// <summary>
-        ///     Returns a boolean value indicating whether or not this Asn1Identifier
-        ///     has a TAG CLASS of PRIVATE.
-        /// </summary>
-        /// <seealso cref="Private"></seealso>
-        [CLSCompliant(false)]
-        public bool IsPrivate => _tagClass == Private;
-
-        /// <summary>
         ///     IsUniversal tag class.
         ///     UNIVERSAL = 0
         /// </summary>
@@ -161,11 +99,6 @@ namespace Novell.Directory.Ldap.Asn1
         /* IsPrivate variables
         */
 
-        private int _tagClass;
-        private bool _constructed;
-        private int _tag;
-        private int _encodedLength;
-
         /* Constructors for Asn1Identifier
         */
 
@@ -183,9 +116,9 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Identifier(int tagClass, bool constructed, int tag)
         {
-            _tagClass = tagClass;
-            _constructed = constructed;
-            _tag = tag;
+            Asn1Class = tagClass;
+            Constructed = constructed;
+            Tag = tag;
         }
 
         /// <summary>
@@ -198,20 +131,87 @@ namespace Novell.Directory.Ldap.Asn1
         public Asn1Identifier(Stream inRenamed)
         {
             var r = inRenamed.ReadByte();
-            _encodedLength++;
+            EncodedLength++;
             if (r < 0)
+            {
                 throw new EndOfStreamException("BERDecoder: decode: EOF in Identifier");
-            _tagClass = r >> 6;
-            _constructed = (r & 0x20) != 0;
-            _tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (_tag == 0x1F)
+            }
+
+            Asn1Class = r >> 6;
+            Constructed = (r & 0x20) != 0;
+            Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
+            if (Tag == 0x1F)
                 // if true, its a multiple octet identifier.
-                _tag = DecodeTagNumber(inRenamed);
+            {
+                Tag = DecodeTagNumber(inRenamed);
+            }
         }
 
         public Asn1Identifier()
         {
         }
+
+        /// <summary>
+        ///     Returns the CLASS of this Asn1Identifier as an int value.
+        /// </summary>
+        /// <seealso cref="Universal">
+        /// </seealso>
+        /// <seealso cref="Application">
+        /// </seealso>
+        /// <seealso cref="Context">
+        /// </seealso>
+        /// <seealso cref="Private">
+        /// </seealso>
+        public int Asn1Class { get; private set; }
+
+        /// <summary>
+        ///     Return a boolean indicating if the constructed bit is set.
+        /// </summary>
+        /// <returns>
+        ///     true if constructed and false if primitive.
+        /// </returns>
+        public bool Constructed { get; private set; }
+
+        /// <summary> Returns the TAG of this Asn1Identifier.</summary>
+        public int Tag { get; private set; }
+
+        /// <summary> Returns the encoded length of this Asn1Identifier.</summary>
+        public int EncodedLength { get; private set; }
+
+        /// <summary>
+        ///     Returns a boolean value indicating whether or not this Asn1Identifier
+        ///     has a TAG CLASS of UNIVERSAL.
+        /// </summary>
+        /// <seealso cref="Universal">
+        /// </seealso>
+        [CLSCompliant(false)]
+        public bool IsUniversal => Asn1Class == Universal;
+
+        /// <summary>
+        ///     Returns a boolean value indicating whether or not this Asn1Identifier
+        ///     has a TAG CLASS of APPLICATION.
+        /// </summary>
+        /// <seealso cref="Application">
+        /// </seealso>
+        [CLSCompliant(false)]
+        public bool IsApplication => Asn1Class == Application;
+
+        /// <summary>
+        ///     Returns a boolean value indicating whether or not this Asn1Identifier
+        ///     has a TAG CLASS of CONTEXT-SPECIFIC.
+        /// </summary>
+        /// <seealso cref="Context">
+        /// </seealso>
+        [CLSCompliant(false)]
+        public bool IsContext => Asn1Class == Context;
+
+        /// <summary>
+        ///     Returns a boolean value indicating whether or not this Asn1Identifier
+        ///     has a TAG CLASS of PRIVATE.
+        /// </summary>
+        /// <seealso cref="Private"></seealso>
+        [CLSCompliant(false)]
+        public bool IsPrivate => Asn1Class == Private;
 
         /// <summary>
         ///     Decode an Asn1Identifier directly from an InputStream and
@@ -222,17 +222,22 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public void Reset(Stream inRenamed)
         {
-            _encodedLength = 0;
+            EncodedLength = 0;
             var r = inRenamed.ReadByte();
-            _encodedLength++;
+            EncodedLength++;
             if (r < 0)
+            {
                 throw new EndOfStreamException("BERDecoder: decode: EOF in Identifier");
-            _tagClass = r >> 6;
-            _constructed = (r & 0x20) != 0;
-            _tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (_tag == 0x1F)
+            }
+
+            Asn1Class = r >> 6;
+            Constructed = (r & 0x20) != 0;
+            Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
+            if (Tag == 0x1F)
                 // if true, its a multiple octet identifier.
-                _tag = DecodeTagNumber(inRenamed);
+            {
+                Tag = DecodeTagNumber(inRenamed);
+            }
         }
 
         /// <summary>
@@ -245,13 +250,19 @@ namespace Novell.Directory.Ldap.Asn1
             while (true)
             {
                 var r = inRenamed.ReadByte();
-                _encodedLength++;
+                EncodedLength++;
                 if (r < 0)
+                {
                     throw new EndOfStreamException("BERDecoder: decode: EOF in tag number");
+                }
+
                 n = (n << 7) + (r & 0x7F);
                 if ((r & 0x80) == 0)
+                {
                     break;
+                }
             }
+
             return n;
         }
 

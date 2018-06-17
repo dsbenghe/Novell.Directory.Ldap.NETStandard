@@ -60,6 +60,219 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapVirtualListControl : LdapControl
     {
+        /* The ASN.1 for the VLV Request has CHOICE field. These private
+        * variables represent differnt ids for these different options
+        */
+        private static readonly int Byoffset = 0;
+        private static readonly int Greaterthanorequal = 1;
+
+
+        /// <summary> The Request OID for a VLV Request</summary>
+        private static readonly string RequestOid = "2.16.840.1.113730.3.4.9";
+
+        /*
+        * The Response stOID for a VLV Response
+        */
+        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.10";
+        private int _mAfterCount;
+
+
+        /* Private instance variables go here.
+        * These variables are used to store copies of various fields
+        * that can be set in a VLV control. One could have managed
+        * without really defining these private variables by reverse
+        * engineering each field from the ASN.1 encoded control.
+        * However that would have complicated and slowed down the code.
+        */
+        private int _mBeforeCount;
+        private int _mContentCount = -1;
+        private string _mContext;
+        private string _mJumpTo;
+        private int _mStartIndex;
+
+        /*
+        * The encoded ASN.1 VLV Control is stored in this variable
+        */
+        private Asn1Sequence _mVlvRequest;
+
+        static LdapVirtualListControl()
+        {
+            /*
+            * This is where we register the control responses
+            */
+            {
+                /* Register the VLV Sort Control class which is returned by the server
+                * in response to a VLV Sort Request
+                */
+                try
+                {
+                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapVirtualListResponse"));
+                }
+                catch (Exception e)
+                {
+                    Logger.Log.LogWarning("Exception swallowed", e);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Constructs a virtual list control using the specified filter
+        ///     expression.
+        ///     The expression specifies the first entry to be used for the
+        ///     virtual search results. The other two paramers are the number of
+        ///     entries before and after a located index to be returned.
+        /// </summary>
+        /// <param name="jumpTo">
+        ///     A search expression that defines the first
+        ///     element to be returned in the virtual search results. The filter
+        ///     expression in the search operation itself may be, for example,
+        ///     "objectclass=person" and the jumpTo expression in the virtual
+        ///     list control may be "cn=m*", to retrieve a subset of entries
+        ///     starting at or centered around those with a common name beginning
+        ///     with the letter "M".
+        /// </param>
+        /// <param name="beforeCount">
+        ///     The number of entries before startIndex (the
+        ///     reference entry) to be returned.
+        /// </param>
+        /// <param name="afterCount">
+        ///     The number of entries after startIndex to be
+        ///     returned.
+        /// </param>
+        public LdapVirtualListControl(string jumpTo, int beforeCount, int afterCount)
+            : this(jumpTo, beforeCount, afterCount, null)
+        {
+        }
+
+
+        /// <summary>
+        ///     Constructs a virtual list control using the specified filter
+        ///     expression along with an optional server context.
+        ///     The expression specifies the first entry to be used for the
+        ///     virtual search results. The other two paramers are the number of
+        ///     entries before and after a located index to be returned.
+        /// </summary>
+        /// <param name="jumpTo">
+        ///     A search expression that defines the first
+        ///     element to be returned in the virtual search results. The filter
+        ///     expression in the search operation itself may be, for example,
+        ///     "objectclass=person" and the jumpTo expression in the virtual
+        ///     list control may be "cn=m*", to retrieve a subset of entries
+        ///     starting at or centered around those with a common name beginning
+        ///     with the letter "M".
+        /// </param>
+        /// <param name="beforeCount">
+        ///     The number of entries before startIndex (the
+        ///     reference entry) to be returned.
+        /// </param>
+        /// <param name="afterCount">
+        ///     The number of entries after startIndex to be
+        ///     returned.
+        /// </param>
+        /// <param name="context">
+        ///     Used by some implementations to process requests
+        ///     more efficiently. The context should be null on the first search,
+        ///     and thereafter it should be whatever was returned by the server in the
+        ///     virtual list response control.
+        /// </param>
+        public LdapVirtualListControl(string jumpTo, int beforeCount, int afterCount, string context)
+            : base(RequestOid, true, null)
+        {
+            /* Save off the fields in local variables
+                        */
+            _mBeforeCount = beforeCount;
+            _mAfterCount = afterCount;
+            _mJumpTo = jumpTo;
+            _mContext = context;
+
+            /* Call private method to build the ASN.1 encoded request packet.
+            */
+            BuildTypedVlvRequest();
+
+            /* Set the request data field in the in the parent LdapControl to
+            * the ASN.1 encoded value of this control.  This encoding will be
+            * appended to the search request when the control is sent.
+            */
+            SetValue(_mVlvRequest.GetEncoding(new LberEncoder()));
+        }
+
+        /// <summary>
+        ///     Use this constructor to fetch a subset when the size of the
+        ///     virtual list is known,
+        /// </summary>
+        /// <param name="beforeCount">
+        ///     The number of entries before startIndex (the
+        ///     reference entry) to be returned.
+        /// </param>
+        /// <param name="afterCount">
+        ///     The number of entries after startIndex to be
+        ///     returned.
+        /// </param>
+        /// <param name="startIndex">
+        ///     The index of the reference entry to be returned.
+        /// </param>
+        /// <param name="contentCount">
+        ///     The total number of entries assumed to be in the
+        ///     list. This is a number returned on a previous search, in the
+        ///     LdapVirtualListResponse. The server may use this number to adjust
+        ///     the returned subset offset.
+        /// </param>
+        public LdapVirtualListControl(int startIndex, int beforeCount, int afterCount, int contentCount)
+            : this(startIndex, beforeCount, afterCount, contentCount, null)
+        {
+        }
+
+
+        /// <summary>
+        ///     Use this constructor to fetch a subset when the size of the
+        ///     virtual list is known,
+        /// </summary>
+        /// <param name="beforeCount">
+        ///     The number of entries before startIndex (the
+        ///     reference entry) to be returned.
+        /// </param>
+        /// <param name="afterCount">
+        ///     The number of entries after startIndex to be
+        ///     returned.
+        /// </param>
+        /// <param name="startIndex">
+        ///     The index of the reference entry to be
+        ///     returned.
+        /// </param>
+        /// <param name="contentCount">
+        ///     The total number of entries assumed to be in the
+        ///     list. This is a number returned on a previous search, in the
+        ///     LdapVirtualListResponse. The server may use this number to adjust
+        ///     the returned subset offset.
+        /// </param>
+        /// <param name="context">
+        ///     Used by some implementations to process requests
+        ///     more efficiently. The context should be null on the first search,
+        ///     and thereafter it should be whatever was returned by the server in the
+        ///     virtual list response control.
+        /// </param>
+        public LdapVirtualListControl(int startIndex, int beforeCount, int afterCount, int contentCount, string context)
+            : base(RequestOid, true, null)
+        {
+            /* Save off the fields in local variables
+                        */
+            _mBeforeCount = beforeCount;
+            _mAfterCount = afterCount;
+            _mStartIndex = startIndex;
+            _mContentCount = contentCount;
+            _mContext = context;
+
+            /* Call private method to build the ASN.1 encoded request packet.
+            */
+            BuildIndexedVlvRequest();
+
+            /* Set the request data field in the in the parent LdapControl to
+            * the ASN.1 encoded value of this control.  This encoding will be
+            * appended to the search request when the control is sent.
+            */
+            SetValue(_mVlvRequest.GetEncoding(new LberEncoder()));
+        }
+
         /// <summary>
         ///     Returns the number of entries after the top/center one to return per
         ///     page of results.
@@ -147,122 +360,6 @@ namespace Novell.Directory.Ldap.Controls
             }
         }
 
-        /* The ASN.1 for the VLV Request has CHOICE field. These private
-        * variables represent differnt ids for these different options
-        */
-        private static readonly int Byoffset = 0;
-        private static readonly int Greaterthanorequal = 1;
-
-
-        /// <summary> The Request OID for a VLV Request</summary>
-        private static readonly string RequestOid = "2.16.840.1.113730.3.4.9";
-
-        /*
-        * The Response stOID for a VLV Response
-        */
-        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.10";
-
-        /*
-        * The encoded ASN.1 VLV Control is stored in this variable
-        */
-        private Asn1Sequence _mVlvRequest;
-
-
-        /* Private instance variables go here.
-        * These variables are used to store copies of various fields
-        * that can be set in a VLV control. One could have managed
-        * without really defining these private variables by reverse
-        * engineering each field from the ASN.1 encoded control.
-        * However that would have complicated and slowed down the code.
-        */
-        private int _mBeforeCount;
-        private int _mAfterCount;
-        private string _mJumpTo;
-        private string _mContext;
-        private int _mStartIndex;
-        private int _mContentCount = -1;
-
-        /// <summary>
-        ///     Constructs a virtual list control using the specified filter
-        ///     expression.
-        ///     The expression specifies the first entry to be used for the
-        ///     virtual search results. The other two paramers are the number of
-        ///     entries before and after a located index to be returned.
-        /// </summary>
-        /// <param name="jumpTo">
-        ///     A search expression that defines the first
-        ///     element to be returned in the virtual search results. The filter
-        ///     expression in the search operation itself may be, for example,
-        ///     "objectclass=person" and the jumpTo expression in the virtual
-        ///     list control may be "cn=m*", to retrieve a subset of entries
-        ///     starting at or centered around those with a common name beginning
-        ///     with the letter "M".
-        /// </param>
-        /// <param name="beforeCount">
-        ///     The number of entries before startIndex (the
-        ///     reference entry) to be returned.
-        /// </param>
-        /// <param name="afterCount">
-        ///     The number of entries after startIndex to be
-        ///     returned.
-        /// </param>
-        public LdapVirtualListControl(string jumpTo, int beforeCount, int afterCount)
-            : this(jumpTo, beforeCount, afterCount, null)
-        {
-        }
-
-
-        /// <summary>
-        ///     Constructs a virtual list control using the specified filter
-        ///     expression along with an optional server context.
-        ///     The expression specifies the first entry to be used for the
-        ///     virtual search results. The other two paramers are the number of
-        ///     entries before and after a located index to be returned.
-        /// </summary>
-        /// <param name="jumpTo">
-        ///     A search expression that defines the first
-        ///     element to be returned in the virtual search results. The filter
-        ///     expression in the search operation itself may be, for example,
-        ///     "objectclass=person" and the jumpTo expression in the virtual
-        ///     list control may be "cn=m*", to retrieve a subset of entries
-        ///     starting at or centered around those with a common name beginning
-        ///     with the letter "M".
-        /// </param>
-        /// <param name="beforeCount">
-        ///     The number of entries before startIndex (the
-        ///     reference entry) to be returned.
-        /// </param>
-        /// <param name="afterCount">
-        ///     The number of entries after startIndex to be
-        ///     returned.
-        /// </param>
-        /// <param name="context">
-        ///     Used by some implementations to process requests
-        ///     more efficiently. The context should be null on the first search,
-        ///     and thereafter it should be whatever was returned by the server in the
-        ///     virtual list response control.
-        /// </param>
-        public LdapVirtualListControl(string jumpTo, int beforeCount, int afterCount, string context)
-            : base(RequestOid, true, null)
-        {
-            /* Save off the fields in local variables
-                        */
-            _mBeforeCount = beforeCount;
-            _mAfterCount = afterCount;
-            _mJumpTo = jumpTo;
-            _mContext = context;
-
-            /* Call private method to build the ASN.1 encoded request packet.
-            */
-            BuildTypedVlvRequest();
-
-            /* Set the request data field in the in the parent LdapControl to
-            * the ASN.1 encoded value of this control.  This encoding will be
-            * appended to the search request when the control is sent.
-            */
-            SetValue(_mVlvRequest.GetEncoding(new LberEncoder()));
-        }
-
         /// <summary>
         ///     Private method used to construct the ber encoded control
         ///     Used only when using the typed mode of VLV Control.
@@ -288,84 +385,9 @@ namespace Novell.Directory.Ldap.Controls
             /* Add the optional context string if one is available.
             */
             if ((object) _mContext != null)
+            {
                 _mVlvRequest.Add(new Asn1OctetString(_mContext));
-        }
-
-        /// <summary>
-        ///     Use this constructor to fetch a subset when the size of the
-        ///     virtual list is known,
-        /// </summary>
-        /// <param name="beforeCount">
-        ///     The number of entries before startIndex (the
-        ///     reference entry) to be returned.
-        /// </param>
-        /// <param name="afterCount">
-        ///     The number of entries after startIndex to be
-        ///     returned.
-        /// </param>
-        /// <param name="startIndex">
-        ///     The index of the reference entry to be returned.
-        /// </param>
-        /// <param name="contentCount">
-        ///     The total number of entries assumed to be in the
-        ///     list. This is a number returned on a previous search, in the
-        ///     LdapVirtualListResponse. The server may use this number to adjust
-        ///     the returned subset offset.
-        /// </param>
-        public LdapVirtualListControl(int startIndex, int beforeCount, int afterCount, int contentCount)
-            : this(startIndex, beforeCount, afterCount, contentCount, null)
-        {
-        }
-
-
-        /// <summary>
-        ///     Use this constructor to fetch a subset when the size of the
-        ///     virtual list is known,
-        /// </summary>
-        /// <param name="beforeCount">
-        ///     The number of entries before startIndex (the
-        ///     reference entry) to be returned.
-        /// </param>
-        /// <param name="afterCount">
-        ///     The number of entries after startIndex to be
-        ///     returned.
-        /// </param>
-        /// <param name="startIndex">
-        ///     The index of the reference entry to be
-        ///     returned.
-        /// </param>
-        /// <param name="contentCount">
-        ///     The total number of entries assumed to be in the
-        ///     list. This is a number returned on a previous search, in the
-        ///     LdapVirtualListResponse. The server may use this number to adjust
-        ///     the returned subset offset.
-        /// </param>
-        /// <param name="context">
-        ///     Used by some implementations to process requests
-        ///     more efficiently. The context should be null on the first search,
-        ///     and thereafter it should be whatever was returned by the server in the
-        ///     virtual list response control.
-        /// </param>
-        public LdapVirtualListControl(int startIndex, int beforeCount, int afterCount, int contentCount, string context)
-            : base(RequestOid, true, null)
-        {
-            /* Save off the fields in local variables
-                        */
-            _mBeforeCount = beforeCount;
-            _mAfterCount = afterCount;
-            _mStartIndex = startIndex;
-            _mContentCount = contentCount;
-            _mContext = context;
-
-            /* Call private method to build the ASN.1 encoded request packet.
-            */
-            BuildIndexedVlvRequest();
-
-            /* Set the request data field in the in the parent LdapControl to
-            * the ASN.1 encoded value of this control.  This encoding will be
-            * appended to the search request when the control is sent.
-            */
-            SetValue(_mVlvRequest.GetEncoding(new LberEncoder()));
+            }
         }
 
         /// <summary>
@@ -393,12 +415,15 @@ namespace Novell.Directory.Ldap.Controls
 
             /* Add the ASN.1 sequence to the encoded data
             */
-            _mVlvRequest.Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, true, Byoffset), byoffset, false));
+            _mVlvRequest.Add(
+                new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, true, Byoffset), byoffset, false));
 
             /* Add the optional context string if one is available.
             */
             if ((object) _mContext != null)
+            {
                 _mVlvRequest.Add(new Asn1OctetString(_mContext));
+            }
         }
 
 
@@ -478,26 +503,6 @@ namespace Novell.Directory.Ldap.Controls
             * appended to the search request when the control is sent.
             */
             SetValue(_mVlvRequest.GetEncoding(new LberEncoder()));
-        }
-
-        static LdapVirtualListControl()
-        {
-            /*
-            * This is where we register the control responses
-            */
-            {
-                /* Register the VLV Sort Control class which is returned by the server
-                * in response to a VLV Sort Request
-                */
-                try
-                {
-                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapVirtualListResponse"));
-                }
-                catch (Exception e)
-                {
-                    Logger.Log.LogWarning("Exception swallowed", e);
-                }
-            }
         }
     }
 }

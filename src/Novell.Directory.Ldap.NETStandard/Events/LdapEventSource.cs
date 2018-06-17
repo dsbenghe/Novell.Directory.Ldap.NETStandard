@@ -41,17 +41,29 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventSource' />
     public abstract class LdapEventSource
     {
-        protected enum ListenersCount
-        {
-            Zero,
-            One,
-            MoreThanOne
-        }
+        /// <summary>
+        ///     DirectoryEventHandler is the delegate definition for DirectoryEvent.
+        ///     The client (listener) has to register using this delegate in order to
+        ///     get events that may not be recognized by the actual event source.
+        /// </summary>
+        public delegate void DirectoryEventHandler(object source, DirectoryEventArgs objDirectoryEventArgs);
+
+        /// <summary>
+        ///     DirectoryEventHandler is the delegate definition for DirectoryExceptionEvent.
+        /// </summary>
+        public delegate void DirectoryExceptionEventHandler(object source,
+            DirectoryExceptionEventArgs objDirectoryExceptionEventArgs);
 
         protected internal const int EventTypeUnknown = -1;
         protected const int DefaultSleepTime = 1000;
 
+        private DirectoryEventHandler _directoryEvent;
+
+        private DirectoryExceptionEventHandler _directoryExceptionEvent;
+
         private int _sleepInterval = DefaultSleepTime;
+
+        protected EventsGenerator MObjEventsGenerator;
 
         /// <summary>
         ///     SleepInterval controls the duration after which event polling is repeated.
@@ -62,7 +74,10 @@ namespace Novell.Directory.Ldap.Events
             set
             {
                 if (value <= 0)
+                {
                     throw new ArgumentOutOfRangeException("SleepInterval", "cannot take the negative or zero values ");
+                }
+
                 _sleepInterval = value;
             }
         }
@@ -78,17 +93,25 @@ namespace Novell.Directory.Ldap.Events
 
             // Get Listeners registered for generic events
             if (null != _directoryEvent)
+            {
                 nListeners += _directoryEvent.GetInvocationList().Length;
+            }
 
             // Get Listeners registered for exception events
             if (null != _directoryExceptionEvent)
+            {
                 nListeners += _directoryExceptionEvent.GetInvocationList().Length;
+            }
 
             if (0 == nListeners)
+            {
                 return ListenersCount.Zero;
+            }
 
             if (1 == nListeners)
+            {
                 return ListenersCount.One;
+            }
 
             return ListenersCount.MoreThanOne;
         }
@@ -134,8 +157,6 @@ namespace Novell.Directory.Ldap.Events
         protected abstract void StartSearchAndPolling();
         protected abstract void StopSearchAndPolling();
 
-        private DirectoryEventHandler _directoryEvent;
-
         /// <summary>
         ///     DirectoryEvent represents a generic Directory event.
         ///     If any event is not recognized by the actual
@@ -157,15 +178,6 @@ namespace Novell.Directory.Ldap.Events
         }
 
         /// <summary>
-        ///     DirectoryEventHandler is the delegate definition for DirectoryEvent.
-        ///     The client (listener) has to register using this delegate in order to
-        ///     get events that may not be recognized by the actual event source.
-        /// </summary>
-        public delegate void DirectoryEventHandler(object source, DirectoryEventArgs objDirectoryEventArgs);
-
-        private DirectoryExceptionEventHandler _directoryExceptionEvent;
-
-        /// <summary>
         ///     DirectoryEvent represents a generic Directory exception event.
         /// </summary>
         public event DirectoryExceptionEventHandler DirectoryExceptionEvent
@@ -181,14 +193,6 @@ namespace Novell.Directory.Ldap.Events
                 ListenerRemoved();
             }
         }
-
-        /// <summary>
-        ///     DirectoryEventHandler is the delegate definition for DirectoryExceptionEvent.
-        /// </summary>
-        public delegate void DirectoryExceptionEventHandler(object source,
-            DirectoryExceptionEventArgs objDirectoryExceptionEventArgs);
-
-        protected EventsGenerator MObjEventsGenerator;
 
         protected void StartEventPolling(
             LdapMessageQueue queue,
@@ -267,6 +271,13 @@ namespace Novell.Directory.Ldap.Events
             }
         }
 
+        protected enum ListenersCount
+        {
+            Zero,
+            One,
+            MoreThanOne
+        }
+
 
         /// <summary>
         ///     This is a nested class that is supposed to monitor
@@ -274,16 +285,11 @@ namespace Novell.Directory.Ldap.Events
         /// </summary>
         protected class EventsGenerator
         {
+            private readonly int _messageid;
             private readonly LdapEventSource _mObjLdapEventSource;
             private readonly LdapMessageQueue _searchqueue;
-            private readonly int _messageid;
-            private LdapConnection _ldapconnection;
             private volatile bool _isrunning = true;
-
-            /// <summary>
-            ///     SleepTime controls the duration after which event polling is repeated.
-            /// </summary>
-            public int SleepTime { get; set; }
+            private LdapConnection _ldapconnection;
 
 
             public EventsGenerator(LdapEventSource objEventSource,
@@ -297,6 +303,11 @@ namespace Novell.Directory.Ldap.Events
                 _messageid = msgid;
                 SleepTime = DefaultSleepTime;
             } // end of Constructor
+
+            /// <summary>
+            ///     SleepTime controls the duration after which event polling is repeated.
+            /// </summary>
+            public int SleepTime { get; set; }
 
             protected void Run()
             {

@@ -53,24 +53,6 @@ namespace Novell.Directory.Ldap
     public class LdapMatchingRuleSchema : LdapSchemaElement
     {
         /// <summary>
-        ///     Returns the OIDs of the attributes to which this rule applies.
-        /// </summary>
-        /// <returns>
-        ///     The OIDs of the attributes to which this matching rule applies.
-        /// </returns>
-        public string[] Attributes => _attributes;
-
-        /// <summary>
-        ///     Returns the OID of the syntax that this matching rule is valid for.
-        /// </summary>
-        /// <returns>
-        ///     The OID of the syntax that this matching rule is valid for.
-        /// </returns>
-        public string SyntaxString { get; }
-
-        private readonly string[] _attributes;
-
-        /// <summary>
         ///     Constructs a matching rule definition for adding to or deleting from
         ///     a directory.
         /// </summary>
@@ -96,7 +78,8 @@ namespace Novell.Directory.Ldap
         ///     The unique object identifer of the syntax of the
         ///     attribute, in dotted numerical format.
         /// </param>
-        public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes, bool obsolete,
+        public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes,
+            bool obsolete,
             string syntaxString) : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
             this.names = new string[names.Length];
@@ -104,8 +87,8 @@ namespace Novell.Directory.Ldap
             Oid = oid;
             Description = description;
             Obsolete = obsolete;
-            _attributes = new string[attributes.Length];
-            attributes.CopyTo(_attributes, 0);
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
             SyntaxString = syntaxString;
             Value = FormatString();
         }
@@ -139,8 +122,9 @@ namespace Novell.Directory.Ldap
                 if ((object) rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
-                    _attributes = matchUseParser.Applies;
+                    Attributes = matchUseParser.Applies;
                 }
+
                 Value = FormatString();
             }
             catch (IOException ex)
@@ -148,6 +132,22 @@ namespace Novell.Directory.Ldap
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
+
+        /// <summary>
+        ///     Returns the OIDs of the attributes to which this rule applies.
+        /// </summary>
+        /// <returns>
+        ///     The OIDs of the attributes to which this matching rule applies.
+        /// </returns>
+        public string[] Attributes { get; }
+
+        /// <summary>
+        ///     Returns the OID of the syntax that this matching rule is valid for.
+        /// </summary>
+        /// <returns>
+        ///     The OID of the syntax that this matching rule is valid for.
+        /// </returns>
+        public string SyntaxString { get; }
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -166,6 +166,7 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(token);
             }
+
             strArray = Names;
             if (strArray != null)
             {
@@ -182,23 +183,28 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
+
             if ((object) (token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((object) (token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

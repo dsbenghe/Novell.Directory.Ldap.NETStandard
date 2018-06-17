@@ -48,29 +48,6 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1Tagged : Asn1Object
     {
-        /// <summary> Sets the Asn1Object tagged value</summary>
-        [CLSCompliant(false)]
-        public Asn1Object TaggedValue
-        {
-            set
-            {
-                _content = value;
-                if (!_explicitRenamed && value != null)
-                {
-                    // replace object's id with new tag.
-                    value.SetIdentifier(GetIdentifier());
-                }
-            }
-            get => _content;
-        }
-
-        /// <summary>
-        ///     Returns a boolean value indicating if this object uses
-        ///     EXPLICIT tagging.
-        /// </summary>
-        public bool Explicit => _explicitRenamed;
-
-        private readonly bool _explicitRenamed;
         private Asn1Object _content;
 
         /* Constructors for Asn1Tagged
@@ -90,7 +67,7 @@ namespace Novell.Directory.Ldap.Asn1
             : base(identifier)
         {
             _content = objectRenamed;
-            _explicitRenamed = explicitRenamed;
+            Explicit = explicitRenamed;
 
             if (!explicitRenamed && _content != null)
             {
@@ -121,6 +98,28 @@ namespace Novell.Directory.Ldap.Asn1
             _content = new Asn1OctetString(dec, inRenamed, len);
         }
 
+        /// <summary> Sets the Asn1Object tagged value</summary>
+        [CLSCompliant(false)]
+        public Asn1Object TaggedValue
+        {
+            set
+            {
+                _content = value;
+                if (!Explicit && value != null)
+                {
+                    // replace object's id with new tag.
+                    value.SetIdentifier(GetIdentifier());
+                }
+            }
+            get => _content;
+        }
+
+        /// <summary>
+        ///     Returns a boolean value indicating if this object uses
+        ///     EXPLICIT tagging.
+        /// </summary>
+        public bool Explicit { get; }
+
         /* Asn1Object implementation
         */
 
@@ -146,10 +145,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            if (_explicitRenamed)
+            if (Explicit)
             {
                 return base.ToString() + _content;
             }
+
             // implicit tagging
             return _content.ToString();
         }

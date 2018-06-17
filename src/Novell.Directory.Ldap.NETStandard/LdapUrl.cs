@@ -77,117 +77,16 @@ namespace Novell.Directory.Ldap
     public class LdapUrl
 
     {
-        private void InitBlock()
-
-        {
-            _scope = DefaultScope;
-        }
-
-        /// <summary>
-        ///     Returns an array of attribute names specified in the URL.
-        /// </summary>
-        /// <returns>
-        ///     An array of attribute names in the URL.
-        /// </returns>
-        public string[] AttributeArray => _attrs;
-
-        /// <summary>
-        ///     Returns an enumerator for the attribute names specified in the URL.
-        /// </summary>
-        /// <returns>
-        ///     An enumeration of attribute names.
-        /// </returns>
-        public IEnumerator Attributes => new ArrayEnumeration(_attrs);
-
-        /// <summary>
-        ///     Returns any Ldap URL extensions specified, or null if none are
-        ///     specified. Each extension is a type=value expression. The =value part
-        ///     MAY be omitted. The expression MAY be prefixed with '!' if it is
-        ///     mandatory for evaluation of the URL.
-        /// </summary>
-        /// <returns>
-        ///     string array of extensions.
-        /// </returns>
-        public string[] Extensions => _extensions;
-
-        /// <summary>
-        ///     Returns the search filter or <code>null</code> if none was specified.
-        /// </summary>
-        /// <returns>
-        ///     The search filter.
-        /// </returns>
-        public string Filter => _filter;
-
-        /// <summary>
-        ///     Returns the name of the Ldap server in the URL.
-        /// </summary>
-        /// <returns>
-        ///     The host name specified in the URL.
-        /// </returns>
-        public string Host => _host;
-
-        /// <summary>
-        ///     Returns the port number of the Ldap server in the URL.
-        /// </summary>
-        /// <returns>
-        ///     The port number in the URL.
-        /// </returns>
-        public int Port
-
-        {
-            get
-
-            {
-                if (_port == 0)
-
-                {
-                    return LdapConnection.DefaultPort;
-                }
-
-                return _port;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the depth of search. It returns one of the following from
-        ///     LdapConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
-        /// </summary>
-        /// <returns>
-        ///     The search scope.
-        /// </returns>
-        public int Scope => _scope;
-
-        /// <summary>
-        ///     Returns true if the URL is of the type ldaps (Ldap over SSL, a predecessor
-        ///     to startTls)
-        /// </summary>
-        /// <returns>
-        ///     whether this is a secure Ldap url or not.
-        /// </returns>
-        public bool Secure => _secure;
-
         private static readonly int DefaultScope = LdapConnection.ScopeBase;
-
-
-        // Broken out parts of the URL
-
-        private bool _secure; // URL scheme ldap/ldaps
 
         private readonly bool _ipV6 = false; // TCP/IP V6
 
-        private string _host; // Host
+        private string _dn; // Base DN
 
         private int _port; // Port
 
-        private string _dn; // Base DN
 
-        private string[] _attrs; // Attributes
-
-        private string _filter; // Filter
-
-        private int _scope; // Scope
-
-        private string[] _extensions; // Extensions
+        // Broken out parts of the URL
 
 
         /// <summary>
@@ -231,7 +130,7 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            _host = host;
+            Host = host;
 
             _port = port;
 
@@ -283,23 +182,23 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            _host = host;
+            Host = host;
 
             _port = port;
 
             _dn = dn;
 
-            _attrs = new string[attrNames.Length];
+            AttributeArray = new string[attrNames.Length];
 
-            attrNames.CopyTo(_attrs, 0);
+            attrNames.CopyTo(AttributeArray, 0);
 
-            _scope = scope;
+            Scope = scope;
 
-            _filter = filter;
+            Filter = filter;
 
-            _extensions = new string[extensions.Length];
+            Extensions = new string[extensions.Length];
 
-            extensions.CopyTo(_extensions, 0);
+            extensions.CopyTo(Extensions, 0);
         }
 
 
@@ -351,23 +250,112 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
 
-            _host = host;
+            Host = host;
 
             _port = port;
 
             _dn = dn;
 
-            _attrs = attrNames;
+            AttributeArray = attrNames;
 
-            _scope = scope;
+            Scope = scope;
 
-            _filter = filter;
+            Filter = filter;
 
-            _extensions = new string[extensions.Length];
+            Extensions = new string[extensions.Length];
 
-            extensions.CopyTo(_extensions, 0);
+            extensions.CopyTo(Extensions, 0);
 
-            _secure = secure;
+            Secure = secure;
+        }
+
+        /// <summary>
+        ///     Returns an array of attribute names specified in the URL.
+        /// </summary>
+        /// <returns>
+        ///     An array of attribute names in the URL.
+        /// </returns>
+        public string[] AttributeArray { get; private set; }
+
+        /// <summary>
+        ///     Returns an enumerator for the attribute names specified in the URL.
+        /// </summary>
+        /// <returns>
+        ///     An enumeration of attribute names.
+        /// </returns>
+        public IEnumerator Attributes => new ArrayEnumeration(AttributeArray);
+
+        /// <summary>
+        ///     Returns any Ldap URL extensions specified, or null if none are
+        ///     specified. Each extension is a type=value expression. The =value part
+        ///     MAY be omitted. The expression MAY be prefixed with '!' if it is
+        ///     mandatory for evaluation of the URL.
+        /// </summary>
+        /// <returns>
+        ///     string array of extensions.
+        /// </returns>
+        public string[] Extensions { get; private set; }
+
+        /// <summary>
+        ///     Returns the search filter or <code>null</code> if none was specified.
+        /// </summary>
+        /// <returns>
+        ///     The search filter.
+        /// </returns>
+        public string Filter { get; private set; }
+
+        /// <summary>
+        ///     Returns the name of the Ldap server in the URL.
+        /// </summary>
+        /// <returns>
+        ///     The host name specified in the URL.
+        /// </returns>
+        public string Host { get; private set; }
+
+        /// <summary>
+        ///     Returns the port number of the Ldap server in the URL.
+        /// </summary>
+        /// <returns>
+        ///     The port number in the URL.
+        /// </returns>
+        public int Port
+
+        {
+            get
+
+            {
+                if (_port == 0)
+
+                {
+                    return LdapConnection.DefaultPort;
+                }
+
+                return _port;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the depth of search. It returns one of the following from
+        ///     LdapConnection: SCOPE_BASE, SCOPE_ONE, or SCOPE_SUB.
+        /// </summary>
+        /// <returns>
+        ///     The search scope.
+        /// </returns>
+        public int Scope { get; private set; }
+
+        /// <summary>
+        ///     Returns true if the URL is of the type ldaps (Ldap over SSL, a predecessor
+        ///     to startTls)
+        /// </summary>
+        /// <returns>
+        ///     whether this is a secure Ldap url or not.
+        /// </returns>
+        public bool Secure { get; private set; }
+
+        private void InitBlock()
+
+        {
+            Scope = DefaultScope;
         }
 
 
@@ -445,7 +433,9 @@ namespace Novell.Directory.Ldap
 
                 if (fieldStart < 0)
 
+                {
                     fieldStart = dataLen;
+                }
 
                 // Copy to string buffer from end of last field to start of next
 
@@ -455,7 +445,9 @@ namespace Novell.Directory.Ldap
 
                 if (fieldStart >= dataLen)
 
+                {
                     break;
+                }
 
                 fieldEnd = fieldStart + 2;
 
@@ -476,7 +468,9 @@ namespace Novell.Directory.Ldap
 
                 if (searchStart == dataLen)
 
+                {
                     break;
+                }
 
                 fieldStart = urlEncoded.IndexOf("%", searchStart);
             }
@@ -522,18 +516,24 @@ namespace Novell.Directory.Ldap
 
                     if (temp.Length == 1)
 
+                    {
                         buffer.Append("%0" + temp);
+                    }
 
                     //if(temp.length()==2) this can only be two or one digit long.
 
                     else
 
+                    {
                         buffer.Append("%" + Convert.ToString(currChar, 16));
+                    }
                 }
 
                 else
 
+                {
                     buffer.Append(currChar);
+                }
             }
 
             return buffer.ToString();
@@ -574,7 +574,7 @@ namespace Novell.Directory.Ldap
 
             // Scheme
 
-            if (_secure)
+            if (Secure)
 
             {
                 url.Append("ldaps://");
@@ -591,13 +591,13 @@ namespace Novell.Directory.Ldap
             if (_ipV6)
 
             {
-                url.Append("[" + _host + "]");
+                url.Append("[" + Host + "]");
             }
 
             else
 
             {
-                url.Append(_host);
+                url.Append(Host);
             }
 
 
@@ -610,8 +610,8 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if ((object) _dn == null && _attrs == null && _scope == DefaultScope && (object) _filter == null &&
-                _extensions == null)
+            if ((object) _dn == null && AttributeArray == null && Scope == DefaultScope && (object) Filter == null &&
+                Extensions == null)
 
             {
                 return url.ToString();
@@ -628,7 +628,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if (_attrs == null && _scope == DefaultScope && (object) _filter == null && _extensions == null)
+            if (AttributeArray == null && Scope == DefaultScope && (object) Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -639,17 +639,17 @@ namespace Novell.Directory.Ldap
 
             url.Append("?");
 
-            if (_attrs != null)
+            if (AttributeArray != null)
 
             {
                 //should we check also for attrs != "*"
 
-                for (var i = 0; i < _attrs.Length; i++)
+                for (var i = 0; i < AttributeArray.Length; i++)
 
                 {
-                    url.Append(_attrs[i]);
+                    url.Append(AttributeArray[i]);
 
-                    if (i < _attrs.Length - 1)
+                    if (i < AttributeArray.Length - 1)
 
                     {
                         url.Append(",");
@@ -658,7 +658,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if (_scope == DefaultScope && (object) _filter == null && _extensions == null)
+            if (Scope == DefaultScope && (object) Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -669,10 +669,10 @@ namespace Novell.Directory.Ldap
 
             url.Append("?");
 
-            if (_scope != DefaultScope)
+            if (Scope != DefaultScope)
 
             {
-                if (_scope == LdapConnection.ScopeOne)
+                if (Scope == LdapConnection.ScopeOne)
 
                 {
                     url.Append("one");
@@ -686,7 +686,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if ((object) _filter == null && _extensions == null)
+            if ((object) Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -695,7 +695,7 @@ namespace Novell.Directory.Ldap
 
             // filter
 
-            if ((object) _filter == null)
+            if ((object) Filter == null)
 
             {
                 url.Append("?");
@@ -708,7 +708,7 @@ namespace Novell.Directory.Ldap
             }
 
 
-            if (_extensions == null)
+            if (Extensions == null)
 
             {
                 return url.ToString();
@@ -719,15 +719,15 @@ namespace Novell.Directory.Ldap
 
             url.Append("?");
 
-            if (_extensions != null)
+            if (Extensions != null)
 
             {
-                for (var i = 0; i < _extensions.Length; i++)
+                for (var i = 0; i < Extensions.Length; i++)
 
                 {
-                    url.Append(_extensions[i]);
+                    url.Append(Extensions[i]);
 
-                    if (i < _extensions.Length - 1)
+                    if (i < Extensions.Length - 1)
 
                     {
                         url.Append(",");
@@ -802,11 +802,15 @@ namespace Novell.Directory.Ldap
                 {
                     if (itemEnd < 0)
 
+                    {
                         itemEnd = listEnd;
+                    }
 
                     if (itemEnd > listEnd)
 
+                    {
                         itemEnd = listEnd;
+                    }
 
                     list[itemCount] = listStr.Substring(itemStart, itemEnd - itemStart);
 
@@ -836,7 +840,9 @@ namespace Novell.Directory.Ldap
 
             if ((object) url == null)
 
+            {
                 throw new UriFormatException("LdapUrl: URL cannot be null");
+            }
 
 
             // Check if URL is enclosed by < & >
@@ -846,7 +852,9 @@ namespace Novell.Directory.Ldap
             {
                 if (url[scanEnd - 1] != '>')
 
+                {
                     throw new UriFormatException("LdapUrl: URL bad enclosure");
+                }
 
                 scanStart += 1;
 
@@ -873,7 +881,7 @@ namespace Novell.Directory.Ldap
             else if (url.Substring(scanStart, scanStart + 8 - scanStart).ToUpper().Equals("ldaps://".ToUpper()))
 
             {
-                _secure = true;
+                Secure = true;
 
                 scanStart += 8;
 
@@ -962,7 +970,7 @@ namespace Novell.Directory.Ldap
 
                 // Get host w/o the [ & ]
 
-                _host = url.Substring(scanStart + 1, hostEnd - (scanStart + 1));
+                Host = url.Substring(scanStart + 1, hostEnd - (scanStart + 1));
 
                 portStart = url.IndexOf(":", hostEnd);
 
@@ -987,7 +995,7 @@ namespace Novell.Directory.Ldap
                 {
                     // no port is specified, we keep the default
 
-                    _host = url.Substring(scanStart, hostPortEnd - scanStart);
+                    Host = url.Substring(scanStart, hostPortEnd - scanStart);
                 }
 
                 else
@@ -995,7 +1003,7 @@ namespace Novell.Directory.Ldap
                 {
                     // port specified in URL
 
-                    _host = url.Substring(scanStart, portStart - scanStart);
+                    Host = url.Substring(scanStart, portStart - scanStart);
 
                     _port = int.Parse(url.Substring(portStart + 1, hostPortEnd - (portStart + 1)));
                 }
@@ -1006,7 +1014,9 @@ namespace Novell.Directory.Ldap
 
             if (scanStart >= scanEnd || dnStart < 0)
 
+            {
                 return;
+            }
 
 
             // Parse out the base dn
@@ -1035,7 +1045,9 @@ namespace Novell.Directory.Ldap
 
             if (scanStart >= scanEnd || attrsStart < 0 || novell)
 
+            {
                 return;
+            }
 
 
             // Parse out the attributes
@@ -1044,16 +1056,20 @@ namespace Novell.Directory.Ldap
 
             if (scopeStart < 0)
 
+            {
                 scopeStart = scanEnd - 1;
+            }
 
-            _attrs = ParseList(url, ',', attrsStart + 1, scopeStart);
+            AttributeArray = ParseList(url, ',', attrsStart + 1, scopeStart);
 
 
             scanStart = scopeStart + 1;
 
             if (scanStart >= scanEnd)
 
+            {
                 return;
+            }
 
 
             // Parse out the scope
@@ -1077,25 +1093,25 @@ namespace Novell.Directory.Ldap
             if (scopeStr.ToUpper().Equals("".ToUpper()))
 
             {
-                _scope = LdapConnection.ScopeBase;
+                Scope = LdapConnection.ScopeBase;
             }
 
             else if (scopeStr.ToUpper().Equals("base".ToUpper()))
 
             {
-                _scope = LdapConnection.ScopeBase;
+                Scope = LdapConnection.ScopeBase;
             }
 
             else if (scopeStr.ToUpper().Equals("one".ToUpper()))
 
             {
-                _scope = LdapConnection.ScopeOne;
+                Scope = LdapConnection.ScopeOne;
             }
 
             else if (scopeStr.ToUpper().Equals("sub".ToUpper()))
 
             {
-                _scope = LdapConnection.ScopeSub;
+                Scope = LdapConnection.ScopeSub;
             }
 
             else
@@ -1109,7 +1125,9 @@ namespace Novell.Directory.Ldap
 
             if (scanStart >= scanEnd || filterStart < 0)
 
+            {
                 return;
+            }
 
 
             // Parse out the filter
@@ -1137,7 +1155,7 @@ namespace Novell.Directory.Ldap
             if (!filterStr.Equals(""))
 
             {
-                _filter = filterStr; // Only modify if not the default filter
+                Filter = filterStr; // Only modify if not the default filter
             }
 
 
@@ -1145,7 +1163,9 @@ namespace Novell.Directory.Ldap
 
             if (scanStart >= scanEnd || extStart < 0)
 
+            {
                 return;
+            }
 
 
             // Parse out the extensions
@@ -1154,9 +1174,11 @@ namespace Novell.Directory.Ldap
 
             if (end > 0)
 
+            {
                 throw new UriFormatException("LdapUrl: URL has too many ? fields");
+            }
 
-            _extensions = ParseList(url, ',', scanStart, scanEnd);
+            Extensions = ParseList(url, ',', scanStart, scanEnd);
         }
     }
 }

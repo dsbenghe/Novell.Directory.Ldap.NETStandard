@@ -46,6 +46,24 @@ namespace Novell.Directory.Ldap
     public class LdapAuthProvider
     {
         /// <summary>
+        ///     Constructs information that is used by the client for authentication
+        ///     when following referrals automatically.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name to use when authenticating to
+        ///     a server.
+        /// </param>
+        /// <param name="password">
+        ///     The password to use when authenticating to a server.
+        /// </param>
+        [CLSCompliant(false)]
+        public LdapAuthProvider(string dn, sbyte[] password)
+        {
+            Dn = dn;
+            Password = password;
+        }
+
+        /// <summary>
         ///     Returns the distinguished name to be used for authentication on
         ///     automatic referral following.
         /// </summary>
@@ -63,23 +81,5 @@ namespace Novell.Directory.Ldap
         /// </returns>
         [CLSCompliant(false)]
         public virtual sbyte[] Password { get; }
-
-        /// <summary>
-        ///     Constructs information that is used by the client for authentication
-        ///     when following referrals automatically.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name to use when authenticating to
-        ///     a server.
-        /// </param>
-        /// <param name="password">
-        ///     The password to use when authenticating to a server.
-        /// </param>
-        [CLSCompliant(false)]
-        public LdapAuthProvider(string dn, sbyte[] password)
-        {
-            Dn = dn;
-            Password = password;
-        }
     }
 }

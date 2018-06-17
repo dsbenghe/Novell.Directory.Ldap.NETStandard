@@ -54,361 +54,6 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapConnection : ILdapConnection
     {
-        private void InitBlock()
-        {
-            _defSearchCons = new LdapSearchConstraints();
-            _responseCtlSemaphore = new object();
-        }
-
-        /// <summary>
-        ///     Returns the protocol version uses to authenticate.
-        ///     0 is returned if no authentication has been performed.
-        /// </summary>
-        /// <returns>
-        ///     The protol version used for authentication or 0
-        ///     not authenticated.
-        /// </returns>
-        public int ProtocolVersion
-        {
-            get
-            {
-                var prop = _conn.BindProperties;
-                if (prop == null)
-                {
-                    return LdapV3;
-                }
-                return prop.ProtocolVersion;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the distinguished name (DN) used for as the bind name during
-        ///     the last successful bind operation.  <code>null</code> is returned
-        ///     if no authentication has been performed or if the bind resulted in
-        ///     an aonymous connection.
-        /// </summary>
-        /// <returns>
-        ///     The distinguished name if authenticated; otherwise, null.
-        /// </returns>
-        public string AuthenticationDn
-        {
-            get
-            {
-                var prop = _conn.BindProperties;
-                if (prop == null)
-                {
-                    return null;
-                }
-                if (prop.Anonymous)
-                {
-                    return null;
-                }
-                return prop.AuthenticationDn;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the method used to authenticate the connection. The return
-        ///     value is one of the following:
-        ///     <ul>
-        ///         <li>"none" indicates the connection is not authenticated.</li>
-        ///         <li>
-        ///             "simple" indicates simple authentication was used or that a null
-        ///             or empty authentication DN was specified.
-        ///         </li>
-        ///         <li>"sasl" indicates that a SASL mechanism was used to authenticate</li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     The method used to authenticate the connection.
-        /// </returns>
-        public string AuthenticationMethod
-        {
-            get
-            {
-                var prop = _conn.BindProperties;
-                if (prop == null)
-                {
-                    return "simple";
-                }
-                return _conn.BindProperties.AuthenticationMethod;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the properties if any specified on binding with a
-        ///     SASL mechanism.
-        ///     Null is returned if no authentication has been performed
-        ///     or no authentication Map is present.
-        /// </summary>
-        /// <returns>
-        ///     The bind properties Map Object used for SASL bind or null if
-        ///     the connection is not present or not authenticated.
-        /// </returns>
-        public IDictionary SaslBindProperties
-        {
-            get
-            {
-                var prop = _conn.BindProperties;
-                if (prop == null)
-                {
-                    return null;
-                }
-                return _conn.BindProperties.SaslBindProperties;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the call back handler if any specified on binding with a
-        ///     SASL mechanism.
-        ///     Null is returned if no authentication has been performed
-        ///     or no authentication call back handler is present.
-        /// </summary>
-        /// <returns>
-        ///     The call back handler used for SASL bind or null if the
-        ///     object is not present or not authenticated.
-        /// </returns>
-        public object SaslBindCallbackHandler
-        {
-            get
-            {
-                var prop = _conn.BindProperties;
-                if (prop == null)
-                {
-                    return null;
-                }
-                return _conn.BindProperties.SaslCallbackHandler;
-            }
-        }
-
-        /// <summary>
-        ///     Returns a copy of the set of constraints associated with this
-        ///     connection. These constraints apply to all operations performed
-        ///     through this connection (unless a different set of constraints is
-        ///     specified when calling an operation method).
-        /// </summary>
-        /// <returns>
-        ///     The set of default contraints that apply to this connection.
-        /// </returns>
-        /// <summary>
-        ///     Sets the constraints that apply to all operations performed through
-        ///     this connection (unless a different set of constraints is specified
-        ///     when calling an operation method).  An LdapSearchConstraints object
-        ///     which is passed to this method sets all constraints, while an
-        ///     LdapConstraints object passed to this method sets only base constraints.
-        /// </summary>
-        /// <param name="cons">
-        ///     An LdapConstraints or LdapSearchConstraints Object
-        ///     containing the contstraint values to set.
-        /// </param>
-        /// <seealso cref="Constraints()">
-        /// </seealso>
-        /// <seealso cref="SearchConstraints()">
-        /// </seealso>
-        public LdapConstraints Constraints
-        {
-            get => (LdapConstraints) _defSearchCons.Clone();
-
-            set
-            {
-                // Set all constraints, replace the object with a new one
-                if (value is LdapSearchConstraints)
-                {
-                    _defSearchCons = (LdapSearchConstraints) value.Clone();
-                    return;
-                }
-
-                // We set the constraints this way, so a thread doesn't get an
-                // conconsistant view of the referrals.
-                var newCons = (LdapSearchConstraints) _defSearchCons.Clone();
-                newCons.HopLimit = value.HopLimit;
-                newCons.TimeLimit = value.TimeLimit;
-                newCons.setReferralHandler(value.getReferralHandler());
-                newCons.ReferralFollowing = value.ReferralFollowing;
-                var lsc = value.GetControls();
-                if (lsc != null)
-                {
-                    newCons.SetControls(lsc);
-                }
-                var lp = newCons.Properties;
-                if (lp != null)
-                {
-                    newCons.Properties = lp;
-                }
-                _defSearchCons = newCons;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the host name of the Ldap server to which the object is or
-        ///     was last connected, in the format originally specified.
-        /// </summary>
-        /// <returns>
-        ///     The host name of the Ldap server to which the object last
-        ///     connected or null if the object has never connected.
-        /// </returns>
-        public string Host => _conn.Host;
-
-        /// <summary>
-        ///     Returns the port number of the Ldap server to which the object is or
-        ///     was last connected.
-        /// </summary>
-        /// <returns>
-        ///     The port number of the Ldap server to which the object last
-        ///     connected or -1 if the object has never connected.
-        /// </returns>
-        public int Port => _conn.Port;
-
-        /// <summary>
-        ///     Returns a copy of the set of search constraints associated with this
-        ///     connection. These constraints apply to search operations performed
-        ///     through this connection (unless a different set of
-        ///     constraints is specified when calling the search operation method).
-        /// </summary>
-        /// <returns>
-        ///     The set of default search contraints that apply to
-        ///     this connection.
-        /// </returns>
-        /// <seealso cref="Constraints">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints">
-        /// </seealso>
-        public LdapSearchConstraints SearchConstraints => (LdapSearchConstraints) _defSearchCons.Clone();
-
-
-        /// <summary>
-        ///     Indicates whther the perform Secure Operation or not
-        /// </summary>
-        /// <returns>
-        ///     True if SSL is on
-        ///     False if its not on
-        /// </returns>
-        public bool SecureSocketLayer
-        {
-            get => _conn.Ssl;
-            set => _conn.Ssl = value;
-        }
-
-        /// <summary>
-        ///     Connection timeout in milliseconds, default is 0 which will use
-        ///     the platform default timeout for TCP connections.
-        /// </summary>
-        /// <returns>
-        ///     The timeout value in milliseconds
-        /// </returns>
-        public int ConnectionTimeout
-        {
-            get => _conn.ConnectionTimeout;
-            set => _conn.ConnectionTimeout = value;
-        }
-
-        /// <summary>
-        ///     Indicates whether the object has authenticated to the connected Ldap
-        ///     server.
-        /// </summary>
-        /// <returns>
-        ///     True if the object has authenticated; false if it has not
-        ///     authenticated.
-        /// </returns>
-        public bool Bound => _conn.Bound;
-
-        /// <summary>
-        ///     Indicates whether the connection represented by this object is open
-        ///     at this time.
-        /// </summary>
-        /// <returns>
-        ///     True if connection is open; false if the connection is closed.
-        /// </returns>
-        public bool Connected => _conn.Connected;
-
-        /// <summary>
-        ///     Indicatates if the connection is protected by TLS.
-        /// </summary>
-        /// <returns>
-        ///     If startTLS has completed this method returns true.
-        ///     If stopTLS has completed or start tls failed, this method returns false.
-        /// </returns>
-        /// <returns>
-        ///     True if the connection is protected by TLS.
-        /// </returns>
-        public bool Tls => _conn.Tls;
-
-
-        /// <summary>
-        ///     Returns the Server Controls associated with the most recent response
-        ///     to a synchronous request on this connection object, or null
-        ///     if the latest response contained no Server Controls. The method
-        ///     always returns null for asynchronous requests. For asynchronous
-        ///     requests, the response controls are available in LdapMessage.
-        /// </summary>
-        /// <returns>
-        ///     The server controls associated with the most recent response
-        ///     to a synchronous request or null if the response contains no server
-        ///     controls.
-        /// </returns>
-        /// <seealso cref="LdapMessage.Controls">
-        /// </seealso>
-        public LdapControl[] ResponseControls
-        {
-            get
-            {
-                if (_responseCtls == null)
-                {
-                    return null;
-                }
-
-
-                // We have to clone the control just in case
-                // we have two client threads that end up retreiving the
-                // same control.
-                var clonedControl = new LdapControl[_responseCtls.Length];
-
-                // Also note we synchronize access to the local response
-                // control object just in case another message containing controls
-                // comes in from the server while we are busy duplicating
-                // this one.
-                lock (_responseCtlSemaphore)
-                {
-                    for (var i = 0; i < _responseCtls.Length; i++)
-                    {
-                        clonedControl[i] = (LdapControl) _responseCtls[i].Clone();
-                    }
-                }
-
-                // Return the cloned copy.  Note we have still left the
-                // control in the local responseCtls variable just in case
-                // somebody requests it again.
-                return clonedControl;
-            }
-        }
-
-        /// <summary>
-        ///     Return the Connection object associated with this LdapConnection
-        /// </summary>
-        /// <returns>
-        ///     the Connection object
-        /// </returns>
-        internal Connection Connection => _conn;
-
-        /// <summary>
-        ///     Return the Connection object name associated with this LdapConnection
-        /// </summary>
-        /// <returns>
-        ///     the Connection object name
-        /// </returns>
-        internal string ConnectionName { get; }
-
-        private LdapSearchConstraints _defSearchCons;
-        private LdapControl[] _responseCtls;
-
-        // Synchronization Object used to synchronize access to responseCtls
-        private object _responseCtlSemaphore;
-
-        private Connection _conn;
-
-        private static object _nameLock; // protect agentNum
-        private static int _lConnNum = 0; // Debug, LdapConnection number
-
         /// <summary>
         ///     Used with search to specify that the scope of entrys to search is to
         ///     search only the base obect.
@@ -507,13 +152,14 @@ namespace Novell.Directory.Ldap
         /// <summary> The OID string that identifies a StartTLS request and response.</summary>
         private const string StartTlsOid = "1.3.6.1.4.1.1466.20037";
 
+        private static object _nameLock; // protect agentNum
+        private static int _lConnNum = 0; // Debug, LdapConnection number
 
-        public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
-        {
-            add => _conn.OnCertificateValidation += value;
+        private LdapSearchConstraints _defSearchCons;
+        private LdapControl[] _responseCtls;
 
-            remove => _conn.OnCertificateValidation -= value;
-        }
+        // Synchronization Object used to synchronize access to responseCtls
+        private object _responseCtlSemaphore;
 
         /*
         * Constructors
@@ -532,162 +178,358 @@ namespace Novell.Directory.Ldap
         {
             InitBlock();
             // Get a unique connection name for debug
-            _conn = new Connection();
+            Connection = new Connection();
         }
-
-        /*
-        * The following are methods that affect the operation of
-        * LdapConnection, but are not Ldap requests.
-        */
 
         /// <summary>
-        ///     Returns a copy of the object with a private context, but sharing the
-        ///     network connection if there is one.
-        ///     The network connection remains open until all clones have
-        ///     disconnected or gone out of scope. Any connection opened after
-        ///     cloning is private to the object making the connection.
-        ///     The clone can issue requests and freely modify options and search
-        ///     constraints, and , without affecting the source object or other clones.
-        ///     If the clone disconnects or reconnects, it is completely dissociated
-        ///     from the source object and other clones. Reauthenticating in a clone,
-        ///     however, is a global operation which will affect the source object
-        ///     and all associated clones, because it applies to the single shared
-        ///     physical connection. Any request by an associated object after one
-        ///     has reauthenticated will carry the new identity.
+        ///     Returns the protocol version uses to authenticate.
+        ///     0 is returned if no authentication has been performed.
         /// </summary>
         /// <returns>
-        ///     A of the object.
+        ///     The protol version used for authentication or 0
+        ///     not authenticated.
         /// </returns>
-        public object Clone()
+        public int ProtocolVersion
         {
-            LdapConnection newClone;
-            object newObj;
-            try
+            get
             {
-                newObj = MemberwiseClone();
-                newClone = (LdapConnection) newObj;
-            }
-            catch (Exception ce)
-            {
-                throw new Exception("Internal error, cannot create clone", ce);
-            }
-            newClone._conn = _conn; // same underlying connection
-
-            //now just duplicate the defSearchCons and responseCtls
-            if (_defSearchCons != null)
-            {
-                newClone._defSearchCons = (LdapSearchConstraints) _defSearchCons.Clone();
-            }
-            else
-            {
-                newClone._defSearchCons = null;
-            }
-            if (_responseCtls != null)
-            {
-                newClone._responseCtls = new LdapControl[_responseCtls.Length];
-                for (var i = 0; i < _responseCtls.Length; i++)
+                var prop = Connection.BindProperties;
+                if (prop == null)
                 {
-                    newClone._responseCtls[i] = (LdapControl) _responseCtls[i].Clone();
+                    return LdapV3;
                 }
+
+                return prop.ProtocolVersion;
             }
-            else
-            {
-                newClone._responseCtls = null;
-            }
-            _conn.IncrCloneCount(); // Increment the count of clones
-            return newObj;
         }
+
+        /// <summary>
+        ///     Returns the distinguished name (DN) used for as the bind name during
+        ///     the last successful bind operation.  <code>null</code> is returned
+        ///     if no authentication has been performed or if the bind resulted in
+        ///     an aonymous connection.
+        /// </summary>
+        /// <returns>
+        ///     The distinguished name if authenticated; otherwise, null.
+        /// </returns>
+        public string AuthenticationDn
+        {
+            get
+            {
+                var prop = Connection.BindProperties;
+                if (prop == null)
+                {
+                    return null;
+                }
+
+                if (prop.Anonymous)
+                {
+                    return null;
+                }
+
+                return prop.AuthenticationDn;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the method used to authenticate the connection. The return
+        ///     value is one of the following:
+        ///     <ul>
+        ///         <li>"none" indicates the connection is not authenticated.</li>
+        ///         <li>
+        ///             "simple" indicates simple authentication was used or that a null
+        ///             or empty authentication DN was specified.
+        ///         </li>
+        ///         <li>"sasl" indicates that a SASL mechanism was used to authenticate</li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     The method used to authenticate the connection.
+        /// </returns>
+        public string AuthenticationMethod
+        {
+            get
+            {
+                var prop = Connection.BindProperties;
+                if (prop == null)
+                {
+                    return "simple";
+                }
+
+                return Connection.BindProperties.AuthenticationMethod;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the properties if any specified on binding with a
+        ///     SASL mechanism.
+        ///     Null is returned if no authentication has been performed
+        ///     or no authentication Map is present.
+        /// </summary>
+        /// <returns>
+        ///     The bind properties Map Object used for SASL bind or null if
+        ///     the connection is not present or not authenticated.
+        /// </returns>
+        public IDictionary SaslBindProperties
+        {
+            get
+            {
+                var prop = Connection.BindProperties;
+                if (prop == null)
+                {
+                    return null;
+                }
+
+                return Connection.BindProperties.SaslBindProperties;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the call back handler if any specified on binding with a
+        ///     SASL mechanism.
+        ///     Null is returned if no authentication has been performed
+        ///     or no authentication call back handler is present.
+        /// </summary>
+        /// <returns>
+        ///     The call back handler used for SASL bind or null if the
+        ///     object is not present or not authenticated.
+        /// </returns>
+        public object SaslBindCallbackHandler
+        {
+            get
+            {
+                var prop = Connection.BindProperties;
+                if (prop == null)
+                {
+                    return null;
+                }
+
+                return Connection.BindProperties.SaslCallbackHandler;
+            }
+        }
+
+        /// <summary>
+        ///     Returns a copy of the set of constraints associated with this
+        ///     connection. These constraints apply to all operations performed
+        ///     through this connection (unless a different set of constraints is
+        ///     specified when calling an operation method).
+        /// </summary>
+        /// <returns>
+        ///     The set of default contraints that apply to this connection.
+        /// </returns>
+        /// <summary>
+        ///     Sets the constraints that apply to all operations performed through
+        ///     this connection (unless a different set of constraints is specified
+        ///     when calling an operation method).  An LdapSearchConstraints object
+        ///     which is passed to this method sets all constraints, while an
+        ///     LdapConstraints object passed to this method sets only base constraints.
+        /// </summary>
+        /// <param name="cons">
+        ///     An LdapConstraints or LdapSearchConstraints Object
+        ///     containing the contstraint values to set.
+        /// </param>
+        /// <seealso cref="Constraints()">
+        /// </seealso>
+        /// <seealso cref="SearchConstraints()">
+        /// </seealso>
+        public LdapConstraints Constraints
+        {
+            get => (LdapConstraints) _defSearchCons.Clone();
+
+            set
+            {
+                // Set all constraints, replace the object with a new one
+                if (value is LdapSearchConstraints)
+                {
+                    _defSearchCons = (LdapSearchConstraints) value.Clone();
+                    return;
+                }
+
+                // We set the constraints this way, so a thread doesn't get an
+                // conconsistant view of the referrals.
+                var newCons = (LdapSearchConstraints) _defSearchCons.Clone();
+                newCons.HopLimit = value.HopLimit;
+                newCons.TimeLimit = value.TimeLimit;
+                newCons.setReferralHandler(value.getReferralHandler());
+                newCons.ReferralFollowing = value.ReferralFollowing;
+                var lsc = value.GetControls();
+                if (lsc != null)
+                {
+                    newCons.SetControls(lsc);
+                }
+
+                var lp = newCons.Properties;
+                if (lp != null)
+                {
+                    newCons.Properties = lp;
+                }
+
+                _defSearchCons = newCons;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the host name of the Ldap server to which the object is or
+        ///     was last connected, in the format originally specified.
+        /// </summary>
+        /// <returns>
+        ///     The host name of the Ldap server to which the object last
+        ///     connected or null if the object has never connected.
+        /// </returns>
+        public string Host => Connection.Host;
+
+        /// <summary>
+        ///     Returns the port number of the Ldap server to which the object is or
+        ///     was last connected.
+        /// </summary>
+        /// <returns>
+        ///     The port number of the Ldap server to which the object last
+        ///     connected or -1 if the object has never connected.
+        /// </returns>
+        public int Port => Connection.Port;
+
+        /// <summary>
+        ///     Returns a copy of the set of search constraints associated with this
+        ///     connection. These constraints apply to search operations performed
+        ///     through this connection (unless a different set of
+        ///     constraints is specified when calling the search operation method).
+        /// </summary>
+        /// <returns>
+        ///     The set of default search contraints that apply to
+        ///     this connection.
+        /// </returns>
+        /// <seealso cref="Constraints">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints">
+        /// </seealso>
+        public LdapSearchConstraints SearchConstraints => (LdapSearchConstraints) _defSearchCons.Clone();
+
+
+        /// <summary>
+        ///     Indicates whther the perform Secure Operation or not
+        /// </summary>
+        /// <returns>
+        ///     True if SSL is on
+        ///     False if its not on
+        /// </returns>
+        public bool SecureSocketLayer
+        {
+            get => Connection.Ssl;
+            set => Connection.Ssl = value;
+        }
+
+        /// <summary>
+        ///     Connection timeout in milliseconds, default is 0 which will use
+        ///     the platform default timeout for TCP connections.
+        /// </summary>
+        /// <returns>
+        ///     The timeout value in milliseconds
+        /// </returns>
+        public int ConnectionTimeout
+        {
+            get => Connection.ConnectionTimeout;
+            set => Connection.ConnectionTimeout = value;
+        }
+
+        /// <summary>
+        ///     Indicates whether the object has authenticated to the connected Ldap
+        ///     server.
+        /// </summary>
+        /// <returns>
+        ///     True if the object has authenticated; false if it has not
+        ///     authenticated.
+        /// </returns>
+        public bool Bound => Connection.Bound;
+
+        /// <summary>
+        ///     Indicates whether the connection represented by this object is open
+        ///     at this time.
+        /// </summary>
+        /// <returns>
+        ///     True if connection is open; false if the connection is closed.
+        /// </returns>
+        public bool Connected => Connection.Connected;
+
+        /// <summary>
+        ///     Indicatates if the connection is protected by TLS.
+        /// </summary>
+        /// <returns>
+        ///     If startTLS has completed this method returns true.
+        ///     If stopTLS has completed or start tls failed, this method returns false.
+        /// </returns>
+        /// <returns>
+        ///     True if the connection is protected by TLS.
+        /// </returns>
+        public bool Tls => Connection.Tls;
+
+
+        /// <summary>
+        ///     Returns the Server Controls associated with the most recent response
+        ///     to a synchronous request on this connection object, or null
+        ///     if the latest response contained no Server Controls. The method
+        ///     always returns null for asynchronous requests. For asynchronous
+        ///     requests, the response controls are available in LdapMessage.
+        /// </summary>
+        /// <returns>
+        ///     The server controls associated with the most recent response
+        ///     to a synchronous request or null if the response contains no server
+        ///     controls.
+        /// </returns>
+        /// <seealso cref="LdapMessage.Controls">
+        /// </seealso>
+        public LdapControl[] ResponseControls
+        {
+            get
+            {
+                if (_responseCtls == null)
+                {
+                    return null;
+                }
+
+
+                // We have to clone the control just in case
+                // we have two client threads that end up retreiving the
+                // same control.
+                var clonedControl = new LdapControl[_responseCtls.Length];
+
+                // Also note we synchronize access to the local response
+                // control object just in case another message containing controls
+                // comes in from the server while we are busy duplicating
+                // this one.
+                lock (_responseCtlSemaphore)
+                {
+                    for (var i = 0; i < _responseCtls.Length; i++)
+                    {
+                        clonedControl[i] = (LdapControl) _responseCtls[i].Clone();
+                    }
+                }
+
+                // Return the cloned copy.  Note we have still left the
+                // control in the local responseCtls variable just in case
+                // somebody requests it again.
+                return clonedControl;
+            }
+        }
+
+        /// <summary>
+        ///     Return the Connection object associated with this LdapConnection
+        /// </summary>
+        /// <returns>
+        ///     the Connection object
+        /// </returns>
+        internal Connection Connection { get; private set; }
+
+        /// <summary>
+        ///     Return the Connection object name associated with this LdapConnection
+        /// </summary>
+        /// <returns>
+        ///     the Connection object name
+        /// </returns>
+        internal string ConnectionName { get; }
 
         public void Dispose()
         {
             Dispose(true);
-        }
-
-        private void Dispose(bool isDisposing)
-        {
-            if (isDisposing)
-            {
-                DisconnectImpl();
-            }
-        }
-
-        /// <summary>
-        ///     Returns a property of a connection object.
-        /// </summary>
-        /// <param name="name">
-        ///     Name of the property to be returned.
-        ///     The following read-only properties are available
-        ///     for any given connection:
-        ///     <ul>
-        ///         <li>
-        ///             Ldap_PROPERTY_SDK returns the version of this SDK,
-        ///             as a Float data type.
-        ///         </li>
-        ///         <li>
-        ///             Ldap_PROPERTY_PROTOCOL returns the highest supported version of
-        ///             the Ldap protocol, as a Float data type.
-        ///         </li>
-        ///         <li>
-        ///             Ldap_PROPERTY_SECURITY returns a comma-separated list of the
-        ///             types of authentication supported, as a
-        ///             string.
-        ///         </li>
-        ///     </ul>
-        ///     A deep copy of the property is provided where applicable; a
-        ///     client does not need to clone the object received.
-        /// </param>
-        /// <returns>
-        ///     The object associated with the requested property,
-        ///     or null if the property is not defined.
-        /// </returns>
-        /// <seealso cref="LdapConstraints.GetProperty">
-        /// </seealso>
-        /// <seealso cref="object">
-        /// </seealso>
-        public object GetProperty(string name)
-        {
-            if (name.ToUpper().Equals(LdapPropertySdk.ToUpper()))
-                return Connection.Sdk;
-            if (name.ToUpper().Equals(LdapPropertyProtocol.ToUpper()))
-                return Connection.Protocol;
-            if (name.ToUpper().Equals(LdapPropertySecurity.ToUpper()))
-                return Connection.Security;
-            return null;
-        }
-
-        /// <summary>
-        ///     Registers an object to be notified on arrival of an unsolicited
-        ///     message from a server.
-        ///     An unsolicited message has the ID 0. A new thread is created and
-        ///     the method "messageReceived" in each registered object is called in
-        ///     turn.
-        /// </summary>
-        /// <param name="listener">
-        ///     An object to be notified on arrival of an
-        ///     unsolicited message from a server.  This object must
-        ///     implement the LdapUnsolicitedNotificationListener interface.
-        /// </param>
-        public void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
-        {
-            if (listener != null)
-                _conn.AddUnsolicitedNotificationListener(listener);
-        }
-
-
-        /// <summary>
-        ///     Deregisters an object so that it will no longer be notified on
-        ///     arrival of an unsolicited message from a server. If the object is
-        ///     null or was not previously registered for unsolicited notifications,
-        ///     the method does nothing.
-        /// </summary>
-        /// <param name="listener">
-        ///     An object to no longer be notified on arrival of
-        ///     an unsolicited message from a server.
-        /// </param>
-        public void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
-        {
-            if (listener != null)
-                _conn.RemoveUnsolicitedNotificationListener(listener);
         }
 
         /// <summary>
@@ -708,16 +550,17 @@ namespace Novell.Directory.Ldap
 
             var tlsId = startTls.MessageId;
 
-            _conn.AcquireWriteSemaphore(tlsId);
+            Connection.AcquireWriteSemaphore(tlsId);
             try
             {
-                if (!_conn.AreMessagesComplete())
+                if (!Connection.AreMessagesComplete())
                 {
                     throw new LdapLocalException(ExceptionMessages.OutstandingOperations,
                         LdapException.OperationsError);
                 }
+
                 // Stop reader when response to startTLS request received
-                _conn.StopReaderOnReply(tlsId);
+                Connection.StopReaderOnReply(tlsId);
 
                 // send tls message
                 var queue = SendRequestToServer(startTls, _defSearchCons.TimeLimit, null, null);
@@ -725,12 +568,12 @@ namespace Novell.Directory.Ldap
                 var response = (LdapExtendedResponse) queue.GetResponse();
                 response.ChkResultCode();
 
-                _conn.StartTls();
+                Connection.StartTls();
             }
             finally
             {
                 //Free this semaphore no matter what exceptions get thrown                
-                _conn.FreeWriteSemaphore(tlsId);
+                Connection.FreeWriteSemaphore(tlsId);
             }
         }
 
@@ -761,176 +604,27 @@ namespace Novell.Directory.Ldap
                 throw new LdapLocalException(ExceptionMessages.NoStarttls, LdapException.OperationsError);
             }
 
-            var semaphoreId = _conn.AcquireWriteSemaphore();
+            var semaphoreId = Connection.AcquireWriteSemaphore();
             try
             {
-                if (!_conn.AreMessagesComplete())
+                if (!Connection.AreMessagesComplete())
                 {
                     throw new LdapLocalException(ExceptionMessages.OutstandingOperations,
                         LdapException.OperationsError);
                 }
+
                 //stopTLS stops and starts the reader thread for us.
-                _conn.StopTls();
+                Connection.StopTls();
             }
             finally
             {
-                _conn.FreeWriteSemaphore(semaphoreId);
+                Connection.FreeWriteSemaphore(semaphoreId);
             }
+
             /* Now that the TLS socket is closed, reset everything.  This next
             line is temporary until JSSE is fixed to properly handle TLS stop */
             /* After stopTls the stream is very likely unusable */
             Connect(Host, Port);
-        }
-
-
-        //*************************************************************************
-        // Below are all of the Ldap protocol operation methods
-        //*************************************************************************
-
-        //*************************************************************************
-        // abandon methods
-        //*************************************************************************
-
-        /// <summary>
-        ///     Notifies the server not to send additional results associated with
-        ///     this LdapSearchResults object, and discards any results already
-        ///     received.
-        /// </summary>
-        /// <param name="results">
-        ///     An object returned from a search.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(LdapSearchResults results)
-        {
-            Abandon(results, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Notifies the server not to send additional results associated with
-        ///     this LdapSearchResults object, and discards any results already
-        ///     received.
-        /// </summary>
-        /// <param name="results">
-        ///     An object returned from a search.
-        /// </param>
-        /// <param name="cons">
-        ///     The contraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(LdapSearchResults results, LdapConstraints cons)
-        {
-            results.Abandon();
-        }
-
-        /// <summary>
-        ///     Abandons an asynchronous operation.
-        /// </summary>
-        /// <param name="id">
-        ///     The ID of the asynchronous operation to abandon. The ID
-        ///     can be obtained from the response queue for the
-        ///     operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(int id)
-        {
-            Abandon(id, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Abandons an asynchronous operation, using the specified
-        ///     constraints.
-        /// </summary>
-        /// <param name="id">
-        ///     The ID of the asynchronous operation to abandon.
-        ///     The ID can be obtained from the search
-        ///     queue for the operation.
-        /// </param>
-        /// <param name="cons">
-        ///     The contraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(int id, LdapConstraints cons)
-        {
-            // We need to inform the Message Agent which owns this messageID to
-            // remove it from the queue.
-            try
-            {
-                var agent = _conn.GetMessageAgent(id);
-                agent.Abandon(id, cons);
-            }
-            catch (FieldAccessException fae)
-            {
-                Logger.Log.LogWarning("Exception swallowed", fae);
-            }
-        }
-
-        /// <summary>
-        ///     Abandons all outstanding operations managed by the queue.
-        ///     All operations in progress, which are managed by the specified queue,
-        ///     are abandoned.
-        /// </summary>
-        /// <param name="queue">
-        ///     The queue returned from an asynchronous request.
-        ///     All outstanding operations managed by the queue
-        ///     are abandoned, and the queue is emptied.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(LdapMessageQueue queue)
-        {
-            Abandon(queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Abandons all outstanding operations managed by the queue.
-        ///     All operations in progress, which are managed by the specified
-        ///     queue, are abandoned.
-        /// </summary>
-        /// <param name="queue">
-        ///     The queue returned from an asynchronous request.
-        ///     All outstanding operations managed by the queue
-        ///     are abandoned, and the queue is emptied.
-        /// </param>
-        /// <param name="cons">
-        ///     The contraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Abandon(LdapMessageQueue queue, LdapConstraints cons)
-        {
-            if (queue != null)
-            {
-                MessageAgent agent;
-                if (queue is LdapSearchQueue)
-                {
-                    agent = queue.MessageAgent;
-                }
-                else
-                {
-                    agent = queue.MessageAgent;
-                }
-                var msgIds = agent.MessageIDs;
-                for (var i = 0; i < msgIds.Length; i++)
-                {
-                    agent.Abandon(msgIds[i], cons);
-                }
-            }
         }
 
         //*************************************************************************
@@ -980,68 +674,8 @@ namespace Novell.Directory.Ldap
             {
                 _responseCtls = addResponse.Controls;
             }
+
             ChkResultCode(queue, cons, addResponse);
-        }
-
-        /// <summary>
-        ///     Asynchronously adds an entry to the directory.
-        /// </summary>
-        /// <param name="entry">
-        ///     LdapEntry object specifying the distinguished
-        ///     name and attributes of the new entry.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue)
-        {
-            return Add(entry, queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Asynchronously adds an entry to the directory, using the specified
-        ///     constraints.
-        /// </summary>
-        /// <param name="entry">
-        ///     LdapEntry object specifying the distinguished
-        ///     name and attributes of the new entry.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
-        {
-            if (cons == null)
-                cons = _defSearchCons;
-
-            // error check the parameters
-            if (entry == null)
-            {
-                throw new ArgumentException("The LdapEntry parameter" + " cannot be null");
-            }
-            if ((object) entry.Dn == null)
-            {
-                throw new ArgumentException("The DN value must be present" + " in the LdapEntry object");
-            }
-
-            LdapMessage msg = new LdapAddRequest(entry, cons.GetControls());
-
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         //*************************************************************************
@@ -1202,6 +836,7 @@ namespace Novell.Directory.Ldap
                 var ibytes = encoder.GetBytes(passwd);
                 pw = SupportClass.ToSByteArray(ibytes);
             }
+
             Bind(version, dn, pw, cons);
         }
 
@@ -1287,306 +922,6 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        /// <summary>
-        ///     Asynchronously authenticates to the Ldap server (that the object is
-        ///     currently connected to) using the specified name, password, Ldap
-        ///     version, and queue.
-        ///     If the object has been disconnected from an Ldap server,
-        ///     this method attempts to reconnect to the server. If the object
-        ///     has already authenticated, the old authentication is discarded.
-        /// </summary>
-        /// <param name="version">
-        ///     The Ldap protocol version, use Ldap_V3.
-        ///     Ldap_V2 is not supported.
-        /// </param>
-        /// <param name="dn">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name.
-        /// </param>
-        /// <param name="passwd">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name and passwd as password.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        [CLSCompliant(false)]
-        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue)
-        {
-            return Bind(version, dn, passwd, queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Asynchronously authenticates to the Ldap server (that the object is
-        ///     currently connected to) using the specified name, password, Ldap
-        ///     version, queue, and constraints.
-        ///     If the object has been disconnected from an Ldap server,
-        ///     this method attempts to reconnect to the server. If the object
-        ///     had already authenticated, the old authentication is discarded.
-        /// </summary>
-        /// <param name="version">
-        ///     The Ldap protocol version, use Ldap_V3.
-        ///     Ldap_V2 is not supported.
-        /// </param>
-        /// <param name="dn">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name.
-        /// </param>
-        /// <param name="passwd">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name and passwd as password.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        [CLSCompliant(false)]
-        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
-            LdapConstraints cons)
-        {
-            int msgId;
-            BindProperties bindProps;
-            if (cons == null)
-                cons = _defSearchCons;
-
-            if ((object) dn == null)
-            {
-                dn = "";
-            }
-            else
-            {
-                dn = dn.Trim();
-            }
-
-            if (passwd == null)
-                passwd = new sbyte[] {};
-
-            var anonymous = false;
-            if (passwd.Length == 0)
-            {
-                anonymous = true; // anonymous, passwd length zero with simple bind
-                dn = ""; // set to null if anonymous
-            }
-
-            LdapMessage msg = new LdapBindRequest(version, dn, passwd, cons.GetControls());
-
-            msgId = msg.MessageId;
-            bindProps = new BindProperties(version, dn, "simple", anonymous, null, null);
-
-            // For bind requests, if not connected, attempt to reconnect
-            if (!_conn.Connected)
-            {
-                if ((object) _conn.Host != null)
-                {
-                    _conn.Connect(_conn.Host, _conn.Port);
-                }
-                else
-                {
-                    throw new LdapException(ExceptionMessages.ConnectionImpossible, LdapException.ConnectError, null);
-                }
-            }
-
-            // The semaphore is released when the bind response is queued.
-            _conn.AcquireWriteSemaphore(msgId);
-
-            return SendRequestToServer(msg, cons.TimeLimit, queue, bindProps);
-        }
-
-        //*************************************************************************
-        // compare methods
-        //*************************************************************************
-
-        /// <summary>
-        ///     Synchronously checks to see if an entry contains an attribute
-        ///     with a specified value.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to use in the
-        ///     comparison.
-        /// </param>
-        /// <param name="attr">
-        ///     The attribute to compare against the entry. The
-        ///     method checks to see if the entry has an
-        ///     attribute with the same name and value as this
-        ///     attribute.
-        /// </param>
-        /// <returns>
-        ///     True if the entry has the value,
-        ///     and false if the entry does not
-        ///     have the value or the attribute.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public bool Compare(string dn, LdapAttribute attr)
-        {
-            return Compare(dn, attr, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Synchronously checks to see if an entry contains an attribute with a
-        ///     specified value, using the specified constraints.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to use in the
-        ///     comparison.
-        /// </param>
-        /// <param name="attr">
-        ///     The attribute to compare against the entry. The
-        ///     method checks to see if the entry has an
-        ///     attribute with the same name and value as this
-        ///     attribute.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <returns>
-        ///     True if the entry has the value,
-        ///     and false if the entry does not
-        ///     have the value or the attribute.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
-        {
-            var ret = false;
-
-            var queue = Compare(dn, attr, null, cons);
-
-            var res = (LdapResponse) queue.GetResponse();
-
-            // Set local copy of responseControls synchronously - if there were any
-            lock (_responseCtlSemaphore)
-            {
-                _responseCtls = res.Controls;
-            }
-
-            if (res.ResultCode == LdapException.CompareTrue)
-            {
-                ret = true;
-            }
-            else if (res.ResultCode == LdapException.CompareFalse)
-            {
-                ret = false;
-            }
-            else
-            {
-                ChkResultCode(queue, cons, res);
-            }
-            return ret;
-        }
-
-        /// <summary>
-        ///     Asynchronously compares an attribute value with one in the directory,
-        ///     using the specified queue.
-        ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
-        ///     does not have the value or the attribute.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry containing an
-        ///     attribute to compare.
-        /// </param>
-        /// <param name="attr">
-        ///     An attribute to compare.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
-        /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
-        /// </seealso>
-        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
-        {
-            return Compare(dn, attr, queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Asynchronously compares an attribute value with one in the directory,
-        ///     using the specified queue and contraints.
-        ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
-        ///     does not have the value or the attribute.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry containing an
-        ///     attribute to compare.
-        /// </param>
-        /// <param name="attr">
-        ///     An attribute to compare.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
-        /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
-        /// </seealso>
-        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
-            LdapConstraints cons)
-        {
-            if (attr.Size() != 1)
-            {
-                throw new ArgumentException("compare: Exactly one value " + "must be present in the LdapAttribute");
-            }
-
-            if ((object) dn == null)
-            {
-                // Invalid parameter
-                throw new ArgumentException("compare: DN cannot be null");
-            }
-
-            if (cons == null)
-                cons = _defSearchCons;
-
-            LdapMessage msg = new LdapCompareRequest(dn, attr.Name, attr.ByteValue, cons.GetControls());
-
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
-        }
-
         //*************************************************************************
         // connect methods
         //*************************************************************************
@@ -1642,16 +977,19 @@ namespace Novell.Directory.Ldap
                             throw new ArgumentException(ExceptionMessages.InvalidAddress, e);
                         }
                     }
+
                     // This may return a different conn object
                     // Disassociate this clone with the underlying connection.
-                    _conn = _conn.DestroyClone();
-                    _conn.Connect(address, specifiedPort);
+                    Connection = Connection.DestroyClone();
+                    Connection.Connect(address, specifiedPort);
                     break;
                 }
                 catch (LdapException)
                 {
                     if (!hostList.HasMoreTokens())
+                    {
                         throw;
+                    }
                 }
             }
         }
@@ -1707,67 +1045,8 @@ namespace Novell.Directory.Ldap
             {
                 _responseCtls = deleteResponse.Controls;
             }
+
             ChkResultCode(queue, cons, deleteResponse);
-        }
-
-        /// <summary>
-        ///     Asynchronously deletes the entry with the specified distinguished name
-        ///     from the directory and returns the results to the specified queue.
-        ///     Note: A Delete operation will not remove an entry that contains
-        ///     subordinate entries, nor will it dereference alias entries.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to modify.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue)
-        {
-            return Delete(dn, queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Asynchronously deletes the entry with the specified distinguished name
-        ///     from the directory, using the specified contraints and queue.
-        ///     Note: A Delete operation will not remove an entry that contains
-        ///     subordinate entries, nor will it dereference alias entries.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to delete.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
-        {
-            if ((object) dn == null)
-            {
-                // Invalid DN parameter
-                throw new ArgumentException(ExceptionMessages.DnParamError);
-            }
-
-            if (cons == null)
-                cons = _defSearchCons;
-
-            LdapMessage msg = new LdapDeleteRequest(dn, cons.GetControls());
-
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         //*************************************************************************
@@ -1789,20 +1068,6 @@ namespace Novell.Directory.Ldap
         {
             // disconnect from API call
             DisconnectImpl();
-        }
-
-
-        /// <summary>
-        ///     Synchronously disconnect from the server
-        /// </summary>
-        /// <param name="how">
-        ///     true if application call disconnect API, false if finalize.
-        /// </param>
-        private void DisconnectImpl()
-        {
-            // disconnect doesn't affect other clones
-            // If not a clone, distroys connection
-            _conn = _conn.DestroyClone();
         }
 
         //*************************************************************************
@@ -1873,103 +1138,6 @@ namespace Novell.Directory.Ldap
 
             ChkResultCode(queue, cons, response);
             return response;
-        }
-
-
-        /*
-        * Asynchronous Ldap extended request
-        */
-
-        /// <summary>
-        ///     Provides an asynchronous means to access extended, non-mandatory
-        ///     operations offered by a particular Ldapv3 compliant server.
-        /// </summary>
-        /// <param name="op">
-        ///     The object which contains (1) an identifier of an extended
-        ///     operation which should be recognized by the particular Ldap
-        ///     server this client is connected to and (2) an
-        ///     operation-specific sequence of octet strings
-        ///     or BER-encoded values.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a queue
-        ///     object is created internally.
-        /// </param>
-        /// <returns>
-        ///     An operation-specific object, containing an ID and either an octet
-        ///     string or BER-encoded values.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
-        {
-            return ExtendedOperation(op, _defSearchCons, queue);
-        }
-
-
-        /*
-        *  Asynchronous Ldap extended request with SearchConstraints
-        */
-
-        /// <summary>
-        ///     Provides an asynchronous means to access extended, non-mandatory
-        ///     operations offered by a particular Ldapv3 compliant server.
-        /// </summary>
-        /// <param name="op">
-        ///     The object which contains (1) an identifier of an extended
-        ///     operation which should be recognized by the particular Ldap
-        ///     server this client is connected to and (2) an operation-
-        ///     specific sequence of octet strings or BER-encoded values.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a queue
-        ///     object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to this operation.
-        /// </param>
-        /// <returns>
-        ///     An operation-specific object, containing an ID and either an
-        ///     octet string or BER-encoded values.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
-            LdapResponseQueue queue)
-        {
-            // Use default constraints if none-specified
-            if (cons == null)
-                cons = _defSearchCons;
-            var msg = MakeExtendedOperation(op, cons);
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
-        }
-
-        /// <summary>
-        ///     Formulates the extended operation, constraints into an
-        ///     LdapMessage and returns the LdapMessage.  This is used by
-        ///     extendedOperation and startTLS which needs the LdapMessage to
-        ///     get the MessageID.
-        /// </summary>
-        internal LdapMessage MakeExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
-        {
-            // Use default constraints if none-specified
-            if (cons == null)
-                cons = _defSearchCons;
-
-            // error check the parameters
-            if ((object) op.GetId() == null)
-            {
-                // Invalid extended operation parameter, no OID specified
-                throw new ArgumentException(ExceptionMessages.OpParamError);
-            }
-
-            return new LdapExtendedRequest(op, cons.GetControls());
         }
 
         //*************************************************************************
@@ -2099,6 +1267,1142 @@ namespace Novell.Directory.Ldap
             }
 
             ChkResultCode(queue, cons, modifyResponse);
+        }
+
+        //*************************************************************************
+        // read methods
+        //*************************************************************************
+
+        /// <summary>
+        ///     Synchronously reads the entry for the specified distiguished name (DN)
+        ///     and retrieves all attributes for the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server.
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found
+        /// </exception>
+        public LdapEntry Read(string dn)
+        {
+            return Read(dn, _defSearchCons);
+        }
+
+
+        /// <summary>
+        ///     Synchronously reads the entry for the specified distiguished name (DN),
+        ///     using the specified constraints, and retrieves all attributes for the
+        ///     entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found
+        /// </exception>
+        public LdapEntry Read(string dn, LdapSearchConstraints cons)
+        {
+            return Read(dn, null, cons);
+        }
+
+        /// <summary>
+        ///     Synchronously reads the entry for the specified distinguished name (DN)
+        ///     and retrieves only the specified attributes from the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of the attributes to retrieve.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found
+        /// </exception>
+        public LdapEntry Read(string dn, string[] attrs)
+        {
+            return Read(dn, attrs, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Synchronously reads the entry for the specified distinguished name (DN),
+        ///     using the specified constraints, and retrieves only the specified
+        ///     attributes from the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of the attributes to retrieve.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found
+        /// </exception>
+        public LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
+        {
+            var sr = Search(dn, ScopeBase, null, attrs, false, cons);
+
+            if (!sr.HasMore())
+            {
+                return null;
+            }
+
+            var ret = sr.Next();
+            if (sr.HasMore())
+            {
+                // "Read response is ambiguous, multiple entries returned"
+                throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
+            }
+
+            return ret;
+        }
+
+        //*************************************************************************
+        // rename methods
+        //*************************************************************************
+
+        /// <summary>
+        ///     Synchronously renames an existing entry in the directory.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Rename(string dn, string newRdn, bool deleteOldRdn)
+        {
+            Rename(dn, newRdn, deleteOldRdn, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Synchronously renames an existing entry in the directory, using the
+        ///     specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
+        {
+            // null for newParentdn means that this is originating as an Ldapv2 call
+            Rename(dn, newRdn, null, deleteOldRdn, cons);
+        }
+
+        /// <summary>
+        ///     Synchronously renames an existing entry in the directory, possibly
+        ///     repositioning the entry in the directory tree.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
+        {
+            Rename(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Synchronously renames an existing entry in the directory, using the
+        ///     specified constraints and possibly repositioning the entry in the
+        ///     directory tree.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
+        {
+            var queue = Rename(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
+
+            // Get a handle to the rename response
+            var renameResponse = (LdapResponse) queue.GetResponse();
+
+            // Set local copy of responseControls synchronously - if there were any
+            lock (_responseCtlSemaphore)
+            {
+                _responseCtls = renameResponse.Controls;
+            }
+
+            ChkResultCode(queue, cons, renameResponse);
+        }
+
+        //*************************************************************************
+        // search methods
+        //*************************************************************************
+
+        /// <inheritdoc />
+        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly)
+        {
+            return Search(@base, scope, filter, attrs, typesOnly, _defSearchCons);
+        }
+
+        /// <inheritdoc />
+        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            LdapSearchConstraints cons)
+        {
+            var queue = Search(@base, scope, filter, attrs, typesOnly, null, cons);
+
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            return new LdapSearchResults(queue, cons);
+        }
+
+        private void InitBlock()
+        {
+            _defSearchCons = new LdapSearchConstraints();
+            _responseCtlSemaphore = new object();
+        }
+
+
+        public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
+        {
+            add => Connection.OnCertificateValidation += value;
+
+            remove => Connection.OnCertificateValidation -= value;
+        }
+
+        /*
+        * The following are methods that affect the operation of
+        * LdapConnection, but are not Ldap requests.
+        */
+
+        /// <summary>
+        ///     Returns a copy of the object with a private context, but sharing the
+        ///     network connection if there is one.
+        ///     The network connection remains open until all clones have
+        ///     disconnected or gone out of scope. Any connection opened after
+        ///     cloning is private to the object making the connection.
+        ///     The clone can issue requests and freely modify options and search
+        ///     constraints, and , without affecting the source object or other clones.
+        ///     If the clone disconnects or reconnects, it is completely dissociated
+        ///     from the source object and other clones. Reauthenticating in a clone,
+        ///     however, is a global operation which will affect the source object
+        ///     and all associated clones, because it applies to the single shared
+        ///     physical connection. Any request by an associated object after one
+        ///     has reauthenticated will carry the new identity.
+        /// </summary>
+        /// <returns>
+        ///     A of the object.
+        /// </returns>
+        public object Clone()
+        {
+            LdapConnection newClone;
+            object newObj;
+            try
+            {
+                newObj = MemberwiseClone();
+                newClone = (LdapConnection) newObj;
+            }
+            catch (Exception ce)
+            {
+                throw new Exception("Internal error, cannot create clone", ce);
+            }
+
+            newClone.Connection = Connection; // same underlying connection
+
+            //now just duplicate the defSearchCons and responseCtls
+            if (_defSearchCons != null)
+            {
+                newClone._defSearchCons = (LdapSearchConstraints) _defSearchCons.Clone();
+            }
+            else
+            {
+                newClone._defSearchCons = null;
+            }
+
+            if (_responseCtls != null)
+            {
+                newClone._responseCtls = new LdapControl[_responseCtls.Length];
+                for (var i = 0; i < _responseCtls.Length; i++)
+                {
+                    newClone._responseCtls[i] = (LdapControl) _responseCtls[i].Clone();
+                }
+            }
+            else
+            {
+                newClone._responseCtls = null;
+            }
+
+            Connection.IncrCloneCount(); // Increment the count of clones
+            return newObj;
+        }
+
+        private void Dispose(bool isDisposing)
+        {
+            if (isDisposing)
+            {
+                DisconnectImpl();
+            }
+        }
+
+        /// <summary>
+        ///     Returns a property of a connection object.
+        /// </summary>
+        /// <param name="name">
+        ///     Name of the property to be returned.
+        ///     The following read-only properties are available
+        ///     for any given connection:
+        ///     <ul>
+        ///         <li>
+        ///             Ldap_PROPERTY_SDK returns the version of this SDK,
+        ///             as a Float data type.
+        ///         </li>
+        ///         <li>
+        ///             Ldap_PROPERTY_PROTOCOL returns the highest supported version of
+        ///             the Ldap protocol, as a Float data type.
+        ///         </li>
+        ///         <li>
+        ///             Ldap_PROPERTY_SECURITY returns a comma-separated list of the
+        ///             types of authentication supported, as a
+        ///             string.
+        ///         </li>
+        ///     </ul>
+        ///     A deep copy of the property is provided where applicable; a
+        ///     client does not need to clone the object received.
+        /// </param>
+        /// <returns>
+        ///     The object associated with the requested property,
+        ///     or null if the property is not defined.
+        /// </returns>
+        /// <seealso cref="LdapConstraints.GetProperty">
+        /// </seealso>
+        /// <seealso cref="object">
+        /// </seealso>
+        public object GetProperty(string name)
+        {
+            if (name.ToUpper().Equals(LdapPropertySdk.ToUpper()))
+            {
+                return Connection.Sdk;
+            }
+
+            if (name.ToUpper().Equals(LdapPropertyProtocol.ToUpper()))
+            {
+                return Connection.Protocol;
+            }
+
+            if (name.ToUpper().Equals(LdapPropertySecurity.ToUpper()))
+            {
+                return Connection.Security;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Registers an object to be notified on arrival of an unsolicited
+        ///     message from a server.
+        ///     An unsolicited message has the ID 0. A new thread is created and
+        ///     the method "messageReceived" in each registered object is called in
+        ///     turn.
+        /// </summary>
+        /// <param name="listener">
+        ///     An object to be notified on arrival of an
+        ///     unsolicited message from a server.  This object must
+        ///     implement the LdapUnsolicitedNotificationListener interface.
+        /// </param>
+        public void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        {
+            if (listener != null)
+            {
+                Connection.AddUnsolicitedNotificationListener(listener);
+            }
+        }
+
+
+        /// <summary>
+        ///     Deregisters an object so that it will no longer be notified on
+        ///     arrival of an unsolicited message from a server. If the object is
+        ///     null or was not previously registered for unsolicited notifications,
+        ///     the method does nothing.
+        /// </summary>
+        /// <param name="listener">
+        ///     An object to no longer be notified on arrival of
+        ///     an unsolicited message from a server.
+        /// </param>
+        public void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        {
+            if (listener != null)
+            {
+                Connection.RemoveUnsolicitedNotificationListener(listener);
+            }
+        }
+
+
+        //*************************************************************************
+        // Below are all of the Ldap protocol operation methods
+        //*************************************************************************
+
+        //*************************************************************************
+        // abandon methods
+        //*************************************************************************
+
+        /// <summary>
+        ///     Notifies the server not to send additional results associated with
+        ///     this LdapSearchResults object, and discards any results already
+        ///     received.
+        /// </summary>
+        /// <param name="results">
+        ///     An object returned from a search.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(LdapSearchResults results)
+        {
+            Abandon(results, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Notifies the server not to send additional results associated with
+        ///     this LdapSearchResults object, and discards any results already
+        ///     received.
+        /// </summary>
+        /// <param name="results">
+        ///     An object returned from a search.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(LdapSearchResults results, LdapConstraints cons)
+        {
+            results.Abandon();
+        }
+
+        /// <summary>
+        ///     Abandons an asynchronous operation.
+        /// </summary>
+        /// <param name="id">
+        ///     The ID of the asynchronous operation to abandon. The ID
+        ///     can be obtained from the response queue for the
+        ///     operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(int id)
+        {
+            Abandon(id, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Abandons an asynchronous operation, using the specified
+        ///     constraints.
+        /// </summary>
+        /// <param name="id">
+        ///     The ID of the asynchronous operation to abandon.
+        ///     The ID can be obtained from the search
+        ///     queue for the operation.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(int id, LdapConstraints cons)
+        {
+            // We need to inform the Message Agent which owns this messageID to
+            // remove it from the queue.
+            try
+            {
+                var agent = Connection.GetMessageAgent(id);
+                agent.Abandon(id, cons);
+            }
+            catch (FieldAccessException fae)
+            {
+                Logger.Log.LogWarning("Exception swallowed", fae);
+            }
+        }
+
+        /// <summary>
+        ///     Abandons all outstanding operations managed by the queue.
+        ///     All operations in progress, which are managed by the specified queue,
+        ///     are abandoned.
+        /// </summary>
+        /// <param name="queue">
+        ///     The queue returned from an asynchronous request.
+        ///     All outstanding operations managed by the queue
+        ///     are abandoned, and the queue is emptied.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(LdapMessageQueue queue)
+        {
+            Abandon(queue, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Abandons all outstanding operations managed by the queue.
+        ///     All operations in progress, which are managed by the specified
+        ///     queue, are abandoned.
+        /// </summary>
+        /// <param name="queue">
+        ///     The queue returned from an asynchronous request.
+        ///     All outstanding operations managed by the queue
+        ///     are abandoned, and the queue is emptied.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public void Abandon(LdapMessageQueue queue, LdapConstraints cons)
+        {
+            if (queue != null)
+            {
+                MessageAgent agent;
+                if (queue is LdapSearchQueue)
+                {
+                    agent = queue.MessageAgent;
+                }
+                else
+                {
+                    agent = queue.MessageAgent;
+                }
+
+                var msgIds = agent.MessageIDs;
+                for (var i = 0; i < msgIds.Length; i++)
+                {
+                    agent.Abandon(msgIds[i], cons);
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Asynchronously adds an entry to the directory.
+        /// </summary>
+        /// <param name="entry">
+        ///     LdapEntry object specifying the distinguished
+        ///     name and attributes of the new entry.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue)
+        {
+            return Add(entry, queue, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Asynchronously adds an entry to the directory, using the specified
+        ///     constraints.
+        /// </summary>
+        /// <param name="entry">
+        ///     LdapEntry object specifying the distinguished
+        ///     name and attributes of the new entry.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
+        {
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            // error check the parameters
+            if (entry == null)
+            {
+                throw new ArgumentException("The LdapEntry parameter" + " cannot be null");
+            }
+
+            if ((object) entry.Dn == null)
+            {
+                throw new ArgumentException("The DN value must be present" + " in the LdapEntry object");
+            }
+
+            LdapMessage msg = new LdapAddRequest(entry, cons.GetControls());
+
+            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+        }
+
+        /// <summary>
+        ///     Asynchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap
+        ///     version, and queue.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        [CLSCompliant(false)]
+        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue)
+        {
+            return Bind(version, dn, passwd, queue, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Asynchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap
+        ///     version, queue, and constraints.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     had already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        [CLSCompliant(false)]
+        public LdapResponseQueue Bind(int version, string dn, sbyte[] passwd, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
+            int msgId;
+            BindProperties bindProps;
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            if ((object) dn == null)
+            {
+                dn = "";
+            }
+            else
+            {
+                dn = dn.Trim();
+            }
+
+            if (passwd == null)
+            {
+                passwd = new sbyte[] { };
+            }
+
+            var anonymous = false;
+            if (passwd.Length == 0)
+            {
+                anonymous = true; // anonymous, passwd length zero with simple bind
+                dn = ""; // set to null if anonymous
+            }
+
+            LdapMessage msg = new LdapBindRequest(version, dn, passwd, cons.GetControls());
+
+            msgId = msg.MessageId;
+            bindProps = new BindProperties(version, dn, "simple", anonymous, null, null);
+
+            // For bind requests, if not connected, attempt to reconnect
+            if (!Connection.Connected)
+            {
+                if ((object) Connection.Host != null)
+                {
+                    Connection.Connect(Connection.Host, Connection.Port);
+                }
+                else
+                {
+                    throw new LdapException(ExceptionMessages.ConnectionImpossible, LdapException.ConnectError, null);
+                }
+            }
+
+            // The semaphore is released when the bind response is queued.
+            Connection.AcquireWriteSemaphore(msgId);
+
+            return SendRequestToServer(msg, cons.TimeLimit, queue, bindProps);
+        }
+
+        //*************************************************************************
+        // compare methods
+        //*************************************************************************
+
+        /// <summary>
+        ///     Synchronously checks to see if an entry contains an attribute
+        ///     with a specified value.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public bool Compare(string dn, LdapAttribute attr)
+        {
+            return Compare(dn, attr, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Synchronously checks to see if an entry contains an attribute with a
+        ///     specified value, using the specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
+        {
+            var ret = false;
+
+            var queue = Compare(dn, attr, null, cons);
+
+            var res = (LdapResponse) queue.GetResponse();
+
+            // Set local copy of responseControls synchronously - if there were any
+            lock (_responseCtlSemaphore)
+            {
+                _responseCtls = res.Controls;
+            }
+
+            if (res.ResultCode == LdapException.CompareTrue)
+            {
+                ret = true;
+            }
+            else if (res.ResultCode == LdapException.CompareFalse)
+            {
+                ret = false;
+            }
+            else
+            {
+                ChkResultCode(queue, cons, res);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        ///     Asynchronously compares an attribute value with one in the directory,
+        ///     using the specified queue.
+        ///     Please note that a successful completion of this command results in
+        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
+        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     does not have the value or the attribute.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry containing an
+        ///     attribute to compare.
+        /// </param>
+        /// <param name="attr">
+        ///     An attribute to compare.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <seealso cref="LdapException.CompareTrue">
+        /// </seealso>
+        /// <seealso cref="LdapException.CompareFalse">
+        /// </seealso>
+        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
+        {
+            return Compare(dn, attr, queue, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Asynchronously compares an attribute value with one in the directory,
+        ///     using the specified queue and contraints.
+        ///     Please note that a successful completion of this command results in
+        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
+        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     does not have the value or the attribute.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry containing an
+        ///     attribute to compare.
+        /// </param>
+        /// <param name="attr">
+        ///     An attribute to compare.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <seealso cref="LdapException.CompareTrue">
+        /// </seealso>
+        /// <seealso cref="LdapException.CompareFalse">
+        /// </seealso>
+        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
+            if (attr.Size() != 1)
+            {
+                throw new ArgumentException("compare: Exactly one value " + "must be present in the LdapAttribute");
+            }
+
+            if ((object) dn == null)
+            {
+                // Invalid parameter
+                throw new ArgumentException("compare: DN cannot be null");
+            }
+
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            LdapMessage msg = new LdapCompareRequest(dn, attr.Name, attr.ByteValue, cons.GetControls());
+
+            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+        }
+
+        /// <summary>
+        ///     Asynchronously deletes the entry with the specified distinguished name
+        ///     from the directory and returns the results to the specified queue.
+        ///     Note: A Delete operation will not remove an entry that contains
+        ///     subordinate entries, nor will it dereference alias entries.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue)
+        {
+            return Delete(dn, queue, _defSearchCons);
+        }
+
+        /// <summary>
+        ///     Asynchronously deletes the entry with the specified distinguished name
+        ///     from the directory, using the specified contraints and queue.
+        ///     Note: A Delete operation will not remove an entry that contains
+        ///     subordinate entries, nor will it dereference alias entries.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to delete.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
+        {
+            if ((object) dn == null)
+            {
+                // Invalid DN parameter
+                throw new ArgumentException(ExceptionMessages.DnParamError);
+            }
+
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            LdapMessage msg = new LdapDeleteRequest(dn, cons.GetControls());
+
+            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+        }
+
+
+        /// <summary>
+        ///     Synchronously disconnect from the server
+        /// </summary>
+        /// <param name="how">
+        ///     true if application call disconnect API, false if finalize.
+        /// </param>
+        private void DisconnectImpl()
+        {
+            // disconnect doesn't affect other clones
+            // If not a clone, distroys connection
+            Connection = Connection.DestroyClone();
+        }
+
+
+        /*
+        * Asynchronous Ldap extended request
+        */
+
+        /// <summary>
+        ///     Provides an asynchronous means to access extended, non-mandatory
+        ///     operations offered by a particular Ldapv3 compliant server.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to and (2) an
+        ///     operation-specific sequence of octet strings
+        ///     or BER-encoded values.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a queue
+        ///     object is created internally.
+        /// </param>
+        /// <returns>
+        ///     An operation-specific object, containing an ID and either an octet
+        ///     string or BER-encoded values.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
+        {
+            return ExtendedOperation(op, _defSearchCons, queue);
+        }
+
+
+        /*
+        *  Asynchronous Ldap extended request with SearchConstraints
+        */
+
+        /// <summary>
+        ///     Provides an asynchronous means to access extended, non-mandatory
+        ///     operations offered by a particular Ldapv3 compliant server.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to and (2) an operation-
+        ///     specific sequence of octet strings or BER-encoded values.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a queue
+        ///     object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to this operation.
+        /// </param>
+        /// <returns>
+        ///     An operation-specific object, containing an ID and either an
+        ///     octet string or BER-encoded values.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
+            LdapResponseQueue queue)
+        {
+            // Use default constraints if none-specified
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            var msg = MakeExtendedOperation(op, cons);
+            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+        }
+
+        /// <summary>
+        ///     Formulates the extended operation, constraints into an
+        ///     LdapMessage and returns the LdapMessage.  This is used by
+        ///     extendedOperation and startTLS which needs the LdapMessage to
+        ///     get the MessageID.
+        /// </summary>
+        internal LdapMessage MakeExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
+        {
+            // Use default constraints if none-specified
+            if (cons == null)
+            {
+                cons = _defSearchCons;
+            }
+
+            // error check the parameters
+            if ((object) op.GetId() == null)
+            {
+                // Invalid extended operation parameter, no OID specified
+                throw new ArgumentException(ExceptionMessages.OpParamError);
+            }
+
+            return new LdapExtendedRequest(op, cons.GetControls());
         }
 
         /// <summary>
@@ -2237,112 +2541,13 @@ namespace Novell.Directory.Ldap
             }
 
             if (cons == null)
+            {
                 cons = _defSearchCons;
+            }
 
             LdapMessage msg = new LdapModifyRequest(dn, mods, cons.GetControls());
 
             return SendRequestToServer(msg, cons.TimeLimit, queue, null);
-        }
-
-        //*************************************************************************
-        // read methods
-        //*************************************************************************
-
-        /// <summary>
-        ///     Synchronously reads the entry for the specified distiguished name (DN)
-        ///     and retrieves all attributes for the entry.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to retrieve.
-        /// </param>
-        /// <returns>
-        ///     the LdapEntry read from the server.
-        /// </returns>
-        /// <exception>
-        ///     LdapException if the object was not found
-        /// </exception>
-        public LdapEntry Read(string dn)
-        {
-            return Read(dn, _defSearchCons);
-        }
-
-
-        /// <summary>
-        ///     Synchronously reads the entry for the specified distiguished name (DN),
-        ///     using the specified constraints, and retrieves all attributes for the
-        ///     entry.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to retrieve.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the operation.
-        /// </param>
-        /// <returns>
-        ///     the LdapEntry read from the server
-        /// </returns>
-        /// <exception>
-        ///     LdapException if the object was not found
-        /// </exception>
-        public LdapEntry Read(string dn, LdapSearchConstraints cons)
-        {
-            return Read(dn, null, cons);
-        }
-
-        /// <summary>
-        ///     Synchronously reads the entry for the specified distinguished name (DN)
-        ///     and retrieves only the specified attributes from the entry.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to retrieve.
-        /// </param>
-        /// <param name="attrs">
-        ///     The names of the attributes to retrieve.
-        /// </param>
-        /// <returns>
-        ///     the LdapEntry read from the server
-        /// </returns>
-        /// <exception>
-        ///     LdapException if the object was not found
-        /// </exception>
-        public LdapEntry Read(string dn, string[] attrs)
-        {
-            return Read(dn, attrs, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Synchronously reads the entry for the specified distinguished name (DN),
-        ///     using the specified constraints, and retrieves only the specified
-        ///     attributes from the entry.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to retrieve.
-        /// </param>
-        /// <param name="attrs">
-        ///     The names of the attributes to retrieve.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the operation.
-        /// </param>
-        /// <returns>
-        ///     the LdapEntry read from the server
-        /// </returns>
-        /// <exception>
-        ///     LdapException if the object was not found
-        /// </exception>
-        public LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
-        {
-            var sr = Search(dn, ScopeBase, null, attrs, false, cons);
-            
-            if (!sr.HasMore()) return null;
-
-            var ret = sr.Next();
-            if (sr.HasMore())
-            {
-                // "Read response is ambiguous, multiple entries returned"
-                throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
-            }
-            return ret;
         }
 
         /// <summary>
@@ -2401,133 +2606,7 @@ namespace Novell.Directory.Ldap
                 lconn.Connect(toGet.Host, toGet.Port);
                 var toReturn = lconn.Read(toGet.GetDn(), toGet.AttributeArray, cons);
                 return toReturn;
-            }                
-        }
-
-        //*************************************************************************
-        // rename methods
-        //*************************************************************************
-
-        /// <summary>
-        ///     Synchronously renames an existing entry in the directory.
-        /// </summary>
-        /// <param name="dn">
-        ///     The current distinguished name of the entry.
-        /// </param>
-        /// <param name="newRdn">
-        ///     The new relative distinguished name for the entry.
-        /// </param>
-        /// <param name="deleteOldRdn">
-        ///     If true, the old name is not retained as an
-        ///     attribute value. If false, the old name is
-        ///     retained as an attribute value.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Rename(string dn, string newRdn, bool deleteOldRdn)
-        {
-            Rename(dn, newRdn, deleteOldRdn, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Synchronously renames an existing entry in the directory, using the
-        ///     specified constraints.
-        /// </summary>
-        /// <param name="dn">
-        ///     The current distinguished name of the entry.
-        /// </param>
-        /// <param name="newRdn">
-        ///     The new relative distinguished name for the entry.
-        /// </param>
-        /// <param name="deleteOldRdn">
-        ///     If true, the old name is not retained as an
-        ///     attribute value. If false, the old name is
-        ///     retained as an attribute value.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
-        {
-            // null for newParentdn means that this is originating as an Ldapv2 call
-            Rename(dn, newRdn, null, deleteOldRdn, cons);
-        }
-
-        /// <summary>
-        ///     Synchronously renames an existing entry in the directory, possibly
-        ///     repositioning the entry in the directory tree.
-        /// </summary>
-        /// <param name="dn">
-        ///     The current distinguished name of the entry.
-        /// </param>
-        /// <param name="newRdn">
-        ///     The new relative distinguished name for the entry.
-        /// </param>
-        /// <param name="newParentdn">
-        ///     The distinguished name of an existing entry which
-        ///     is to be the new parent of the entry.
-        /// </param>
-        /// <param name="deleteOldRdn">
-        ///     If true, the old name is not retained as an
-        ///     attribute value. If false, the old name is
-        ///     retained as an attribute value.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
-        {
-            Rename(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Synchronously renames an existing entry in the directory, using the
-        ///     specified constraints and possibly repositioning the entry in the
-        ///     directory tree.
-        /// </summary>
-        /// <param name="dn">
-        ///     The current distinguished name of the entry.
-        /// </param>
-        /// <param name="newRdn">
-        ///     The new relative distinguished name for the entry.
-        /// </param>
-        /// <param name="newParentdn">
-        ///     The distinguished name of an existing entry which
-        ///     is to be the new parent of the entry.
-        /// </param>
-        /// <param name="deleteOldRdn">
-        ///     If true, the old name is not retained as an
-        ///     attribute value. If false, the old name is
-        ///     retained as an attribute value.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
-        {
-            var queue = Rename(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
-
-            // Get a handle to the rename response
-            var renameResponse = (LdapResponse) queue.GetResponse();
-
-            // Set local copy of responseControls synchronously - if there were any
-            lock (_responseCtlSemaphore)
-            {
-                _responseCtls = renameResponse.Controls;
             }
-
-            ChkResultCode(queue, cons, renameResponse);
         }
 
         /*
@@ -2671,32 +2750,13 @@ namespace Novell.Directory.Ldap
             }
 
             if (cons == null)
+            {
                 cons = _defSearchCons;
+            }
 
             LdapMessage msg = new LdapModifyDnRequest(dn, newRdn, newParentdn, deleteOldRdn, cons.GetControls());
 
             return SendRequestToServer(msg, cons.TimeLimit, queue, null);
-        }
-
-        //*************************************************************************
-        // search methods
-        //*************************************************************************
-
-        /// <inheritdoc />
-        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly)
-        {
-            return Search(@base, scope, filter, attrs, typesOnly, _defSearchCons);
-        }
-
-        /// <inheritdoc />
-        public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
-            LdapSearchConstraints cons)
-        {
-            var queue = Search(@base, scope, filter, attrs, typesOnly, null, cons);
-
-            if (cons == null)
-                cons = _defSearchCons;
-            return new LdapSearchResults(queue, cons);
         }
 
         /// <summary>
@@ -2794,8 +2854,11 @@ namespace Novell.Directory.Ldap
             {
                 filter = "objectclass=*";
             }
+
             if (cons == null)
+            {
                 cons = _defSearchCons;
+            }
 
             LdapMessage msg = new LdapSearchRequest(@base, scope, filter, attrs, cons.Dereference, cons.MaxResults,
                 cons.ServerTimeLimit, typesOnly, cons.GetControls());
@@ -2811,7 +2874,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(_conn, msg, cons.TimeLimit, myqueue, null);
+            agent.SendMessage(Connection, msg, cons.TimeLimit, myqueue, null);
             return myqueue;
         }
 
@@ -2988,8 +3051,8 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            agent.SendMessage(_conn, request, cons.TimeLimit, myqueue, null);
-            
+            agent.SendMessage(Connection, request, cons.TimeLimit, myqueue, null);
+
             return myqueue;
         }
 
@@ -3031,7 +3094,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(_conn, msg, timeout, queue, bindProps);
+            agent.SendMessage(Connection, msg, timeout, queue, bindProps);
             return queue;
         }
 
@@ -3078,6 +3141,7 @@ namespace Novell.Directory.Ldap
                             dn = ap.Dn;
                             pw = ap.Password;
                         }
+
                         rconn.Bind(LdapV3, dn, pw);
                         ex = null;
                         refInfo = new ReferralInfo(rconn, referrals, url);
@@ -3116,6 +3180,7 @@ namespace Novell.Directory.Ldap
                         rex.SetReferrals(referrals);
                         throw rex;
                     }
+
                     // Figure out which Url belongs to the connection
                     for (var idx = 0; idx < referrals.Length; idx++)
                     {
@@ -3133,6 +3198,7 @@ namespace Novell.Directory.Ldap
                             Logger.Log.LogWarning("Exception swallowed", e);
                         }
                     }
+
                     if (refInfo == null)
                     {
                         // Could not match LdapBind.bind() connecction with URL list
@@ -3145,6 +3211,7 @@ namespace Novell.Directory.Ldap
                     ex = lex;
                 }
             }
+
             if (ex != null)
             {
                 // Could not connect to any server, throw an exception
@@ -3153,15 +3220,18 @@ namespace Novell.Directory.Ldap
                 {
                     throw (LdapReferralException) ex;
                 }
+
                 if (ex is LdapException)
                 {
                     ldapex = (LdapException) ex;
                 }
                 else
                 {
-                    ldapex = new LdapLocalException(ExceptionMessages.ServerConnectError, new object[] {_conn.Host},
+                    ldapex = new LdapLocalException(ExceptionMessages.ServerConnectError,
+                        new object[] {Connection.Host},
                         LdapException.ConnectError, ex);
                 }
+
                 // Error attempting to follow a referral
                 var rex = new LdapReferralException(ExceptionMessages.ReferralError, ldapex);
                 rex.SetReferrals(referrals);
@@ -3266,6 +3336,7 @@ namespace Novell.Directory.Ldap
             {
                 connList = new ArrayList(cons.HopLimit);
             }
+
             // Following referrals or search reference
             string[] refs; // referral list
             if (initialReferrals != null)
@@ -3284,10 +3355,12 @@ namespace Novell.Directory.Ldap
                     resp.ChkResultCode();
                     return connList;
                 }
+
                 // We have a referral response
                 refs = resp.Referrals;
                 origMsg = resp.RequestingMessage;
             }
+
             LdapUrl refUrl; // referral represented as URL
             try
             {
@@ -3296,6 +3369,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw new LdapLocalException("Max hops exceeded", LdapException.ReferralLimitExceeded);
                 }
+
                 // Get a connection to follow the referral
                 rinfo = GetReferralConnection(refs);
                 var rconn = rinfo.ReferralConnection; // new conn for following referral
@@ -3319,6 +3393,7 @@ namespace Novell.Directory.Ldap
                     {
                         agent = queue.MessageAgent;
                     }
+
                     agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, queue, null);
                 }
                 catch (InterThreadException ex)
@@ -3352,6 +3427,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw (LdapReferralException) ex;
                 }
+
                 // Set referral list and failed referral
                 var rex = new LdapReferralException(ExceptionMessages.ReferralError, ex);
                 rex.SetReferrals(refs);
@@ -3363,8 +3439,10 @@ namespace Novell.Directory.Ldap
                 {
                     rex.FailedReferral = refs[refs.Length - 1];
                 }
+
                 throw rex;
             }
+
             return connList;
         }
 
@@ -3396,6 +3474,7 @@ namespace Novell.Directory.Ldap
                     {
                         filter = url.Filter;
                     }
+
                     break;
                 // We are allowed to get a referral for the following
 
@@ -3432,6 +3511,7 @@ namespace Novell.Directory.Ldap
             {
                 return;
             }
+
             // Release referral connections
             for (var i = list.Count - 1; i >= 0; i--)
             {
@@ -3551,11 +3631,13 @@ namespace Novell.Directory.Ldap
                 throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] {dn},
                     LdapException.NoResultsReturned);
             }
+
             if (values.Length > 1)
             {
                 throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] {dn},
                     LdapException.ConstraintViolation);
             }
+
             return values[0];
         }
     }

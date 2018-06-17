@@ -57,7 +57,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             Add(mechanism);
             if (credentials != null)
+            {
                 Add(credentials);
+            }
         }
     }
 }

@@ -44,140 +44,18 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapConstraints
     {
-        /// <summary>
-        ///     Returns the maximum number of referrals to follow during automatic
-        ///     referral following.  The operation will be abandoned and terminated by
-        ///     the API with a result code of LdapException.REFERRAL_LIMIT_EXCEEDED
-        ///     if the number of referrals in a sequence exceeds the limit.
-        ///     It is ignored for asynchronous operations.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of referrals to follow in sequence
-        /// </returns>
-        /// <seealso cref="HopLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
-        /// </seealso>
-        /// <summary>
-        ///     Sets the maximum number of referrals to follow in sequence during
-        ///     automatic referral following.
-        /// </summary>
-        /// <param name="hop_limit">
-        ///     The maximum number of referrals to follow in a
-        ///     sequence during automatic referral following.
-        ///     The default value is 10. A value of 0 means no limit.
-        ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of
-        ///     LdapException.REFERRAL_LIMIT_EXCEEDED if the
-        ///     number of referrals in a sequence exceeds the limit.
-        ///     It is ignored for asynchronous operations.
-        /// </param>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
-        /// </seealso>
-        public int HopLimit
-        {
-            get => _hopLimit;
-
-            set => _hopLimit = value;
-        }
-
-        /// <summary>
-        ///     Gets all the properties of the constraints object which has been
-        ///     assigned with {@link #setProperty(String, Object)}.
-        ///     A value of <code>null</code> is returned if no properties are defined.
-        /// </summary>
-        /// <seealso cref="object">
-        /// </seealso>
-        /// <seealso cref="LdapConnection.GetProperty">
-        /// </seealso>
-        /// <summary>
-        ///     Sets all the properties of the constraints object.
-        /// </summary>
-        /// <param name="props">
-        ///     the properties represented by the Hashtable object to set.
-        /// </param>
-        internal Hashtable Properties
-        {
-            get => _properties;
-
-
-            set => _properties = (Hashtable) value.Clone();
-        }
-
-        /// <summary>
-        ///     Specified whether or not referrals are followed automatically.
-        /// </summary>
-        /// <returns>
-        ///     True if referrals are followed automatically, or
-        ///     false if referrals throw an LdapReferralException.
-        /// </returns>
-        /// <summary>
-        ///     Specifies whether referrals are followed automatically or if
-        ///     referrals throw an LdapReferralException.
-        ///     Referrals of any type other than to an Ldap server (for example, a
-        ///     referral URL other than ldap://something) are ignored on automatic
-        ///     referral following.
-        ///     The default is false.
-        /// </summary>
-        /// <param name="doReferrals">
-        ///     True to follow referrals automatically.
-        ///     False to throw an LdapReferralException if
-        ///     the server returns a referral.
-        /// </param>
-        public bool ReferralFollowing
-        {
-            get => _doReferrals;
-
-            set => _doReferrals = value;
-        }
-
-        /// <summary>
-        ///     Returns the maximum number of milliseconds to wait for any operation
-        ///     under these constraints.
-        ///     If the value is 0, there is no maximum time limit on waiting
-        ///     for operation results. The actual granularity of the timeout depends
-        ///     platform.  This limit is enforced the the API on an
-        ///     operation, not by the server.
-        ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
-        ///     operation exceeds the time limit.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of milliseconds to wait for the operation.
-        /// </returns>
-        /// <seealso cref="LdapException.LdapTimeout">
-        /// </seealso>
-        /// <summary>
-        ///     Sets the maximum number of milliseconds the client waits for
-        ///     any operation under these constraints to complete.
-        ///     If the value is 0, there is no maximum time limit enforced by the
-        ///     API on waiting for the operation results. The actual granularity of
-        ///     the timeout depends on the platform.
-        ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
-        ///     operation exceeds the time limit.
-        /// </summary>
-        /// <param name="msLimit">
-        ///     The maximum milliseconds to wait.
-        /// </param>
-        /// <seealso cref="LdapException.LdapTimeout">
-        /// </seealso>
-        public int TimeLimit
-        {
-            get => _msLimit;
-
-            set => _msLimit = value;
-        }
-
-        private int _msLimit;
-        private int _hopLimit = 10;
-        private bool _doReferrals;
-        private ILdapReferralHandler _refHandler;
-        private LdapControl[] _controls;
         private static object _nameLock; // protect agentNum
         private static int _lConsNum = 0; // Debug, LdapConstraints num
+        private LdapControl[] _controls;
+
         private string _name; // String name for debug
         private Hashtable _properties; // Properties
+        private ILdapReferralHandler _refHandler;
+
+        static LdapConstraints()
+        {
+            _nameLock = new object();
+        }
 
         /// <summary>
         ///     Constructs a new LdapConstraints object that specifies the default
@@ -247,12 +125,122 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public LdapConstraints(int msLimit, bool doReferrals, ILdapReferralHandler handler, int hopLimit)
         {
-            _msLimit = msLimit;
-            _doReferrals = doReferrals;
+            TimeLimit = msLimit;
+            ReferralFollowing = doReferrals;
             _refHandler = handler;
-            _hopLimit = hopLimit;
+            HopLimit = hopLimit;
             // Get a unique constraints name for debug
         }
+
+        /// <summary>
+        ///     Returns the maximum number of referrals to follow during automatic
+        ///     referral following.  The operation will be abandoned and terminated by
+        ///     the API with a result code of LdapException.REFERRAL_LIMIT_EXCEEDED
+        ///     if the number of referrals in a sequence exceeds the limit.
+        ///     It is ignored for asynchronous operations.
+        /// </summary>
+        /// <returns>
+        ///     The maximum number of referrals to follow in sequence
+        /// </returns>
+        /// <seealso cref="HopLimit">
+        /// </seealso>
+        /// <seealso cref="LdapException.ReferralLimitExceeded">
+        /// </seealso>
+        /// <summary>
+        ///     Sets the maximum number of referrals to follow in sequence during
+        ///     automatic referral following.
+        /// </summary>
+        /// <param name="hop_limit">
+        ///     The maximum number of referrals to follow in a
+        ///     sequence during automatic referral following.
+        ///     The default value is 10. A value of 0 means no limit.
+        ///     The operation will be abandoned and terminated by the
+        ///     API with a result code of
+        ///     LdapException.REFERRAL_LIMIT_EXCEEDED if the
+        ///     number of referrals in a sequence exceeds the limit.
+        ///     It is ignored for asynchronous operations.
+        /// </param>
+        /// <seealso cref="LdapException.ReferralLimitExceeded">
+        /// </seealso>
+        public int HopLimit { get; set; } = 10;
+
+        /// <summary>
+        ///     Gets all the properties of the constraints object which has been
+        ///     assigned with {@link #setProperty(String, Object)}.
+        ///     A value of <code>null</code> is returned if no properties are defined.
+        /// </summary>
+        /// <seealso cref="object">
+        /// </seealso>
+        /// <seealso cref="LdapConnection.GetProperty">
+        /// </seealso>
+        /// <summary>
+        ///     Sets all the properties of the constraints object.
+        /// </summary>
+        /// <param name="props">
+        ///     the properties represented by the Hashtable object to set.
+        /// </param>
+        internal Hashtable Properties
+        {
+            get => _properties;
+
+
+            set => _properties = (Hashtable) value.Clone();
+        }
+
+        /// <summary>
+        ///     Specified whether or not referrals are followed automatically.
+        /// </summary>
+        /// <returns>
+        ///     True if referrals are followed automatically, or
+        ///     false if referrals throw an LdapReferralException.
+        /// </returns>
+        /// <summary>
+        ///     Specifies whether referrals are followed automatically or if
+        ///     referrals throw an LdapReferralException.
+        ///     Referrals of any type other than to an Ldap server (for example, a
+        ///     referral URL other than ldap://something) are ignored on automatic
+        ///     referral following.
+        ///     The default is false.
+        /// </summary>
+        /// <param name="doReferrals">
+        ///     True to follow referrals automatically.
+        ///     False to throw an LdapReferralException if
+        ///     the server returns a referral.
+        /// </param>
+        public bool ReferralFollowing { get; set; }
+
+        /// <summary>
+        ///     Returns the maximum number of milliseconds to wait for any operation
+        ///     under these constraints.
+        ///     If the value is 0, there is no maximum time limit on waiting
+        ///     for operation results. The actual granularity of the timeout depends
+        ///     platform.  This limit is enforced the the API on an
+        ///     operation, not by the server.
+        ///     The operation will be abandoned and terminated by the
+        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
+        ///     operation exceeds the time limit.
+        /// </summary>
+        /// <returns>
+        ///     The maximum number of milliseconds to wait for the operation.
+        /// </returns>
+        /// <seealso cref="LdapException.LdapTimeout">
+        /// </seealso>
+        /// <summary>
+        ///     Sets the maximum number of milliseconds the client waits for
+        ///     any operation under these constraints to complete.
+        ///     If the value is 0, there is no maximum time limit enforced by the
+        ///     API on waiting for the operation results. The actual granularity of
+        ///     the timeout depends on the platform.
+        ///     The operation will be abandoned and terminated by the
+        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
+        ///     operation exceeds the time limit.
+        /// </summary>
+        /// <param name="msLimit">
+        ///     The maximum milliseconds to wait.
+        /// </param>
+        /// <seealso cref="LdapException.LdapTimeout">
+        /// </seealso>
+        public int TimeLimit { get; set; }
 
         /// <summary>
         ///     Returns the controls to be sent to the server.
@@ -288,6 +276,7 @@ namespace Novell.Directory.Ldap
             {
                 return null; // Requested property not available.
             }
+
             return _properties[name];
         }
 
@@ -319,6 +308,7 @@ namespace Novell.Directory.Ldap
                 _controls = null;
                 return;
             }
+
             _controls = new LdapControl[1];
             _controls[0] = (LdapControl) control.Clone();
         }
@@ -337,6 +327,7 @@ namespace Novell.Directory.Ldap
                 _controls = null;
                 return;
             }
+
             _controls = new LdapControl[controls.Length];
             for (var i = 0; i < controls.Length; i++)
             {
@@ -366,6 +357,7 @@ namespace Novell.Directory.Ldap
             {
                 _properties = new Hashtable();
             }
+
             SupportClass.PutElement(_properties, name, valueRenamed);
         }
 
@@ -403,21 +395,18 @@ namespace Novell.Directory.Ldap
                     ((LdapConstraints) newObj)._controls = new LdapControl[_controls.Length];
                     _controls.CopyTo(((LdapConstraints) newObj)._controls, 0);
                 }
+
                 if (_properties != null)
                 {
                     ((LdapConstraints) newObj)._properties = (Hashtable) _properties.Clone();
                 }
+
                 return newObj;
             }
             catch (Exception ce)
             {
                 throw new Exception("Internal error, cannot create clone", ce);
             }
-        }
-
-        static LdapConstraints()
-        {
-            _nameLock = new object();
         }
     }
 }

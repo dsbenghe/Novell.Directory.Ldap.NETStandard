@@ -38,8 +38,6 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1Boolean : Asn1Object
     {
-        private readonly bool _content;
-
         /// <summary> ASN.1 BOOLEAN tag definition.</summary>
         public const int Tag = 0x01;
 
@@ -49,6 +47,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     thus we create it only once.
         /// </summary>
         private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+
+        private readonly bool _content;
 
         /* Constructors for Asn1Boolean
                 */

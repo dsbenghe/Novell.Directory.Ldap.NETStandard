@@ -47,6 +47,33 @@ namespace Novell.Directory.Ldap
     public class LdapCompareRequest : LdapMessage
     {
         /// <summary>
+        ///     Constructs an LdapCompareRequest Object.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry containing an
+        ///     attribute to compare.
+        /// </param>
+        /// <param name="name">
+        ///     The name of the attribute to compare.
+        /// </param>
+        /// <param name="value">
+        ///     The value of the attribute to compare.
+        /// </param>
+        /// <param name="cont">
+        ///     Any controls that apply to the compare request,
+        ///     or null if none.
+        /// </param>
+        [CLSCompliant(false)]
+        public LdapCompareRequest(string dn, string name, sbyte[] valueRenamed, LdapControl[] cont)
+            : base(
+                CompareRequest,
+                new RfcCompareRequest(new RfcLdapDn(dn),
+                    new RfcAttributeValueAssertion(new RfcAttributeDescription(name),
+                        new RfcAssertionValue(valueRenamed))), cont)
+        {
+        }
+
+        /// <summary>
         ///     Returns the LdapAttribute associated with this request.
         /// </summary>
         /// <returns>
@@ -84,32 +111,5 @@ namespace Novell.Directory.Ldap
         ///     the dn of the entry to compare
         /// </returns>
         public string Dn => Asn1Object.RequestDn;
-
-        /// <summary>
-        ///     Constructs an LdapCompareRequest Object.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry containing an
-        ///     attribute to compare.
-        /// </param>
-        /// <param name="name">
-        ///     The name of the attribute to compare.
-        /// </param>
-        /// <param name="value">
-        ///     The value of the attribute to compare.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the compare request,
-        ///     or null if none.
-        /// </param>
-        [CLSCompliant(false)]
-        public LdapCompareRequest(string dn, string name, sbyte[] valueRenamed, LdapControl[] cont)
-            : base(
-                CompareRequest,
-                new RfcCompareRequest(new RfcLdapDn(dn),
-                    new RfcAttributeValueAssertion(new RfcAttributeDescription(name),
-                        new RfcAssertionValue(valueRenamed))), cont)
-        {
-        }
     }
 }

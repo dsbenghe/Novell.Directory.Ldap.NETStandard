@@ -36,6 +36,17 @@ namespace Novell.Directory.Ldap.Utilclass
     /// <summary> Encapsulates an Ldap Bind properties</summary>
     public class BindProperties
     {
+        public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties,
+            object bindCallbackHandler)
+        {
+            ProtocolVersion = version;
+            AuthenticationDn = dn;
+            AuthenticationMethod = method;
+            Anonymous = anonymous;
+            SaslBindProperties = bindProperties;
+            SaslCallbackHandler = bindCallbackHandler;
+        }
+
         /// <summary> gets the protocol version</summary>
         public int ProtocolVersion { get; } = 3;
 
@@ -78,16 +89,5 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     true if the bind properties specify an anonymous bind
         /// </returns>
         public bool Anonymous { get; }
-
-        public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties,
-            object bindCallbackHandler)
-        {
-            ProtocolVersion = version;
-            AuthenticationDn = dn;
-            AuthenticationMethod = method;
-            Anonymous = anonymous;
-            SaslBindProperties = bindProperties;
-            SaslCallbackHandler = bindCallbackHandler;
-        }
     }
 }

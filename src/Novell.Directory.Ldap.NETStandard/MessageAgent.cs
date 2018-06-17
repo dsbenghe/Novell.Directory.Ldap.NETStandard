@@ -37,17 +37,22 @@ namespace Novell.Directory.Ldap
 {
     internal class MessageAgent
     {
-        private void InitBlock()
+        private static object _nameLock; // protect agentNum
+        private static int _agentNum = 0; // Debug, agent number
+        private int _indexLastRead;
+
+        private MessageVector _messages;
+
+        static MessageAgent()
         {
-            _messages = new MessageVector(5, 5);
+            _nameLock = new object();
         }
 
-        /// <summary>
-        ///     empty and return all messages owned by this agent
-        /// </summary>
-        private object[] RemoveAll()
+
+        internal MessageAgent()
         {
-            return _messages.RemoveAll();
+            InitBlock();
+            // Get a unique agent id for debug
         }
 
         /// <summary>
@@ -69,6 +74,7 @@ namespace Novell.Directory.Ldap
                     info = (Message) _messages[i];
                     ids[i] = info.MessageId;
                 }
+
                 return ids;
             }
         }
@@ -97,20 +103,22 @@ namespace Novell.Directory.Ldap
                     var m = (Message) msgs[i];
                     count += m.Count;
                 }
+
                 return count;
             }
         }
 
-        private MessageVector _messages;
-        private int _indexLastRead;
-        private static object _nameLock; // protect agentNum
-        private static int _agentNum = 0; // Debug, agent number
-
-
-        internal MessageAgent()
+        private void InitBlock()
         {
-            InitBlock();
-            // Get a unique agent id for debug
+            _messages = new MessageVector(5, 5);
+        }
+
+        /// <summary>
+        ///     empty and return all messages owned by this agent
+        /// </summary>
+        private object[] RemoveAll()
+        {
+            return _messages.RemoveAll();
         }
 
         /// <summary>
@@ -127,6 +135,7 @@ namespace Novell.Directory.Ldap
                 _messages.Add(msgs[i]);
                 ((Message) msgs[i]).Agent = this;
             }
+
             lock (_messages)
             {
                 if (msgs.Length > 1)
@@ -149,9 +158,13 @@ namespace Novell.Directory.Ldap
             lock (_messages)
             {
                 if (all)
+                {
                     Monitor.PulseAll(_messages);
+                }
                 else
+                {
                     Monitor.Pulse(_messages);
+                }
             }
         }
 
@@ -170,12 +183,14 @@ namespace Novell.Directory.Ldap
                 {
                     next = 0;
                 }
+
                 info = (Message) _messages[next];
                 if (info.HasReplies())
                 {
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -258,6 +273,7 @@ namespace Novell.Directory.Ldap
                 // return true, if no message, it must be complete
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
+
             return true;
         }
 
@@ -319,6 +335,7 @@ namespace Novell.Directory.Ldap
             {
                 return null;
             }
+
             if (msgId != null)
             {
                 // Request messages for a specific ID
@@ -334,6 +351,7 @@ namespace Novell.Directory.Ldap
                         SupportClass.VectorRemoveElement(_messages, info);
                         info.Abandon(null, null); // Get rid of resources
                     }
+
                     return rfcMsg;
                 }
                 catch (FieldAccessException)
@@ -342,6 +360,7 @@ namespace Novell.Directory.Ldap
                     return null;
                 }
             }
+
             // A msgId was NOT specified, any message will do
             lock (_messages)
             {
@@ -355,6 +374,7 @@ namespace Novell.Directory.Ldap
                         {
                             next = 0;
                         }
+
                         info = (Message) _messages[next];
                         _indexLastRead = next++;
                         rfcMsg = info.Reply;
@@ -368,12 +388,14 @@ namespace Novell.Directory.Ldap
                             // to the current position in the Vector.
                             i -= 1;
                         }
+
                         if (rfcMsg != null)
                         {
                             // We got a reply
                             return rfcMsg;
                         }
                     } // end for loop */
+
                     // Messages can be removed in this loop, we we must
                     // check if any messages left for this agent
                     if (_messages.Count == 0)
@@ -390,11 +412,6 @@ namespace Novell.Directory.Ldap
         /// <summary> Debug code to print messages in message vector</summary>
         private void DebugDisplayMessages()
         {
-        }
-
-        static MessageAgent()
-        {
-            _nameLock = new object();
         }
     }
 }

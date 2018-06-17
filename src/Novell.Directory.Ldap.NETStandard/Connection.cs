@@ -68,37 +68,100 @@ namespace Novell.Directory.Ldap
     /*package*/
     internal class Connection
     {
-        public event RemoteCertificateValidationCallback OnCertificateValidation;
-        private SslPolicyErrors _handshakePolicyErrors;
-        private X509ChainStatus[] _handshakeChainStatus;
+        //  Ldap message IDs are all positive numbers so we can use negative
+        //  numbers as flags.  This are flags assigned to stopReaderMessageID
+        //  to tell the reader what state we are in.
+        private const int ContinueReading = -99;
 
-        private string GetSslHandshakeErrors()
+        private const int StopReading = -98;
+        // Connection number & name used only for debug
+
+        // These attributes can be retreived using the getProperty
+        // method in LdapConnection.  Future releases might require
+        // these to be local variables that can be modified using
+        // the setProperty method.
+
+        internal static string Sdk;
+
+        internal static int Protocol;
+
+        internal static string Security = "simple";
+
+        // When set to true the client connection is up and running
+        private bool _clientActive = true;
+
+        // The LdapSocketFactory to be used as the default to create new connections
+        //		private static LdapSocketFactory socketFactory = null;
+        // The LdapSocketFactory used for this connection
+        //		private LdapSocketFactory mySocketFactory;
+        // Number of clones in addition to original LdapConnection using this
+        // connection.
+        private int _cloneCount;
+        private Thread _deadReader; // Identity of last reader thread
+        private Exception _deadReaderException; // Last exception of reader
+        private LberDecoder _decoder;
+
+        private LberEncoder _encoder;
+
+        // We need a message number for disconnect to grab the semaphore,
+        // but may not have one, so we invent a unique one.
+        private int _ephemeralId = -1;
+        private X509ChainStatus[] _handshakeChainStatus;
+        private SslPolicyErrors _handshakePolicyErrors;
+
+        private Stream _inStream;
+
+
+        // Place to save message information classes
+        private MessageVector _messages;
+        private TcpClient _nonTlsBackup;
+        private Stream _outStream;
+        private Thread _reader; // New thread that reads data from the server.
+
+        private ReaderThread _readerThreadEnclosure;
+
+        /*
+        * socket is the current socket being used.
+        * nonTLSBackup is the backup socket if startTLS is called.
+        * if nonTLSBackup is null then startTLS has not been called,
+        * or stopTLS has been called to end TLS protection
+        */
+        private Socket _sock;
+        private TcpClient _socket;
+
+        //  Stops the reader thread when a Message with the passed-in ID is read.
+        //  This parameter is set by stopReaderOnReply and stopTLS
+        private int _stopReaderMessageId;
+
+        // Connection created to follow referral
+
+        // Place to save unsolicited message listeners
+        private ArrayList _unsolicitedListeners;
+
+        // Indicates we have received a server shutdown unsolicited notification
+        private bool _unsolSvrShutDnNotification;
+
+        private object _writeSemaphore;
+        private int _writeSemaphoreCount;
+        private int _writeSemaphoreOwner;
+
+        static Connection()
         {
-            var strMsg = "Following problem(s) occurred while establishing SSL based Connection : ";
-            if (_handshakePolicyErrors != SslPolicyErrors.None)
-            {
-                strMsg += _handshakePolicyErrors;
-                foreach (var chainStatus in _handshakeChainStatus)
-                {
-                    if (chainStatus.Status != X509ChainStatusFlags.NoError)
-                        strMsg += ", " + chainStatus.StatusInformation;
-                }
-            }
-            else
-            {
-                strMsg += "Unknown Certificate Problem";
-            }
-            return strMsg;
+            Sdk = new StringBuilder("2.2.1").ToString();
+            Protocol = 3;
         }
 
-        private void InitBlock()
+        /// <summary>
+        ///     Create a new Connection object
+        /// </summary>
+        /// <param name="factory">
+        ///     specifies the factory to use to produce SSL sockets.
+        /// </param>
+
+        //		internal Connection(LdapSocketFactory factory)
+        internal Connection()
         {
-            _writeSemaphore = new object();
-            _encoder = new LberEncoder();
-            _decoder = new LberDecoder();
-            _stopReaderMessageId = ContinueReading;
-            _messages = new MessageVector(5, 5);
-            _unsolicitedListeners = new ArrayList(3);
+            InitBlock();
         }
 
         /// <summary>
@@ -132,6 +195,7 @@ namespace Novell.Directory.Ldap
                 {
                     return true;
                 }
+
                 return false;
             }
         }
@@ -149,6 +213,7 @@ namespace Novell.Directory.Ldap
                     // Bound if not anonymous
                     return !BindProperties.Anonymous;
                 }
+
                 return false;
             }
         }
@@ -193,90 +258,44 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal string ConnectionName { get; } = "";
 
-        private object _writeSemaphore;
-        private int _writeSemaphoreOwner;
-        private int _writeSemaphoreCount;
-
-        // We need a message number for disconnect to grab the semaphore,
-        // but may not have one, so we invent a unique one.
-        private int _ephemeralId = -1;
-
-        private ReaderThread _readerThreadEnclosure;
-        private Thread _reader; // New thread that reads data from the server.
-        private Thread _deadReader; // Identity of last reader thread
-        private Exception _deadReaderException; // Last exception of reader
-
-        private LberEncoder _encoder;
-        private LberDecoder _decoder;
-
-        /*
-        * socket is the current socket being used.
-        * nonTLSBackup is the backup socket if startTLS is called.
-        * if nonTLSBackup is null then startTLS has not been called,
-        * or stopTLS has been called to end TLS protection
-        */
-        private Socket _sock;
-        private TcpClient _socket;
-        private TcpClient _nonTlsBackup;
-
-        private Stream _inStream;
-        private Stream _outStream;
-        // When set to true the client connection is up and running
-        private bool _clientActive = true;
-
-        // Indicates we have received a server shutdown unsolicited notification
-        private bool _unsolSvrShutDnNotification;
-
-        //  Ldap message IDs are all positive numbers so we can use negative
-        //  numbers as flags.  This are flags assigned to stopReaderMessageID
-        //  to tell the reader what state we are in.
-        private const int ContinueReading = -99;
-        private const int StopReading = -98;
-
-        //  Stops the reader thread when a Message with the passed-in ID is read.
-        //  This parameter is set by stopReaderOnReply and stopTLS
-        private int _stopReaderMessageId;
-
-
-        // Place to save message information classes
-        private MessageVector _messages;
-
-        // Connection created to follow referral
-
-        // Place to save unsolicited message listeners
-        private ArrayList _unsolicitedListeners;
-
-        // The LdapSocketFactory to be used as the default to create new connections
-        //		private static LdapSocketFactory socketFactory = null;
-        // The LdapSocketFactory used for this connection
-        //		private LdapSocketFactory mySocketFactory;
-        // Number of clones in addition to original LdapConnection using this
-        // connection.
-        private int _cloneCount;
-        // Connection number & name used only for debug
-
-        // These attributes can be retreived using the getProperty
-        // method in LdapConnection.  Future releases might require
-        // these to be local variables that can be modified using
-        // the setProperty method.
-
-        internal static string Sdk;
-
-        internal static int Protocol;
-
-        internal static string Security = "simple";
-
         /// <summary>
-        ///     Create a new Connection object
+        ///     Indicates if the conenction is using TLS protection
+        ///     Return true if using TLS protection
         /// </summary>
-        /// <param name="factory">
-        ///     specifies the factory to use to produce SSL sockets.
-        /// </param>
+        internal bool Tls => _nonTlsBackup != null;
 
-        //		internal Connection(LdapSocketFactory factory)
-        internal Connection()
+        public event RemoteCertificateValidationCallback OnCertificateValidation;
+
+        private string GetSslHandshakeErrors()
         {
-            InitBlock();
+            var strMsg = "Following problem(s) occurred while establishing SSL based Connection : ";
+            if (_handshakePolicyErrors != SslPolicyErrors.None)
+            {
+                strMsg += _handshakePolicyErrors;
+                foreach (var chainStatus in _handshakeChainStatus)
+                {
+                    if (chainStatus.Status != X509ChainStatusFlags.NoError)
+                    {
+                        strMsg += ", " + chainStatus.StatusInformation;
+                    }
+                }
+            }
+            else
+            {
+                strMsg += "Unknown Certificate Problem";
+            }
+
+            return strMsg;
+        }
+
+        private void InitBlock()
+        {
+            _writeSemaphore = new object();
+            _encoder = new LberEncoder();
+            _decoder = new LberDecoder();
+            _stopReaderMessageId = ContinueReading;
+            _messages = new MessageVector(5, 5);
+            _unsolicitedListeners = new ArrayList(3);
         }
 
         /// <summary>
@@ -342,6 +361,7 @@ namespace Novell.Directory.Ldap
                     _ephemeralId = _ephemeralId == int.MinValue ? (_ephemeralId = -1) : --_ephemeralId;
                     id = _ephemeralId;
                 }
+
                 while (true)
                 {
                     if (_writeSemaphoreOwner == 0)
@@ -350,16 +370,20 @@ namespace Novell.Directory.Ldap
                         _writeSemaphoreOwner = id;
                         break;
                     }
+
                     if (_writeSemaphoreOwner == id)
                     {
                         // we already own the semahpore
                         break;
                     }
+
                     // Keep trying for the lock
                     Monitor.Wait(_writeSemaphore);
                 }
+
                 _writeSemaphoreCount++;
             }
+
             return id;
         }
 
@@ -380,11 +404,13 @@ namespace Novell.Directory.Ldap
                     throw new Exception("Connection.freeWriteSemaphore(" + msgId +
                                         "): semaphore not owned by any thread");
                 }
+
                 if (_writeSemaphoreOwner != msgId)
                 {
                     throw new Exception("Connection.freeWriteSemaphore(" + msgId +
                                         "): thread does not own the semaphore, owned by " + _writeSemaphoreOwner);
                 }
+
                 // if all instances of this semaphore for this thread are released,
                 // wake up all threads waiting.
                 if (--_writeSemaphoreCount == 0)
@@ -423,7 +449,10 @@ namespace Novell.Directory.Ldap
                 {
                     if (thread == null)
                         /* then we wanted a shutdown */
+                    {
                         return;
+                    }
+
                     var readerException = _deadReaderException;
                     _deadReaderException = null;
                     _deadReader = null;
@@ -431,13 +460,16 @@ namespace Novell.Directory.Ldap
                     throw new LdapException(ExceptionMessages.ConnectionReader, LdapException.ConnectError, null,
                         readerException);
                 }
+
                 lock (this)
                 {
                     Monitor.Wait(this, TimeSpan.FromMilliseconds(5));
                 }
+
                 rInst = _reader;
                 tInst = thread;
             }
+
             _deadReaderException = null;
             _deadReader = null;
         }
@@ -490,6 +522,7 @@ namespace Novell.Directory.Ldap
             {
                 retFlag = true;
             }
+
             // Skip the server cert errors.
             return retFlag;
         }
@@ -585,6 +618,7 @@ namespace Novell.Directory.Ldap
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] {host, port},
                         LdapException.ConnectError, null, ioe);
                 }
+
                 // Set host and port
                 Host = host;
                 Port = port;
@@ -663,6 +697,7 @@ namespace Novell.Directory.Ldap
                         Destroy("destroy clone", 0, notify);
                     }
                 }
+
                 return conn;
             }
         }
@@ -700,6 +735,7 @@ namespace Novell.Directory.Ldap
             {
                 Connect(Host, Port, info.MessageId);
             }
+
             if (Connected)
             {
                 var msg = info.Request;
@@ -733,6 +769,7 @@ namespace Novell.Directory.Ldap
                 // Semaphore id for sasl bind operations
                 id = BindSemId;
             }
+
             var myOut = _outStream;
 
             AcquireWriteSemaphore(id);
@@ -742,10 +779,12 @@ namespace Novell.Directory.Ldap
                 {
                     throw new IOException("Output stream not initialized");
                 }
+
                 if (!myOut.CanWrite)
                 {
                     return;
                 }
+
                 var ber = msg.Asn1Object.GetEncoding(_encoder);
                 myOut.Write(SupportClass.ToByteArray(ber), 0, ber.Length);
                 myOut.Flush();
@@ -755,8 +794,10 @@ namespace Novell.Directory.Ldap
                 if (msg.Type == LdapMessage.BindRequest && Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] {Host, Port}, LdapException.SslHandshakeFailed, null, ioe);
+                    throw new LdapException(strMsg, new object[] {Host, Port}, LdapException.SslHandshakeFailed, null,
+                        ioe);
                 }
+
                 /*
                 * IOException could be due to a server shutdown notification which
                 * caused our Connection to quit.  If so we send back a slightly
@@ -812,6 +853,7 @@ namespace Novell.Directory.Ldap
             {
                 return;
             }
+
             _clientActive = false;
             AbandonMessages(notifyUser);
 
@@ -833,12 +875,16 @@ namespace Novell.Directory.Ldap
                         ; // don't worry about error
                     }
                 }
+
                 BindProperties = null;
                 if (_socket != null || _sock != null)
                 {
                     // Just before closing the sockets, abort the reader thread
                     if (_reader != null && reason != "reader: thread stopping")
+                    {
                         _readerThreadEnclosure.Stop();
+                    }
+
                     // Close the socket
                     try
                     {
@@ -857,6 +903,7 @@ namespace Novell.Directory.Ldap
                     {
                         // ignore problem closing socket
                     }
+
                     _socket = null;
                     _sock = null;
                     _inStream = null;
@@ -873,8 +920,10 @@ namespace Novell.Directory.Ldap
         {
             // remove messages from connection list and send abandon
             var leftMessages = _messages.RemoveAll();
-            foreach(Message message in leftMessages)
+            foreach (Message message in leftMessages)
+            {
                 message.Abandon(null, notifyUser); // also notifies the application
+            }
         }
 
 
@@ -907,8 +956,11 @@ namespace Novell.Directory.Ldap
             for (var i = 0; i < length; i++)
             {
                 if (((Message) leftMessages[i]).Complete == false)
+                {
                     return false;
+                }
             }
+
             return true;
         }
 
@@ -936,12 +988,6 @@ namespace Novell.Directory.Ldap
             r.Start();
             WaitForReader(r);
         }
-
-        /// <summary>
-        ///     Indicates if the conenction is using TLS protection
-        ///     Return true if using TLS protection
-        /// </summary>
-        internal bool Tls => _nonTlsBackup != null;
 
         /// <summary>
         ///     StartsTLS, in this package, assumes the caller has:
@@ -1026,12 +1072,63 @@ namespace Novell.Directory.Ldap
             }
         }
 
+        /// <summary>
+        ///     Add the specific object to the list of listeners that want to be
+        ///     notified when an unsolicited notification is received.
+        /// </summary>
+        internal void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        {
+            _unsolicitedListeners.Add(listener);
+        }
+
+        /// <summary>Remove the specific object from current list of listeners</summary>
+        internal void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
+        {
+            SupportClass.VectorRemoveElement(_unsolicitedListeners, listener);
+        }
+
+        private void NotifyAllUnsolicitedListeners(RfcLdapMessage message)
+        {
+            // MISSING:  If this is a shutdown notification from the server
+            // set a flag in the Connection class so that we can throw an
+            // appropriate LdapException to the application
+            LdapMessage extendedLdapMessage = new LdapExtendedResponse(message);
+            var notificationOid = ((LdapExtendedResponse) extendedLdapMessage).Id;
+            if (notificationOid.Equals(LdapConnection.ServerShutdownOid))
+            {
+                _unsolSvrShutDnNotification = true;
+            }
+
+            var numOfListeners = _unsolicitedListeners.Count;
+
+            // Cycle through all the listeners
+            for (var i = 0; i < numOfListeners; i++)
+            {
+                // Get next listener
+                var listener = (ILdapUnsolicitedNotificationListener) _unsolicitedListeners[i];
+
+
+                // Create a new ExtendedResponse each time as we do not want each listener
+                // to have its own copy of the message
+                var tempLdapMessage = new LdapExtendedResponse(message);
+
+                // Spawn a new thread for each listener to go process the message
+                // The reason we create a new thread rather than just call the
+                // the messageReceived method directly is beacuse we do not know
+                // what kind of processing the notification listener class will
+                // do.  We do not want our deamon thread to block waiting for
+                // the notification listener method to return.
+                var u = new UnsolicitedListenerThread(this, listener, tempLdapMessage);
+                u.Start();
+            }
+        }
+
         /// TLS not supported in first release
         public class ReaderThread
         {
             private readonly Connection _enclosingInstance;
-            private bool _isStopping;
             private Thread _enclosedThread;
+            private bool _isStopping;
 
             public ReaderThread(Connection enclosingInstance)
             {
@@ -1041,7 +1138,10 @@ namespace Novell.Directory.Ldap
             public void Stop()
             {
                 if (_enclosedThread == null)
+                {
                     return;
+                }
+
                 _isStopping = true;
                 // This is quite silly as we want to stop the thread gracefully but is not always possible as the Read on socket is blocking
                 // Using ReadAdync will not do any good as the method taking the CancellationToken as parameter is not implemented
@@ -1085,6 +1185,7 @@ namespace Novell.Directory.Ldap
                         {
                             break;
                         }
+
                         asn1Id = new Asn1Identifier(myIn);
                         var tag = asn1Id.Tag;
                         if (asn1Id.Tag != Asn1Sequence.Tag)
@@ -1119,7 +1220,7 @@ namespace Novell.Directory.Ldap
                             * we throw it away. If it is we call any unsolicited
                             * listeners that might have been registered to listen for these
                             * messages.
-                            */                        
+                            */
 
                             /* Note the location of this code.  We could have required
                             * that message ID 0 be just like other message ID's but
@@ -1152,6 +1253,7 @@ namespace Novell.Directory.Ldap
                                 }
                             }
                         }
+
                         if (_enclosingInstance._stopReaderMessageId == msgId ||
                             _enclosingInstance._stopReaderMessageId == StopReading)
                         {
@@ -1170,6 +1272,7 @@ namespace Novell.Directory.Ldap
                             new object[] {_enclosingInstance.Host, _enclosingInstance.Port}, LdapException.ConnectError,
                             ex, info);
                     }
+
                     // The connection is no good, don't use it any more
                     _enclosingInstance._inStream = null;
                     _enclosingInstance._outStream = null;
@@ -1204,27 +1307,13 @@ namespace Novell.Directory.Ldap
                     {
                         _enclosingInstance._stopReaderMessageId = ContinueReading;
                     }
+
                     _enclosingInstance._deadReaderException = readerException;
                     _enclosingInstance._deadReader = _enclosingInstance._reader;
                     _enclosingInstance._reader = null;
                 }
             }
         } // End class ReaderThread
-
-        /// <summary>
-        ///     Add the specific object to the list of listeners that want to be
-        ///     notified when an unsolicited notification is received.
-        /// </summary>
-        internal void AddUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
-        {
-            _unsolicitedListeners.Add(listener);
-        }
-
-        /// <summary>Remove the specific object from current list of listeners</summary>
-        internal void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
-        {
-            SupportClass.VectorRemoveElement(_unsolicitedListeners, listener);
-        }
 
         /// <summary>
         ///     Inner class defined so that we can spawn off each unsolicited
@@ -1238,13 +1327,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         private class UnsolicitedListenerThread : SupportClass.ThreadClass
         {
-            private void InitBlock(Connection enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
-
-            public Connection EnclosingInstance { get; private set; }
-
             private readonly ILdapUnsolicitedNotificationListener _listenerObj;
             private readonly LdapExtendedResponse _unsolicitedMsg;
 
@@ -1257,52 +1339,17 @@ namespace Novell.Directory.Ldap
                 _unsolicitedMsg = m;
             }
 
+            public Connection EnclosingInstance { get; private set; }
+
+            private void InitBlock(Connection enclosingInstance)
+            {
+                EnclosingInstance = enclosingInstance;
+            }
+
             public override void Run()
             {
                 _listenerObj.MessageReceived(_unsolicitedMsg);
             }
-        }
-
-        private void NotifyAllUnsolicitedListeners(RfcLdapMessage message)
-        {
-            // MISSING:  If this is a shutdown notification from the server
-            // set a flag in the Connection class so that we can throw an
-            // appropriate LdapException to the application
-            LdapMessage extendedLdapMessage = new LdapExtendedResponse(message);
-            var notificationOid = ((LdapExtendedResponse) extendedLdapMessage).Id;
-            if (notificationOid.Equals(LdapConnection.ServerShutdownOid))
-            {
-                _unsolSvrShutDnNotification = true;
-            }
-
-            var numOfListeners = _unsolicitedListeners.Count;
-
-            // Cycle through all the listeners
-            for (var i = 0; i < numOfListeners; i++)
-            {
-                // Get next listener
-                var listener = (ILdapUnsolicitedNotificationListener) _unsolicitedListeners[i];
-
-
-                // Create a new ExtendedResponse each time as we do not want each listener
-                // to have its own copy of the message
-                var tempLdapMessage = new LdapExtendedResponse(message);
-
-                // Spawn a new thread for each listener to go process the message
-                // The reason we create a new thread rather than just call the
-                // the messageReceived method directly is beacuse we do not know
-                // what kind of processing the notification listener class will
-                // do.  We do not want our deamon thread to block waiting for
-                // the notification listener method to return.
-                var u = new UnsolicitedListenerThread(this, listener, tempLdapMessage);
-                u.Start();
-            }
-        }
-
-        static Connection()
-        {
-            Sdk = new StringBuilder("2.2.1").ToString();
-            Protocol = 3;
         }
     }
 }

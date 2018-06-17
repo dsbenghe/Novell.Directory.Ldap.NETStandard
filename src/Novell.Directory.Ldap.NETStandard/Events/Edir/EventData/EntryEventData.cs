@@ -39,33 +39,18 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
     /// </summary>
     public class EntryEventData : BaseEdirEventData
     {
-        protected string StrPerpetratorDn;
-
-        public string PerpetratorDn => StrPerpetratorDn;
-
-        protected string StrEntry;
-
-        public string Entry => StrEntry;
-
-        protected string StrNewDn;
-
-        public string NewDn => StrNewDn;
-
-        protected string StrClassId;
-
-        public string ClassId => StrClassId;
+        protected int NFlags;
 
         protected int NVerb;
 
-        public int Verb => NVerb;
+        protected string StrClassId;
 
-        protected int NFlags;
+        protected string StrEntry;
 
-        public int Flags => NFlags;
+        protected string StrNewDn;
+        protected string StrPerpetratorDn;
 
         protected DseTimeStamp TimeStampObj;
-
-        public DseTimeStamp TimeStamp => TimeStampObj;
 
         public EntryEventData(EdirEventDataType eventDataType, Asn1Object message)
             : base(eventDataType, message)
@@ -87,6 +72,20 @@ namespace Novell.Directory.Ldap.Events.Edir.EventData
 
             DataInitDone();
         }
+
+        public string PerpetratorDn => StrPerpetratorDn;
+
+        public string Entry => StrEntry;
+
+        public string NewDn => StrNewDn;
+
+        public string ClassId => StrClassId;
+
+        public int Verb => NVerb;
+
+        public int Flags => NFlags;
+
+        public DseTimeStamp TimeStamp => TimeStampObj;
 
         /// <summary>
         ///     Returns a string representation of the object.

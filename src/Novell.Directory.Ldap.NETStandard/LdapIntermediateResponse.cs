@@ -48,6 +48,19 @@ namespace Novell.Directory.Ldap
     {
         private static readonly RespExtensionSet RegisteredResponses = new RespExtensionSet();
 
+
+        /**
+         * Creates an LdapIntermediateResponse object which encapsulates
+         * a server response to an asynchronous extended operation request.
+         *
+         * @param message  The RfcLdapMessage to convert to an
+         *                 LdapIntermediateResponse object.
+         */
+
+        public LdapIntermediateResponse(RfcLdapMessage message) : base(message)
+        {
+        }
+
         /**
          * Registers a class to be instantiated on receipt of a extendedresponse
          * with the given OID.
@@ -73,19 +86,6 @@ namespace Novell.Directory.Ldap
             return RegisteredResponses;
         }
 
-
-        /**
-         * Creates an LdapIntermediateResponse object which encapsulates
-         * a server response to an asynchronous extended operation request.
-         *
-         * @param message  The RfcLdapMessage to convert to an
-         *                 LdapIntermediateResponse object.
-         */
-
-        public LdapIntermediateResponse(RfcLdapMessage message) : base(message)
-        {
-        }
-
         /**
          * Returns the message identifier of the response.
          *
@@ -97,7 +97,10 @@ namespace Novell.Directory.Ldap
             var respOid =
                 ((RfcIntermediateResponse) Message.Response).GetResponseName();
             if (respOid == null)
+            {
                 return null;
+            }
+
             return respOid.StringValue();
         }
 
@@ -113,7 +116,10 @@ namespace Novell.Directory.Ldap
             var tempString =
                 ((RfcIntermediateResponse) Message.Response).GetResponse();
             if (tempString == null)
+            {
                 return null;
+            }
+
             return tempString.ByteValue();
         }
     }

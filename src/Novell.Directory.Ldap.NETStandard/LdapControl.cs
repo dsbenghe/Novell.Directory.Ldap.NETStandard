@@ -52,35 +52,10 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapControl
     {
-        /// <summary>
-        ///     Returns the identifier of the control.
-        /// </summary>
-        /// <returns>
-        ///     The object ID of the control.
-        /// </returns>
-        public string Id => new StringBuilder(_control.ControlType.StringValue()).ToString();
-
-        /// <summary>
-        ///     Returns whether the control is critical for the operation.
-        /// </summary>
-        /// <returns>
-        ///     Returns true if the control must be supported for an associated
-        ///     operation to be executed, and false if the control is not required for
-        ///     the operation.
-        /// </returns>
-        public bool Critical => _control.Criticality.BooleanValue();
-
-        internal static RespControlVector RegisteredControls { get; }
-
-        /// <summary>
-        ///     Returns the RFC 2251 Control object.
-        /// </summary>
-        /// <returns>
-        ///     An ASN.1 RFC 2251 Control.
-        /// </returns>
-        internal RfcControl Asn1Object => _control;
-
-        private RfcControl _control; // An RFC 2251 Control
+        static LdapControl()
+        {
+            RegisteredControls = new RespControlVector(5, 5);
+        }
 
         /// <summary>
         ///     Constructs a new LdapControl object using the specified values.
@@ -103,21 +78,51 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("An OID must be specified");
             }
+
             if (values == null)
             {
-                _control = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical));
+                Asn1Object = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical));
             }
             else
             {
-                _control = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical), new Asn1OctetString(values));
+                Asn1Object = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical),
+                    new Asn1OctetString(values));
             }
         }
 
         /// <summary> Create an LdapControl from an existing control.</summary>
         protected internal LdapControl(RfcControl control)
         {
-            _control = control;
+            Asn1Object = control;
         }
+
+        /// <summary>
+        ///     Returns the identifier of the control.
+        /// </summary>
+        /// <returns>
+        ///     The object ID of the control.
+        /// </returns>
+        public string Id => new StringBuilder(Asn1Object.ControlType.StringValue()).ToString();
+
+        /// <summary>
+        ///     Returns whether the control is critical for the operation.
+        /// </summary>
+        /// <returns>
+        ///     Returns true if the control must be supported for an associated
+        ///     operation to be executed, and false if the control is not required for
+        ///     the operation.
+        /// </returns>
+        public bool Critical => Asn1Object.Criticality.BooleanValue();
+
+        internal static RespControlVector RegisteredControls { get; }
+
+        /// <summary>
+        ///     Returns the RFC 2251 Control object.
+        /// </summary>
+        /// <returns>
+        ///     An ASN.1 RFC 2251 Control.
+        /// </returns>
+        internal RfcControl Asn1Object { get; private set; }
 
         /// <summary>
         ///     Returns a copy of the current LdapControl object.
@@ -136,6 +141,7 @@ namespace Novell.Directory.Ldap
             {
                 throw new Exception("Internal error, cannot create clone", ce);
             }
+
             var vals = GetValue();
             sbyte[] twin = null;
             if (vals != null)
@@ -149,8 +155,11 @@ namespace Novell.Directory.Ldap
                 {
                     twin[i] = vals[i];
                 }
-                cont._control = new RfcControl(new RfcLdapOid(Id), new Asn1Boolean(Critical), new Asn1OctetString(twin));
+
+                cont.Asn1Object = new RfcControl(new RfcLdapOid(Id), new Asn1Boolean(Critical),
+                    new Asn1OctetString(twin));
             }
+
             return cont;
         }
 
@@ -165,11 +174,12 @@ namespace Novell.Directory.Ldap
         public sbyte[] GetValue()
         {
             sbyte[] result = null;
-            var val = _control.ControlValue;
+            var val = Asn1Object.ControlValue;
             if (val != null)
             {
                 result = val.ByteValue();
             }
+
             return result;
         }
 
@@ -181,7 +191,7 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         protected void SetValue(sbyte[] controlValue)
         {
-            _control.ControlValue = new Asn1OctetString(controlValue);
+            Asn1Object.ControlValue = new Asn1OctetString(controlValue);
         }
 
         /// <summary>
@@ -199,11 +209,6 @@ namespace Novell.Directory.Ldap
         public static void Register(string oid, Type controlClass)
         {
             RegisteredControls.RegisterResponseControl(oid, controlClass);
-        }
-
-        static LdapControl()
-        {
-            RegisteredControls = new RespControlVector(5, 5);
         }
     }
 }

@@ -36,32 +36,6 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapSortKey
     {
-        /// <summary>
-        ///     Returns the attribute to used for sorting.
-        /// </summary>
-        /// <returns>
-        ///     The name of the attribute used for sorting.
-        /// </returns>
-        public string Key { get; }
-
-        /// <summary>
-        ///     Returns the sorting order, ascending or descending.
-        /// </summary>
-        /// <returns>
-        ///     True if the sorting is done is descending order; false, if the
-        ///     sorting is done is ascending order.
-        /// </returns>
-        public bool Reverse { get; }
-
-        /// <summary>
-        ///     Returns the OID to be used as a matching rule.
-        /// </summary>
-        /// <returns>
-        ///     The OID to be used as matching rule, or null if none is to be
-        ///     used.
-        /// </returns>
-        public string MatchRule { get; }
-
         // Constructors
 
         /// <summary>
@@ -93,6 +67,7 @@ namespace Novell.Directory.Ldap.Controls
                 myKey = myKey.Substring(1);
                 Reverse = true;
             }
+
             var pos = myKey.IndexOf(":");
             if (pos != -1)
             {
@@ -144,5 +119,31 @@ namespace Novell.Directory.Ldap.Controls
             Reverse = reverse;
             MatchRule = matchRule;
         }
+
+        /// <summary>
+        ///     Returns the attribute to used for sorting.
+        /// </summary>
+        /// <returns>
+        ///     The name of the attribute used for sorting.
+        /// </returns>
+        public string Key { get; }
+
+        /// <summary>
+        ///     Returns the sorting order, ascending or descending.
+        /// </summary>
+        /// <returns>
+        ///     True if the sorting is done is descending order; false, if the
+        ///     sorting is done is ascending order.
+        /// </returns>
+        public bool Reverse { get; }
+
+        /// <summary>
+        ///     Returns the OID to be used as a matching rule.
+        /// </summary>
+        /// <returns>
+        ///     The OID to be used as matching rule, or null if none is to be
+        ///     used.
+        /// </returns>
+        public string MatchRule { get; }
     }
 }

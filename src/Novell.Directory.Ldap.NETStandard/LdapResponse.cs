@@ -50,237 +50,6 @@ namespace Novell.Directory.Ldap
         */
     public class LdapResponse : LdapMessage
     {
-        /// <summary>
-        ///     Returns any error message in the response.
-        /// </summary>
-        /// <returns>
-        ///     Any error message in the response.
-        /// </returns>
-        public string ErrorMessage
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return _exception.LdapErrorMessage;
-                }
-
-/*				RfcResponse resp=(RfcResponse)( message.Response);
-				if(resp == null)
-					Console.WriteLine(" Response is null");
-				else
-					Console.WriteLine(" Response is non null");
-				string str=resp.getErrorMessage().stringValue();
-				if( str==null)
-					 Console.WriteLine("str is null..");
-				Console.WriteLine(" Response is non null" + str);
-				return str;
-*/
-                return ((IRfcResponse) Message.Response).GetErrorMessage().StringValue();
-            }
-        }
-
-        /// <summary>
-        ///     Returns the partially matched DN field from the server response,
-        ///     if the response contains one.
-        /// </summary>
-        /// <returns>
-        ///     The partially matched DN field, if the response contains one.
-        /// </returns>
-        public string MatchedDn
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return _exception.MatchedDn;
-                }
-                return ((IRfcResponse) Message.Response).GetMatchedDn().StringValue();
-            }
-        }
-
-        /// <summary>
-        ///     Returns all referrals in a server response, if the response contains any.
-        /// </summary>
-        /// <returns>
-        ///     All the referrals in the server response.
-        /// </returns>
-        public string[] Referrals
-        {
-            get
-            {
-                string[] referrals = null;
-                var refRenamed = ((IRfcResponse) Message.Response).GetReferral();
-
-                if (refRenamed == null)
-                {
-                    referrals = new string[0];
-                }
-                else
-                {
-                    // convert RFC 2251 Referral to String[]
-                    var size = refRenamed.Size();
-                    referrals = new string[size];
-                    for (var i = 0; i < size; i++)
-                    {
-                        var aRef = ((Asn1OctetString) refRenamed.get_Renamed(i)).StringValue();
-                        try
-                        {
-                            // get the referral URL
-                            var urlRef = new LdapUrl(aRef);
-                            if ((object) urlRef.GetDn() == null)
-                            {
-                                var origMsg = Asn1Object.RequestingMessage.Asn1Object;
-                                string dn;
-                                if ((object) (dn = origMsg.RequestDn) != null)
-                                {
-                                    urlRef.SetDn(dn);
-                                    aRef = urlRef.ToString();
-                                }
-                            }
-                        }
-                        catch (UriFormatException mex)
-                        {
-                            Logger.Log.LogWarning("Exception swallowed", mex);
-                        }
-                        finally
-                        {
-                            referrals[i] = aRef;
-                        }
-                    }
-                }
-                return referrals;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the result code in a server response.
-        ///     For a list of result codes, see the LdapException class.
-        /// </summary>
-        /// <returns>
-        ///     The result code.
-        /// </returns>
-        public int ResultCode
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return _exception.ResultCode;
-                }
-                if ((IRfcResponse) Message.Response is RfcIntermediateResponse)
-                    return 0;
-                return ((IRfcResponse) Message.Response).GetResultCode().IntValue();
-            }
-        }
-
-        /// <summary>
-        ///     Checks the resultCode and generates the appropriate exception or
-        ///     null if success.
-        /// </summary>
-        private LdapException ResultException
-        {
-            get
-            {
-                LdapException ex = null;
-                switch (ResultCode)
-                {
-                    case LdapException.Success:
-                    case LdapException.CompareTrue:
-                    case LdapException.CompareFalse:
-                        break;
-
-                    case LdapException.Referral:
-                        var refs = Referrals;
-                        ex = new LdapReferralException("Automatic referral following not enabled",
-                            LdapException.Referral, ErrorMessage);
-                        ((LdapReferralException) ex).SetReferrals(refs);
-                        break;
-
-                    default:
-                        ex = new LdapException(LdapException.ResultCodeToString(ResultCode), ResultCode, ErrorMessage,
-                            MatchedDn);
-                        break;
-                }
-                return ex;
-            }
-        }
-
-        /// <summary>
-        ///     Returns any controls in the message.
-        /// </summary>
-        /// <seealso cref="Novell.Directory.Ldap.LdapMessage.Controls">
-        /// </seealso>
-        public override LdapControl[] Controls
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return null;
-                }
-                return base.Controls;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the message ID.
-        /// </summary>
-        /// <seealso cref="LdapMessage.MessageId">
-        /// </seealso>
-        public override int MessageId
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return _exception.MessageId;
-                }
-                return base.MessageId;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the Ldap operation type of the message.
-        /// </summary>
-        /// <returns>
-        ///     The operation type of the message.
-        /// </returns>
-        /// <seealso cref="Novell.Directory.Ldap.LdapMessage.Type">
-        /// </seealso>
-        public override int Type
-        {
-            get
-            {
-                if (_exception != null)
-                {
-                    return _exception.ReplyType;
-                }
-                return base.Type;
-            }
-        }
-
-        /// <summary>
-        ///     Returns an embedded exception response
-        /// </summary>
-        /// <returns>
-        ///     an embedded exception if any
-        /// </returns>
-        internal LdapException Exception => _exception;
-
-        /// <summary>
-        ///     Indicates the referral instance being followed if the
-        ///     connection created to follow referrals.
-        /// </summary>
-        /// <returns>
-        ///     the referral being followed
-        /// </returns>
-        internal ReferralInfo ActiveReferral
-        {
-            /*package*/
-            get;
-        }
-
         private readonly InterThreadException _exception;
 
         /// <summary>
@@ -369,15 +138,261 @@ namespace Novell.Directory.Ldap
         {
         }
 
+        /// <summary>
+        ///     Returns any error message in the response.
+        /// </summary>
+        /// <returns>
+        ///     Any error message in the response.
+        /// </returns>
+        public string ErrorMessage
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return _exception.LdapErrorMessage;
+                }
+
+/*				RfcResponse resp=(RfcResponse)( message.Response);
+				if(resp == null)
+					Console.WriteLine(" Response is null");
+				else
+					Console.WriteLine(" Response is non null");
+				string str=resp.getErrorMessage().stringValue();
+				if( str==null)
+					 Console.WriteLine("str is null..");
+				Console.WriteLine(" Response is non null" + str);
+				return str;
+*/
+                return ((IRfcResponse) Message.Response).GetErrorMessage().StringValue();
+            }
+        }
+
+        /// <summary>
+        ///     Returns the partially matched DN field from the server response,
+        ///     if the response contains one.
+        /// </summary>
+        /// <returns>
+        ///     The partially matched DN field, if the response contains one.
+        /// </returns>
+        public string MatchedDn
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return _exception.MatchedDn;
+                }
+
+                return ((IRfcResponse) Message.Response).GetMatchedDn().StringValue();
+            }
+        }
+
+        /// <summary>
+        ///     Returns all referrals in a server response, if the response contains any.
+        /// </summary>
+        /// <returns>
+        ///     All the referrals in the server response.
+        /// </returns>
+        public string[] Referrals
+        {
+            get
+            {
+                string[] referrals = null;
+                var refRenamed = ((IRfcResponse) Message.Response).GetReferral();
+
+                if (refRenamed == null)
+                {
+                    referrals = new string[0];
+                }
+                else
+                {
+                    // convert RFC 2251 Referral to String[]
+                    var size = refRenamed.Size();
+                    referrals = new string[size];
+                    for (var i = 0; i < size; i++)
+                    {
+                        var aRef = ((Asn1OctetString) refRenamed.get_Renamed(i)).StringValue();
+                        try
+                        {
+                            // get the referral URL
+                            var urlRef = new LdapUrl(aRef);
+                            if ((object) urlRef.GetDn() == null)
+                            {
+                                var origMsg = Asn1Object.RequestingMessage.Asn1Object;
+                                string dn;
+                                if ((object) (dn = origMsg.RequestDn) != null)
+                                {
+                                    urlRef.SetDn(dn);
+                                    aRef = urlRef.ToString();
+                                }
+                            }
+                        }
+                        catch (UriFormatException mex)
+                        {
+                            Logger.Log.LogWarning("Exception swallowed", mex);
+                        }
+                        finally
+                        {
+                            referrals[i] = aRef;
+                        }
+                    }
+                }
+
+                return referrals;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the result code in a server response.
+        ///     For a list of result codes, see the LdapException class.
+        /// </summary>
+        /// <returns>
+        ///     The result code.
+        /// </returns>
+        public int ResultCode
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return _exception.ResultCode;
+                }
+
+                if ((IRfcResponse) Message.Response is RfcIntermediateResponse)
+                {
+                    return 0;
+                }
+
+                return ((IRfcResponse) Message.Response).GetResultCode().IntValue();
+            }
+        }
+
+        /// <summary>
+        ///     Checks the resultCode and generates the appropriate exception or
+        ///     null if success.
+        /// </summary>
+        private LdapException ResultException
+        {
+            get
+            {
+                LdapException ex = null;
+                switch (ResultCode)
+                {
+                    case LdapException.Success:
+                    case LdapException.CompareTrue:
+                    case LdapException.CompareFalse:
+                        break;
+
+                    case LdapException.Referral:
+                        var refs = Referrals;
+                        ex = new LdapReferralException("Automatic referral following not enabled",
+                            LdapException.Referral, ErrorMessage);
+                        ((LdapReferralException) ex).SetReferrals(refs);
+                        break;
+
+                    default:
+                        ex = new LdapException(LdapException.ResultCodeToString(ResultCode), ResultCode, ErrorMessage,
+                            MatchedDn);
+                        break;
+                }
+
+                return ex;
+            }
+        }
+
+        /// <summary>
+        ///     Returns any controls in the message.
+        /// </summary>
+        /// <seealso cref="Novell.Directory.Ldap.LdapMessage.Controls">
+        /// </seealso>
+        public override LdapControl[] Controls
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return null;
+                }
+
+                return base.Controls;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the message ID.
+        /// </summary>
+        /// <seealso cref="LdapMessage.MessageId">
+        /// </seealso>
+        public override int MessageId
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return _exception.MessageId;
+                }
+
+                return base.MessageId;
+            }
+        }
+
+        /// <summary>
+        ///     Returns the Ldap operation type of the message.
+        /// </summary>
+        /// <returns>
+        ///     The operation type of the message.
+        /// </returns>
+        /// <seealso cref="Novell.Directory.Ldap.LdapMessage.Type">
+        /// </seealso>
+        public override int Type
+        {
+            get
+            {
+                if (_exception != null)
+                {
+                    return _exception.ReplyType;
+                }
+
+                return base.Type;
+            }
+        }
+
+        /// <summary>
+        ///     Returns an embedded exception response
+        /// </summary>
+        /// <returns>
+        ///     an embedded exception if any
+        /// </returns>
+        internal LdapException Exception => _exception;
+
+        /// <summary>
+        ///     Indicates the referral instance being followed if the
+        ///     connection created to follow referrals.
+        /// </summary>
+        /// <returns>
+        ///     the referral being followed
+        /// </returns>
+        internal ReferralInfo ActiveReferral
+        {
+            /*package*/
+            get;
+        }
+
         private static Asn1Sequence RfcResultFactory(int type, int resultCode, string matchedDn, string serverMessage,
             string[] referrals)
         {
             Asn1Sequence ret;
 
             if ((object) matchedDn == null)
+            {
                 matchedDn = "";
+            }
+
             if ((object) serverMessage == null)
+            {
                 serverMessage = "";
+            }
 
             switch (type)
             {
@@ -430,6 +445,7 @@ namespace Novell.Directory.Ldap
                 default:
                     throw new Exception("Type " + type + " Not Supported");
             }
+
             return ret;
         }
 
@@ -446,6 +462,7 @@ namespace Novell.Directory.Ldap
             {
                 throw _exception;
             }
+
             var ex = ResultException;
             if (ex != null)
             {

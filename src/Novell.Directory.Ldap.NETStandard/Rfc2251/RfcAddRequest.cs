@@ -43,9 +43,6 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcAddRequest : Asn1Sequence, IRfcRequest
     {
-        /// <summary> Gets the attributes of the entry</summary>
-        public RfcAttributeList Attributes => (RfcAttributeList) get_Renamed(1);
-
         //*************************************************************************
         // Constructors for AddRequest
         //*************************************************************************
@@ -83,6 +80,19 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
+        /// <summary> Gets the attributes of the entry</summary>
+        public RfcAttributeList Attributes => (RfcAttributeList) get_Renamed(1);
+
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            return new RfcAddRequest(ToArray(), baseRenamed);
+        }
+
+        public string GetRequestDn()
+        {
+            return ((RfcLdapDn) get_Renamed(0)).StringValue();
+        }
+
         //*************************************************************************
         // Accessors
         //*************************************************************************
@@ -96,16 +106,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public override Asn1Identifier GetIdentifier()
         {
             return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.AddRequest);
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcAddRequest(ToArray(), baseRenamed);
-        }
-
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn) get_Renamed(0)).StringValue();
         }
     }
 }
