@@ -71,5 +71,6 @@
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
     <Rule Id="SX1309" Action="Error" />
     <Rule Id="SA1101" Action="None" />
+    <Rule Id="SX1101" Action="Error" />
   </Rules>
 </RuleSet>

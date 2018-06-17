@@ -4,7 +4,7 @@
 
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 
-* 
+*
 
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 
@@ -12,27 +12,27 @@
 
 * in the Software without restriction, including  without limitation the rights
 
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 
-* copies of the Software, and to  permit persons to whom the Software is 
+* copies of the Software, and to  permit persons to whom the Software is
 
 * furnished to do so, subject to the following conditions:
 
-* 
+*
 
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 
 * all copies or substantial portions of the Software.
 
-* 
+*
 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 
@@ -903,19 +903,19 @@ namespace Novell.Directory.Ldap
 
             {
                 /*
-                
+
                                 * Kludge. check for ldap://111.222.333.444:389??cn=abc,o=company
-                
+
                                 *
-                
+
                                 * Check for broken Novell referral format.  The dn is in
-                
+
                                 * the scope position, but the required slash is missing.
-                
+
                                 * This is illegal syntax but we need to account for it.
-                
+
                                 * Fortunately it can't be confused with anything real.
-                
+
                                 */
 
                 dnStart = url.IndexOf("?", scanStart);

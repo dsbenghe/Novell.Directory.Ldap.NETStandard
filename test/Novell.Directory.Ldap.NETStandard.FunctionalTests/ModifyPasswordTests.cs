@@ -13,7 +13,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var newPassword = "password" + new Random().Next();
 
             TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
-            {                
+            {
                 var newAttribute = new LdapAttribute("userPassword", newPassword);
                 var modification = new LdapModification(LdapModification.Replace, newAttribute);
                 ldapConnection.Modify(existingEntry.Dn, modification);

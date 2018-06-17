@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 var ldapPort = TestsConfig.LdapServer.ServerPort;
                 var transportSecurity = GetTransportSecurity(useSsl, disableEnvTransportSecurity);
                 if (transportSecurity == TransportSecurity.Ssl)
-                {                    
+                {
                     ldapConnection.SecureSocketLayer = true;
                     ldapPort = TestsConfig.LdapServer.ServerPortSsl;
                 }
