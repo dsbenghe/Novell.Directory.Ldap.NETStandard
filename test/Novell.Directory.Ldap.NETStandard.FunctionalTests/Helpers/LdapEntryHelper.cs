@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             {
                 if (excludeAttributes.Contains(expectedAttribute.Name)) continue;
                 var actualAttribute = actualAttributeSet.getAttribute(expectedAttribute.Name);
-                expectedAttribute.ByteValues.ShouldBeEquivalentTo(actualAttribute.ByteValues);
+                expectedAttribute.ByteValues.Should().BeEquivalentTo(actualAttribute.ByteValues);
             }
         }
     }
