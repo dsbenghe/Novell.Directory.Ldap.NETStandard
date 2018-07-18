@@ -21,5 +21,11 @@
     <ProjectReference Include="..\Novell.Directory.Ldap.NETStandard.FunctionalTests\Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   
 </Project>
