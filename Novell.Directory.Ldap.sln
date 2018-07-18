@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEE82E9C-181C-443E-A9CC-26D2D432FD56}"
 EndProject
@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6E28F0DF-400F-4A78-8DD0-B8D843F96010}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard", "src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj", "{87646BB4-7F55-49EF-9FE7-49AEE6378453}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard", "src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj", "{684370BE-0642-4BEE-AB16-B7997F74768A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.FunctionalTests", "test\Novell.Directory.Ldap.NETStandard.FunctionalTests\Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj", "{332F0714-7ABB-4451-92A1-B656AC26C8AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.FunctionalTests", "test\Novell.Directory.Ldap.NETStandard.FunctionalTests\Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj", "{408821BC-6B59-4C9D-B3D0-9D4EA0BD29DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{0ABBF187-A48E-42BB-83F0-96C2E1011C25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{A107107B-67DF-4E95-BCA5-8F8D4C379A64}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,26 +21,24 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{87646BB4-7F55-49EF-9FE7-49AEE6378453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{87646BB4-7F55-49EF-9FE7-49AEE6378453}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{87646BB4-7F55-49EF-9FE7-49AEE6378453}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{87646BB4-7F55-49EF-9FE7-49AEE6378453}.Release|Any CPU.Build.0 = Release|Any CPU
-		{332F0714-7ABB-4451-92A1-B656AC26C8AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{332F0714-7ABB-4451-92A1-B656AC26C8AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{332F0714-7ABB-4451-92A1-B656AC26C8AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{332F0714-7ABB-4451-92A1-B656AC26C8AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{684370BE-0642-4BEE-AB16-B7997F74768A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{684370BE-0642-4BEE-AB16-B7997F74768A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{684370BE-0642-4BEE-AB16-B7997F74768A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{684370BE-0642-4BEE-AB16-B7997F74768A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{408821BC-6B59-4C9D-B3D0-9D4EA0BD29DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{408821BC-6B59-4C9D-B3D0-9D4EA0BD29DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{408821BC-6B59-4C9D-B3D0-9D4EA0BD29DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{408821BC-6B59-4C9D-B3D0-9D4EA0BD29DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A107107B-67DF-4E95-BCA5-8F8D4C379A64}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A107107B-67DF-4E95-BCA5-8F8D4C379A64}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A107107B-67DF-4E95-BCA5-8F8D4C379A64}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A107107B-67DF-4E95-BCA5-8F8D4C379A64}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{87646BB4-7F55-49EF-9FE7-49AEE6378453} = {BEE82E9C-181C-443E-A9CC-26D2D432FD56}
-		{332F0714-7ABB-4451-92A1-B656AC26C8AD} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
-		{0ABBF187-A48E-42BB-83F0-96C2E1011C25} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
+		{684370BE-0642-4BEE-AB16-B7997F74768A} = {BEE82E9C-181C-443E-A9CC-26D2D432FD56}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B780926-24FB-4213-9233-C3B61F2209BA}
