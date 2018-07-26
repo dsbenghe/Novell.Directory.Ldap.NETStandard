@@ -40,7 +40,7 @@ using System.Reflection;
 //
 
 [assembly: AssemblyTitle("C# LDAP")]
-[assembly: AssemblyDescription("Novell.Directory.Ldap")]
+[assembly: AssemblyDescription(".NET Standard (1.3 and up) LDAP client library: .NET Core >= 1.0, .NET Framework >= 4.6, Universal Windows Platform, Xamarin (iOS, Android, UWP). Works with any LDAP server (including Microsoft Active Directory - AD)")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
