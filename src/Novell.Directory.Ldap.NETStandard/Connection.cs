@@ -580,13 +580,15 @@ namespace Novell.Directory.Ldap
                 {
                     if (in_Renamed == null || out_Renamed == null)
                     {
+                        var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                        var hostadd = ipAddresses.First(ip => ip.AddressFamily == AddressFamily.InterNetwork
+                                                           || ip.AddressFamily == AddressFamily.InterNetworkV6);
+
                         if (Ssl)
                         {
                             this.host = host;
                             this.port = port;
-                            sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
-                            var hostadd = ipAddresses.First(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                            sock = new Socket(hostadd.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ephost = new IPEndPoint(hostadd, port);
                             sock.Connect(ephost);
                             var nstream = new NetworkStream(sock, true);
@@ -602,7 +604,7 @@ namespace Novell.Directory.Ldap
                         }
                         else
                         {
-                            socket = new TcpClient();
+                            socket = new TcpClient(hostadd.AddressFamily);
                             socket.ConnectAsync(host, port).WaitAndUnwrap(connectionTimeout);
                             in_Renamed = socket.GetStream();
                             out_Renamed = socket.GetStream();
