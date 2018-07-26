@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMatchingRuleUseSchema.cs
 //
@@ -31,7 +32,6 @@
 
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -53,20 +53,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapMatchingRuleUseSchema : LdapSchemaElement
     {
-        /// <summary>
-        ///     Returns an array of all the attributes which this matching rule
-        ///     applies to.
-        /// </summary>
-        /// <returns>
-        ///     An array of all the attributes which this matching rule applies to.
-        /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return attributes; }
-        }
-
-        private readonly string[] attributes;
-
         /// <summary>
         ///     Constructs a matching rule use definition for adding to or deleting
         ///     from the schema.
@@ -90,18 +76,18 @@ namespace Novell.Directory.Ldap
         ///     names or numeric oids of the attributes.
         /// </param>
         public LdapMatchingRuleUseSchema(string[] names, string oid, string description, bool obsolete,
-            string[] attributes) : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING_USE])
+            string[] attributes)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.attributes = new string[attributes.Length];
-            attributes.CopyTo(this.attributes, 0);
-            Value = formatString();
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
+            Value = FormatString();
         }
-
 
         /// <summary>
         ///     Constructs a matching rule use definition from the raw string value
@@ -111,18 +97,19 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned on a schema
         ///     query for matchingRuleUse.
         /// </param>
-        public LdapMatchingRuleUseSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING_USE])
+        public LdapMatchingRuleUseSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.MatchingUse])
         {
             try
             {
                 var matchParser = new SchemaParser(raw);
                 names = new string[matchParser.Names.Length];
                 matchParser.Names.CopyTo(names, 0);
-                oid = matchParser.ID;
-                description = matchParser.Description;
-                obsolete = matchParser.Obsolete;
-                attributes = matchParser.Applies;
-                Value = formatString();
+                Oid = matchParser.Id;
+                Description = matchParser.Description;
+                Obsolete = matchParser.Obsolete;
+                Attributes = matchParser.Applies;
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -131,23 +118,32 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
+        ///     Returns an array of all the attributes which this matching rule
+        ///     applies to.
+        /// </summary>
+        /// <returns>
+        ///     An array of all the attributes which this matching rule applies to.
+        /// </returns>
+        public string[] Attributes { get; }
+
+        /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
         ///     directory, as a value of the particular schema element attribute.
         /// </summary>
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
-            string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
-            strArray = Names;
+
+            var strArray = Names;
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");
@@ -163,32 +159,46 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
+
             if ((strArray = Attributes) != null)
             {
                 valueBuffer.Append(" APPLIES ");
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append("( ");
+                }
+
                 for (var i = 0; i < strArray.Length; i++)
                 {
                     if (i > 0)
+                    {
                         valueBuffer.Append(" $ ");
+                    }
+
                     valueBuffer.Append(strArray[i]);
                 }
+
                 if (strArray.Length > 1)
+                {
                     valueBuffer.Append(" )");
+                }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

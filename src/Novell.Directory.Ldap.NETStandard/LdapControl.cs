@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapControl.cs
 //
@@ -46,56 +47,16 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.ResponseControls">
     /// </seealso>
-    /// <seealso cref="LdapConstraints.getControls">
+    /// <seealso cref="LdapConstraints.GetControls">
     /// </seealso>
     /// <seealso cref="LdapConstraints.setControls">
     /// </seealso>
     public class LdapControl
     {
-        /// <summary>
-        ///     Returns the identifier of the control.
-        /// </summary>
-        /// <returns>
-        ///     The object ID of the control.
-        /// </returns>
-        public virtual string ID
+        static LdapControl()
         {
-            get { return new StringBuilder(control.ControlType.stringValue()).ToString(); }
+            RegisteredControls = new RespControlVector(5, 5);
         }
-
-        /// <summary>
-        ///     Returns whether the control is critical for the operation.
-        /// </summary>
-        /// <returns>
-        ///     Returns true if the control must be supported for an associated
-        ///     operation to be executed, and false if the control is not required for
-        ///     the operation.
-        /// </returns>
-        public virtual bool Critical
-        {
-            get { return control.Criticality.booleanValue(); }
-        }
-
-        internal static RespControlVector RegisteredControls
-        {
-            get { return registeredControls; }
-        }
-
-        /// <summary>
-        ///     Returns the RFC 2251 Control object.
-        /// </summary>
-        /// <returns>
-        ///     An ASN.1 RFC 2251 Control.
-        /// </returns>
-        internal virtual RfcControl Asn1Object
-        {
-            /*package*/
-            get { return control; }
-        }
-
-        private static readonly RespControlVector registeredControls;
-
-        private RfcControl control; // An RFC 2251 Control
 
         /// <summary>
         ///     Constructs a new LdapControl object using the specified values.
@@ -112,27 +73,57 @@ namespace Novell.Directory.Ldap
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapControl(string oid, bool critical, sbyte[] values)
+        public LdapControl(string oid, bool critical, byte[] values)
         {
-            if ((object) oid == null)
+            if ((object)oid == null)
             {
                 throw new ArgumentException("An OID must be specified");
             }
+
             if (values == null)
             {
-                control = new RfcControl(new RfcLdapOID(oid), new Asn1Boolean(critical));
+                Asn1Object = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical));
             }
             else
             {
-                control = new RfcControl(new RfcLdapOID(oid), new Asn1Boolean(critical), new Asn1OctetString(values));
+                Asn1Object = new RfcControl(new RfcLdapOid(oid), new Asn1Boolean(critical),
+                    new Asn1OctetString(values));
             }
         }
 
         /// <summary> Create an LdapControl from an existing control.</summary>
         protected internal LdapControl(RfcControl control)
         {
-            this.control = control;
+            Asn1Object = control;
         }
+
+        /// <summary>
+        ///     Returns the identifier of the control.
+        /// </summary>
+        /// <returns>
+        ///     The object ID of the control.
+        /// </returns>
+        public string Id => new StringBuilder(Asn1Object.ControlType.StringValue()).ToString();
+
+        /// <summary>
+        ///     Returns whether the control is critical for the operation.
+        /// </summary>
+        /// <returns>
+        ///     Returns true if the control must be supported for an associated
+        ///     operation to be executed, and false if the control is not required for
+        ///     the operation.
+        /// </returns>
+        public bool Critical => Asn1Object.Criticality.BooleanValue();
+
+        internal static RespControlVector RegisteredControls { get; }
+
+        /// <summary>
+        ///     Returns the RFC 2251 Control object.
+        /// </summary>
+        /// <returns>
+        ///     An ASN.1 RFC 2251 Control.
+        /// </returns>
+        internal RfcControl Asn1Object { get; private set; }
 
         /// <summary>
         ///     Returns a copy of the current LdapControl object.
@@ -145,27 +136,31 @@ namespace Novell.Directory.Ldap
             LdapControl cont;
             try
             {
-                cont = (LdapControl) MemberwiseClone();
+                cont = (LdapControl)MemberwiseClone();
             }
             catch (Exception ce)
             {
                 throw new Exception("Internal error, cannot create clone", ce);
             }
-            var vals = getValue();
-            sbyte[] twin = null;
+
+            var vals = GetValue();
+            byte[] twin = null;
             if (vals != null)
             {
-                //is this necessary?
+                // is this necessary?
                 // Yes even though the contructor above allocates a
                 // new Asn1OctetString, vals in that constuctor
                 // is only copied by reference
-                twin = new sbyte[vals.Length];
+                twin = new byte[vals.Length];
                 for (var i = 0; i < vals.Length; i++)
                 {
                     twin[i] = vals[i];
                 }
-                cont.control = new RfcControl(new RfcLdapOID(ID), new Asn1Boolean(Critical), new Asn1OctetString(twin));
+
+                cont.Asn1Object = new RfcControl(new RfcLdapOid(Id), new Asn1Boolean(Critical),
+                    new Asn1OctetString(twin));
             }
+
             return cont;
         }
 
@@ -177,26 +172,26 @@ namespace Novell.Directory.Ldap
         ///     or null if the control has no data.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] getValue()
+        public byte[] GetValue()
         {
-            sbyte[] result = null;
-            var val = control.ControlValue;
+            byte[] result = null;
+            var val = Asn1Object.ControlValue;
             if (val != null)
             {
-                result = val.byteValue();
+                result = val.ByteValue();
             }
+
             return result;
         }
-
 
         /// <summary>
         ///     Sets the control-specific data of the object.  This method is for
         ///     use by an extension of LdapControl.
         /// </summary>
         [CLSCompliant(false)]
-        protected internal virtual void setValue(sbyte[] controlValue)
+        protected void SetValue(byte[] controlValue)
         {
-            control.ControlValue = new Asn1OctetString(controlValue);
+            Asn1Object.ControlValue = new Asn1OctetString(controlValue);
         }
 
         /// <summary>
@@ -211,14 +206,9 @@ namespace Novell.Directory.Ldap
         /// <param name="controlClass">
         ///     A class which can instantiate an LdapControl.
         /// </param>
-        public static void register(string oid, Type controlClass)
+        public static void Register(string oid, Type controlClass)
         {
-            registeredControls.registerResponseControl(oid, controlClass);
-        }
-
-        static LdapControl()
-        {
-            registeredControls = new RespControlVector(5, 5);
+            RegisteredControls.RegisterResponseControl(oid, controlClass);
         }
     }
 }

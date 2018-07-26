@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapSortControl.cs
 //
@@ -30,7 +31,6 @@
 //
 
 using System;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Controls
@@ -46,69 +46,14 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapSortControl : LdapControl
     {
-        private static readonly int ORDERING_RULE = 0;
-        private static readonly int REVERSE_ORDER = 1;
+        private static readonly int OrderingRule = 0;
+        private static readonly int ReverseOrder = 1;
 
-        /// <summary> The requestOID of the sort control</summary>
-        private static readonly string requestOID = "1.2.840.113556.1.4.473";
+        /// <summary> The requestOID of the sort control.</summary>
+        private static readonly string RequestOid = "1.2.840.113556.1.4.473";
 
-        /// <summary> The responseOID of the sort control</summary>
-        private static readonly string responseOID = "1.2.840.113556.1.4.474";
-
-        /// <summary>
-        ///     Constructs a sort control with a single key.
-        /// </summary>
-        /// <param name="key">
-        ///     A sort key object, which specifies attribute,
-        ///     order, and optional matching rule.
-        /// </param>
-        /// <param name="critical	True">
-        ///     if the search operation is to fail if the
-        ///     server does not support this control.
-        /// </param>
-        public LdapSortControl(LdapSortKey key, bool critical) : this(new[] {key}, critical)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs a sort control with multiple sort keys.
-        /// </summary>
-        /// <param name="keys		An">
-        ///     array of sort key objects, to be processed in
-        ///     order.
-        /// </param>
-        /// <param name="critical	True">
-        ///     if the search operation is to fail if the
-        ///     server does not support this control.
-        /// </param>
-        public LdapSortControl(LdapSortKey[] keys, bool critical) : base(requestOID, critical, null)
-        {
-            var sortKeyList = new Asn1SequenceOf();
-
-            for (var i = 0; i < keys.Length; i++)
-            {
-                var key = new Asn1Sequence();
-
-                key.add(new Asn1OctetString(keys[i].Key));
-
-                if ((object) keys[i].MatchRule != null)
-                {
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, ORDERING_RULE),
-                        new Asn1OctetString(keys[i].MatchRule), false));
-                }
-
-                if (keys[i].Reverse)
-                {
-                    // only add if true
-                    key.add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, REVERSE_ORDER),
-                        new Asn1Boolean(true), false));
-                }
-
-                sortKeyList.add(key);
-            }
-
-            setValue(sortKeyList.getEncoding(new LBEREncoder()));
-        }
+        /// <summary> The responseOID of the sort control.</summary>
+        private static readonly string ResponseOid = "1.2.840.113556.1.4.474";
 
         static LdapSortControl()
         {
@@ -122,13 +67,72 @@ namespace Novell.Directory.Ldap.Controls
                 */
                 try
                 {
-                    register(responseOID, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
+                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
                 }
                 catch (Exception e)
                 {
                     Logger.Log.LogWarning("Exception swallowed", e);
                 }
             }
+        }
+
+        /// <summary>
+        ///     Constructs a sort control with a single key.
+        /// </summary>
+        /// <param name="key">
+        ///     A sort key object, which specifies attribute,
+        ///     order, and optional matching rule.
+        /// </param>
+        /// <param name="critical   True">
+        ///     if the search operation is to fail if the
+        ///     server does not support this control.
+        /// </param>
+        public LdapSortControl(LdapSortKey key, bool critical)
+            : this(new[] {key }, critical)
+        {
+        }
+
+        /// <summary>
+        ///     Constructs a sort control with multiple sort keys.
+        /// </summary>
+        /// <param name="keys       An">
+        ///     array of sort key objects, to be processed in
+        ///     order.
+        /// </param>
+        /// <param name="critical   True">
+        ///     if the search operation is to fail if the
+        ///     server does not support this control.
+        /// </param>
+        public LdapSortControl(LdapSortKey[] keys, bool critical)
+            : base(RequestOid, critical, null)
+        {
+            var sortKeyList = new Asn1SequenceOf();
+
+            for (var i = 0; i < keys.Length; i++)
+            {
+                var key = new Asn1Sequence();
+
+                key.Add(new Asn1OctetString(keys[i].Key));
+
+                if ((object)keys[i].MatchRule != null)
+                {
+                    key.Add(new Asn1Tagged(
+                        new Asn1Identifier(Asn1Identifier.Context, false, OrderingRule),
+                        new Asn1OctetString(keys[i].MatchRule), false));
+                }
+
+                if (keys[i].Reverse)
+                {
+                    // only add if true
+                    key.Add(new Asn1Tagged(
+                        new Asn1Identifier(Asn1Identifier.Context, false, ReverseOrder),
+                        new Asn1Boolean(true), false));
+                }
+
+                sortKeyList.Add(key);
+            }
+
+            SetValue(sortKeyList.GetEncoding(new LberEncoder()));
         }
     }
 }

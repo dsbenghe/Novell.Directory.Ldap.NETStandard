@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Choice.cs
 //
@@ -43,22 +44,6 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public class Asn1Choice : Asn1Object
     {
-        /// <summary>
-        ///     Sets the CHOICE value stored in this Asn1Choice.
-        /// </summary>
-        /// <param name="content">
-        ///     The Asn1Object that this Asn1Choice will
-        ///     encode.  Since all Asn1 objects are derived from Asn1Object
-        ///     any basic type can be passed in.
-        /// </param>
-        [CLSCompliant(false)]
-        protected internal virtual Asn1Object ChoiceValue
-        {
-            set { content = value; }
-        }
-
-        private Asn1Object content;
-
         /* Constructors for Asn1Choice
         */
 
@@ -70,23 +55,35 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        public Asn1Choice(Asn1Object content) : base(null)
+        public Asn1Choice(Asn1Object content)
+            : base(null)
         {
-            this.content = content;
+            ChoiceValue = content;
         }
 
         /// <summary>
         ///     No arg Constructor. This is used by Filter, who subsequently sets the
         ///     content after parsing the RFC 2254 Search Filter String.
         /// </summary>
-        protected internal Asn1Choice() : base(null)
+        protected internal Asn1Choice()
+            : base(null)
         {
-            content = null;
+            ChoiceValue = null;
         }
+
+        /// <summary>
+        ///     Sets the CHOICE value stored in this Asn1Choice.
+        /// </summary>
+        /// <param name="content">
+        ///     The Asn1Object that this Asn1Choice will
+        ///     encode.  Since all Asn1 objects are derived from Asn1Object
+        ///     any basic type can be passed in.
+        /// </param>
+        [CLSCompliant(false)]
+        protected Asn1Object ChoiceValue { set; get; }
 
         /* Asn1Object implementation
         */
-
 
         /// <summary>
         ///     Call this method to encode the contents of this Asn1Choice
@@ -100,22 +97,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void encode(Asn1Encoder enc, Stream out_Renamed)
+        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
         {
-            content.encode(enc, out_Renamed);
+            ChoiceValue.Encode(enc, outRenamed);
         }
 
         /* Asn1Choice specific methods
         */
-
-        /// <summary>
-        ///     Returns the CHOICE value stored in this Asn1Choice
-        ///     as an Asn1Object.
-        /// </summary>
-        public Asn1Object choiceValue()
-        {
-            return content;
-        }
 
         /// <summary>
         ///     This method will return the Asn1Identifier of the
@@ -123,9 +111,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     as the identifier of an Asn1Choice depends on the
         ///     type of the object encoded by this Asn1Choice.
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return content.getIdentifier();
+            return ChoiceValue.GetIdentifier();
         }
 
         /// <summary>
@@ -134,15 +122,15 @@ namespace Novell.Directory.Ldap.Asn1
         ///     an Asn1Choice depends on the type of the object
         ///     encoded by this Asn1Choice.
         /// </summary>
-        public override void setIdentifier(Asn1Identifier id)
+        public override void SetIdentifier(Asn1Identifier id)
         {
-            content.setIdentifier(id);
+            ChoiceValue.SetIdentifier(id);
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            return content.ToString();
+            return ChoiceValue.ToString();
         }
     }
 }

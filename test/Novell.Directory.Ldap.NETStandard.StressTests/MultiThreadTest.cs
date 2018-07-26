@@ -34,11 +34,12 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var threadDatas = new ThreadRunner[_noOfThreads];
             for (var i = 0; i < _noOfThreads; i++)
             {
-                var threadRunner = new ThreadRunner( DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
+                var threadRunner = new ThreadRunner(DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
                 threads[i] = new Thread(threadRunner.RunLoop);
                 threadDatas[i] = threadRunner;
                 threads[i].Start();
             }
+
             var monitoringThread = new Thread(MonitoringThread);
             var monitoringThreadData = new MonitoringThreadData(threadDatas);
             monitoringThread.Start(monitoringThreadData);
@@ -67,7 +68,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
         private void MonitoringThread(object param)
         {
-            var monitoringThreadData = (MonitoringThreadData) param;
+            var monitoringThreadData = (MonitoringThreadData)param;
             do
             {
                 DumpStats(monitoringThreadData);
@@ -90,10 +91,12 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                     count = threadRunner.Count;
                     lastDate = threadRunner.LastPingDate;
                 }
-                var lastUpdateSecondsAgo = (int) (DateTime.Now - lastDate).TotalSeconds;
+
+                var lastUpdateSecondsAgo = (int)(DateTime.Now - lastDate).TotalSeconds;
                 var possibleHanging = (lastUpdateSecondsAgo - 2 * DefaultTestingThreadReportingPeriod.TotalSeconds) > 0;
                 logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
             }
+
             _logger.LogInformation(logMessage.ToString());
         }
 
@@ -103,7 +106,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
-                TestingThreadReportingPeriod = testingThreadReportingPeriod;
+                _testingThreadReportingPeriod = testingThreadReportingPeriod;
                 _logger = logger;
                 Count = 0;
                 ShouldStop = false;
@@ -113,7 +116,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public DateTime LastPingDate;
             public int Count;
             public bool ShouldStop;
-            private readonly TimeSpan TestingThreadReportingPeriod;
+            private readonly TimeSpan _testingThreadReportingPeriod;
             private readonly ILogger<ThreadRunner> _logger;
 
             public void RunLoop()
@@ -142,8 +145,9 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                             _logger.LogError("Error in runner thread - {0}", ex);
                         }
                     }
+
                     i++;
-                    if (stopWatch.Elapsed > TestingThreadReportingPeriod)
+                    if (stopWatch.Elapsed > _testingThreadReportingPeriod)
                     {
                         stopWatch.Stop();
                         lock (this)
@@ -151,6 +155,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                             Count = i;
                             LastPingDate = DateTime.Now;
                         }
+
                         stopWatch.Restart();
                     }
                 }
@@ -173,6 +178,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         public class ExceptionInfo
         {
             public Exception Ex { get; set; }
+
             public long ThreadId { get; set; }
         }
     }

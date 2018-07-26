@@ -17,12 +17,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             TestHelper.WithAuthenticatedLdapConnection(
                 ldapConnection =>
                 {
-                    var lsc = ldapConnection.Search(TestsConfig.LdapServer.BaseDn, LdapConnection.SCOPE_SUB, "cn=" + ldapEntry.getAttribute("cn").StringValue, null, false);
+                    var lsc = ldapConnection.Search(TestsConfig.LdapServer.BaseDn, LdapConnection.ScopeSub, "cn=" + ldapEntry.GetAttribute("cn").StringValue, null, false);
                     var entries = new List<LdapEntry>();
                     foreach(var entry in lsc)
                     {
                         entries.Add(entry);
                     }
+
                     Assert.Equal(1, entries.Count);
                     ldapEntry.AssertSameAs(entries[0]);
                 });

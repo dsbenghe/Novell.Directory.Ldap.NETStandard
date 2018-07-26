@@ -30,9 +30,14 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var noOfThreads = DefaultNoOfThreads;
             var timeToRun = DefaultTimeToRun;
             if (args.Length >= 1)
+            {
                 noOfThreads = int.Parse(args[0]);
-            if(args.Length >= 2)
+            }
+
+            if (args.Length >= 2)
+            {
                 timeToRun = TimeSpan.FromMinutes(int.Parse(args[1]));
+            }
 
             Log.Logger.Information("----Running stress test with {0} threads for {1} minutes", noOfThreads, (int)timeToRun.TotalMinutes);
             var noOfExceptions = new MultiThreadTest(noOfThreads, timeToRun, loggerFactory).Run();

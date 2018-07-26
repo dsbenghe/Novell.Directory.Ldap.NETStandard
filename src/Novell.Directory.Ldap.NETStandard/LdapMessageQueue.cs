@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMessageQueue.cs
 //
@@ -41,27 +42,53 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public abstract class LdapMessageQueue
     {
-        /// <summary>
-        ///     Returns the name used for debug
-        /// </summary>
-        /// <returns>
-        ///     name of object instance used for debug
-        /// </returns>
-        internal virtual string DebugName
+        // nameLock used to protect queueNum during increment
+
+        internal static object NameLock;
+
+        // Queue number used only for debug
+
+        internal static int QueueNum = 0;
+
+        /// <summary> The message agent object associated with this queue.</summary>
+        internal MessageAgent Agent;
+
+        // Queue name used only for debug
+
+        internal string Name = string.Empty;
+
+        static LdapMessageQueue()
         {
-            get { return name; }
+            NameLock = new object();
         }
 
         /// <summary>
-        ///     Returns the internal client message agent
+        ///     Constructs a response queue using the specified message agent.
+        /// </summary>
+        /// <param name="agent">
+        ///     The message agent to associate with this conneciton.
+        /// </param>
+        internal LdapMessageQueue(string myname, MessageAgent agent)
+        {
+            // Get a unique connection name for debug
+            Agent = agent;
+        }
+
+        /// <summary>
+        ///     Returns the name used for debug.
         /// </summary>
         /// <returns>
-        ///     The internal client message agent
+        ///     name of object instance used for debug.
         /// </returns>
-        internal virtual MessageAgent MessageAgent
-        {
-            get { return agent; }
-        }
+        internal string DebugName => Name;
+
+        /// <summary>
+        ///     Returns the internal client message agent.
+        /// </summary>
+        /// <returns>
+        ///     The internal client message agent.
+        /// </returns>
+        internal MessageAgent MessageAgent => Agent;
 
         /// <summary>
         ///     Returns the message IDs for all outstanding requests. These are requests
@@ -73,37 +100,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message IDs for all outstanding requests.
         /// </returns>
-        public virtual int[] MessageIDs
-        {
-            get { return agent.MessageIDs; }
-        }
-
-        /// <summary> The message agent object associated with this queue</summary>
-        internal MessageAgent agent;
-
-        // Queue name used only for debug
-
-        internal string name = "";
-
-        // nameLock used to protect queueNum during increment
-
-        internal static object nameLock;
-
-        // Queue number used only for debug
-
-        internal static int queueNum = 0;
-
-        /// <summary>
-        ///     Constructs a response queue using the specified message agent
-        /// </summary>
-        /// <param name="agent">
-        ///     The message agent to associate with this conneciton
-        /// </param>
-        internal LdapMessageQueue(string myname, MessageAgent agent)
-        {
-            // Get a unique connection name for debug
-            this.agent = agent;
-        }
+        public int[] MessageIDs => Agent.MessageIDs;
 
         /// <summary>
         ///     Returns the response from an Ldap request.
@@ -126,9 +123,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapMessage getResponse()
+        public LdapMessage GetResponse()
         {
-            return getResponse(null);
+            return GetResponse(null);
         }
 
         /// <summary>
@@ -143,7 +140,7 @@ namespace Novell.Directory.Ldap
         ///     returned.
         /// </summary>
         /// <param name="msgid">
-        ///     query for responses for a specific message request
+        ///     query for responses for a specific message request.
         /// </param>
         /// <returns>
         ///     The response from the server.
@@ -158,54 +155,57 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public virtual LdapMessage getResponse(int msgid)
+        public LdapMessage GetResponse(int msgid)
         {
-            return getResponse(new Integer32(msgid));
+            return GetResponse(new Integer32(msgid));
         }
 
         /// <summary>
         ///     Private implementation of getResponse.
         ///     Has an Integer object as a parameter so we can distinguish
-        ///     the null and the message number case
+        ///     the null and the message number case.
         /// </summary>
-        private LdapMessage getResponse(Integer32 msgid)
+        private LdapMessage GetResponse(Integer32 msgid)
         {
             object resp;
             LdapMessage response;
-            if ((resp = agent.getLdapMessage(msgid)) == null)
+            if ((resp = Agent.GetLdapMessage(msgid)) == null)
             {
                 // blocks
                 return null; // no messages from this agent
             }
+
             // Local error occurred, contains a LocalException
             if (resp is LdapResponse)
             {
-                return (LdapMessage) resp;
+                return (LdapMessage)resp;
             }
+
             // Normal message handling
-            var message = (RfcLdapMessage) resp;
+            var message = (RfcLdapMessage)resp;
             switch (message.Type)
             {
-                case LdapMessage.SEARCH_RESPONSE:
+                case LdapMessage.SearchResponse:
                     response = new LdapSearchResult(message);
                     break;
 
-                case LdapMessage.SEARCH_RESULT_REFERENCE:
+                case LdapMessage.SearchResultReference:
                     response = new LdapSearchResultReference(message);
                     break;
 
-                case LdapMessage.EXTENDED_RESPONSE:
-                    response = ExtResponseFactory.convertToExtendedResponse(message);
+                case LdapMessage.ExtendedResponse:
+                    response = ExtResponseFactory.ConvertToExtendedResponse(message);
                     break;
 
-                case LdapMessage.INTERMEDIATE_RESPONSE:
-                    response = IntermediateResponseFactory.convertToIntermediateResponse(message);
+                case LdapMessage.IntermediateResponse:
+                    response = IntermediateResponseFactory.ConvertToIntermediateResponse(message);
                     break;
 
                 default:
                     response = new LdapResponse(message);
                     break;
             }
+
             return response;
         }
 
@@ -219,9 +219,9 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse,
         ///     otherwise false.
         /// </returns>
-        public virtual bool isResponseReceived()
+        public bool IsResponseReceived()
         {
-            return agent.isResponseReceived();
+            return Agent.IsResponseReceived();
         }
 
         /// <summary>
@@ -237,9 +237,9 @@ namespace Novell.Directory.Ldap
         ///     true if a response is available to be retrieved via getResponse
         ///     for the specified message ID, otherwise false.
         /// </returns>
-        public virtual bool isResponseReceived(int msgid)
+        public bool IsResponseReceived(int msgid)
         {
-            return agent.isResponseReceived(msgid);
+            return Agent.IsResponseReceived(msgid);
         }
 
         /// <summary>
@@ -249,16 +249,11 @@ namespace Novell.Directory.Ldap
         ///     message id, it reports true.  There may still be messages waiting to be
         ///     retrieved by the applcation with getResponse.
         ///     @throws IllegalArgumentException if there is no outstanding operation
-        ///     for the message ID,
+        ///     for the message ID,.
         /// </summary>
-        public virtual bool isComplete(int msgid)
+        public bool IsComplete(int msgid)
         {
-            return agent.isComplete(msgid);
-        }
-
-        static LdapMessageQueue()
-        {
-            nameLock = new object();
+            return Agent.IsComplete(msgid);
         }
     }
 }

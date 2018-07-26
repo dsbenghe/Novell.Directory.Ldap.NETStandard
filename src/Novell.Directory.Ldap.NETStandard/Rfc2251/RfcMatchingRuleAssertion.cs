@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcMatchingRuleAssertion.cs
 //
@@ -45,9 +46,9 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcMatchingRuleAssertion : Asn1Sequence
     {
-        //*************************************************************************
+        // *************************************************************************
         // Constructors for MatchingRuleAssertion
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Creates a MatchingRuleAssertion with the only required parameter.
@@ -55,7 +56,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="matchValue">
         ///     The assertion value.
         /// </param>
-        public RfcMatchingRuleAssertion(RfcAssertionValue matchValue) : this(null, null, matchValue, null)
+        public RfcMatchingRuleAssertion(RfcAssertionValue matchValue)
+            : this(null, null, matchValue, null)
         {
         }
 
@@ -73,23 +75,30 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Optional attribute description.
         /// </param>
         /// <param name="dnAttributes">
-        ///     Asn1Boolean value. (default false)
+        ///     Asn1Boolean value. (default false).
         /// </param>
         public RfcMatchingRuleAssertion(RfcMatchingRuleId matchingRule, RfcAttributeDescription type,
-            RfcAssertionValue matchValue, Asn1Boolean dnAttributes) : base(4)
+            RfcAssertionValue matchValue, Asn1Boolean dnAttributes)
+            : base(4)
         {
             if (matchingRule != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 1), matchingRule, false));
+            {
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 1), matchingRule, false));
+            }
 
             if (type != null)
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 2), type, false));
+            {
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 2), type, false));
+            }
 
-            add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 3), matchValue, false));
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 3), matchValue, false));
 
             // if dnAttributes if false, that is the default value and we must not
             // encode it. (See RFC 2251 5.1 number 4)
-            if (dnAttributes != null && dnAttributes.booleanValue())
-                add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.CONTEXT, false, 4), dnAttributes, false));
+            if (dnAttributes != null && dnAttributes.BooleanValue())
+            {
+                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 4), dnAttributes, false));
+            }
         }
     }
 }

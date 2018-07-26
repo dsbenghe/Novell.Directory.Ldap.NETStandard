@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapEntry.cs
 //
@@ -48,23 +49,11 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapEntry : IComparable
     {
-        /// <summary>
-        ///     Returns the distinguished name of the entry.
-        /// </summary>
-        /// <returns>
-        ///     The distinguished name of the entry.
-        /// </returns>
-        [CLSCompliant(false)]
-        public virtual string DN
-        {
-            get { return dn; }
-        }
-
-        protected internal string dn;
-        protected internal LdapAttributeSet attrs;
+        protected internal LdapAttributeSet Attrs;
 
         /// <summary> Constructs an empty entry.</summary>
-        public LdapEntry() : this(null, null)
+        public LdapEntry()
+            : this(null, null)
         {
         }
 
@@ -77,7 +66,8 @@ namespace Novell.Directory.Ldap
         ///     value is not validated. An invalid distinguished
         ///     name will cause operations using this entry to fail.
         /// </param>
-        public LdapEntry(string dn) : this(dn, null)
+        public LdapEntry(string dn)
+            : this(dn, null)
         {
         }
 
@@ -96,16 +86,46 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapEntry(string dn, LdapAttributeSet attrs)
         {
-            if ((object) dn == null)
+            if ((object)dn == null)
             {
-                dn = "";
+                dn = string.Empty;
             }
+
             if (attrs == null)
             {
                 attrs = new LdapAttributeSet();
             }
-            this.dn = dn;
-            this.attrs = attrs;
+
+            Dn = dn;
+            Attrs = attrs;
+        }
+
+        /// <summary>
+        ///     Returns the distinguished name of the entry.
+        /// </summary>
+        /// <returns>
+        ///     The distinguished name of the entry.
+        /// </returns>
+        [CLSCompliant(false)]
+        public string Dn { get; set; }
+
+        /// <summary>
+        ///     Compares this object with the specified object for order.
+        ///     Ordering is determined by comparing normalized DN values
+        ///     (see {@link LdapEntry#getDN() } and
+        ///     {@link LdapDN#normalize(java.lang.String)}) using the
+        ///     compareTo method of the String class.
+        /// </summary>
+        /// <param name="entry">
+        ///     Entry to compare to.
+        /// </param>
+        /// <returns>
+        ///     A negative integer, zero, or a positive integer as this
+        ///     object is less than, equal to, or greater than the specified object.
+        /// </returns>
+        public virtual int CompareTo(object entry)
+        {
+            return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry)entry).Dn));
         }
 
         /// <summary>
@@ -117,9 +137,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An array of LdapAttribute objects.
         /// </returns>
-        public virtual LdapAttribute getAttribute(string attrName)
+        public LdapAttribute GetAttribute(string attrName)
         {
-            return attrs.getAttribute(attrName);
+            return Attrs.GetAttribute(attrName);
         }
 
         /// <summary>
@@ -131,11 +151,10 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute set of the entry.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet()
+        public LdapAttributeSet GetAttributeSet()
         {
-            return attrs;
+            return Attrs;
         }
-
 
         /// <summary>
         ///     Returns an attribute set from the entry, consisting of only those
@@ -159,47 +178,30 @@ namespace Novell.Directory.Ldap
         ///     match the specified subtypes or an empty set if no attributes
         ///     match.
         /// </returns>
-        public virtual LdapAttributeSet getAttributeSet(string subtype)
+        public LdapAttributeSet GetAttributeSet(string subtype)
         {
-            return attrs.getSubset(subtype);
+            return Attrs.GetSubset(subtype);
         }
 
         /// <summary>
-        ///     Compares this object with the specified object for order.
-        ///     Ordering is determined by comparing normalized DN values
-        ///     (see {@link LdapEntry#getDN() } and
-        ///     {@link LdapDN#normalize(java.lang.String)}) using the
-        ///     compareTo method of the String class.
-        /// </summary>
-        /// <param name="entry">
-        ///     Entry to compare to
-        /// </param>
-        /// <returns>
-        ///     A negative integer, zero, or a positive integer as this
-        ///     object is less than, equal to, or greater than the specified object.
-        /// </returns>
-        public virtual int CompareTo(object entry)
-        {
-            return LdapDN.normalize(dn).CompareTo(LdapDN.normalize(((LdapEntry) entry).dn));
-        }
-
-        /// <summary>
-        ///     Returns a string representation of this LdapEntry
+        ///     Returns a string representation of this LdapEntry.
         /// </summary>
         /// <returns>
-        ///     a string representation of this LdapEntry
+        ///     a string representation of this LdapEntry.
         /// </returns>
         public override string ToString()
         {
             var result = new StringBuilder("LdapEntry: ");
-            if ((object) dn != null)
+            if (Dn != null)
             {
-                result.Append(dn + "; ");
+                result.Append(Dn + "; ");
             }
-            if (attrs != null)
+
+            if (Attrs != null)
             {
-                result.Append(attrs);
+                result.Append(Attrs);
             }
+
             return result.ToString();
         }
     }

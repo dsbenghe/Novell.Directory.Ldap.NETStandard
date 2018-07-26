@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2006 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -29,7 +30,6 @@
 // (C) 2006 Novell, Inc (http://www.novell.com)
 //
 
-
 using System;
 using System.IO;
 using System.Text;
@@ -37,7 +37,7 @@ using Novell.Directory.Ldap.Asn1;
 
 /**
 *
-* This class provides an LDAP interface for object based  
+* This class provides an LDAP interface for object based
 * restore of eDirectory objects.
 *
 * <p>The information need for restore includes such items as  object DN,
@@ -45,7 +45,7 @@ using Novell.Directory.Ldap.Asn1;
 * elements representing the size of each chunk, data blob in byte[]. The API
 * support restoring of both non-encrypted and encrypted objects.
 * </p>
-* 
+*
 * <p>To send this request to eDirectory, you must
 * create an instance of this class and then call the
 * extendedOperation method with this object as the required
@@ -58,7 +58,7 @@ using Novell.Directory.Ldap.Asn1;
 *
 * <p>requestValue ::=<br>
 * objectDN ::= LDAPDN<br>
-* passwd	  ::= OCTET STRING<br>
+* passwd      ::= OCTET STRING<br>
 * bufferLength ::= INTEGER<br>
 * retunedBuffer::= OCTET STRING<br>
 * dataChunkSizes ::=<br>
@@ -68,7 +68,6 @@ using Novell.Directory.Ldap.Asn1;
 * SEQUENCE of {eacChunksize INTEGER}]<br>
 * }<br> </p>
 */
-
 namespace Novell.Directory.Ldap.Extensions
 {
     public class LdapRestoreRequest : LdapExtendedOperation
@@ -80,12 +79,12 @@ namespace Novell.Directory.Ldap.Extensions
         *
         * @param objectDN The object DN to restore
         * <br>
-        * @param passwd 		The encrypted password required for the object to
-        * be backed up
+        * @param passwd         The encrypted password required for the object to
+        * be backed up.
         * <br>
         * @param bufferLength The length of backed up data
         * <br>
-        * @param chunkSizesString The String containing number of chunks and 
+        * @param chunkSizesString The String containing number of chunks and
         * each chunk elements representing chunk sizes
         * <br>
         * @param returnedBuffer The actual data in byte[]
@@ -93,31 +92,32 @@ namespace Novell.Directory.Ldap.Extensions
         * @exception LdapException A general exception which includes an error
         *                          message and an LDAP error code.
         */
-
-        public LdapRestoreRequest(string objectDN, byte[] passwd,
-            int bufferLength, string chunkSizesString, byte[] returnedBuffer) :
-            base(BackupRestoreConstants.NLDAP_LDAP_RESTORE_REQUEST, null)
+        public LdapRestoreRequest(string objectDn, byte[] passwd,
+            int bufferLength, string chunkSizesString, byte[] returnedBuffer)
+            : base(BackupRestoreConstants.NldapLdapRestoreRequest, null)
         {
             try
             {
-                //Verify the validity of arguments
-                if (objectDN == null || bufferLength == 0 ||
+                // Verify the validity of arguments
+                if (objectDn == null || bufferLength == 0 ||
                     chunkSizesString == null || returnedBuffer == null)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
-                //If encrypted password has null reference make it null String
+                // If encrypted password has null reference make it null String
                 if (passwd == null)
-                    passwd = Encoding.UTF8.GetBytes("");
+                {
+                    passwd = Encoding.UTF8.GetBytes(string.Empty);
+                }
 
                 /*
                  * From the input argument chunkSizesString get::
                  * chunkSize => Represents the number of chunks of data returned from server
                  * sizeOf each chunk => int represents the size of each chunk
                 */
-                int index;
                 int chunkSize;
-                int[] chunks = null;
-                index = chunkSizesString.IndexOf(';');
+                var index = chunkSizesString.IndexOf(';');
                 try
                 {
                     chunkSize = int.Parse(chunkSizesString.Substring(0, index));
@@ -126,17 +126,21 @@ namespace Novell.Directory.Ldap.Extensions
                 {
                     throw new LdapLocalException(
                         "Invalid data buffer send in the request",
-                        LdapException.ENCODING_ERROR, e);
+                        LdapException.EncodingError, e);
                 }
-                //Return exception if chunkSize == 0
+
+                // Return exception if chunkSize == 0
                 if (chunkSize == 0)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
                 chunkSizesString = chunkSizesString.Substring(index + 1);
 
                 int chunkIndex;
-                //Construct chunks array
-                chunks = new int[chunkSize];
+
+                // Construct chunks array
+                var chunks = new int[chunkSize];
                 /*
                 * Iterate through each member in buffer and
                 * assign to chunks array elements
@@ -149,46 +153,49 @@ namespace Novell.Directory.Ldap.Extensions
                         chunks[i] = int.Parse(chunkSizesString);
                         break;
                     }
-                    chunks[i] = int.Parse(chunkSizesString.Substring(0,
+
+                    chunks[i] = int.Parse(chunkSizesString.Substring(
+                        0,
                         chunkIndex));
                     chunkSizesString = chunkSizesString.Substring(chunkIndex + 1);
                 }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                //Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
-                var asn1_bufferLength = new Asn1Integer(bufferLength);
-                var asn1_buffer = new Asn1OctetString(SupportClass.ToSByteArray(returnedBuffer));
+                // Form objectDN, passwd, bufferLength, data byte[] as ASN1 Objects
+                var asn1ObjectDn = new Asn1OctetString(objectDn);
+                var asn1Passwd = new Asn1OctetString(passwd);
+                var asn1BufferLength = new Asn1Integer(bufferLength);
+                var asn1Buffer = new Asn1OctetString(returnedBuffer);
 
-                //Form the chunks sequence to be passed to Server
-                var asn1_chunksSeq = new Asn1Sequence();
-                asn1_chunksSeq.add(new Asn1Integer(chunkSize));
-                var asn1_chunksSet = new Asn1Set();
+                // Form the chunks sequence to be passed to Server
+                var asn1ChunksSeq = new Asn1Sequence();
+                asn1ChunksSeq.Add(new Asn1Integer(chunkSize));
+                var asn1ChunksSet = new Asn1Set();
                 for (var i = 0; i < chunkSize; i++)
                 {
                     var tmpChunk = new Asn1Integer(chunks[i]);
                     var tmpSeq = new Asn1Sequence();
-                    tmpSeq.add(tmpChunk);
-                    asn1_chunksSet.add(tmpSeq);
+                    tmpSeq.Add(tmpChunk);
+                    asn1ChunksSet.Add(tmpSeq);
                 }
-                asn1_chunksSeq.add(asn1_chunksSet);
 
-                //Encode data to send to server
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
-                asn1_bufferLength.encode(encoder, encodedData);
-                asn1_buffer.encode(encoder, encodedData);
-                asn1_chunksSeq.encode(encoder, encodedData);
+                asn1ChunksSeq.Add(asn1ChunksSet);
+
+                // Encode data to send to server
+                asn1ObjectDn.Encode(encoder, encodedData);
+                asn1Passwd.Encode(encoder, encodedData);
+                asn1BufferLength.Encode(encoder, encodedData);
+                asn1Buffer.Encode(encoder, encodedData);
+                asn1ChunksSeq.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException("ENCODING_ERROR", LdapException.EncodingError, null, ioe);
             }
         }
     }

@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1SetOf.cs
 //
@@ -42,14 +43,14 @@ namespace Novell.Directory.Ldap.Asn1
     public class Asn1SetOf : Asn1Structured
     {
         /// <summary> ASN.1 SET OF tag definition.</summary>
-        public const int TAG = 0x11;
+        public const int Tag = 0x11;
 
         /// <summary>
         ///     ID is added for Optimization.
         ///     Id needs only be one Value for every instance,
         ///     thus we create it only once.
         /// </summary>
-        public static readonly Asn1Identifier ID = new Asn1Identifier(Asn1Identifier.UNIVERSAL, true, TAG);
+        public static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
 
         /* Constructors for Asn1SetOf
                 */
@@ -58,10 +59,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1SetOf object with no actual
         ///     Asn1Objects in it. Assumes a default size of 5 elements.
         /// </summary>
-        public Asn1SetOf() : base(ID)
+        public Asn1SetOf()
+            : base(Id)
         {
         }
-
 
         /// <summary>
         ///     Constructs an Asn1SetOf object with the specified
@@ -71,10 +72,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="size">
         ///     Specifies the initial size of the collection.
         /// </param>
-        public Asn1SetOf(int size) : base(ID, size)
+        public Asn1SetOf(int size)
+            : base(Id, size)
         {
         }
-
 
         /// <summary>
         ///     A copy constructor that creates an Asn1SetOf from an instance of Asn1Set.
@@ -84,7 +85,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Set.
         /// </summary>
-        public Asn1SetOf(Asn1Set set_Renamed) : base(ID, set_Renamed.toArray(), set_Renamed.size())
+        public Asn1SetOf(Asn1Set setRenamed)
+            : base(Id, setRenamed.ToArray(), setRenamed.Size())
         {
         }
 

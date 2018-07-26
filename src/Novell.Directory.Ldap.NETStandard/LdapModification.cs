@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapModification.cs
 //
@@ -36,7 +37,7 @@ namespace Novell.Directory.Ldap
     ///     An LdapModification contains information on the type of modification
     ///     being performed, the name of the attribute to be replaced, and the new
     ///     value.  Multiple modifications are expressed as an array of modifications,
-    ///     i.e., <code>LdapModification[]</code>.
+    ///     i.e.,. <code>LdapModification[]</code>.
     ///     An LdapModification or an LdapModification array enable you to modify
     ///     an attribute of an Ldap entry. The entire array of modifications must
     ///     be performed by the server as a single atomic operation in the order they
@@ -60,7 +61,7 @@ namespace Novell.Directory.Ldap
     ///     A replace operation with no value will remove the entire attribute if it
     ///     exists, and is ignored if the attribute does not exist.
     ///     Additional information on Ldap modifications is available in section 4.6
-    ///     of <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
+    ///     of. <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
     /// </summary>
     /// <seealso cref="LdapConnection.Modify">
     /// </seealso>
@@ -69,51 +70,20 @@ namespace Novell.Directory.Ldap
     public class LdapModification
     {
         /// <summary>
-        ///     Returns the attribute to modify, with any existing values.
-        /// </summary>
-        /// <returns>
-        ///     The attribute to modify.
-        /// </returns>
-        public virtual LdapAttribute Attribute
-        {
-            get { return attr; }
-        }
-
-        /// <summary>
-        ///     Returns the type of modification specified by this object.
-        ///     The type is one of the following:
-        ///     <ul>
-        ///         <li>LdapModification.ADD</li>
-        ///         <li>LdapModification.DELETE</li>
-        ///         <li>LdapModification.REPLACE</li>
-        ///     </ul>
-        /// </summary>
-        /// <returns>
-        ///     The type of modification specified by this object.
-        /// </returns>
-        public virtual int Op
-        {
-            get { return op; }
-        }
-
-        private readonly int op;
-        private readonly LdapAttribute attr;
-
-        /// <summary>
         ///     Adds the listed values to the given attribute, creating
         ///     the attribute if it does not already exist.
-        ///     ADD = 0
+        ///     ADD = 0.
         /// </summary>
-        public const int ADD = 0;
+        public const int Add = 0;
 
         /// <summary>
         ///     Deletes the listed values from the given attribute,
         ///     removing the entire attribute (1) if no values are listed or
         ///     (2) if all current values of the attribute are listed for
         ///     deletion.
-        ///     DELETE = 1
+        ///     DELETE = 1.
         /// </summary>
-        public const int DELETE = 1;
+        public const int Delete = 1;
 
         /// <summary>
         ///     Replaces all existing values of the given attribute
@@ -121,16 +91,16 @@ namespace Novell.Directory.Ldap
         ///     does not already exist.
         ///     A replace with no value deletes the entire attribute if it
         ///     exists, and is ignored if the attribute does not exist.
-        ///     REPLACE = 2
+        ///     REPLACE = 2.
         /// </summary>
-        public const int REPLACE = 2;
+        public const int Replace = 2;
 
         /// <summary>
         ///     Specifies a modification to be made to an attribute.
         /// </summary>
         /// <param name="op">
         ///     The type of modification to make, which can be
-        ///     one of the following:
+        ///     one of the following:.
         ///     <ul>
         ///         <li>
         ///             LdapModification.ADD - The value should be added to
@@ -152,8 +122,30 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapModification(int op, LdapAttribute attr)
         {
-            this.op = op;
-            this.attr = attr;
+            Op = op;
+            Attribute = attr;
         }
+
+        /// <summary>
+        ///     Returns the attribute to modify, with any existing values.
+        /// </summary>
+        /// <returns>
+        ///     The attribute to modify.
+        /// </returns>
+        public LdapAttribute Attribute { get; }
+
+        /// <summary>
+        ///     Returns the type of modification specified by this object.
+        ///     The type is one of the following:.
+        ///     <ul>
+        ///         <li>LdapModification.ADD</li>
+        ///         <li>LdapModification.DELETE</li>
+        ///         <li>LdapModification.REPLACE</li>
+        ///     </ul>
+        /// </summary>
+        /// <returns>
+        ///     The type of modification specified by this object.
+        /// </returns>
+        public int Op { get; }
     }
 }

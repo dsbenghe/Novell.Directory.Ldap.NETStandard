@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchResult.cs
 //
@@ -43,44 +44,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSearchResult : LdapMessage
     {
-        /// <summary>
-        ///     Returns the entry of a server's search response.
-        /// </summary>
-        /// <returns>
-        ///     The LdapEntry associated with this LdapSearchResult
-        /// </returns>
-        public virtual LdapEntry Entry
-        {
-            get
-            {
-                if (entry == null)
-                {
-                    var attrs = new LdapAttributeSet();
-
-                    var attrList = ((RfcSearchResultEntry) message.Response).Attributes;
-
-                    var seqArray = attrList.toArray();
-                    for (var i = 0; i < seqArray.Length; i++)
-                    {
-                        var seq = (Asn1Sequence) seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString) seq.get_Renamed(0)).stringValue());
-
-                        var set_Renamed = (Asn1Set) seq.get_Renamed(1);
-                        object[] setArray = set_Renamed.toArray();
-                        for (var j = 0; j < setArray.Length; j++)
-                        {
-                            attr.addValue(((Asn1OctetString) setArray[j]).byteValue());
-                        }
-                        attrs.Add(attr);
-                    }
-
-                    entry = new LdapEntry(((RfcSearchResultEntry) message.Response).ObjectName.stringValue(), attrs);
-                }
-                return entry;
-            }
-        }
-
-        private LdapEntry entry;
+        private LdapEntry _entry;
 
         /// <summary>
         ///     Constructs an LdapSearchResult object.
@@ -89,7 +53,8 @@ namespace Novell.Directory.Ldap
         ///     The RfcLdapMessage with a search result.
         /// </param>
         /*package*/
-        internal LdapSearchResult(RfcLdapMessage message) : base(message)
+        internal LdapSearchResult(RfcLdapMessage message)
+            : base(message)
         {
         }
 
@@ -100,7 +65,7 @@ namespace Novell.Directory.Ldap
         ///     the LdapEntry represented by this search result.
         /// </param>
         /// <param name="cont">
-        ///     controls associated with the search result
+        ///     controls associated with the search result.
         /// </param>
         public LdapSearchResult(LdapEntry entry, LdapControl[] cont)
         {
@@ -108,7 +73,47 @@ namespace Novell.Directory.Ldap
             {
                 throw new ArgumentException("Argument \"entry\" cannot be null");
             }
-            this.entry = entry;
+
+            _entry = entry;
+        }
+
+        /// <summary>
+        ///     Returns the entry of a server's search response.
+        /// </summary>
+        /// <returns>
+        ///     The LdapEntry associated with this LdapSearchResult.
+        /// </returns>
+        public LdapEntry Entry
+        {
+            get
+            {
+                if (_entry == null)
+                {
+                    var attrs = new LdapAttributeSet();
+
+                    var attrList = ((RfcSearchResultEntry)Message.Response).Attributes;
+
+                    var seqArray = attrList.ToArray();
+                    for (var i = 0; i < seqArray.Length; i++)
+                    {
+                        var seq = (Asn1Sequence)seqArray[i];
+                        var attr = new LdapAttribute(((Asn1OctetString)seq.get_Renamed(0)).StringValue());
+
+                        var setRenamed = (Asn1Set)seq.get_Renamed(1);
+                        object[] setArray = setRenamed.ToArray();
+                        for (var j = 0; j < setArray.Length; j++)
+                        {
+                            attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
+                        }
+
+                        attrs.Add(attr);
+                    }
+
+                    _entry = new LdapEntry(((RfcSearchResultEntry)Message.Response).ObjectName.StringValue(), attrs);
+                }
+
+                return _entry;
+            }
         }
 
         /// <summary>
@@ -120,14 +125,15 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             string str;
-            if (entry == null)
+            if (_entry == null)
             {
                 str = base.ToString();
             }
             else
             {
-                str = entry.ToString();
+                str = _entry.ToString();
             }
+
             return str;
         }
     }

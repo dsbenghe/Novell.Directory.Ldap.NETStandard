@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapReferralException.cs
 //
@@ -42,26 +43,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapReferralException : LdapException
     {
-        /// <summary>
-        ///     Sets a referral that could not be processed
-        /// </summary>
-        /// <param name="url">
-        ///     The referral URL that could not be processed.
-        /// </param>
-        public virtual string FailedReferral
-        {
-            /* Gets the referral that could not be processed.  If multiple referrals
-            * could not be processed, the method returns one of them.
-            *
-            * @return the referral that could not be followed.
-            */
-            get { return failedReferral; }
-
-            set { failedReferral = value; }
-        }
-
-        private string failedReferral;
-        private string[] referrals;
+        private string[] _referrals;
 
         /// <summary> Constructs a default exception with no specific error information.</summary>
         public LdapReferralException()
@@ -76,7 +58,8 @@ namespace Novell.Directory.Ldap
         /// <param name="message">
         ///     The additional error information.
         /// </param>
-        public LdapReferralException(string message) : base(message, REFERRAL, null)
+        public LdapReferralException(string message)
+            : base(message, Referral, null)
         {
         }
 
@@ -92,7 +75,8 @@ namespace Novell.Directory.Ldap
         /// <param name="message">
         ///     The additional error information.
         /// </param>
-        public LdapReferralException(string message, object[] arguments) : base(message, arguments, REFERRAL, null)
+        public LdapReferralException(string message, object[] arguments)
+            : base(message, arguments, Referral, null)
         {
         }
 
@@ -110,7 +94,7 @@ namespace Novell.Directory.Ldap
         ///     An exception which caused referral following to fail.
         /// </param>
         public LdapReferralException(string message, Exception rootException)
-            : base(message, REFERRAL, null, rootException)
+            : base(message, Referral, null, rootException)
         {
         }
 
@@ -132,7 +116,7 @@ namespace Novell.Directory.Ldap
         ///     An exception which caused referral following to fail.
         /// </param>
         public LdapReferralException(string message, object[] arguments, Exception rootException)
-            : base(message, arguments, REFERRAL, null, rootException)
+            : base(message, arguments, Referral, null, rootException)
         {
         }
 
@@ -218,8 +202,26 @@ namespace Novell.Directory.Ldap
         ///     from the server.
         /// </param>
         public LdapReferralException(string message, object[] arguments, int resultCode, string serverMessage,
-            Exception rootException) : base(message, arguments, resultCode, serverMessage, rootException)
+            Exception rootException)
+            : base(message, arguments, resultCode, serverMessage, rootException)
         {
+        }
+
+        /// <summary>
+        ///     Sets a referral that could not be processed.
+        /// </summary>
+        /// <param name="url">
+        ///     The referral URL that could not be processed.
+        /// </param>
+        public string FailedReferral
+        {
+            /* Gets the referral that could not be processed.  If multiple referrals
+            * could not be processed, the method returns one of them.
+            *
+            * @return the referral that could not be followed.
+            */
+            get;
+            set;
         }
 
         /// <summary>
@@ -229,23 +231,23 @@ namespace Novell.Directory.Ldap
         ///     server (for example, a referral URL other than ldap://something).
         /// </summary>
         /// <returns>
-        ///     The list of URLs that comprise this referral
+        ///     The list of URLs that comprise this referral.
         /// </returns>
-        public virtual string[] getReferrals()
+        public string[] GetReferrals()
         {
-            return referrals;
+            return _referrals;
         }
 
         /// <summary>
-        ///     Sets the list of referrals
+        ///     Sets the list of referrals.
         /// </summary>
         /// <param name="urls">
         ///     the list of referrals returned by the Ldap server in a
         ///     single response.
         /// </param>
-        internal virtual void setReferrals(string[] urls)
+        internal void SetReferrals(string[] urls)
         {
-            referrals = urls;
+            _referrals = urls;
         }
 
         /// <summary>
@@ -254,39 +256,46 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public override string ToString()
         {
-            string msg, tmsg;
+            string tmsg;
 
             // Format the basic exception information
-            msg = getExceptionString("LdapReferralException");
+            var msg = GetExceptionString("LdapReferralException");
 
             // Add failed referral information
-            if ((object) failedReferral != null)
+            if ((object)FailedReferral != null)
             {
-                tmsg = ResourcesHandler.getMessage("FAILED_REFERRAL",
-                    new object[] {"LdapReferralException", failedReferral});
+                tmsg = ResourcesHandler.GetMessage(
+                    "FAILED_REFERRAL",
+                    new object[] {"LdapReferralException", FailedReferral });
+
                 // If found no string from resource file, use a default string
                 if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                 {
-                    tmsg = "LdapReferralException: Failed Referral: " + failedReferral;
+                    tmsg = "LdapReferralException: Failed Referral: " + FailedReferral;
                 }
+
                 msg = msg + '\n' + tmsg;
             }
 
             // Add referral information, display all the referrals in the list
-            if (referrals != null)
+            if (_referrals != null)
             {
-                for (var i = 0; i < referrals.Length; i++)
+                for (var i = 0; i < _referrals.Length; i++)
                 {
-                    tmsg = ResourcesHandler.getMessage("REFERRAL_ITEM",
-                        new object[] {"LdapReferralException", referrals[i]});
+                    tmsg = ResourcesHandler.GetMessage(
+                        "REFERRAL_ITEM",
+                        new object[] {"LdapReferralException", _referrals[i] });
+
                     // If found no string from resource file, use a default string
                     if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
                     {
-                        tmsg = "LdapReferralException: Referral: " + referrals[i];
+                        tmsg = "LdapReferralException: Referral: " + _referrals[i];
                     }
+
                     msg = msg + '\n' + tmsg;
                 }
             }
+
             return msg;
         }
     }

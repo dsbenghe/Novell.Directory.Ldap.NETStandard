@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Controls.LdapSortResponse.cs
 //
@@ -37,28 +38,10 @@ namespace Novell.Directory.Ldap.Controls
 {
     /// <summary>
     ///     LdapSortResponse - will be added in newer version of Ldap
-    ///     Controls draft
+    ///     Controls draft.
     /// </summary>
     public class LdapSortResponse : LdapControl
     {
-        /// <summary>
-        ///     If not null, this returns the attribute that caused the sort
-        ///     operation to fail.
-        /// </summary>
-        public virtual string FailedAttribute
-        {
-            get { return failedAttribute; }
-        }
-
-        /// <summary> Returns the result code from the sort</summary>
-        public virtual int ResultCode
-        {
-            get { return resultCode; }
-        }
-
-        private readonly string failedAttribute;
-        private readonly int resultCode;
-
         /// <summary>
         ///     This constructor is usually called by the SDK to instantiate an
         ///     a LdapControl corresponding to the Server response to a Ldap
@@ -91,7 +74,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     unwillingToPerform       (53), -- unable to sort
         ///     other                    (80)
         ///     },
-        ///     attributeType [0] AttributeDescription OPTIONAL }
+        ///     attributeType [0] AttributeDescription OPTIONAL }.
         /// </summary>
         /// <param name="oid">
         ///     The OID of the control, as a dotted string.
@@ -105,31 +88,48 @@ namespace Novell.Directory.Ldap.Controls
         ///     The control-specific data.
         /// </param>
         [CLSCompliant(false)]
-        public LdapSortResponse(string oid, bool critical, sbyte[] values) : base(oid, critical, values)
+        public LdapSortResponse(string oid, bool critical, byte[] values)
+            : base(oid, critical, values)
         {
             // Create a decoder object
-            var decoder = new LBERDecoder();
+            var decoder = new LberDecoder();
             if (decoder == null)
+            {
                 throw new IOException("Decoding error");
+            }
 
             // We should get back an enumerated type
-            var asnObj = decoder.decode(values);
+            var asnObj = decoder.Decode(values);
 
             if (asnObj == null || !(asnObj is Asn1Sequence))
+            {
                 throw new IOException("Decoding error");
+            }
 
-
-            var asn1Enum = ((Asn1Sequence) asnObj).get_Renamed(0);
+            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(0);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-                resultCode = ((Asn1Enumerated) asn1Enum).intValue();
+            {
+                ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
+            }
 
             // Second element is the attributeType
-            if (((Asn1Sequence) asnObj).size() > 1)
+            if (((Asn1Sequence)asnObj).Size() > 1)
             {
-                var asn1String = ((Asn1Sequence) asnObj).get_Renamed(1);
+                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(1);
                 if (asn1String != null && asn1String is Asn1OctetString)
-                    failedAttribute = ((Asn1OctetString) asn1String).stringValue();
+                {
+                    FailedAttribute = ((Asn1OctetString)asn1String).StringValue();
+                }
             }
         }
+
+        /// <summary>
+        ///     If not null, this returns the attribute that caused the sort
+        ///     operation to fail.
+        /// </summary>
+        public virtual string FailedAttribute { get; }
+
+        /// <summary> Returns the result code from the sort.</summary>
+        public virtual int ResultCode { get; }
     }
 }

@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcUnbindRequest.cs
 //
@@ -40,15 +41,26 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         UnbindRequest ::= [APPLICATION 2] NULL
     ///     </pre>
     /// </summary>
-    public class RfcUnbindRequest : Asn1Null, RfcRequest
+    public class RfcUnbindRequest : Asn1Null, IRfcRequest
     {
-        //*************************************************************************
-        // Constructor for UnbindRequest
-        //*************************************************************************
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        {
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"unbind" },
+                LdapException.LdapNotSupported, null);
+        }
 
-        //*************************************************************************
+        public string GetRequestDn()
+        {
+            return null;
+        }
+
+        // *************************************************************************
+        // Constructor for UnbindRequest
+        // *************************************************************************
+
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary>
         ///     Override getIdentifier to return an application-wide id.
@@ -56,20 +68,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///         ID = CLASS: APPLICATION, FORM: PRIMITIVE, TAG: 2. (0x42)
         ///     </pre>
         /// </summary>
-        public override Asn1Identifier getIdentifier()
+        public override Asn1Identifier GetIdentifier()
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, false, LdapMessage.UNBIND_REQUEST);
-        }
-
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            throw new LdapException(ExceptionMessages.NO_DUP_REQUEST, new object[] {"unbind"},
-                LdapException.Ldap_NOT_SUPPORTED, null);
-        }
-
-        public string getRequestDN()
-        {
-            return null;
+            return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.UnbindRequest);
         }
     }
 }

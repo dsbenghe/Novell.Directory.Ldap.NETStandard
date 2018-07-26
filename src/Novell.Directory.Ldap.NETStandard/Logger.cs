@@ -6,7 +6,6 @@ namespace Novell.Directory.Ldap
     public static class Logger
     {
         private static ILoggerFactory _loggerFactory;
-        private static ILogger _log;
 
         static Logger()
         {
@@ -15,7 +14,7 @@ namespace Novell.Directory.Ldap
 
         public static ILoggerFactory Factory
         {
-            get { return _loggerFactory; }
+            get => _loggerFactory;
             set
             {
                 _loggerFactory = value;
@@ -23,7 +22,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        public static ILogger Log => _log;
+        public static ILogger Log { get; private set; }
 
         public static void LogWarning(this ILogger logger, string message, Exception ex)
         {
@@ -32,7 +31,7 @@ namespace Novell.Directory.Ldap
 
         private static void Init()
         {
-            _log = _loggerFactory.CreateLogger("Ldap");
+            Log = _loggerFactory.CreateLogger("Ldap");
         }
     }
 }

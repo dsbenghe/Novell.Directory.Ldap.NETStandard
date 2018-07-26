@@ -14,7 +14,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             Tests.AddRange(LoadTests());
         }
 
-        public static List<Action> LoadTests()
+        private static List<Action> LoadTests()
         {
             return GetMethods()
                 .Select(m =>
@@ -32,7 +32,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 testsAssembly.DefinedTypes.Where(x => x.Name.EndsWith("Tests"))
                     .SelectMany(t => t.GetMethods())
                     .Where(m => m.IsPublic)
-                    .Where(m => m.CustomAttributes.Any(attr => attr.AttributeType.Name == typeof(FactAttribute).Name 
+                    .Where(m => m.CustomAttributes.Any(attr => attr.AttributeType.Name == typeof(FactAttribute).Name
                         && attr.NamedArguments.Count(na => na.MemberName == "Skip") == 0))
                     .ToList();
         }

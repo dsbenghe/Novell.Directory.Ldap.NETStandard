@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.SendAllUpdatesRequest.cs
 //
@@ -44,7 +45,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     partitionRoot   LdapDN
-    ///     origServerDN    LdapDN
+    ///     origServerDN    LdapDN.
     /// </summary>
     public class SendAllUpdatesRequest : LdapExtendedOperation
     {
@@ -55,7 +56,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the replica
         ///     that will be updated.
         /// </param>
-        /// <param name="origServerDN">
+        /// <param name="origServerDn">
         ///     The distinguished name of the server that sends the
         ///     updates to the replica ring.
         /// </param>
@@ -63,27 +64,30 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public SendAllUpdatesRequest(string partitionRoot, string origServerDN)
-            : base(ReplicationConstants.SEND_ALL_UPDATES_REQ, null)
+        public SendAllUpdatesRequest(string partitionRoot, string origServerDn)
+            : base(ReplicationConstants.SendAllUpdatesReq, null)
         {
             try
             {
-                if ((object) partitionRoot == null || (object) origServerDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)partitionRoot == null || (object)origServerDn == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
+
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_partitionRoot = new Asn1OctetString(partitionRoot);
-                var asn1_origServerDN = new Asn1OctetString(origServerDN);
+                var asn1PartitionRoot = new Asn1OctetString(partitionRoot);
+                var asn1OrigServerDn = new Asn1OctetString(origServerDn);
 
-                asn1_partitionRoot.encode(encoder, encodedData);
-                asn1_origServerDN.encode(encoder, encodedData);
+                asn1PartitionRoot.Encode(encoder, encodedData);
+                asn1OrigServerDn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

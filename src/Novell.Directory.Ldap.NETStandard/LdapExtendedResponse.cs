@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapExtendedResponse.cs
 //
@@ -43,45 +44,10 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapExtendedResponse : LdapResponse
     {
-        /// <summary>
-        ///     Returns the message identifier of the response.
-        /// </summary>
-        /// <returns>
-        ///     OID of the response.
-        /// </returns>
-        public virtual string ID
-        {
-            get
-            {
-                var respOID = ((RfcExtendedResponse) message.Response).ResponseName;
-                return respOID?.stringValue();
-            }
-        }
-
         static LdapExtendedResponse()
         {
-            registeredResponses = new RespExtensionSet();
+            RegisteredResponses = new RespExtensionSet();
         }
-
-        public static RespExtensionSet RegisteredResponses => registeredResponses;
-
-        /// <summary>
-        ///     Returns the value part of the response in raw bytes.
-        /// </summary>
-        /// <returns>
-        ///     The value of the response.
-        /// </returns>
-        [CLSCompliant(false)]
-        public virtual sbyte[] Value
-        {
-            get
-            {
-                var tempString = ((RfcExtendedResponse) message.Response).Response;
-                return tempString?.byteValue();
-            }
-        }
-
-        private static readonly RespExtensionSet registeredResponses;
 
         /// <summary>
         ///     Creates an LdapExtendedResponse object which encapsulates
@@ -91,8 +57,42 @@ namespace Novell.Directory.Ldap
         ///     The RfcLdapMessage to convert to an
         ///     LdapExtendedResponse object.
         /// </param>
-        public LdapExtendedResponse(RfcLdapMessage message) : base(message)
+        public LdapExtendedResponse(RfcLdapMessage message)
+            : base(message)
         {
+        }
+
+        /// <summary>
+        ///     Returns the message identifier of the response.
+        /// </summary>
+        /// <returns>
+        ///     OID of the response.
+        /// </returns>
+        public string Id
+        {
+            get
+            {
+                var respOid = ((RfcExtendedResponse)Message.Response).ResponseName;
+                return respOid?.StringValue();
+            }
+        }
+
+        public static RespExtensionSet RegisteredResponses { get; }
+
+        /// <summary>
+        ///     Returns the value part of the response in raw bytes.
+        /// </summary>
+        /// <returns>
+        ///     The value of the response.
+        /// </returns>
+        [CLSCompliant(false)]
+        public byte[] Value
+        {
+            get
+            {
+                var tempString = ((RfcExtendedResponse)Message.Response).Response;
+                return tempString?.ByteValue();
+            }
         }
 
         /// <summary>
@@ -111,9 +111,9 @@ namespace Novell.Directory.Ldap
         ///     A class which can instantiate an
         ///     LDAPExtendedResponse.
         /// </param>
-        public static void register(string oid, Type extendedResponseClass)
+        public static void Register(string oid, Type extendedResponseClass)
         {
-            registeredResponses.registerResponseExtension(oid, extendedResponseClass);
+            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
         }
     }
 }

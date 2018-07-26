@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcControl.cs
 //
@@ -46,26 +47,79 @@ namespace Novell.Directory.Ldap.Rfc2251
     /// </summary>
     public class RfcControl : Asn1Sequence
     {
+        // *************************************************************************
+        // Constructors for Control
+        // *************************************************************************
+
         /// <summary> </summary>
-        public virtual Asn1OctetString ControlType
+        public RfcControl(RfcLdapOid controlType)
+            : this(controlType, new Asn1Boolean(false), null)
         {
-            get { return (Asn1OctetString) get_Renamed(0); }
         }
+
+        /// <summary> </summary>
+        public RfcControl(RfcLdapOid controlType, Asn1Boolean criticality)
+            : this(controlType, criticality, null)
+        {
+        }
+
+        /// <summary>
+        ///     Note: criticality is only added if true, as per RFC 2251 sec 5.1 part
+        ///     (4): If a value of a type is its default value, it MUST be
+        ///     absent.
+        /// </summary>
+        public RfcControl(RfcLdapOid controlType, Asn1Boolean criticality, Asn1OctetString controlValue)
+            : base(3)
+        {
+            Add(controlType);
+            if (criticality.BooleanValue())
+            {
+                Add(criticality);
+            }
+
+            if (controlValue != null)
+            {
+                Add(controlValue);
+            }
+        }
+
+        /// <summary> Constructs a Control object by decoding it from an InputStream.</summary>
+        [CLSCompliant(false)]
+        public RfcControl(IAsn1Decoder dec, Stream inRenamed, int len)
+            : base(dec, inRenamed, len)
+        {
+        }
+
+        /// <summary> Constructs a Control object by decoding from an Asn1Sequence.</summary>
+        public RfcControl(Asn1Sequence seqObj)
+            : base(3)
+        {
+            var len = seqObj.Size();
+            for (var i = 0; i < len; i++)
+            {
+                Add(seqObj.get_Renamed(i));
+            }
+        }
+
+        /// <summary> </summary>
+        public Asn1OctetString ControlType => (Asn1OctetString)get_Renamed(0);
 
         /// <summary>
         ///     Returns criticality.
         ///     If no value present, return the default value of FALSE.
         /// </summary>
-        public virtual Asn1Boolean Criticality
+        public Asn1Boolean Criticality
         {
             get
             {
-                if (size() > 1)
+                if (Size() > 1)
                 {
                     // MAY be a criticality
                     var obj = get_Renamed(1);
                     if (obj is Asn1Boolean)
-                        return (Asn1Boolean) obj;
+                    {
+                        return (Asn1Boolean)obj;
+                    }
                 }
 
                 return new Asn1Boolean(false);
@@ -81,38 +135,44 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Called to set/replace the ControlValue.  Will normally be called by
         ///     the child classes after the parent has been instantiated.
         /// </summary>
-        public virtual Asn1OctetString ControlValue
+        public Asn1OctetString ControlValue
         {
             get
             {
-                if (size() > 2)
+                if (Size() > 2)
                 {
                     // MUST be a control value
-                    return (Asn1OctetString) get_Renamed(2);
+                    return (Asn1OctetString)get_Renamed(2);
                 }
-                if (size() > 1)
+
+                if (Size() > 1)
                 {
                     // MAY be a control value
                     var obj = get_Renamed(1);
                     if (obj is Asn1OctetString)
-                        return (Asn1OctetString) obj;
+                    {
+                        return (Asn1OctetString)obj;
+                    }
                 }
+
                 return null;
             }
 
             set
             {
                 if (value == null)
+                {
                     return;
+                }
 
-                if (size() == 3)
+                if (Size() == 3)
                 {
                     // We already have a control value, replace it
                     set_Renamed(2, value);
                     return;
                 }
 
-                if (size() == 2)
+                if (Size() == 2)
                 {
                     // Get the second element
                     var obj = get_Renamed(1);
@@ -126,56 +186,14 @@ namespace Novell.Directory.Ldap.Rfc2251
                     else
                     {
                         // add a new one at the end
-                        add(value);
+                        Add(value);
                     }
                 }
             }
         }
 
-        //*************************************************************************
-        // Constructors for Control
-        //*************************************************************************
-
-        /// <summary> </summary>
-        public RfcControl(RfcLdapOID controlType) : this(controlType, new Asn1Boolean(false), null)
-        {
-        }
-
-        /// <summary> </summary>
-        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality) : this(controlType, criticality, null)
-        {
-        }
-
-        /// <summary>
-        ///     Note: criticality is only added if true, as per RFC 2251 sec 5.1 part
-        ///     (4): If a value of a type is its default value, it MUST be
-        ///     absent.
-        /// </summary>
-        public RfcControl(RfcLdapOID controlType, Asn1Boolean criticality, Asn1OctetString controlValue) : base(3)
-        {
-            add(controlType);
-            if (criticality.booleanValue())
-                add(criticality);
-            if (controlValue != null)
-                add(controlValue);
-        }
-
-        /// <summary> Constructs a Control object by decoding it from an InputStream.</summary>
-        [CLSCompliant(false)]
-        public RfcControl(Asn1Decoder dec, Stream in_Renamed, int len) : base(dec, in_Renamed, len)
-        {
-        }
-
-        /// <summary> Constructs a Control object by decoding from an Asn1Sequence</summary>
-        public RfcControl(Asn1Sequence seqObj) : base(3)
-        {
-            var len = seqObj.size();
-            for (var i = 0; i < len; i++)
-                add(seqObj.get_Renamed(i));
-        }
-
-        //*************************************************************************
+        // *************************************************************************
         // Accessors
-        //*************************************************************************
+        // *************************************************************************
     }
 }

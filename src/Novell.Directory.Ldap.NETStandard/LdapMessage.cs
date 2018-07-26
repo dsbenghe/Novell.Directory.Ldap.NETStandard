@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMessage.cs
 //
@@ -31,7 +32,6 @@
 
 using System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap
@@ -42,44 +42,236 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapMessage
     {
-        /// <summary> Returns the LdapMessage request associated with this response</summary>
-        internal virtual LdapMessage RequestingMessage
+        /// <summary>
+        ///     A bind request operation.
+        ///     BIND_REQUEST = 0.
+        /// </summary>
+        public const int BindRequest = 0;
+
+        /// <summary>
+        ///     A bind response operation.
+        ///     BIND_RESPONSE = 1.
+        /// </summary>
+        public const int BindResponse = 1;
+
+        /// <summary>
+        ///     An unbind request operation.
+        ///     UNBIND_REQUEST = 2.
+        /// </summary>
+        public const int UnbindRequest = 2;
+
+        /// <summary>
+        ///     A search request operation.
+        ///     SEARCH_REQUEST = 3.
+        /// </summary>
+        public const int SearchRequest = 3;
+
+        /// <summary>
+        ///     A search response containing data.
+        ///     SEARCH_RESPONSE = 4.
+        /// </summary>
+        public const int SearchResponse = 4;
+
+        /// <summary>
+        ///     A search result message - contains search status.
+        ///     SEARCH_RESULT = 5.
+        /// </summary>
+        public const int SearchResult = 5;
+
+        /// <summary>
+        ///     A modify request operation.
+        ///     MODIFY_REQUEST = 6.
+        /// </summary>
+        public const int ModifyRequest = 6;
+
+        /// <summary>
+        ///     A modify response operation.
+        ///     MODIFY_RESPONSE = 7.
+        /// </summary>
+        public const int ModifyResponse = 7;
+
+        /// <summary>
+        ///     An add request operation.
+        ///     ADD_REQUEST = 8.
+        /// </summary>
+        public const int AddRequest = 8;
+
+        /// <summary>
+        ///     An add response operation.
+        ///     ADD_RESONSE = 9.
+        /// </summary>
+        public const int AddResponse = 9;
+
+        /// <summary>
+        ///     A delete request operation.
+        ///     DEL_REQUEST = 10.
+        /// </summary>
+        public const int DelRequest = 10;
+
+        /// <summary>
+        ///     A delete response operation.
+        ///     DEL_RESONSE = 11.
+        /// </summary>
+        public const int DelResponse = 11;
+
+        /// <summary>
+        ///     A modify RDN request operation.
+        ///     MODIFY_RDN_REQUEST = 12.
+        /// </summary>
+        public const int ModifyRdnRequest = 12;
+
+        /// <summary>
+        ///     A modify RDN response operation.
+        ///     MODIFY_RDN_RESPONSE = 13.
+        /// </summary>
+        public const int ModifyRdnResponse = 13;
+
+        /// <summary>
+        ///     A compare result operation.
+        ///     COMPARE_REQUEST = 14.
+        /// </summary>
+        public const int CompareRequest = 14;
+
+        /// <summary>
+        ///     A compare response operation.
+        ///     COMPARE_RESPONSE = 15.
+        /// </summary>
+        public const int CompareResponse = 15;
+
+        /// <summary>
+        ///     An abandon request operation.
+        ///     ABANDON_REQUEST = 16.
+        /// </summary>
+        public const int AbandonRequest = 16;
+
+        /// <summary>
+        ///     A search result reference operation.
+        ///     SEARCH_RESULT_REFERENCE = 19.
+        /// </summary>
+        public const int SearchResultReference = 19;
+
+        /// <summary>
+        ///     An extended request operation.
+        ///     EXTENDED_REQUEST = 23.
+        /// </summary>
+        public const int ExtendedRequest = 23;
+
+        /// <summary>
+        ///     An extended response operation.
+        ///     EXTENDED_RESONSE = 24.
+        /// </summary>
+        public const int ExtendedResponse = 24;
+
+        /// <summary>
+        ///     An intermediate response operation.
+        ///     INTERMEDIATE_RESONSE = 25.
+        /// </summary>
+        public const int IntermediateResponse = 25;
+
+        /// <summary> Lock object to protect counter for message numbers.</summary>
+        /// <summary>
+        ///     Counters used to construct request message #'s, unique for each request
+        ///     Will be enabled after ASN.1 conversion.
+        /// </summary>
+        /*
+        private static int msgNum = 0; // Ldap Request counter
+        */
+        private int _imsgNum = -1; // This instance LdapMessage number
+
+        private int _messageType = -1;
+
+        /* application defined tag to identify this message */
+        private string _stringTag;
+
+        /// <summary> A request or response message for an asynchronous Ldap operation.</summary>
+        protected internal RfcLdapMessage Message;
+
+        /// <summary> Dummy constuctor.</summary>
+        internal LdapMessage()
         {
-            get { return message.RequestingMessage; }
         }
+
+        /// <summary>
+        ///     Creates an LdapMessage when sending a protocol operation and sends
+        ///     some optional controls with the message.
+        /// </summary>
+        /// <param name="op">
+        ///     The operation type of message.
+        /// </param>
+        /// <param name="controls">
+        ///     The controls to use with the operation.
+        /// </param>
+        /// <seealso cref="Type">
+        /// </seealso>
+        /*package*/
+        internal LdapMessage(int type, IRfcRequest op, LdapControl[] controls)
+        {
+            // Get a unique number for this request message
+
+            _messageType = type;
+            RfcControls asn1Ctrls = null;
+            if (controls != null)
+            {
+                // Move LdapControls into an RFC 2251 Controls object.
+                asn1Ctrls = new RfcControls();
+                for (var i = 0; i < controls.Length; i++)
+                {
+// asn1Ctrls.add(null);
+                    asn1Ctrls.Add(controls[i].Asn1Object);
+                }
+            }
+
+            // create RFC 2251 LdapMessage
+            Message = new RfcLdapMessage(op, asn1Ctrls);
+        }
+
+        /// <summary>
+        ///     Creates an Rfc 2251 LdapMessage when the libraries receive a response
+        ///     from a command.
+        /// </summary>
+        /// <param name="message">
+        ///     A response message.
+        /// </param>
+        protected internal LdapMessage(RfcLdapMessage message)
+        {
+            Message = message;
+        }
+
+        /// <summary> Returns the LdapMessage request associated with this response.</summary>
+        internal LdapMessage RequestingMessage => Message.RequestingMessage;
 
         /// <summary> Returns any controls in the message.</summary>
         public virtual LdapControl[] Controls
         {
             get
             {
-/*				LdapControl[] controls = null;
-				RfcControls asn1Ctrls = message.Controls;
-				
-				if (asn1Ctrls != null)
-				{
-					controls = new LdapControl[asn1Ctrls.size()];
-					for (int i = 0; i < asn1Ctrls.size(); i++)
-					{
-						RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-						System.String oid = rfcCtl.ControlType.stringValue();
-						sbyte[] value_Renamed = rfcCtl.ControlValue.byteValue();
-						bool critical = rfcCtl.Criticality.booleanValue();
-						
-						controls[i] = controlFactory(oid, critical, value_Renamed);
-					}
-				}
+/*              LdapControl[] controls = null;
+                RfcControls asn1Ctrls = message.Controls;
 
-				return controls;
+                if (asn1Ctrls != null)
+                {
+                    controls = new LdapControl[asn1Ctrls.size()];
+                    for (int i = 0; i < asn1Ctrls.size(); i++)
+                    {
+                        RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
+                        System.String oid = rfcCtl.ControlType.stringValue();
+                        byte[] value_Renamed = rfcCtl.ControlValue.byteValue();
+                        bool critical = rfcCtl.Criticality.booleanValue();
+
+                        controls[i] = controlFactory(oid, critical, value_Renamed);
+                    }
+                }
+
+                return controls;
 */
                 LdapControl[] controls = null;
-                var asn1Ctrls = message.Controls;
+                var asn1Ctrls = Message.Controls;
 
                 // convert from RFC 2251 Controls to LDAPControl[].
                 if (asn1Ctrls != null)
                 {
-                    controls = new LdapControl[asn1Ctrls.size()];
-                    for (var i = 0; i < asn1Ctrls.size(); i++)
+                    controls = new LdapControl[asn1Ctrls.Size()];
+                    for (var i = 0; i < asn1Ctrls.Size(); i++)
                     {
                         /*
                                                 * At this point we have an RfcControl which needs to be
@@ -94,18 +286,19 @@ namespace Novell.Directory.Ldap
                                                 * we were parsing the control. Answer: By the time the
                                                 * code realizes that we have a control it is already too late.
                                                 */
-                        var rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-                        var oid = rfcCtl.ControlType.stringValue();
-                        var value_Renamed = rfcCtl.ControlValue.byteValue();
-                        var critical = rfcCtl.Criticality.booleanValue();
+                        var rfcCtl = (RfcControl)asn1Ctrls.get_Renamed(i);
+                        var oid = rfcCtl.ControlType.StringValue();
+                        var valueRenamed = rfcCtl.ControlValue.ByteValue();
+                        var critical = rfcCtl.Criticality.BooleanValue();
 
                         /* Return from this call should return either an LDAPControl
                         * or a class extending LDAPControl that implements the
                         * appropriate registered response control
                         */
-                        controls[i] = controlFactory(oid, critical, value_Renamed);
+                        controls[i] = ControlFactory(oid, critical, valueRenamed);
                     }
                 }
+
                 return controls;
             }
         }
@@ -114,21 +307,22 @@ namespace Novell.Directory.Ldap
         ///     Returns the message ID.  The message ID is an integer value
         ///     identifying the Ldap request and its response.
         /// </summary>
-        public virtual int MessageID
+        public virtual int MessageId
         {
             get
             {
-                if (imsgNum == -1)
+                if (_imsgNum == -1)
                 {
-                    imsgNum = message.MessageID;
+                    _imsgNum = Message.MessageId;
                 }
-                return imsgNum;
+
+                return _imsgNum;
             }
         }
 
         /// <summary>
         ///     Returns the Ldap operation type of the message.
-        ///     The type is one of the following:
+        ///     The type is one of the following:.
         ///     <ul>
         ///         <li>BIND_REQUEST            = 0;</li>
         ///         <li>BIND_RESPONSE           = 1;</li>
@@ -160,31 +354,26 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (messageType == -1)
+                if (_messageType == -1)
                 {
-                    messageType = message.Type;
+                    _messageType = Message.Type;
                 }
-                return messageType;
+
+                return _messageType;
             }
         }
 
         /// <summary>
-        ///     Indicates whether the message is a request or a response
+        ///     Indicates whether the message is a request or a response.
         /// </summary>
         /// <returns>
         ///     true if the message is a request, false if it is a response,
         ///     a search result, or a search result reference.
         /// </returns>
-        public virtual bool Request
-        {
-            get { return message.isRequest(); }
-        }
+        public bool Request => Message.IsRequest();
 
         /// <summary> Returns the RFC 2251 LdapMessage composed in this object.</summary>
-        internal virtual RfcLdapMessage Asn1Object
-        {
-            get { return message; }
-        }
+        internal RfcLdapMessage Asn1Object => Message;
 
         private string Name
         {
@@ -193,107 +382,108 @@ namespace Novell.Directory.Ldap
                 string name;
                 switch (Type)
                 {
-                    case SEARCH_RESPONSE:
+                    case SearchResponse:
                         name = "LdapSearchResponse";
                         break;
 
-                    case SEARCH_RESULT:
+                    case SearchResult:
                         name = "LdapSearchResult";
                         break;
 
-                    case SEARCH_REQUEST:
+                    case SearchRequest:
                         name = "LdapSearchRequest";
                         break;
 
-                    case MODIFY_REQUEST:
+                    case ModifyRequest:
                         name = "LdapModifyRequest";
                         break;
 
-                    case MODIFY_RESPONSE:
+                    case ModifyResponse:
                         name = "LdapModifyResponse";
                         break;
 
-                    case ADD_REQUEST:
+                    case AddRequest:
                         name = "LdapAddRequest";
                         break;
 
-                    case ADD_RESPONSE:
+                    case AddResponse:
                         name = "LdapAddResponse";
                         break;
 
-                    case DEL_REQUEST:
+                    case DelRequest:
                         name = "LdapDelRequest";
                         break;
 
-                    case DEL_RESPONSE:
+                    case DelResponse:
                         name = "LdapDelResponse";
                         break;
 
-                    case MODIFY_RDN_REQUEST:
+                    case ModifyRdnRequest:
                         name = "LdapModifyRDNRequest";
                         break;
 
-                    case MODIFY_RDN_RESPONSE:
+                    case ModifyRdnResponse:
                         name = "LdapModifyRDNResponse";
                         break;
 
-                    case COMPARE_REQUEST:
+                    case CompareRequest:
                         name = "LdapCompareRequest";
                         break;
 
-                    case COMPARE_RESPONSE:
+                    case CompareResponse:
                         name = "LdapCompareResponse";
                         break;
 
-                    case BIND_REQUEST:
+                    case BindRequest:
                         name = "LdapBindRequest";
                         break;
 
-                    case BIND_RESPONSE:
+                    case BindResponse:
                         name = "LdapBindResponse";
                         break;
 
-                    case UNBIND_REQUEST:
+                    case UnbindRequest:
                         name = "LdapUnbindRequest";
                         break;
 
-                    case ABANDON_REQUEST:
+                    case AbandonRequest:
                         name = "LdapAbandonRequest";
                         break;
 
-                    case SEARCH_RESULT_REFERENCE:
+                    case SearchResultReference:
                         name = "LdapSearchResultReference";
                         break;
 
-                    case EXTENDED_REQUEST:
+                    case ExtendedRequest:
                         name = "LdapExtendedRequest";
                         break;
 
-                    case EXTENDED_RESPONSE:
+                    case ExtendedResponse:
                         name = "LdapExtendedResponse";
                         break;
 
-                    case INTERMEDIATE_RESPONSE:
+                    case IntermediateResponse:
                         name = "LdapIntermediateResponse";
                         break;
 
                     default:
                         throw new Exception("LdapMessage: Unknown Type " + Type);
                 }
+
                 return name;
             }
         }
 
         /// <summary>
         ///     Retrieves the identifier tag for this message.
-        ///     An identifier can be associated with a message with the
+        ///     An identifier can be associated with a message with the.
         ///     <code>setTag</code> method.
         ///     Tags are set by the application and not by the API or the server.
-        ///     If a server response <code>isRequest() == false</code> has no tag,
+        ///     If a server response. <code>isRequest() == false</code> has no tag,
         ///     the tag associated with the corresponding server request is used.
         /// </summary>
         /// <returns>
-        ///     the identifier associated with this message or <code>null</code>
+        ///     the identifier associated with this message or. <code>null</code>
         ///     if none.
         /// </returns>
         /// <summary>
@@ -317,223 +507,30 @@ namespace Novell.Directory.Ldap
         /// <param name="stringTag">
         ///     the String assigned to identify this message.
         /// </param>
-        public virtual string Tag
+        public string Tag
         {
             get
             {
-                if ((object) stringTag != null)
+                if ((object)_stringTag != null)
                 {
-                    return stringTag;
+                    return _stringTag;
                 }
+
                 if (Request)
                 {
                     return null;
                 }
+
                 var m = RequestingMessage;
                 if (m == null)
                 {
                     return null;
                 }
-                return m.stringTag;
+
+                return m._stringTag;
             }
 
-            set { stringTag = value; }
-        }
-
-        /// <summary>
-        ///     A bind request operation.
-        ///     BIND_REQUEST = 0
-        /// </summary>
-        public const int BIND_REQUEST = 0;
-
-        /// <summary>
-        ///     A bind response operation.
-        ///     BIND_RESPONSE = 1
-        /// </summary>
-        public const int BIND_RESPONSE = 1;
-
-        /// <summary>
-        ///     An unbind request operation.
-        ///     UNBIND_REQUEST = 2
-        /// </summary>
-        public const int UNBIND_REQUEST = 2;
-
-        /// <summary>
-        ///     A search request operation.
-        ///     SEARCH_REQUEST = 3
-        /// </summary>
-        public const int SEARCH_REQUEST = 3;
-
-        /// <summary>
-        ///     A search response containing data.
-        ///     SEARCH_RESPONSE = 4
-        /// </summary>
-        public const int SEARCH_RESPONSE = 4;
-
-        /// <summary>
-        ///     A search result message - contains search status.
-        ///     SEARCH_RESULT = 5
-        /// </summary>
-        public const int SEARCH_RESULT = 5;
-
-        /// <summary>
-        ///     A modify request operation.
-        ///     MODIFY_REQUEST = 6
-        /// </summary>
-        public const int MODIFY_REQUEST = 6;
-
-        /// <summary>
-        ///     A modify response operation.
-        ///     MODIFY_RESPONSE = 7
-        /// </summary>
-        public const int MODIFY_RESPONSE = 7;
-
-        /// <summary>
-        ///     An add request operation.
-        ///     ADD_REQUEST = 8
-        /// </summary>
-        public const int ADD_REQUEST = 8;
-
-        /// <summary>
-        ///     An add response operation.
-        ///     ADD_RESONSE = 9
-        /// </summary>
-        public const int ADD_RESPONSE = 9;
-
-        /// <summary>
-        ///     A delete request operation.
-        ///     DEL_REQUEST = 10
-        /// </summary>
-        public const int DEL_REQUEST = 10;
-
-        /// <summary>
-        ///     A delete response operation.
-        ///     DEL_RESONSE = 11
-        /// </summary>
-        public const int DEL_RESPONSE = 11;
-
-        /// <summary>
-        ///     A modify RDN request operation.
-        ///     MODIFY_RDN_REQUEST = 12
-        /// </summary>
-        public const int MODIFY_RDN_REQUEST = 12;
-
-        /// <summary>
-        ///     A modify RDN response operation.
-        ///     MODIFY_RDN_RESPONSE = 13
-        /// </summary>
-        public const int MODIFY_RDN_RESPONSE = 13;
-
-        /// <summary>
-        ///     A compare result operation.
-        ///     COMPARE_REQUEST = 14
-        /// </summary>
-        public const int COMPARE_REQUEST = 14;
-
-        /// <summary>
-        ///     A compare response operation.
-        ///     COMPARE_RESPONSE = 15
-        /// </summary>
-        public const int COMPARE_RESPONSE = 15;
-
-        /// <summary>
-        ///     An abandon request operation.
-        ///     ABANDON_REQUEST = 16
-        /// </summary>
-        public const int ABANDON_REQUEST = 16;
-
-
-        /// <summary>
-        ///     A search result reference operation.
-        ///     SEARCH_RESULT_REFERENCE = 19
-        /// </summary>
-        public const int SEARCH_RESULT_REFERENCE = 19;
-
-        /// <summary>
-        ///     An extended request operation.
-        ///     EXTENDED_REQUEST = 23
-        /// </summary>
-        public const int EXTENDED_REQUEST = 23;
-
-        /// <summary>
-        ///     An extended response operation.
-        ///     EXTENDED_RESONSE = 24
-        /// </summary>
-        public const int EXTENDED_RESPONSE = 24;
-
-        /// <summary>
-        ///     An intermediate response operation.
-        ///     INTERMEDIATE_RESONSE = 25
-        /// </summary>
-        public const int INTERMEDIATE_RESPONSE = 25;
-
-        /// <summary> A request or response message for an asynchronous Ldap operation.</summary>
-        protected internal RfcLdapMessage message;
-
-        /// <summary> Lock object to protect counter for message numbers</summary>
-        /// <summary>
-        ///     Counters used to construct request message #'s, unique for each request
-        ///     Will be enabled after ASN.1 conversion
-        /// </summary>
-        /*
-        private static int msgNum = 0; // Ldap Request counter
-        */
-        private int imsgNum = -1; // This instance LdapMessage number
-
-        private int messageType = -1;
-
-        /* application defined tag to identify this message */
-        private string stringTag;
-
-        /// <summary> Dummy constuctor</summary>
-        internal LdapMessage()
-        {
-        }
-
-        /// <summary>
-        ///     Creates an LdapMessage when sending a protocol operation and sends
-        ///     some optional controls with the message.
-        /// </summary>
-        /// <param name="op">
-        ///     The operation type of message.
-        /// </param>
-        /// <param name="controls">
-        ///     The controls to use with the operation.
-        /// </param>
-        /// <seealso cref="Type">
-        /// </seealso>
-        /*package*/
-        internal LdapMessage(int type, RfcRequest op, LdapControl[] controls)
-        {
-            // Get a unique number for this request message
-
-            messageType = type;
-            RfcControls asn1Ctrls = null;
-            if (controls != null)
-            {
-                // Move LdapControls into an RFC 2251 Controls object.
-                asn1Ctrls = new RfcControls();
-                for (var i = 0; i < controls.Length; i++)
-                {
-//					asn1Ctrls.add(null);
-                    asn1Ctrls.add(controls[i].Asn1Object);
-                }
-            }
-
-            // create RFC 2251 LdapMessage
-            message = new RfcLdapMessage(op, asn1Ctrls);
-        }
-
-        /// <summary>
-        ///     Creates an Rfc 2251 LdapMessage when the libraries receive a response
-        ///     from a command.
-        /// </summary>
-        /// <param name="message">
-        ///     A response message.
-        /// </param>
-        protected internal LdapMessage(RfcLdapMessage message)
-        {
-            this.message = message;
+            set => _stringTag = value;
         }
 
         /// <summary>
@@ -541,31 +538,31 @@ namespace Novell.Directory.Ldap
         ///     replacing base dn, filter.
         /// </summary>
         /// <param name="dn">
-        ///     the base dn
+        ///     the base dn.
         /// </param>
         /// <param name="filter">
-        ///     the filter
+        ///     the filter.
         /// </param>
         /// <param name="reference">
-        ///     true if a search reference
+        ///     true if a search reference.
         /// </param>
         /// <returns>
-        ///     the object representing the new message
+        ///     the object representing the new message.
         /// </returns>
         internal LdapMessage Clone(string dn, string filter, bool reference)
         {
-            return new LdapMessage((RfcLdapMessage) message.dupMessage(dn, filter, reference));
+            return new LdapMessage((RfcLdapMessage)Message.DupMessage(dn, filter, reference));
         }
 
         /// <summary>
         ///     Instantiates an LdapControl.  We search through our list of
         ///     registered controls.  If we find a matchiing OID we instantiate
         ///     that control by calling its contructor.  Otherwise we default to
-        ///     returning a regular LdapControl object
+        ///     returning a regular LdapControl object.
         /// </summary>
-        private LdapControl controlFactory(string oid, bool critical, sbyte[] value_Renamed)
+        private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
         {
-//			throw new NotImplementedException();
+// throw new NotImplementedException();
             var regControls = LdapControl.RegisteredControls;
             try
             {
@@ -573,15 +570,17 @@ namespace Novell.Directory.Ldap
                 * search through the registered extension list to find the
                 * response control class
                 */
-                var respCtlClass = regControls.findResponseControl(oid);
+                var respCtlClass = regControls.FindResponseControl(oid);
 
                 // Did not find a match so return default LDAPControl
                 if (respCtlClass == null)
-                    return new LdapControl(oid, critical, value_Renamed);
+                {
+                    return new LdapControl(oid, critical, valueRenamed);
+                }
 
                 /* If found, get LDAPControl constructor */
-                Type[] argsClass = {typeof(string), typeof(bool), typeof(sbyte[])};
-                object[] args = {oid, critical, value_Renamed};
+                Type[] argsClass = {typeof(string), typeof(bool), typeof(byte[]) };
+                object[] args = {oid, critical, valueRenamed };
                 Exception ex = null;
                 try
                 {
@@ -591,9 +590,10 @@ namespace Novell.Directory.Ldap
                     {
                         /* Call the control constructor for a registered Class*/
                         object ctl = null;
-//						ctl = ctlConstructor.newInstance(args);
+
+// ctl = ctlConstructor.newInstance(args);
                         ctl = ctlConstructor.Invoke(args);
-                        return (LdapControl) ctl;
+                        return (LdapControl)ctl;
                     }
                     catch (UnauthorizedAccessException e)
                     {
@@ -624,20 +624,21 @@ namespace Novell.Directory.Ldap
                 // Do nothing. Fall through and construct a default LDAPControl object.
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
+
             // If we get here we did not have a registered response control
             // for this oid.  Return a default LDAPControl object.
-            return new LdapControl(oid, critical, value_Renamed);
+            return new LdapControl(oid, critical, valueRenamed);
         }
 
         /// <summary>
-        ///     Creates a String representation of this object
+        ///     Creates a String representation of this object.
         /// </summary>
         /// <returns>
-        ///     a String representation for this LdapMessage
+        ///     a String representation for this LdapMessage.
         /// </returns>
         public override string ToString()
         {
-            return Name + "(" + MessageID + "): " + message;
+            return Name + "(" + MessageId + "): " + Message;
         }
     }
 }

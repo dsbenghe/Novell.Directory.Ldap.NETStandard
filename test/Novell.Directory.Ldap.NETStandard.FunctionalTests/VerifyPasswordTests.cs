@@ -22,10 +22,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 TestHelper.WithLdapConnection(
                     ldapConnection =>
                     {
-                        ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn,
+                        ldapConnection.Bind(
+                            TestsConfig.LdapServer.RootUserDn,
                             TestsConfig.LdapServer.RootUserPassword + "1");
                     }));
-            Assert.Equal(LdapException.INVALID_CREDENTIALS, ldapException.ResultCode);
+            Assert.Equal(LdapException.InvalidCredentials, ldapException.ResultCode);
         }
     }
 }

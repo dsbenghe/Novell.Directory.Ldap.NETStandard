@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -31,23 +30,28 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     class of this returned object depends on the operation being
         ///     performed.
         /// </returns>
-        public static LdapExtendedResponse convertToExtendedResponse(RfcLdapMessage inResponse)
+        public static LdapExtendedResponse ConvertToExtendedResponse(RfcLdapMessage inResponse)
         {
             var tempResponse = new LdapExtendedResponse(inResponse);
+
             // Get the oid stored in the Extended response
-            var inOID = tempResponse.ID;
-            if(inOID == null) return tempResponse;
+            var inOid = tempResponse.Id;
+            if (inOid == null)
+            {
+                return tempResponse;
+            }
 
             var regExtResponses = LdapExtendedResponse.RegisteredResponses;
             try
             {
-                var extRespClass = regExtResponses.findResponseExtension(inOID);
+                var extRespClass = regExtResponses.FindResponseExtension(inOid);
                 if (extRespClass == null)
                 {
                     return tempResponse;
                 }
-                Type[] argsClass = {typeof(RfcLdapMessage)};
-                object[] args = {inResponse};
+
+                Type[] argsClass = {typeof(RfcLdapMessage) };
+                object[] args = {inResponse };
                 Exception ex;
                 try
                 {
@@ -56,7 +60,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         object resp = null;
                         resp = extConstructor.Invoke(args);
-                        return (LdapExtendedResponse) resp;
+                        return (LdapExtendedResponse)resp;
                     }
                     catch (UnauthorizedAccessException e)
                     {
@@ -85,6 +89,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
+
             // If we get here we did not have a registered extendedresponse
             // for this oid.  Return a default LdapExtendedResponse object.
             return tempResponse;

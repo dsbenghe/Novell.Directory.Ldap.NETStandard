@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.IntermediateResponseFactory.cs
 //
@@ -31,7 +32,6 @@
 
 using System;
 using System.Reflection;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -61,26 +61,27 @@ namespace Novell.Directory.Ldap.Utilclass
              * @exception LDAPException A general exception which includes an error message
              *                          and an LDAP error code.
              */
+        public static LdapIntermediateResponse ConvertToIntermediateResponse(RfcLdapMessage inResponse)
 
-        public static LdapIntermediateResponse convertToIntermediateResponse(RfcLdapMessage inResponse)
-            //          throws LDAPException 
+            // throws LDAPException
         {
             var tempResponse = new LdapIntermediateResponse(inResponse);
+
             // Get the oid stored in the Extended response
-            var inOID = tempResponse.getID();
+            var inOid = tempResponse.GetId();
 
             var regExtResponses =
-                LdapIntermediateResponse.getRegisteredResponses();
+                LdapIntermediateResponse.GetRegisteredResponses();
             try
             {
-                var extRespClass = regExtResponses.findResponseExtension(inOID);
+                var extRespClass = regExtResponses.FindResponseExtension(inOid);
                 if (extRespClass == null)
                 {
                     return tempResponse;
                 }
 
-                Type[] argsClass = {typeof(RfcLdapMessage)};
-                object[] args = {inResponse};
+                Type[] argsClass = {typeof(RfcLdapMessage) };
+                object[] args = {inResponse };
                 Exception ex;
                 try
                 {
@@ -90,7 +91,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         object resp = null;
                         resp = extConstructor.Invoke(args);
-                        return (LdapIntermediateResponse) resp;
+                        return (LdapIntermediateResponse)resp;
                     }
                     catch (UnauthorizedAccessException e)
                     {
@@ -114,6 +115,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 // Do nothing. Fall through and construct a default LDAPControl object.
                 Logger.Log.LogWarning("Exception swallowed", ex);
             }
+
             // If we get here we did not have a registered extendedresponse
             // for this oid.  Return a default LDAPIntermediateResponse object.
             return tempResponse;

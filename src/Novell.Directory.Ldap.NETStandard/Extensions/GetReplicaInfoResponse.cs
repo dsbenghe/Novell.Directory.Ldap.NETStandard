@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicaInfoResponse.cs
 //
@@ -40,19 +41,21 @@ namespace Novell.Directory.Ldap.Extensions
     ///     An object in this class is generated from an ExtendedResponse using the
     ///     ExtendedResponseFactory class.
     ///     The getReplicaInfoResponse extension uses the following OID:
-    ///     2.16.840.1.113719.1.27.100.18
+    ///     2.16.840.1.113719.1.27.100.18.
     /// </summary>
     public class GetReplicaInfoResponse : LdapExtendedResponse
     {
+        private readonly int _flags;
+        private readonly int _localPartitionId;
+        private readonly int _modificationTime;
+
+        private readonly string _partitionDn;
+
         // Other info as returned by the server
-        private readonly int partitionID;
-        private readonly int replicaState;
-        private readonly int modificationTime;
-        private readonly int purgeTime;
-        private readonly int localPartitionID;
-        private readonly string partitionDN;
-        private readonly int replicaType;
-        private readonly int flags;
+        private readonly int _partitionId;
+        private readonly int _purgeTime;
+        private readonly int _replicaState;
+        private readonly int _replicaType;
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -67,103 +70,122 @@ namespace Novell.Directory.Ldap.Extensions
         ///     localPartitionID    INTEGER
         ///     partitionDN       OCTET STRING
         ///     replicaType         INTEGER
-        ///     flags               INTEGER
+        ///     flags               INTEGER.
         /// </summary>
         /// <exception>
         ///     IOException The response value could not be decoded.
         /// </exception>
-        public GetReplicaInfoResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public GetReplicaInfoResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
                 // Parse the parameters in the order
 
-                var currentPtr = new MemoryStream(SupportClass.ToByteArray(returnedValue));
+                var currentPtr = new MemoryStream(returnedValue);
 
                 // Parse partitionID
-                var asn1_partitionID = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_partitionID == null)
+                var asn1PartitionId = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1PartitionId == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                partitionID = asn1_partitionID.intValue();
-
+                _partitionId = asn1PartitionId.IntValue();
 
                 // Parse replicaState
-                var asn1_replicaState = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_replicaState == null)
+                var asn1ReplicaState = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1ReplicaState == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                replicaState = asn1_replicaState.intValue();
+                _replicaState = asn1ReplicaState.IntValue();
 
                 // Parse modificationTime
-                var asn1_modificationTime = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_modificationTime == null)
+                var asn1ModificationTime = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1ModificationTime == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                modificationTime = asn1_modificationTime.intValue();
+                _modificationTime = asn1ModificationTime.IntValue();
 
                 // Parse purgeTime
-                var asn1_purgeTime = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_purgeTime == null)
+                var asn1PurgeTime = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1PurgeTime == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                purgeTime = asn1_purgeTime.intValue();
+                _purgeTime = asn1PurgeTime.IntValue();
 
                 // Parse localPartitionID
-                var asn1_localPartitionID = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_localPartitionID == null)
+                var asn1LocalPartitionId = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1LocalPartitionId == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                localPartitionID = asn1_localPartitionID.intValue();
+                _localPartitionId = asn1LocalPartitionId.IntValue();
 
                 // Parse partitionDN
-                var asn1_partitionDN = (Asn1OctetString) decoder.decode(currentPtr);
-                if (asn1_partitionDN == null)
+                var asn1PartitionDn = (Asn1OctetString)decoder.Decode(currentPtr);
+                if (asn1PartitionDn == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                partitionDN = asn1_partitionDN.stringValue();
-                if ((object) partitionDN == null)
+                _partitionDn = asn1PartitionDn.StringValue();
+                if ((object)_partitionDn == null)
+                {
                     throw new IOException("Decoding error");
-
+                }
 
                 // Parse replicaType
-                var asn1_replicaType = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_replicaType == null)
+                var asn1ReplicaType = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1ReplicaType == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                replicaType = asn1_replicaType.intValue();
-
+                _replicaType = asn1ReplicaType.IntValue();
 
                 // Parse flags
-                var asn1_flags = (Asn1Integer) decoder.decode(currentPtr);
-                if (asn1_flags == null)
+                var asn1Flags = (Asn1Integer)decoder.Decode(currentPtr);
+                if (asn1Flags == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                flags = asn1_flags.intValue();
+                _flags = asn1Flags.IntValue();
             }
             else
             {
-                partitionID = 0;
-                replicaState = 0;
-                modificationTime = 0;
-                purgeTime = 0;
-                localPartitionID = 0;
-                partitionDN = "";
-                replicaType = 0;
-                flags = 0;
+                _partitionId = 0;
+                _replicaState = 0;
+                _modificationTime = 0;
+                _purgeTime = 0;
+                _localPartitionId = 0;
+                _partitionDn = string.Empty;
+                _replicaType = 0;
+                _flags = 0;
             }
         }
-
 
         /// <summary>
         ///     Returns the numeric identifier for the partition.
@@ -171,9 +193,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the partition ID.
         /// </returns>
-        public virtual int getpartitionID()
+        public int GetpartitionId()
         {
-            return partitionID;
+            return _partitionId;
         }
 
         /// <summary>
@@ -183,33 +205,32 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Integer value specifying the current state of the replica. See
         ///     ReplicationConstants class for possible values for this field.
         /// </returns>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_BEGIN_ADD">
+        /// <seealso cref="ReplicationConstants.LdapRsBeginAdd">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_DEAD_REPLICA">
+        /// <seealso cref="ReplicationConstants.LdapRsDeadReplica">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_DYING_REPLICA">
+        /// <seealso cref="ReplicationConstants.LdapRsDyingReplica">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_JS_0">
+        /// <seealso cref="ReplicationConstants.LdapRsJs0">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_JS_1">
+        /// <seealso cref="ReplicationConstants.LdapRsJs1">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_JS_2">
+        /// <seealso cref="ReplicationConstants.LdapRsJs2">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_LOCKED">
+        /// <seealso cref="ReplicationConstants.LdapRsLocked">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_MASTER_DONE">
+        /// <seealso cref="ReplicationConstants.LdapRsMasterDone">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_MASTER_START">
+        /// <seealso cref="ReplicationConstants.LdapRsMasterStart">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_SS_0">
+        /// <seealso cref="ReplicationConstants.LdapRsSs0">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RS_TRANSITION_ON">
+        /// <seealso cref="ReplicationConstants.LdapRsTransitionOn">
         /// </seealso>
-        public virtual int getreplicaState()
+        public int GetreplicaState()
         {
-            return replicaState;
+            return _replicaState;
         }
-
 
         /// <summary>
         ///     Returns the time of the most recent modification.
@@ -217,11 +238,10 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last modification time.
         /// </returns>
-        public virtual int getmodificationTime()
+        public int GetmodificationTime()
         {
-            return modificationTime;
+            return _modificationTime;
         }
-
 
         /// <summary>
         ///     Returns the most recent time in which all data has been synchronized.
@@ -229,9 +249,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the last purge time.
         /// </returns>
-        public virtual int getpurgeTime()
+        public int GetpurgeTime()
         {
-            return purgeTime;
+            return _purgeTime;
         }
 
         /// <summary>
@@ -240,9 +260,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the local ID of the partition.
         /// </returns>
-        public virtual int getlocalPartitionID()
+        public int GetlocalPartitionId()
         {
-            return localPartitionID;
+            return _localPartitionId;
         }
 
         /// <summary>
@@ -251,9 +271,9 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     String value specifying the name of the partition read.
         /// </returns>
-        public virtual string getpartitionDN()
+        public string GetpartitionDn()
         {
-            return partitionDN;
+            return _partitionDn;
         }
 
         /// <summary>
@@ -264,21 +284,21 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer identifying the type of the replica.
         /// </returns>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_MASTER">
+        /// <seealso cref="ReplicationConstants.LdapRtMaster">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SECONDARY">
+        /// <seealso cref="ReplicationConstants.LdapRtSecondary">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_READONLY">
+        /// <seealso cref="ReplicationConstants.LdapRtReadonly">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SUBREF">
+        /// <seealso cref="ReplicationConstants.LdapRtSubref">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_WRITE">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseWrite">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_READ">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseRead">
         /// </seealso>
-        public virtual int getreplicaType()
+        public int GetreplicaType()
         {
-            return replicaType;
+            return _replicaType;
         }
 
         /// <summary>
@@ -289,13 +309,13 @@ namespace Novell.Directory.Ldap.Extensions
         /// <returns>
         ///     Integer value specifying the flags for the replica.
         /// </returns>
-        /// <seealso cref="ReplicationConstants.Ldap_DS_FLAG_BUSY">
+        /// <seealso cref="ReplicationConstants.LdapDsFlagBusy">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_DS_FLAG_BOUNDARY">
+        /// <seealso cref="ReplicationConstants.LdapDsFlagBoundary">
         /// </seealso>
-        public virtual int getflags()
+        public int Getflags()
         {
-            return flags;
+            return _flags;
         }
     }
 }

@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapLocalException.cs
 //
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and the result code.
+        ///     specified. <code>MessageOrKey</code> String and the result code.
         ///     The String is used either as a message key to obtain a localized
         ///     messsage from ExceptionMessages, or if there is no key in the
         ///     resource matching the text, it is used as the detailed message itself.
@@ -56,13 +57,14 @@ namespace Novell.Directory.Ldap
         /// <param name="resultCode">
         ///     The result code returned.
         /// </param>
-        public LdapLocalException(string messageOrKey, int resultCode) : base(messageOrKey, resultCode, null)
+        public LdapLocalException(string messageOrKey, int resultCode)
+            : base(messageOrKey, resultCode, null)
         {
         }
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and modifying arguments.
+        ///     specified. <code>MessageOrKey</code> String and modifying arguments.
         ///     Additional parameters specify the result code.
         ///     The String is used either as a message key to obtain a localized
         ///     messsage from ExceptionMessages, or if there is no key in the
@@ -89,7 +91,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String.
+        ///     specified. <code>MessageOrKey</code> String.
         ///     Additional parameters specify the result code and a rootException which
         ///     is the underlying cause of an error on the client.
         ///     The String is used either as a message key to obtain a localized
@@ -115,7 +117,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Constructs a local exception with a detailed message obtained from the
-        ///     specified <code>MessageOrKey</code> String and modifying arguments.
+        ///     specified. <code>MessageOrKey</code> String and modifying arguments.
         ///     Additional parameters specify the result code
         ///     and a rootException which is the underlying cause of an error
         ///     on the client.
@@ -153,7 +155,7 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             // Format the basic exception information
-            return getExceptionString("LdapLocalException");
+            return GetExceptionString("LdapLocalException");
         }
     }
 }

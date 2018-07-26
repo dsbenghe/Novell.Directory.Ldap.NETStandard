@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSearchResults.cs
 //
@@ -36,34 +37,49 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    /// <summary>
-    ///     An LdapSearchResults object is returned from a synchronous search
-    ///     operation. It provides access to all results received during the
-    ///     operation (entries and exceptions).
-    /// </summary>
-    /// <seealso cref="LdapConnection.Search">
-    /// </seealso>
-    public class LdapSearchResults : IEnumerable<LdapEntry>
+    /// <inheritdoc />
+    public class LdapSearchResults : ILdapSearchResults
     {
+        private readonly int _batchSize; // Application specified batch size
+        private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
+
+        private readonly ArrayList _entries; // Search entries
+        private readonly LdapSearchQueue _queue;
+        private readonly ArrayList _references; // Search Result References
+        private bool _completed; // All entries received
+        private int _entryCount; // # Search entries in vector
+        private int _entryIndex; // Current position in vector
+        private int _referenceCount; // # Search Result Reference in vector
+
+        private int _referenceIndex; // Current position in vector
+
+        // private ArrayList referralConn = null; // Referral Connections
+
         /// <summary>
-        ///     Returns a count of the items in the search result.
-        ///     Returns a count of the entries and exceptions remaining in the object.
-        ///     If the search was submitted with a batch size greater than zero,
-        ///     getCount reports the number of results received so far but not enumerated
-        ///     with next().  If batch size equals zero, getCount reports the number of
-        ///     items received, since the application thread blocks until all results are
-        ///     received.
+        ///     Constructs a queue object for search results.
         /// </summary>
-        /// <returns>
-        ///     The number of items received but not retrieved by the application
-        /// </returns>
-        public int Count
+        /// <param name="queue">
+        ///     The queue for the search results.
+        /// </param>
+        /// <param name="cons">
+        ///     The LdapSearchConstraints associated with this search.
+        /// </param>
+        internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
         {
-            get
-            {
-                var qCount = queue.MessageAgent.Count;
-                return entryCount - entryIndex + referenceCount - referenceIndex + qCount;
-            }
+            // setup entry Vector
+            _cons = cons;
+            var requestedBatchSize = cons.BatchSize;
+            _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
+            _entryCount = 0;
+            _entryIndex = 0;
+
+            // setup search reference Vector
+            _references = new ArrayList(5);
+            _referenceCount = 0;
+            _referenceIndex = 0;
+
+            _queue = queue;
+            _batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
         }
 
         /// <summary>
@@ -75,7 +91,7 @@ namespace Novell.Directory.Ldap
         ///     The server controls returned with the search request, or null
         ///     if none were returned.
         /// </returns>
-        public LdapControl[] ResponseControls => controls;
+        public LdapControl[] ResponseControls { get; private set; }
 
         /// <summary>
         ///     Collects batchSize elements from an LdapSearchQueue message
@@ -97,72 +113,74 @@ namespace Novell.Directory.Ldap
                 LdapMessage msg;
 
                 // <=batchSize so that we can pick up the result-done message
-                for (var i = 0; i < batchSize;)
+                for (var i = 0; i < _batchSize;)
                 {
                     try
                     {
-                        if ((msg = queue.getResponse()) != null)
+                        if ((msg = _queue.GetResponse()) != null)
                         {
                             // Only save controls if there are some
                             var ctls = msg.Controls;
                             if (ctls != null)
                             {
-                                controls = ctls;
+                                ResponseControls = ctls;
                             }
 
                             if (msg is LdapSearchResult)
                             {
                                 // Search Entry
-                                object entry = ((LdapSearchResult) msg).Entry;
-                                entries.Add(entry);
+                                object entry = ((LdapSearchResult)msg).Entry;
+                                _entries.Add(entry);
                                 i++;
-                                entryCount++;
+                                _entryCount++;
                             }
                             else if (msg is LdapSearchResultReference)
                             {
                                 // Search Ref
-                                var refs = ((LdapSearchResultReference) msg).Referrals;
+                                var refs = ((LdapSearchResultReference)msg).Referrals;
 
-                                if (cons.ReferralFollowing)
+                                if (_cons.ReferralFollowing)
                                 {
-//									referralConn = conn.chaseReferral(queue, cons, msg, refs, 0, true, referralConn);
+// referralConn = conn.chaseReferral(queue, cons, msg, refs, 0, true, referralConn);
                                 }
                                 else
                                 {
-                                    references.Add(refs);
-                                    referenceCount++;
+                                    _references.Add(refs);
+                                    _referenceCount++;
                                 }
                             }
                             else
                             {
                                 // LdapResponse
-                                var resp = (LdapResponse) msg;
+                                var resp = (LdapResponse)msg;
                                 var resultCode = resp.ResultCode;
+
                                 // Check for an embedded exception
-                                if (resp.hasException())
+                                if (resp.HasException())
                                 {
                                     // Fake it, results in an exception when msg read
-                                    resultCode = LdapException.CONNECT_ERROR;
+                                    resultCode = LdapException.ConnectError;
                                 }
 
-                                if (resultCode == LdapException.REFERRAL && cons.ReferralFollowing)
+                                if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
-//									referralConn = conn.chaseReferral(queue, cons, resp, resp.Referrals, 0, false, referralConn);
+// referralConn = conn.chaseReferral(queue, cons, resp, resp.Referrals, 0, false, referralConn);
                                 }
-                                else if (resultCode != LdapException.SUCCESS)
+                                else if (resultCode != LdapException.Success)
                                 {
                                     // Results in an exception when message read
-                                    entries.Add(resp);
-                                    entryCount++;
+                                    _entries.Add(resp);
+                                    _entryCount++;
                                 }
+
                                 // We are done only when we have read all messages
                                 // including those received from following referrals
-                                var msgIDs = queue.MessageIDs;
+                                var msgIDs = _queue.MessageIDs;
                                 if (msgIDs.Length == 0)
                                 {
                                     // Release referral exceptions
-//									conn.releaseReferralConnections(referralConn);
+// conn.releaseReferralConnections(referralConn);
                                     return true; // search completed
                                 }
                             }
@@ -171,62 +189,41 @@ namespace Novell.Directory.Ldap
                         {
                             // We get here if the connection timed out
                             // we have no responses, no message IDs and no exceptions
-                            var e = new LdapException(null, LdapException.Ldap_TIMEOUT, null);
-                            entries.Add(e);
+                            var e = new LdapException(null, LdapException.LdapTimeout, null);
+                            _entries.Add(e);
                             break;
                         }
                     }
                     catch (LdapException e)
                     {
                         // Hand exception off to user
-                        entries.Add(e);
+                        _entries.Add(e);
                     }
                 }
+
                 return false; // search not completed
             }
         }
 
-        private readonly ArrayList entries; // Search entries
-        private int entryCount; // # Search entries in vector
-        private int entryIndex; // Current position in vector
-        private readonly ArrayList references; // Search Result References
-        private int referenceCount; // # Search Result Reference in vector
-        private int referenceIndex; // Current position in vector
-        private readonly int batchSize; // Application specified batch size
-        private bool completed; // All entries received
-        private LdapControl[] controls; // Last set of controls
-        private readonly LdapSearchQueue queue;
-        private readonly LdapSearchConstraints cons; // LdapSearchConstraints for search
-        //private ArrayList referralConn = null; // Referral Connections
-
         /// <summary>
-        ///     Constructs a queue object for search results.
+        ///     Returns a count of the items in the search result.
+        ///     Returns a count of the entries and exceptions remaining in the object.
+        ///     If the search was submitted with a batch size greater than zero,
+        ///     getCount reports the number of results received so far but not enumerated
+        ///     with next().  If batch size equals zero, getCount reports the number of
+        ///     items received, since the application thread blocks until all results are
+        ///     received.
         /// </summary>
-        /// <param name="conn">
-        ///     The LdapConnection which initiated the search
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for the search results.
-        /// </param>
-        /// <param name="cons">
-        ///     The LdapSearchConstraints associated with this search
-        /// </param>
-        internal LdapSearchResults(LdapConnection conn, LdapSearchQueue queue, LdapSearchConstraints cons)
+        /// <returns>
+        ///     The number of items received but not retrieved by the application.
+        /// </returns>
+        public int Count
         {
-            // setup entry Vector
-            this.cons = cons;
-            var requestedBatchSize = cons.BatchSize;
-            entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
-            entryCount = 0;
-            entryIndex = 0;
-
-            // setup search reference Vector
-            references = new ArrayList(5);
-            referenceCount = 0;
-            referenceIndex = 0;
-
-            this.queue = queue;
-            this.batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
+            get
+            {
+                var qCount = _queue.MessageAgent.Count;
+                return _entryCount - _entryIndex + _referenceCount - _referenceIndex + qCount;
+            }
         }
 
         /// <summary>
@@ -238,49 +235,19 @@ namespace Novell.Directory.Ldap
         public bool HasMore()
         {
             var ret = false;
-            if (entryIndex < entryCount || referenceIndex < referenceCount)
+            if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
             {
                 // we have data
                 ret = true;
             }
-            else if (completed == false)
+            else if (_completed == false)
             {
                 // reload the Vector by getting more results
                 ResetVectors();
-                ret = entryIndex < entryCount || referenceIndex < referenceCount;
+                ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
-            return ret;
-        }
 
-        /*
-        * If both of the vectors are empty, get more data for them.
-        */
-        private void ResetVectors()
-        {
-            // If we're done, no further checking needed
-            if (completed)
-            {
-                return;
-            }
-            // Checks if we have run out of references
-            if (referenceIndex != 0 && referenceIndex >= referenceCount)
-            {
-                SupportClass.SetSize(references, 0);
-                referenceCount = 0;
-                referenceIndex = 0;
-            }
-            // Checks if we have run out of entries
-            if (entryIndex != 0 && entryIndex >= entryCount)
-            {
-                SupportClass.SetSize(entries, 0);
-                entryCount = 0;
-                entryIndex = 0;
-            }
-            // If no data at all, must reload enumeration
-            if (referenceIndex == 0 && referenceCount == 0 && entryIndex == 0 && entryCount == 0)
-            {
-                completed = BatchOfResults;
-            }
+            return ret;
         }
 
         /// <summary>
@@ -302,50 +269,54 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapEntry Next()
         {
-            if (completed && entryIndex >= entryCount && referenceIndex >= referenceCount)
+            if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
                 throw new ArgumentOutOfRangeException("LdapSearchResults.Next() no more results");
             }
+
             // Check if the enumeration is empty and must be reloaded
             ResetVectors();
 
             object element = null;
+
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
-            if (referenceIndex < referenceCount)
+            if (_referenceIndex < _referenceCount)
             {
-                var refs = (string[]) references[referenceIndex++];
-                var rex = new LdapReferralException(ExceptionMessages.REFERENCE_NOFOLLOW);
-                rex.setReferrals(refs);
+                var refs = (string[])_references[_referenceIndex++];
+                var rex = new LdapReferralException(ExceptionMessages.ReferenceNofollow);
+                rex.SetReferrals(refs);
                 throw rex;
             }
-            if (entryIndex < entryCount)
+
+            if (_entryIndex < _entryCount)
             {
                 // Check for Search Entries and the Search Result
-                element = entries[entryIndex++];
+                element = _entries[_entryIndex++];
                 if (element is LdapResponse)
                 {
                     // Search done w/bad status
-                    if (((LdapResponse) element).hasException())
+                    if (((LdapResponse)element).HasException())
                     {
-                        var lr = (LdapResponse) element;
+                        var lr = (LdapResponse)element;
                         var ri = lr.ActiveReferral;
 
                         if (ri != null)
                         {
                             // Error attempting to follow a search continuation reference
-                            var rex = new LdapReferralException(ExceptionMessages.REFERENCE_ERROR, lr.Exception);
-                            rex.setReferrals(ri.ReferralList);
+                            var rex = new LdapReferralException(ExceptionMessages.ReferenceError, lr.Exception);
+                            rex.SetReferrals(ri.ReferralList);
                             rex.FailedReferral = ri.ReferralUrl.ToString();
                             throw rex;
                         }
                     }
+
                     // Throw an exception if not success
-                    ((LdapResponse) element).chkResultCode();
+                    ((LdapResponse)element).ChkResultCode();
                 }
                 else if (element is LdapException)
                 {
-                    throw (LdapException) element;
+                    throw (LdapException)element;
                 }
             }
             else
@@ -353,10 +324,61 @@ namespace Novell.Directory.Ldap
                 // If not a Search Entry, Search Result, or search continuation
                 // we are very confused.
                 // LdapSearchResults.next(): No entry found & request is not complete
-                throw new LdapException(ExceptionMessages.REFERRAL_LOCAL, new object[] {"next"},
-                    LdapException.LOCAL_ERROR, null);
+                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next" },
+                    LdapException.LocalError, null);
             }
-            return (LdapEntry) element;
+
+            return (LdapEntry)element;
+        }
+
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
+        /// <filterpriority>2.</filterpriority>
+        public IEnumerator<LdapEntry> GetEnumerator()
+        {
+            while (HasMore())
+            {
+                yield return Next();
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        /*
+        * If both of the vectors are empty, get more data for them.
+        */
+        private void ResetVectors()
+        {
+            // If we're done, no further checking needed
+            if (_completed)
+            {
+                return;
+            }
+
+            // Checks if we have run out of references
+            if (_referenceIndex != 0 && _referenceIndex >= _referenceCount)
+            {
+                SupportClass.SetSize(_references, 0);
+                _referenceCount = 0;
+                _referenceIndex = 0;
+            }
+
+            // Checks if we have run out of entries
+            if (_entryIndex != 0 && _entryIndex >= _entryCount)
+            {
+                SupportClass.SetSize(_entries, 0);
+                _entryCount = 0;
+                _entryIndex = 0;
+            }
+
+            // If no data at all, must reload enumeration
+            if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
+            {
+                _completed = BatchOfResults;
+            }
         }
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
@@ -364,25 +386,11 @@ namespace Novell.Directory.Ldap
         internal void Abandon()
         {
             // first, remove message ID and timer and any responses in the queue
-            queue.MessageAgent.AbandonAll();
+            _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
             ResetVectors();
-            completed = true;
-        }
-
-        /// <summary>Returns an enumerator that iterates through a collection.</summary>
-        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
-        /// <filterpriority>2</filterpriority>
-        public IEnumerator<LdapEntry> GetEnumerator()
-        {
-            while (HasMore())
-                yield return Next();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            _completed = true;
         }
     }
 }

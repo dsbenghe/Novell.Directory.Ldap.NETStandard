@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.ChangeReplicaTypeRequest.cs
 //
@@ -49,7 +50,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     flags        INTEGER
     ///     replicaType  INTEGER
     ///     serverName   LdapDN
-    ///     dn           LdapDN
+    ///     dn           LdapDN.
     /// </summary>
     public class ChangeReplicaTypeRequest : LdapExtendedOperation
     {
@@ -60,7 +61,7 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the replica's
         ///     partition root.
         /// </param>
-        /// <param name="serverDN">
+        /// <param name="serverDn">
         ///     The server on which the replica resides.
         /// </param>
         /// <param name="replicaType">
@@ -77,44 +78,46 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_MASTER">
+        /// <seealso cref="ReplicationConstants.LdapRtMaster">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SECONDARY">
+        /// <seealso cref="ReplicationConstants.LdapRtSecondary">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_READONLY">
+        /// <seealso cref="ReplicationConstants.LdapRtReadonly">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SUBREF">
+        /// <seealso cref="ReplicationConstants.LdapRtSubref">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_WRITE">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseWrite">
         /// </seealso>
-        /// <seealso cref="ReplicationConstants.Ldap_RT_SPARSE_READ">
+        /// <seealso cref="ReplicationConstants.LdapRtSparseRead">
         /// </seealso>
-        public ChangeReplicaTypeRequest(string dn, string serverDN, int replicaType, int flags)
-            : base(ReplicationConstants.CHANGE_REPLICA_TYPE_REQ, null)
+        public ChangeReplicaTypeRequest(string dn, string serverDn, int replicaType, int flags)
+            : base(ReplicationConstants.ChangeReplicaTypeReq, null)
         {
             try
             {
-                if ((object) dn == null || (object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)dn == null || (object)serverDn == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_flags = new Asn1Integer(flags);
-                var asn1_replicaType = new Asn1Integer(replicaType);
-                var asn1_serverDN = new Asn1OctetString(serverDN);
-                var asn1_dn = new Asn1OctetString(dn);
+                var asn1Flags = new Asn1Integer(flags);
+                var asn1ReplicaType = new Asn1Integer(replicaType);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
+                var asn1Dn = new Asn1OctetString(dn);
 
-                asn1_flags.encode(encoder, encodedData);
-                asn1_replicaType.encode(encoder, encodedData);
-                asn1_serverDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                asn1Flags.Encode(encoder, encodedData);
+                asn1ReplicaType.Encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
+                asn1Dn.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

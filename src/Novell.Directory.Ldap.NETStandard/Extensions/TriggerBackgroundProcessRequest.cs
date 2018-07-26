@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.TriggerBackgroundProcessRequest.cs
 //
@@ -47,63 +48,64 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.55
     ///     The requestValue has the following format:
     ///     requestValue ::=
-    ///     NULL
+    ///     NULL.
     /// </summary>
     public class TriggerBackgroundProcessRequest : LdapExtendedOperation
     {
         /// <summary>
         ///     Constants used to refer to different Novell eDirectory
-        ///     background processes
+        ///     background processes.
         /// </summary>
-        public const int Ldap_BK_PROCESS_BKLINKER = 1;
+        public const int LdapBkProcessBklinker = 1;
 
-        public const int Ldap_BK_PROCESS_JANITOR = 2;
-        public const int Ldap_BK_PROCESS_LIMBER = 3;
-        public const int Ldap_BK_PROCESS_SKULKER = 4;
-        public const int Ldap_BK_PROCESS_SCHEMA_SYNC = 5;
-        public const int Ldap_BK_PROCESS_PART_PURGE = 6;
+        public const int LdapBkProcessJanitor = 2;
+        public const int LdapBkProcessLimber = 3;
+        public const int LdapBkProcessSkulker = 4;
+        public const int LdapBkProcessSchemaSync = 5;
+        public const int LdapBkProcessPartPurge = 6;
 
         /// <summary>
         ///     Based on the process ID specified this constructer cosntructs an
         ///     LdapExtendedOperation object with the apppropriate OID.
         /// </summary>
-        /// <param name="processID">
+        /// <param name="processId">
         ///     This id identifies the background process to be triggerd.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public TriggerBackgroundProcessRequest(int processID) : base(null, null)
+        public TriggerBackgroundProcessRequest(int processId)
+            : base(null, null)
         {
-            switch (processID)
+            switch (processId)
             {
-                case Ldap_BK_PROCESS_BKLINKER:
-                    setID(ReplicationConstants.TRIGGER_BKLINKER_REQ);
+                case LdapBkProcessBklinker:
+                    SetId(ReplicationConstants.TriggerBklinkerReq);
                     break;
 
-                case Ldap_BK_PROCESS_JANITOR:
-                    setID(ReplicationConstants.TRIGGER_JANITOR_REQ);
+                case LdapBkProcessJanitor:
+                    SetId(ReplicationConstants.TriggerJanitorReq);
                     break;
 
-                case Ldap_BK_PROCESS_LIMBER:
-                    setID(ReplicationConstants.TRIGGER_LIMBER_REQ);
+                case LdapBkProcessLimber:
+                    SetId(ReplicationConstants.TriggerLimberReq);
                     break;
 
-                case Ldap_BK_PROCESS_SKULKER:
-                    setID(ReplicationConstants.TRIGGER_SKULKER_REQ);
+                case LdapBkProcessSkulker:
+                    SetId(ReplicationConstants.TriggerSkulkerReq);
                     break;
 
-                case Ldap_BK_PROCESS_SCHEMA_SYNC:
-                    setID(ReplicationConstants.TRIGGER_SCHEMA_SYNC_REQ);
+                case LdapBkProcessSchemaSync:
+                    SetId(ReplicationConstants.TriggerSchemaSyncReq);
                     break;
 
-                case Ldap_BK_PROCESS_PART_PURGE:
-                    setID(ReplicationConstants.TRIGGER_PART_PURGE_REQ);
+                case LdapBkProcessPartPurge:
+                    SetId(ReplicationConstants.TriggerPartPurgeReq);
                     break;
 
                 default:
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                    throw new ArgumentException(ExceptionMessages.ParamError);
             }
         }
     }

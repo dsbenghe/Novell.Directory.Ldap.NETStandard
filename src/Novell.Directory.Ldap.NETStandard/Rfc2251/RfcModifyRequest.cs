@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcModifyRequest.cs
 //
@@ -46,67 +47,66 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         modification    AttributeTypeAndValues } }
     ///     </pre>
     /// </summary>
-    public class RfcModifyRequest : Asn1Sequence, RfcRequest
+    public class RfcModifyRequest : Asn1Sequence, IRfcRequest
     {
-        /// <summary>
-        ///     Return the Modifications for this request
-        /// </summary>
-        /// <returns>
-        ///     the modifications for this request.
-        /// </returns>
-        public virtual Asn1SequenceOf Modifications
-        {
-            get { return (Asn1SequenceOf) get_Renamed(1); }
-        }
-
-        //*************************************************************************
+        // *************************************************************************
         // Constructor for ModifyRequest
-        //*************************************************************************
+        // *************************************************************************
 
         /// <summary> </summary>
-        public RfcModifyRequest(RfcLdapDN object_Renamed, Asn1SequenceOf modification) : base(2)
+        public RfcModifyRequest(RfcLdapDn objectRenamed, Asn1SequenceOf modification)
+            : base(2)
         {
-            add(object_Renamed);
-            add(modification);
+            Add(objectRenamed);
+            Add(modification);
         }
 
         /// <summary>
         ///     Constructs a new Modify Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        internal RfcModifyRequest(Asn1Object[] origRequest, string base_Renamed) : base(origRequest, origRequest.Length)
+        internal RfcModifyRequest(Asn1Object[] origRequest, string baseRenamed)
+            : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object) base_Renamed != null)
+            if ((object)baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDN(base_Renamed));
+                set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
         }
 
-        //*************************************************************************
-        // Accessors
-        //*************************************************************************
+        /// <summary>
+        ///     Return the Modifications for this request.
+        /// </summary>
+        /// <returns>
+        ///     the modifications for this request.
+        /// </returns>
+        public Asn1SequenceOf Modifications => (Asn1SequenceOf)get_Renamed(1);
 
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier getIdentifier()
+        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            return new Asn1Identifier(Asn1Identifier.APPLICATION, true, LdapMessage.MODIFY_REQUEST);
-        }
-
-        public RfcRequest dupRequest(string base_Renamed, string filter, bool request)
-        {
-            return new RfcModifyRequest(toArray(), base_Renamed);
+            return new RfcModifyRequest(ToArray(), baseRenamed);
         }
 
         /// <summary>
-        ///     Return the String value of the DN associated with this request
+        ///     Return the String value of the DN associated with this request.
         /// </summary>
         /// <returns>
         ///     the DN for this request.
         /// </returns>
-        public string getRequestDN()
+        public string GetRequestDn()
         {
-            return ((RfcLdapDN) get_Renamed(0)).stringValue();
+            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+        }
+
+        // *************************************************************************
+        // Accessors
+        // *************************************************************************
+
+        /// <summary> Override getIdentifier to return an application-wide id.</summary>
+        public override Asn1Identifier GetIdentifier()
+        {
+            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
         }
     }
 }

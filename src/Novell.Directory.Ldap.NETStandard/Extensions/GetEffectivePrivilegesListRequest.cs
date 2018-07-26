@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2009 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetEffectivePrivilegesResponse.cs
 //
@@ -53,11 +54,12 @@ namespace Novell.Directory.Ldap.Extensions
         ///     requestValue ::=
         ///     dn         LdapDN
         ///     trusteeDN  LdapDN
-        ///     SEQUENCE of attrNames   LdapDN
+        ///     SEQUENCE of attrNames   LdapDN.
         /// </summary>
         static GetEffectivePrivilegesListRequest()
         {
-            LdapExtendedResponse.register(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_RES,
+            LdapExtendedResponse.Register(
+                ReplicationConstants.GetEffectiveListPrivilegesRes,
                 typeof(GetEffectivePrivilegesListResponse));
         }
 
@@ -68,9 +70,9 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The distinguished name of the entry whose attribute is
         ///     being checked.
         /// </param>
-        /// <param name="trusteeDN">
+        /// <param name="trusteeDn">
         ///     The distinguished name of the entry whose trustee rights
-        ///     are being returned
+        ///     are being returned.
         /// </param>
         /// <param name={"attr1","attr2",..., null}>
         ///     The Ldap attribute names list.
@@ -79,34 +81,37 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetEffectivePrivilegesListRequest(string dn, string trusteeDN, string[] attrName)
-            : base(ReplicationConstants.GET_EFFECTIVE_LIST_PRIVILEGES_REQ, null)
+        public GetEffectivePrivilegesListRequest(string dn, string trusteeDn, string[] attrName)
+            : base(ReplicationConstants.GetEffectiveListPrivilegesReq, null)
         {
             try
             {
-                if ((object) dn == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)dn == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_trusteeDN = new Asn1OctetString(trusteeDN);
-                var asn1_dn = new Asn1OctetString(dn);
-                asn1_trusteeDN.encode(encoder, encodedData);
-                asn1_dn.encode(encoder, encodedData);
+                var asn1TrusteeDn = new Asn1OctetString(trusteeDn);
+                var asn1Dn = new Asn1OctetString(dn);
+                asn1TrusteeDn.Encode(encoder, encodedData);
+                asn1Dn.Encode(encoder, encodedData);
 
-                var asn1_seqattr = new Asn1Sequence();
+                var asn1Seqattr = new Asn1Sequence();
                 for (var i = 0; attrName[i] != null; i++)
                 {
-                    var asn1_attrName = new Asn1OctetString(attrName[i]);
-                    asn1_seqattr.add(asn1_attrName);
+                    var asn1AttrName = new Asn1OctetString(attrName[i]);
+                    asn1Seqattr.Add(asn1AttrName);
                 }
-                asn1_seqattr.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+
+                asn1Seqattr.Encode(encoder, encodedData);
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

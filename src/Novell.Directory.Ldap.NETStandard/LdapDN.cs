@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDN.cs
 //
@@ -41,7 +42,7 @@ namespace Novell.Directory.Ldap
     ///     Specifies methods for manipulating a distinguished name DN
     ///     and a relative distinguished name RDN.
     /// </summary>
-    public class LdapDN
+    public class LdapDn
     {
         /// <summary>
         ///     Compares the two strings per the distinguishedNameMatch equality matching
@@ -60,10 +61,10 @@ namespace Novell.Directory.Ldap
         ///     if the DNs are different.
         /// </returns>
         [CLSCompliant(false)]
-        public static bool equals(string dn1, string dn2)
+        public static bool Equals(string dn1, string dn2)
         {
-            var dnA = new DN(dn1);
-            var dnB = new DN(dn2);
+            var dnA = new Dn(dn1);
+            var dnB = new Dn(dn2);
             return dnA.Equals(dnB);
         }
 
@@ -76,7 +77,7 @@ namespace Novell.Directory.Ldap
         ///     '#' if it comes at the beginning of the string, and
         ///     ' ' (space) if it comes at the beginning or the end of a string.
         ///     Note that single-valued attributes can be used because of ambiguity. See
-        ///     RFC 2253
+        ///     RFC 2253.
         /// </summary>
         /// <param name="rdn">
         ///     The RDN to escape.
@@ -84,15 +85,16 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The RDN with escaping characters.
         /// </returns>
-        public static string escapeRDN(string rdn)
+        public static string EscapeRdn(string rdn)
         {
             var escapedS = new StringBuilder(rdn);
             var i = 0;
 
             while (i < escapedS.Length && escapedS[i] != '=')
             {
-                i++; //advance until we find the separator =
+                i++; // advance until we find the separator =
             }
+
             if (i == escapedS.Length)
             {
                 throw new ArgumentException("Could not parse RDN: Attribute " +
@@ -100,13 +102,14 @@ namespace Novell.Directory.Ldap
             }
 
             i++;
-            //check for a space or # at the beginning of a string.
+
+            // check for a space or # at the beginning of a string.
             if (escapedS[i] == ' ' || escapedS[i] == '#')
             {
                 escapedS.Insert(i++, '\\');
             }
 
-            //loop from second char to the second to last
+            // loop from second char to the second to last
             for (; i < escapedS.Length; i++)
             {
                 if (escapedS[i] == ',' || escapedS[i] == '+' || escapedS[i] == '"' || escapedS[i] == '\\' ||
@@ -116,21 +119,21 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            //check last char for a space
+            // check last char for a space
             if (escapedS[escapedS.Length - 1] == ' ')
             {
                 escapedS.Insert(escapedS.Length - 1, '\\');
             }
+
             return escapedS.ToString();
         }
-
 
         /// <summary>
         ///     Returns the individual components of a distinguished name (DN).
         /// </summary>
         /// <param name="dn">
         ///     The distinguished name, for example, "cn=Babs
-        ///     Jensen,ou=Accounting,o=Acme,c=US"
+        ///     Jensen,ou=Accounting,o=Acme,c=US".
         /// </param>
         /// <param name="noTypes">
         ///     If true, returns only the values of the
@@ -143,10 +146,10 @@ namespace Novell.Directory.Ldap
         ///     An array of strings representing the individual components
         ///     of a DN, or null if the DN is not valid.
         /// </returns>
-        public static string[] explodeDN(string dn, bool noTypes)
+        public static string[] ExplodeDn(string dn, bool noTypes)
         {
-            var dnToExplode = new DN(dn);
-            return dnToExplode.explodeDN(noTypes);
+            var dnToExplode = new Dn(dn);
+            return dnToExplode.ExplodeDn(noTypes);
         }
 
         /// <summary>
@@ -166,10 +169,10 @@ namespace Novell.Directory.Ldap
         ///     An array of strings representing the individual components
         ///     of an RDN, or null if the RDN is not a valid RDN.
         /// </returns>
-        public static string[] explodeRDN(string rdn, bool noTypes)
+        public static string[] ExplodeRdn(string rdn, bool noTypes)
         {
-            var rdnToExplode = new RDN(rdn);
-            return rdnToExplode.explodeRDN(noTypes);
+            var rdnToExplode = new Rdn(rdn);
+            return rdnToExplode.ExplodeRdn(noTypes);
         }
 
         /// <summary> Returns true if the string conforms to distinguished name syntax.</summary>
@@ -179,16 +182,17 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if the dn is valid.
         /// </returns>
-        public static bool isValid(string dn)
+        public static bool IsValid(string dn)
         {
             try
             {
-                new DN(dn);
+                new Dn(dn);
             }
             catch (ArgumentException)
             {
                 return false;
             }
+
             return true;
         }
 
@@ -197,14 +201,13 @@ namespace Novell.Directory.Ldap
         ///     as per RFC 2253, section4.
         /// </summary>
         /// <returns>
-        ///     a normalized string
+        ///     a normalized string.
         /// </returns>
-        public static string normalize(string dn)
+        public static string Normalize(string dn)
         {
-            var testDN = new DN(dn);
-            return testDN.ToString();
+            var testDn = new Dn(dn);
+            return testDn.ToString();
         }
-
 
         /// <summary>
         ///     Returns the RDN after unescaping the characters requiring escaping.
@@ -215,7 +218,7 @@ namespace Novell.Directory.Ldap
         ///     ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
         ///     '#' if it comes at the beginning of the Attribute Name
         ///     (without the '\').
-        ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name
+        ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name.
         /// </summary>
         /// <param name="rdn">
         ///     The RDN to unescape.
@@ -223,48 +226,55 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The RDN with the escaping characters removed.
         /// </returns>
-        public static string unescapeRDN(string rdn)
+        public static string UnescapeRdn(string rdn)
         {
             var unescaped = new StringBuilder();
             var i = 0;
 
             while (i < rdn.Length && rdn[i] != '=')
             {
-                i++; //advance until we find the separator =
+                i++; // advance until we find the separator =
             }
+
             if (i == rdn.Length)
             {
                 throw new ArgumentException("Could not parse rdn: Attribute " +
                                             "type and name must be separated by an equal symbol, '='");
             }
+
             i++;
-            //check if the first two chars are "\ " (slash space) or "\#"
+
+            // check if the first two chars are "\ " (slash space) or "\#"
             if (rdn[i] == '\\' && i + 1 < rdn.Length - 1 && (rdn[i + 1] == ' ' || rdn[i + 1] == '#'))
             {
                 i++;
             }
+
             for (; i < rdn.Length; i++)
             {
-                //if the current char is a slash, not the end char, and is followed
+                // if the current char is a slash, not the end char, and is followed
                 // by a special char then...
                 if (rdn[i] == '\\' && i != rdn.Length - 1)
                 {
                     if (rdn[i + 1] == ',' || rdn[i + 1] == '+' || rdn[i + 1] == '"' || rdn[i + 1] == '\\' ||
                         rdn[i + 1] == '<' || rdn[i + 1] == '>' || rdn[i + 1] == ';')
                     {
-                        //I'm not sure if I have to check for these special chars
+                        // I'm not sure if I have to check for these special chars
                         continue;
                     }
-                    //check if the last two chars are "\ "
+
+                    // check if the last two chars are "\ "
                     if (rdn[i + 1] == ' ' && i + 2 == rdn.Length)
                     {
-                        //if the last char is a space
+                        // if the last char is a space
                         continue;
                     }
                 }
+
                 unescaped.Append(rdn[i]);
             }
+
             return unescaped.ToString();
         }
-    } //end class LdapDN
+    } // end class LdapDN
 }

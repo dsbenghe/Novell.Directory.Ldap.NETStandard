@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Asn1.Asn1Object.cs
 //
@@ -39,11 +40,11 @@ namespace Novell.Directory.Ldap.Asn1
     [CLSCompliant(true)]
     public abstract class Asn1Object
     {
-        private Asn1Identifier id;
+        private Asn1Identifier _id;
 
-        public Asn1Object(Asn1Identifier id)
+        protected Asn1Object(Asn1Identifier id)
         {
-            this.id = id;
+            _id = id;
         }
 
         /// <summary>
@@ -55,16 +56,16 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The output stream onto which the encoded
         ///     Asn1Object will be placed.
         /// </param>
-        public abstract void encode(Asn1Encoder enc, Stream out_Renamed);
+        public abstract void Encode(IAsn1Encoder enc, Stream outRenamed);
 
         /// <summary>
         ///     Returns the identifier for this Asn1Object as an Asn1Identifier.
         ///     This Asn1Identifier object will include the CLASS, FORM and TAG
         ///     for this Asn1Object.
         /// </summary>
-        public virtual Asn1Identifier getIdentifier()
+        public virtual Asn1Identifier GetIdentifier()
         {
-            return id;
+            return _id;
         }
 
         /// <summary>
@@ -73,11 +74,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <param name="id">
         ///     An Asn1Identifier object representing the CLASS,
-        ///     FORM and TAG)
+        ///     FORM and TAG).
         /// </param>
-        public virtual void setIdentifier(Asn1Identifier id)
+        public virtual void SetIdentifier(Asn1Identifier id)
         {
-            this.id = id;
+            _id = id;
         }
 
         /// <summary>
@@ -87,30 +88,31 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the child Asn1 classses.
         /// </summary>
         [CLSCompliant(false)]
-        public sbyte[] getEncoding(Asn1Encoder enc)
+        public byte[] GetEncoding(IAsn1Encoder enc)
         {
-            var out_Renamed = new MemoryStream();
+            var outRenamed = new MemoryStream();
             try
             {
-                encode(enc, out_Renamed);
+                Encode(enc, outRenamed);
             }
             catch (IOException e)
             {
                 // Should never happen - the current Asn1Object does not have
-                // a encode method. 
+                // a encode method.
                 throw new Exception("IOException while encoding to byte array: " + e);
             }
-            return SupportClass.ToSByteArray(out_Renamed.ToArray());
+
+            return outRenamed.ToArray();
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
         [CLSCompliant(false)]
         public override string ToString()
         {
-            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE "};
+            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };
 
             var sb = new StringBuilder();
-            var id = getIdentifier(); // could be overridden.
+            var id = GetIdentifier(); // could be overridden.
 
             sb.Append(classTypes[id.Asn1Class]).Append(id.Tag).Append("] ");
 

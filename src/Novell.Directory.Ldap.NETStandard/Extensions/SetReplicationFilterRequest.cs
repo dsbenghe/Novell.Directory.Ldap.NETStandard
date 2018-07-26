@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.SetReplicationFilterRequest.cs
 //
@@ -53,7 +54,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     SEQUENCE of ATTRIBUTES
     ///     }
     ///     where
-    ///     ATTRIBUTES:: OCTET STRING
+    ///     ATTRIBUTES:: OCTET STRING.
     /// </summary>
     public class SetReplicationFilterRequest : LdapExtendedOperation
     {
@@ -61,8 +62,8 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Constructs an extended operations object which contains the ber encoded
         ///     replication filter.
         /// </summary>
-        /// <param name="serverDN">
-        ///     The server on which the replication filter needs to be set
+        /// <param name="serverDn">
+        ///     The server on which the replication filter needs to be set.
         /// </param>
         /// <param name="replicationFilter">
         ///     An array of String Arrays. Each array starting with
@@ -73,33 +74,36 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public SetReplicationFilterRequest(string serverDN, string[][] replicationFilter)
-            : base(ReplicationConstants.SET_REPLICATION_FILTER_REQ, null)
+        public SetReplicationFilterRequest(string serverDn, string[][] replicationFilter)
+            : base(ReplicationConstants.SetReplicationFilterReq, null)
         {
             try
             {
-                if ((object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)serverDn == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
 
                 // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
+                asn1ServerDn.Encode(encoder, encodedData);
 
                 // The toplevel sequenceOF
-                var asn1_replicationFilter = new Asn1SequenceOf();
+                var asn1ReplicationFilter = new Asn1SequenceOf();
 
                 if (replicationFilter == null)
                 {
-                    asn1_replicationFilter.encode(encoder, encodedData);
-                    setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                    asn1ReplicationFilter.Encode(encoder, encodedData);
+                    SetValue(encodedData.ToArray());
                     return;
                 }
 
                 var i = 0;
+
                 // for every element in the array
                 while (i < replicationFilter.Length && replicationFilter[i] != null)
                 {
@@ -110,34 +114,33 @@ namespace Novell.Directory.Ldap.Extensions
                     var buginAsn1Representation = new Asn1Sequence();
 
                     // Add the classname to the sequence -
-                    buginAsn1Representation.add(new Asn1OctetString(replicationFilter[i][0]));
+                    buginAsn1Representation.Add(new Asn1OctetString(replicationFilter[i][0]));
 
                     // Start a sequenceOF for attributes
-                    var asn1_attributeList = new Asn1SequenceOf();
+                    var asn1AttributeList = new Asn1SequenceOf();
 
                     // For every attribute in the array - remember attributes start after
                     // the first element
                     var j = 1;
-                    while (j < replicationFilter[i].Length && (object) replicationFilter[i][j] != null)
+                    while (j < replicationFilter[i].Length && (object)replicationFilter[i][j] != null)
                     {
                         // Add the attribute name to the inner SequenceOf
-                        asn1_attributeList.add(new Asn1OctetString(replicationFilter[i][j]));
+                        asn1AttributeList.Add(new Asn1OctetString(replicationFilter[i][j]));
                         j++;
                     }
 
-
                     // Add the attributeList to the sequence - extra add due to bug
-                    buginAsn1Representation.add(asn1_attributeList);
-                    asn1_replicationFilter.add(buginAsn1Representation);
+                    buginAsn1Representation.Add(asn1AttributeList);
+                    asn1ReplicationFilter.Add(buginAsn1Representation);
                     i++;
                 }
 
-                asn1_replicationFilter.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                asn1ReplicationFilter.Encode(encoder, encodedData);
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

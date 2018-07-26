@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapCompareAttrNames.cs
 //
@@ -49,47 +50,11 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapCompareAttrNames : IComparer
     {
-        private void InitBlock()
-        {
-//			location = Locale.getDefault();
-            location = CultureInfo.CurrentCulture;
-            collator = CultureInfo.CurrentCulture.CompareInfo;
-        }
+        private readonly bool[] _sortAscending; // true if sorting ascending
 
-        /// <summary>
-        ///     Returns the locale to be used for sorting, if a locale has been
-        ///     specified.
-        ///     If locale is null, a basic String.compareTo method is used for
-        ///     collation.  If non-null, a locale-specific collation is used.
-        /// </summary>
-        /// <returns>
-        ///     The locale if one has been specified
-        /// </returns>
-        /// <summary>
-        ///     Sets the locale to be used for sorting.
-        /// </summary>
-        /// <param name="locale">
-        ///     The locale to be used for sorting.
-        /// </param>
-        public virtual CultureInfo Locale
-        {
-            get
-            {
-                //currently supports only English local.
-                return location;
-            }
-
-            set
-            {
-                collator = value.CompareInfo;
-                location = value;
-            }
-        }
-
-        private readonly string[] sortByNames; //names to to sort by.
-        private readonly bool[] sortAscending; //true if sorting ascending
-        private CultureInfo location;
-        private CompareInfo collator;
+        private readonly string[] _sortByNames; // names to to sort by.
+        private CompareInfo _collator;
+        private CultureInfo _location;
 
         /// <summary>
         ///     Constructs an object that sorts results by a single attribute, in
@@ -101,10 +66,10 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string attrName)
         {
             InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = true;
+            _sortByNames = new string[1];
+            _sortByNames[0] = attrName;
+            _sortAscending = new bool[1];
+            _sortAscending[0] = true;
         }
 
         /// <summary>
@@ -121,12 +86,11 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string attrName, bool ascendingFlag)
         {
             InitBlock();
-            sortByNames = new string[1];
-            sortByNames[0] = attrName;
-            sortAscending = new bool[1];
-            sortAscending[0] = ascendingFlag;
+            _sortByNames = new string[1];
+            _sortByNames[0] = attrName;
+            _sortAscending = new bool[1];
+            _sortAscending[0] = ascendingFlag;
         }
-
 
         /// <summary>
         ///     Constructs an object that sorts by one or more attributes, in the
@@ -141,12 +105,12 @@ namespace Novell.Directory.Ldap
         public LdapCompareAttrNames(string[] attrNames)
         {
             InitBlock();
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[attrNames.Length];
+            _sortByNames = new string[attrNames.Length];
+            _sortAscending = new bool[attrNames.Length];
             for (var i = 0; i < attrNames.Length; i++)
             {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = true;
+                _sortByNames[i] = attrNames[i];
+                _sortAscending[i] = true;
             }
         }
 
@@ -177,15 +141,43 @@ namespace Novell.Directory.Ldap
             InitBlock();
             if (attrNames.Length != ascendingFlags.Length)
             {
-                throw new LdapException(ExceptionMessages.UNEQUAL_LENGTHS, LdapException.INAPPROPRIATE_MATCHING, null);
-                //"Length of attribute Name array does not equal length of Flags array"
+                throw new LdapException(ExceptionMessages.UnequalLengths, LdapException.InappropriateMatching, null);
+
+                // "Length of attribute Name array does not equal length of Flags array"
             }
-            sortByNames = new string[attrNames.Length];
-            sortAscending = new bool[ascendingFlags.Length];
+
+            _sortByNames = new string[attrNames.Length];
+            _sortAscending = new bool[ascendingFlags.Length];
             for (var i = 0; i < attrNames.Length; i++)
             {
-                sortByNames[i] = attrNames[i];
-                sortAscending[i] = ascendingFlags[i];
+                _sortByNames[i] = attrNames[i];
+                _sortAscending[i] = ascendingFlags[i];
+            }
+        }
+
+        /// <summary>
+        ///     Returns the locale to be used for sorting, if a locale has been
+        ///     specified.
+        ///     If locale is null, a basic String.compareTo method is used for
+        ///     collation.  If non-null, a locale-specific collation is used.
+        /// </summary>
+        /// <returns>
+        ///     The locale if one has been specified.
+        /// </returns>
+        /// <summary>
+        ///     Sets the locale to be used for sorting.
+        /// </summary>
+        /// <param name="locale">
+        ///     The locale to be used for sorting.
+        /// </param>
+        public virtual CultureInfo Locale
+        {
+            get => _location;
+
+            set
+            {
+                _collator = value.CompareInfo;
+                _location = value;
             }
         }
 
@@ -208,53 +200,70 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public virtual int Compare(object object1, object object2)
         {
-            var entry1 = (LdapEntry) object1;
-            var entry2 = (LdapEntry) object2;
+            var entry1 = (LdapEntry)object1;
+            var entry2 = (LdapEntry)object2;
             LdapAttribute one, two;
-            string[] first; //multivalued attributes are ignored.
-            string[] second; //we just use the first element
+            string[] first; // multivalued attributes are ignored.
+            string[] second; // we just use the first element
             int compare, i = 0;
-            if (collator == null)
+            if (_collator == null)
             {
-                //using default locale
-                collator = CultureInfo.CurrentCulture.CompareInfo;
+                // using default locale
+                _collator = CultureInfo.CurrentCulture.CompareInfo;
             }
 
             do
             {
-                //while first and second are equal
-                one = entry1.getAttribute(sortByNames[i]);
-                two = entry2.getAttribute(sortByNames[i]);
+                // while first and second are equal
+                one = entry1.GetAttribute(_sortByNames[i]);
+                two = entry2.GetAttribute(_sortByNames[i]);
                 if (one != null && two != null)
                 {
                     first = one.StringValueArray;
                     second = two.StringValueArray;
-                    compare = collator.Compare(first[0], second[0]);
+                    compare = _collator.Compare(first[0], second[0]);
                 }
-                //We could also use the other multivalued attributes to break ties.
-                //one of the entries was null
+
+                // We could also use the other multivalued attributes to break ties.
+                // one of the entries was null
                 else
                 {
                     if (one != null)
+                    {
                         compare = -1;
-                    //one is greater than two
+                    }
+
+                    // one is greater than two
                     else if (two != null)
+                    {
                         compare = 1;
-                    //one is lesser than two
+                    }
+
+                    // one is lesser than two
                     else
-                        compare = 0; //tie - break it with the next attribute name
+                    {
+                        compare = 0; // tie - break it with the next attribute name
+                    }
                 }
 
                 i++;
-            } while (compare == 0 && i < sortByNames.Length);
+            } while (compare == 0 && i < _sortByNames.Length);
 
-            if (sortAscending[i - 1])
+            if (_sortAscending[i - 1])
             {
                 // return the normal ascending comparison.
                 return compare;
             }
+
             // negate the comparison for a descending comparison.
             return -compare;
+        }
+
+        private void InitBlock()
+        {
+// location = Locale.getDefault();
+            _location = CultureInfo.CurrentCulture;
+            _collator = CultureInfo.CurrentCulture.CompareInfo;
         }
 
         /// <summary>
@@ -264,7 +273,7 @@ namespace Novell.Directory.Ldap
         ///     order.
         /// </summary>
         /// <returns>
-        ///     true the comparators are equal
+        ///     true the comparators are equal.
         /// </returns>
         public override bool Equals(object comparator)
         {
@@ -272,22 +281,29 @@ namespace Novell.Directory.Ldap
             {
                 return false;
             }
-            var comp = (LdapCompareAttrNames) comparator;
+
+            var comp = (LdapCompareAttrNames)comparator;
 
             // Test to see if the attribute to compare are the same length
-            if (comp.sortByNames.Length != sortByNames.Length || comp.sortAscending.Length != sortAscending.Length)
+            if (comp._sortByNames.Length != _sortByNames.Length || comp._sortAscending.Length != _sortAscending.Length)
             {
                 return false;
             }
 
             // Test to see if the attribute names and sorting orders are the same.
-            for (var i = 0; i < sortByNames.Length; i++)
+            for (var i = 0; i < _sortByNames.Length; i++)
             {
-                if (comp.sortAscending[i] != sortAscending[i])
+                if (comp._sortAscending[i] != _sortAscending[i])
+                {
                     return false;
-                if (!comp.sortByNames[i].ToUpper().Equals(sortByNames[i].ToUpper()))
+                }
+
+                if (!comp._sortByNames[i].ToUpper().Equals(_sortByNames[i].ToUpper()))
+                {
                     return false;
+                }
             }
+
             return true;
         }
     }

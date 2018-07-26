@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.GetReplicationFilterRequest.cs
 //
@@ -47,7 +48,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     2.16.840.1.113719.1.27.100.37
     ///     The requestValue has the following format:
     ///     requestValue ::=
-    ///     serverName  LdapDN
+    ///     serverName  LdapDN.
     /// </summary>
     public class GetReplicationFilterRequest : LdapExtendedOperation
     {
@@ -57,7 +58,8 @@ namespace Novell.Directory.Ldap.Extensions
                 * Register the extendedresponse class which is returned by the
                 * server in response to a ListReplicasRequest
                 */
-            LdapExtendedResponse.register(ReplicationConstants.GET_REPLICATION_FILTER_RES,
+            LdapExtendedResponse.Register(
+                ReplicationConstants.GetReplicationFilterRes,
                 typeof(GetReplicationFilterResponse));
         }
 
@@ -65,33 +67,35 @@ namespace Novell.Directory.Ldap.Extensions
         ///     Constructs an extended operations object which contains the ber encoded
         ///     replication filter.
         /// </summary>
-        /// <param name="serverDN">
-        ///     The server whose replication filter needs to be read
+        /// <param name="serverDn">
+        ///     The server whose replication filter needs to be read.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public GetReplicationFilterRequest(string serverDN)
-            : base(ReplicationConstants.GET_REPLICATION_FILTER_REQ, null)
+        public GetReplicationFilterRequest(string serverDn)
+            : base(ReplicationConstants.GetReplicationFilterReq, null)
         {
             try
             {
-                if ((object) serverDN == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)serverDn == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverDN = new Asn1OctetString(serverDN);
+                var asn1ServerDn = new Asn1OctetString(serverDn);
 
                 // Add the serverDN to encoded data
-                asn1_serverDN.encode(encoder, encodedData);
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                asn1ServerDn.Encode(encoder, encodedData);
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

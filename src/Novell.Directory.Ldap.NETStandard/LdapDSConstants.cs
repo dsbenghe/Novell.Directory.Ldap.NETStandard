@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapDSConstants.cs
 //
@@ -33,9 +34,9 @@ namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     LDAPDSConstants.java contains bit values for [Entry Rights], [All attribute
-    ///     Rights], attribute rights, and entry flags in Novell eDirectory
+    ///     Rights], attribute rights, and entry flags in Novell eDirectory.
     /// </summary>
-    public struct LdapDSConstants
+    public struct LdapDsConstants
     {
         ///////////////////////////////////////////////////////////////////////////
         // bit values for [Entry Rights] of access control in Novell eDirecroty
@@ -46,7 +47,7 @@ namespace Novell.Directory.Ldap
         ///         Allows a trustee to discover objects in the Novell eDirectory tree.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_BROWSE = 0x00000001L;
+        public static readonly long LdapDsEntryBrowse = 0x00000001L;
 
         /// <summary>
         ///     Creation right .
@@ -55,7 +56,7 @@ namespace Novell.Directory.Ldap
         ///         subordinate to the object in the Novell eDirectory tree).
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_ADD = 0x00000002L;
+        public static readonly long LdapDsEntryAdd = 0x00000002L;
 
         /// <summary>
         ///     Delete right.
@@ -64,19 +65,19 @@ namespace Novell.Directory.Ldap
         ///         trustee to delete a container object that has subordinate objects.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_DELETE = 0x00000004L;
+        public static readonly long LdapDsEntryDelete = 0x00000004L;
 
         /// <summary>
         ///     Rename right.
         ///     <p>Allows a trustee to rename the object.</p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_RENAME = 0x00000008L;
+        public static readonly long LdapDsEntryRename = 0x00000008L;
 
         /// <summary>
         ///     Supercisor rights.
         ///     <p>Gives a trustee all rights to an object and its attributes.</p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_SUPERVISOR = 0x00000010L;
+        public static readonly long LdapDsEntrySupervisor = 0x00000010L;
 
         /// <summary>
         ///     Inherit ACL.
@@ -85,7 +86,7 @@ namespace Novell.Directory.Ldap
         ///         and exercise them on subordinate objects.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ENTRY_INHERIT_CTL = 0x00000040L;
+        public static readonly long LdapDsEntryInheritCtl = 0x00000040L;
 
         ///////////////////////////////////////////////////////////////////////////
         // bit values for [Attribute Rights] and attribute rights of access control
@@ -99,7 +100,7 @@ namespace Novell.Directory.Ldap
         ///         having rights to see the value.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_COMPARE = 0x00000001L;
+        public static readonly long LdapDsAttrCompare = 0x00000001L;
 
         /// <summary>
         ///     Attribute read.
@@ -108,7 +109,7 @@ namespace Novell.Directory.Ldap
         ///         the Compare right.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_READ = 0x00000002L;
+        public static readonly long LdapDsAttrRead = 0x00000002L;
 
         /// <summary>
         ///     Attribute write.
@@ -117,7 +118,7 @@ namespace Novell.Directory.Ldap
         ///         right also gives the trustee the Self (Add or Delete Self) right.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_WRITE = 0x00000004L;
+        public static readonly long LdapDsAttrWrite = 0x00000004L;
 
         /// <summary>
         ///     Self rights.
@@ -126,13 +127,13 @@ namespace Novell.Directory.Ldap
         ///         those attributes that take object names as their values.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_SELF = 0x00000008L;
+        public static readonly long LdapDsAttrSelf = 0x00000008L;
 
         /// <summary>
         ///     All attribute rights.
         ///     <p>Gives a trustee all rights to the object's attributes.</p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_SUPERVISOR = 0x00000020L;
+        public static readonly long LdapDsAttrSupervisor = 0x00000020L;
 
         /// <summary>
         ///     inherit the ACL rights.
@@ -141,7 +142,7 @@ namespace Novell.Directory.Ldap
         ///         exercise these attribute rights on subordinate objects.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_ATTR_INHERIT_CTL = 0x00000040L;
+        public static readonly long LdapDsAttrInheritCtl = 0x00000040L;
 
         /// <summary>
         ///     dynamic ACL.
@@ -152,7 +153,7 @@ namespace Novell.Directory.Ldap
         ///         members alone will be considered for rights calculation purposes.
         ///     </p>
         /// </summary>
-        public static readonly long LDAP_DS_DYNAMIC_ACL = 0x40000000L;
+        public static readonly long LdapDsDynamicAcl = 0x40000000L;
 
         ///////////////////////////////////////////////////////////////////////////
         // bit values of entry flag in Novell eDirectory
@@ -161,13 +162,13 @@ namespace Novell.Directory.Ldap
         ///     Alias object.
         ///     <p>Indicates that the entry is an alias object.</p>
         /// </summary>
-        public static readonly int LDAP_DS_ALIAS_ENTRY = 0x0001;
+        public static readonly int LdapDsAliasEntry = 0x0001;
 
         /// <summary>
         ///     Partition root.
         ///     <p>Indicates that the entry is the root partition.</p>
         /// </summary>
-        public static readonly int LDAP_DS_PARTITION_ROOT = 0x0002;
+        public static readonly int LdapDsPartitionRoot = 0x0002;
 
         /// <summary>
         ///     Container entry.
@@ -176,19 +177,19 @@ namespace Novell.Directory.Ldap
         ///         alias.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_CONTAINER_ENTRY = 0x0004;
+        public static readonly int LdapDsContainerEntry = 0x0004;
 
         /// <summary>
         ///     Container alias.
         ///     <p>Indicates that the entry is a container alias.</p>
         /// </summary>
-        public static readonly int LDAP_DS_CONTAINER_ALIAS = 0x0008;
+        public static readonly int LdapDsContainerAlias = 0x0008;
 
         /// <summary>
         ///     Matches the list.
         ///     <p>Indicates that the entry matches the List filter.</p>
         /// </summary>
-        public static readonly int LDAP_DS_MATCHES_LIST_FILTER = 0x0010;
+        public static readonly int LdapDsMatchesListFilter = 0x0010;
 
         /// <summary>
         ///     Reference entry.
@@ -198,7 +199,7 @@ namespace Novell.Directory.Ldap
         ///         created an entry for the object on this replica.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_REFERENCE_ENTRY = 0x0020;
+        public static readonly int LdapDsReferenceEntry = 0x0020;
 
         /// <summary>
         ///     4.0x reference entry.
@@ -207,13 +208,13 @@ namespace Novell.Directory.Ldap
         ///         reference is in the older 4.0x form and appears only when upgrading
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_40X_REFERENCE_ENTRY = 0x0040;
+        public static readonly int LdapDs40XReferenceEntry = 0x0040;
 
         /// <summary>
         ///     New entry.
         ///     <p>Indicates that the entry is being back linked.</p>
         /// </summary>
-        public static readonly int LDAP_DS_BACKLINKED = 0x0080;
+        public static readonly int LdapDsBacklinked = 0x0080;
 
         /// <summary>
         ///     Temporary reference.
@@ -221,7 +222,7 @@ namespace Novell.Directory.Ldap
         ///         Indicates that the entry is new and replicas are still being updated.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_NEW_ENTRY = 0x0100;
+        public static readonly int LdapDsNewEntry = 0x0100;
 
         /// <summary>
         ///     Temporary reference.
@@ -231,19 +232,19 @@ namespace Novell.Directory.Ldap
         ///         deleted.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_TEMPORARY_REFERENCE = 0x0200;
+        public static readonly int LdapDsTemporaryReference = 0x0200;
 
         /// <summary>
         ///     Audited.
         ///     <p>Indicates that the entry is being audited.</p>
         /// </summary>
-        public static readonly int LDAP_DS_AUDITED = 0x0400;
+        public static readonly int LdapDsAudited = 0x0400;
 
         /// <summary>
         ///     Entry not present.
         ///     <p>Indicates that the state of the entry is not present.</p>
         /// </summary>
-        public static readonly int LDAP_DS_ENTRY_NOT_PRESENT = 0x0800;
+        public static readonly int LdapDsEntryNotPresent = 0x0800;
 
         /// <summary>
         ///     Verify entry creation timestamp.
@@ -253,7 +254,7 @@ namespace Novell.Directory.Ldap
         ///         NetWare 4.11 to NetWare 5.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_ENTRY_VERIFY_CTS = 0x1000;
+        public static readonly int LdapDsEntryVerifyCts = 0x1000;
 
         /// <summary>
         ///     entry damaged.
@@ -262,6 +263,6 @@ namespace Novell.Directory.Ldap
         ///         standard format and is therefore damaged.
         ///     </p>
         /// </summary>
-        public static readonly int LDAP_DS_ENTRY_DAMAGED = 0x2000;
+        public static readonly int LdapDsEntryDamaged = 0x2000;
     }
 }

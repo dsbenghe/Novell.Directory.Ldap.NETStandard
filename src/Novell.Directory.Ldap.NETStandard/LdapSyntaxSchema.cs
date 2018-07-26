@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapSyntaxSchema.cs
 //
@@ -62,11 +63,12 @@ namespace Novell.Directory.Ldap
         /// <param name="description">
         ///     An optional description of the syntax.
         /// </param>
-        public LdapSyntaxSchema(string oid, string description) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
+        public LdapSyntaxSchema(string oid, string description)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
         {
-            this.oid = oid;
-            this.description = description;
-            Value = formatString();
+            Oid = oid;
+            Description = description;
+            Value = FormatString();
         }
 
         /// <summary>
@@ -77,24 +79,31 @@ namespace Novell.Directory.Ldap
         ///     The raw string value returned from a schema
         ///     query for ldapSyntaxes.
         /// </param>
-        public LdapSyntaxSchema(string raw) : base(LdapSchema.schemaTypeNames[LdapSchema.SYNTAX])
+        public LdapSyntaxSchema(string raw)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
         {
             try
             {
                 var parser = new SchemaParser(raw);
 
-                if ((object) parser.ID != null)
-                    oid = parser.ID;
-                if ((object) parser.Description != null)
-                    description = parser.Description;
+                if ((object)parser.Id != null)
+                {
+                    Oid = parser.Id;
+                }
+
+                if ((object)parser.Description != null)
+                {
+                    Description = parser.Description;
+                }
+
                 var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier) qualifiers.Current;
-                    setQualifier(attrQualifier.Name, attrQualifier.Values);
+                    var attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
-                Value = formatString();
+
+                Value = FormatString();
             }
             catch (IOException e)
             {
@@ -109,16 +118,17 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the syntax's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object) (token = ID) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
-            if ((object) (token = Description) != null)
+
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -131,9 +141,9 @@ namespace Novell.Directory.Ldap
                 string[] qualValue;
                 while (en.MoveNext())
                 {
-                    qualName = (string) en.Current;
+                    qualName = (string)en.Current;
                     valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = getQualifier(qualName)) != null)
+                    if ((qualValue = GetQualifier(qualName)) != null)
                     {
                         if (qualValue.Length > 1)
                         {
@@ -144,8 +154,10 @@ namespace Novell.Directory.Ldap
                                 {
                                     valueBuffer.Append(" ");
                                 }
+
                                 valueBuffer.Append("'" + qualValue[i] + "'");
                             }
+
                             if (qualValue.Length > 1)
                             {
                                 valueBuffer.Append(" )");
@@ -154,6 +166,7 @@ namespace Novell.Directory.Ldap
                     }
                 }
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

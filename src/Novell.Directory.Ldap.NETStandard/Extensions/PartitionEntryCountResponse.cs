@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.PartitionEntryCountResponse.cs
 //
@@ -41,23 +42,11 @@ namespace Novell.Directory.Ldap.Extensions
     ///     using the ExtendedResponseFactory class.
     ///     The PartitionEntryCountResponse extension uses the following
     ///     OID:
-    ///     2.16.840.1.113719.1.27.100.14
+    ///     2.16.840.1.113719.1.27.100.14.
     /// </summary>
     public class PartitionEntryCountResponse : LdapExtendedResponse
     {
-        /// <summary>
-        ///     Returns the number of entries in the naming context.
-        /// </summary>
-        /// <returns>
-        ///     The count of the number of objects returned.
-        /// </returns>
-        public virtual int Count
-        {
-            get { return count; }
-        }
-
-        //The count of the objects returned by the server is saved here
-        private readonly int count;
+        // The count of the objects returned by the server is saved here
 
         /// <summary>
         ///     Constructs an object from the responseValue which contains the
@@ -65,35 +54,50 @@ namespace Novell.Directory.Ldap.Extensions
         ///     The constructor parses the responseValue which has the following
         ///     format:
         ///     responseValue ::=
-        ///     count  INTEGER
+        ///     count  INTEGER.
         /// </summary>
         /// <exception>
         ///     IOException  The response value could not be decoded.
         /// </exception>
-        public PartitionEntryCountResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public PartitionEntryCountResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new IOException("No returned value");
+                }
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
                 if (decoder == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                var asn1_count = (Asn1Integer) decoder.decode(returnedValue);
-                if (asn1_count == null)
+                var asn1Count = (Asn1Integer)decoder.Decode(returnedValue);
+                if (asn1Count == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                count = asn1_count.intValue();
+                Count = asn1Count.IntValue();
             }
             else
             {
-                count = -1;
+                Count = -1;
             }
         }
+
+        /// <summary>
+        ///     Returns the number of entries in the naming context.
+        /// </summary>
+        /// <returns>
+        ///     The count of the number of objects returned.
+        /// </returns>
+        public int Count { get; }
     }
 }

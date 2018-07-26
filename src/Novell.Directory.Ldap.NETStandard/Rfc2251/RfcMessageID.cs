@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Rfc2251.RfcMessageID.cs
 //
@@ -46,27 +47,15 @@ namespace Novell.Directory.Ldap.Rfc2251
     ///         arbitrarily run up.)
     ///     </pre>
     /// </summary>
-    internal class RfcMessageID : Asn1Integer
+    internal class RfcMessageId : Asn1Integer
     {
-        /// <summary>
-        ///     Increments the message number atomically
-        /// </summary>
-        /// <returns>
-        ///     the new message number
-        /// </returns>
-        private static int MessageID
-        {
-            get
-            {
-                lock (lock_Renamed)
-                {
-                    return messageID < int.MaxValue ? ++messageID : (messageID = 1);
-                }
-            }
-        }
+        private static int _messageId;
+        private static readonly object LockRenamed;
 
-        private static int messageID;
-        private static readonly object lock_Renamed;
+        static RfcMessageId()
+        {
+            LockRenamed = new object();
+        }
 
         /// <summary>
         ///     Creates a MessageID with an auto incremented Asn1Integer value.
@@ -74,18 +63,32 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     MessageID zero is never used in this implementation.  Always
         ///     start the messages with one.
         /// </summary>
-        protected internal RfcMessageID() : base(MessageID)
+        protected internal RfcMessageId()
+            : base(MessageId)
         {
         }
 
         /// <summary> Creates a MessageID with a specified int value.</summary>
-        protected internal RfcMessageID(int i) : base(i)
+        protected internal RfcMessageId(int i)
+            : base(i)
         {
         }
 
-        static RfcMessageID()
+        /// <summary>
+        ///     Increments the message number atomically.
+        /// </summary>
+        /// <returns>
+        ///     the new message number.
+        /// </returns>
+        private static int MessageId
         {
-            lock_Renamed = new object();
+            get
+            {
+                lock (LockRenamed)
+                {
+                    return _messageId < int.MaxValue ? ++_messageId : (_messageId = 1);
+                }
+            }
         }
     }
 }

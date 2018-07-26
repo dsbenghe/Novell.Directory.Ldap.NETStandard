@@ -18,6 +18,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw exception.InnerException;
                 }
+
                 throw;
             }
         }
@@ -27,9 +28,13 @@ namespace Novell.Directory.Ldap
             try
             {
                 if (timeout == 0)
+                {
                     task.Wait();
+                }
                 else if (!task.Wait(timeout))
+                {
                     throw new SocketException(258); // WAIT_TIMEOUT
+                }
             }
             catch (AggregateException exception)
             {
@@ -37,6 +42,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw exception.InnerException;
                 }
+
                 throw;
             }
         }

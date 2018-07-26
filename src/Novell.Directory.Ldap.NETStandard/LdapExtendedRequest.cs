@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapExtendedRequest.cs
 //
@@ -46,32 +47,6 @@ namespace Novell.Directory.Ldap
      */
     public class LdapExtendedRequest : LdapMessage
     {
-        /// <summary> Retrieves an extended operation from this request</summary>
-        /// <returns>
-        ///     extended operation represented in this request.
-        /// </returns>
-        public virtual LdapExtendedOperation ExtendedOperation
-        {
-            get
-            {
-                var xreq = (RfcExtendedRequest) Asn1Object.get_Renamed(1);
-
-                //Zeroth element is the OID, element one is the value
-                var tag = (Asn1Tagged) xreq.get_Renamed(0);
-                var oid = (RfcLdapOID) tag.taggedValue();
-                var requestID = oid.stringValue();
-
-                sbyte[] requestValue = null;
-                if (xreq.size() >= 2)
-                {
-                    tag = (Asn1Tagged) xreq.get_Renamed(1);
-                    var value_Renamed = (Asn1OctetString) tag.taggedValue();
-                    requestValue = value_Renamed.byteValue();
-                }
-                return new LdapExtendedOperation(requestID, requestValue);
-            }
-        }
-
         /// <summary>
         ///     Constructs an LdapExtendedRequest.
         /// </summary>
@@ -87,10 +62,38 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
             : base(
-                EXTENDED_REQUEST,
-                new RfcExtendedRequest(new RfcLdapOID(op.getID()),
-                    op.getValue() != null ? new Asn1OctetString(op.getValue()) : null), cont)
+                ExtendedRequest,
+                new RfcExtendedRequest(
+                    new RfcLdapOid(op.GetId()),
+                    op.GetValue() != null ? new Asn1OctetString(op.GetValue()) : null), cont)
         {
+        }
+
+        /// <summary> Retrieves an extended operation from this request.</summary>
+        /// <returns>
+        ///     extended operation represented in this request.
+        /// </returns>
+        public LdapExtendedOperation ExtendedOperation
+        {
+            get
+            {
+                var xreq = (RfcExtendedRequest)Asn1Object.get_Renamed(1);
+
+                // Zeroth element is the OID, element one is the value
+                var tag = (Asn1Tagged)xreq.get_Renamed(0);
+                var oid = (RfcLdapOid)tag.TaggedValue;
+                var requestId = oid.StringValue();
+
+                byte[] requestValue = null;
+                if (xreq.Size() >= 2)
+                {
+                    tag = (Asn1Tagged)xreq.get_Renamed(1);
+                    var valueRenamed = (Asn1OctetString)tag.TaggedValue;
+                    requestValue = valueRenamed.ByteValue();
+                }
+
+                return new LdapExtendedOperation(requestId, requestValue);
+            }
         }
     }
 }

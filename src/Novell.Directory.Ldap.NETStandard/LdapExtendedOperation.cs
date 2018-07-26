@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapExtendedOperation.cs
 //
@@ -42,8 +43,8 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapExtendedOperation
     {
-        private string oid;
-        private sbyte[] vals;
+        private string _oid;
+        private byte[] _vals;
 
         /// <summary>
         ///     Constructs a new object with the specified object ID and data.
@@ -55,10 +56,10 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data of the operation.
         /// </param>
         [CLSCompliant(false)]
-        public LdapExtendedOperation(string oid, sbyte[] vals)
+        public LdapExtendedOperation(string oid, byte[] vals)
         {
-            this.oid = oid;
-            this.vals = vals;
+            _oid = oid;
+            _vals = vals;
         }
 
         /// <summary>
@@ -72,8 +73,9 @@ namespace Novell.Directory.Ldap
             try
             {
                 var newObj = MemberwiseClone();
-//				Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
-                Array.Copy(vals, 0, ((LdapExtendedOperation) newObj).vals, 0, vals.Length);
+
+// Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
+                Array.Copy(_vals, 0, ((LdapExtendedOperation)newObj)._vals, 0, _vals.Length);
                 return newObj;
             }
             catch (Exception ce)
@@ -88,9 +90,9 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID (object ID) of the operation.
         /// </returns>
-        public virtual string getID()
+        public string GetId()
         {
-            return oid;
+            return _oid;
         }
 
         /// <summary>
@@ -100,9 +102,9 @@ namespace Novell.Directory.Ldap
         ///     The operation-specific data.
         /// </returns>
         [CLSCompliant(false)]
-        public virtual sbyte[] getValue()
+        public byte[] GetValue()
         {
-            return vals;
+            return _vals;
         }
 
         /// <summary>
@@ -112,20 +114,20 @@ namespace Novell.Directory.Ldap
         ///     The byte array of operation-specific data.
         /// </param>
         [CLSCompliant(false)]
-        protected internal virtual void setValue(sbyte[] newVals)
+        protected void SetValue(byte[] newVals)
         {
-            vals = newVals;
+            _vals = newVals;
         }
 
         /// <summary>
-        ///     Resets the OID for the operation to a new value
+        ///     Resets the OID for the operation to a new value.
         /// </summary>
         /// <param name="newoid">
-        ///     The new OID for the operation
+        ///     The new OID for the operation.
         /// </param>
-        protected internal virtual void setID(string newoid)
+        protected void SetId(string newoid)
         {
-            oid = newoid;
+            _oid = newoid;
         }
     }
 }

@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.SchemaSyncRequest.cs
 //
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap.Extensions
     ///     The requestValue has the following format:
     ///     requestValue ::=
     ///     serverName       LdapDN
-    ///     delay            INTEGER
+    ///     delay            INTEGER.
     /// </summary>
     public class SchemaSyncRequest : LdapExtendedOperation
     {
@@ -62,27 +63,30 @@ namespace Novell.Directory.Ldap.Extensions
         ///     LdapException A general exception which includes an error message
         ///     and an Ldap error code.
         /// </exception>
-        public SchemaSyncRequest(string serverName, int delay) : base(ReplicationConstants.SCHEMA_SYNC_REQ, null)
+        public SchemaSyncRequest(string serverName, int delay)
+            : base(ReplicationConstants.SchemaSyncReq, null)
         {
             try
             {
-                if ((object) serverName == null)
-                    throw new ArgumentException(ExceptionMessages.PARAM_ERROR);
+                if ((object)serverName == null)
+                {
+                    throw new ArgumentException(ExceptionMessages.ParamError);
+                }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
-                var asn1_serverName = new Asn1OctetString(serverName);
-                var asn1_delay = new Asn1Integer(delay);
+                var asn1ServerName = new Asn1OctetString(serverName);
+                var asn1Delay = new Asn1Integer(delay);
 
-                asn1_serverName.encode(encoder, encodedData);
-                asn1_delay.encode(encoder, encodedData);
+                asn1ServerName.Encode(encoder, encodedData);
+                asn1Delay.Encode(encoder, encodedData);
 
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.ENCODING_ERROR, LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
             }
         }
     }

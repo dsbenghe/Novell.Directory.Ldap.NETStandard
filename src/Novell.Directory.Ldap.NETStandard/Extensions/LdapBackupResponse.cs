@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2006 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -45,13 +46,11 @@ using Novell.Directory.Ldap.Rfc2251;
  *  &nbsp;&nbsp;&nbsp;2.16.840.1.113719.1.27.100.97</p>
  *
  */
-
 namespace Novell.Directory.Ldap.Extensions
 {
     public class LdapBackupResponse : LdapExtendedResponse
     {
-        private readonly int bufferLength; //Represents the length of backup data
-        private readonly string stateInfo; //Represent the state Information of data
+        private readonly int _bufferLength; // Represents the length of backup data
 
         /*
          * The String representing the number of chunks and each elements in chunk
@@ -62,17 +61,18 @@ namespace Novell.Directory.Ldap.Extensions
         * no_of_chunks => Represents the number of chunks of data returned from server
         * sizeOf(chunkn) => Represents the size of data in chunkn
         */
-        private readonly string chunkSizesString;
+        private readonly string _chunkSizesString;
 
         /*
          * Actual data of returned eDirectoty Object in byte[]
         */
-        private readonly byte[] returnedBuffer;
+        private readonly byte[] _returnedBuffer;
+        private readonly string _stateInfo; // Represent the state Information of data
 
         /**
         * Constructs an object from the responseValue which contains the backup data.
         *  <p>The constructor parses the responseValue which has the following
-        *  format:<br>
+        *  format:.<br>
         *  responseValue ::=<br>
         *  <p>databufferLength ::= INTEGER <br>
         *  mts(modification time stamp) ::= INTEGER<br>
@@ -84,102 +84,121 @@ namespace Novell.Directory.Ldap.Extensions
         *  SET of [<br>
         *  SEQUENCE of {eachChunksize INTEGER}]<br>
         *  }</p>
-        * 
+        *
         * @exception IOException The responseValue could not be decoded.
         */
-
-        public LdapBackupResponse(RfcLdapMessage rfcMessage) : base(rfcMessage)
+        public LdapBackupResponse(RfcLdapMessage rfcMessage)
+            : base(rfcMessage)
         {
             var modificationTime = 0; // Modifaction timestamp of the Object
             var revision = 0; // Revision number of the Object
             var chunksSize = 0;
-            int[] chunks = null; //Holds size of each chunks returned from server
+            int[] chunks = null; // Holds size of each chunks returned from server
 
-            //Verify if returned ID is not proper
-            if (ID == null || !ID.Equals(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE))
+            // Verify if returned ID is not proper
+            if (Id == null || !Id.Equals(BackupRestoreConstants.NldapLdapBackupResponse))
+            {
                 throw new IOException("LDAP Extended Operation not supported");
+            }
 
-            if (ResultCode == LdapException.SUCCESS)
+            if (ResultCode == LdapException.Success)
             {
                 // Get the contents of the reply
 
-                var returnedValue = SupportClass.ToByteArray(Value);
+                var returnedValue = Value;
                 if (returnedValue == null)
+                {
                     throw new Exception("LDAP Operations error. No returned value.");
+                }
 
                 // Create a decoder object
-                var decoder = new LBERDecoder();
+                var decoder = new LberDecoder();
 
                 if (decoder == null)
+                {
                     throw new Exception("Decoding error");
+                }
 
                 // Parse the parameters in the order
                 var currentPtr = new MemoryStream(returnedValue);
 
                 // Parse bufferLength
-                var asn1_bufferLength = (Asn1Integer) decoder
-                    .decode(currentPtr);
-                if (asn1_bufferLength == null)
+                var asn1BufferLength = (Asn1Integer)decoder
+                    .Decode(currentPtr);
+                if (asn1BufferLength == null)
+                {
                     throw new IOException("Decoding error");
-                bufferLength = asn1_bufferLength.intValue();
+                }
+
+                _bufferLength = asn1BufferLength.IntValue();
 
                 // Parse modificationTime
-                var asn1_modificationTime = (Asn1Integer) decoder
-                    .decode(currentPtr);
-                if (asn1_modificationTime == null)
+                var asn1ModificationTime = (Asn1Integer)decoder
+                    .Decode(currentPtr);
+                if (asn1ModificationTime == null)
+                {
                     throw new IOException("Decoding error");
-                modificationTime = asn1_modificationTime.intValue();
+                }
+
+                modificationTime = asn1ModificationTime.IntValue();
 
                 // Parse revision
-                var asn1_revision = (Asn1Integer) decoder
-                    .decode(currentPtr);
-                if (asn1_revision == null)
+                var asn1Revision = (Asn1Integer)decoder
+                    .Decode(currentPtr);
+                if (asn1Revision == null)
+                {
                     throw new IOException("Decoding error");
-                revision = asn1_revision.intValue();
+                }
 
-                //Format stateInfo to contain both modificationTime and revision
-                stateInfo = modificationTime + "+" + revision;
+                revision = asn1Revision.IntValue();
+
+                // Format stateInfo to contain both modificationTime and revision
+                _stateInfo = modificationTime + "+" + revision;
 
                 // Parse returnedBuffer
-                var asn1_returnedBuffer = (Asn1OctetString) decoder.decode(currentPtr);
-                if (asn1_returnedBuffer == null)
+                var asn1ReturnedBuffer = (Asn1OctetString)decoder.Decode(currentPtr);
+                if (asn1ReturnedBuffer == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                returnedBuffer = SupportClass.ToByteArray(asn1_returnedBuffer.byteValue());
+                _returnedBuffer = asn1ReturnedBuffer.ByteValue();
 
-
-                /* 
-                 * Parse chunks array 
+                /*
+                 * Parse chunks array
                  * Chunks returned from server is encoded as shown below::
                  * SEQUENCE{
-                 * 			chunksSize	INTEGER
-                 * 			SET of [
-                 * 				SEQUENCE of {eacChunksize        INTEGER}]
-                 * 	       }
+                 *          chunksSize  INTEGER
+                 *          SET of [
+                 *              SEQUENCE of {eacChunksize        INTEGER}]
+                 *         }
                  */
 
-                var asn1_chunksSeq = (Asn1Sequence) decoder
-                    .decode(currentPtr);
-                if (asn1_chunksSeq == null)
+                var asn1ChunksSeq = (Asn1Sequence)decoder
+                    .Decode(currentPtr);
+                if (asn1ChunksSeq == null)
+                {
                     throw new IOException("Decoding error");
+                }
 
-                //Get number of chunks returned from server
-                chunksSize = ((Asn1Integer) asn1_chunksSeq.get_Renamed(0)).intValue();
+                // Get number of chunks returned from server
+                chunksSize = ((Asn1Integer)asn1ChunksSeq.get_Renamed(0)).IntValue();
 
-                //Construct chunks array
+                // Construct chunks array
                 chunks = new int[chunksSize];
 
-                var asn1_chunksSet = (Asn1Set) asn1_chunksSeq.get_Renamed(1);
-                //Iterate through asn1_chunksSet and put each size into chunks array
+                var asn1ChunksSet = (Asn1Set)asn1ChunksSeq.get_Renamed(1);
+
+                // Iterate through asn1_chunksSet and put each size into chunks array
 
                 for (var index = 0; index < chunksSize; index++)
                 {
-                    var asn1_eachSeq = (Asn1Sequence) asn1_chunksSet.get_Renamed(index);
-                    chunks[index] = ((Asn1Integer) asn1_eachSeq.get_Renamed(0)).intValue();
+                    var asn1EachSeq = (Asn1Sequence)asn1ChunksSet.get_Renamed(index);
+                    chunks[index] = ((Asn1Integer)asn1EachSeq.get_Renamed(0)).IntValue();
                 }
 
-                //Construct a temporary StringBuffer and append chunksSize, each size
-                //element in chunks array and actual data of eDirectoty Object
+                // Construct a temporary StringBuffer and append chunksSize, each size
+                // element in chunks array and actual data of eDirectoty Object
                 var tempBuffer = new StringBuilder();
                 tempBuffer.Append(chunksSize);
                 tempBuffer.Append(";");
@@ -193,16 +212,16 @@ namespace Novell.Directory.Ldap.Extensions
 
                 tempBuffer.Append(chunks[i]);
 
-                //Assign tempBuffer to parsedString to be returned to Application
-                chunkSizesString = tempBuffer.ToString();
+                // Assign tempBuffer to parsedString to be returned to Application
+                _chunkSizesString = tempBuffer.ToString();
             }
             else
             {
-                //Intialize all these if getResultCode() != LdapException.SUCCESS
-                bufferLength = 0;
-                stateInfo = null;
-                chunkSizesString = null;
-                returnedBuffer = null;
+                // Intialize all these if getResultCode() != LdapException.SUCCESS
+                _bufferLength = 0;
+                _stateInfo = null;
+                _chunkSizesString = null;
+                _returnedBuffer = null;
             }
         }
 
@@ -211,10 +230,9 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return bufferLength as integer.
          */
-
-        public int getBufferLength()
+        public int GetBufferLength()
         {
-            return bufferLength;
+            return _bufferLength;
         }
 
         /**
@@ -226,25 +244,23 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return stateInfo as String.
          */
-
-        public string getStatusInfo()
+        public string GetStatusInfo()
         {
-            return stateInfo;
+            return _stateInfo;
         }
 
         /**
          * Returns the data in String as::<br>
-         * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn)<br>
+         * no_of_chunks;sizeOf(chunk1);sizeOf(chunk2)…sizeOf(chunkn).<br>
          * where<br>
          * no_of_chunks => Represents the number of chunks of data returned from server<br>
          * sizeOf(chunkn) => Represents the size of data in chunkn<br>
-         * 
+         *
          * @return chunkSizesString as String.
          */
-
-        public string getChunkSizesString()
+        public string GetChunkSizesString()
         {
-            return chunkSizesString;
+            return _chunkSizesString;
         }
 
         /**
@@ -252,10 +268,9 @@ namespace Novell.Directory.Ldap.Extensions
          *
          * @return returnedBuffer as byte[].
          */
-
-        public byte[] getReturnedBuffer()
+        public byte[] GetReturnedBuffer()
         {
-            return returnedBuffer;
+            return _returnedBuffer;
         }
     }
 }

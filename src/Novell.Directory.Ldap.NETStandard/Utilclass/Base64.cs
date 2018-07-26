@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.Base64.cs
 //
@@ -58,11 +59,13 @@ namespace Novell.Directory.Ldap.Utilclass
         *                                                encoded      original
         *                                                character    binary value
         */
-        private static readonly char[] emap =
+        private static readonly char[] Emap =
         {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
-            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k',
+            'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
+            '6',
             '7', '8', '9', '+', '/'
         }; // 4-9, + /;  56-63
 
@@ -80,7 +83,7 @@ namespace Novell.Directory.Ldap.Utilclass
         *
         * Note: about half of the values in the table are only place holders
         */
-        private static readonly sbyte[] dmap =
+        private static readonly byte[] Dmap =
         {
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -93,13 +96,35 @@ namespace Novell.Directory.Ldap.Utilclass
         }; // 120-127 'xyz     '
 
         /// <summary>
+        ///     Bit masks used to determine if a the value of UTF-8 byte sequence
+        ///     is less than the minimum value.
+        ///     If the value of a byte sequence is less than the minimum value then
+        ///     the number should be encoded in fewer bytes and is invalid.  For example
+        ///     If the first byte indicates that a sequence has three bytes in a
+        ///     sequence. Then the top five bits cannot be zero.  Notice the index into
+        ///     the array is one less than the number of bytes in a sequence.
+        ///     A validity test for this could be:.
+        /// </summary>
+        private static readonly byte[][] LowerBoundMask =
+        {
+            new byte[] {0, 0 }, new[] { (byte)0x1E, (byte)0x00 },
+            new[] { (byte)0x0F, (byte)0x20 }, new[] { (byte)0x07, (byte)0x30 }, new[] { (byte)0x02, (byte)0x38 },
+            new[] { (byte)0x01, (byte)0x3C }
+        };
+
+        /// <summary>mask to AND with a continuation byte: should equal continuationResult. </summary>
+        private static readonly byte ContinuationMask = (byte)SupportClass.Identity(0xC0);
+
+        /// <summary>expected result of ANDing a continuation byte with continuationMask. </summary>
+        private static readonly byte ContinuationResult = (byte)SupportClass.Identity(0x80);
+
+        /// <summary>
         ///     Default constructor, don't allow instances of the
         ///     utility class to be created.
         /// </summary>
         private Base64()
         {
         }
-
 
         /// <summary>
         ///     Encodes the specified String into a base64 encoded String object.
@@ -110,14 +135,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the encoded value of the input.
         /// </returns>
-        public static string encode(string inputString)
+        public static string Encode(string inputString)
         {
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(inputString);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                return encode(sbytes);
+                return Encode(ibytes);
             }
             catch (IOException ue)
             {
@@ -133,22 +157,20 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the byte array to be encoded.
         /// </param>
         /// <returns>
-        ///     a String containing the base64 encoded data
+        ///     a String containing the base64 encoded data.
         /// </returns>
         [CLSCompliant(false)]
-        public static string encode(sbyte[] inputBytes)
+        public static string Encode(byte[] inputBytes)
         {
             int i, j, k;
-            int t, t1, t2;
             int ntb; // number of three-bytes in inputBytes
             bool onePadding = false, twoPaddings = false;
-            char[] encodedChars; // base64 encoded chars
             var len = inputBytes.Length;
 
             if (len == 0)
             {
                 // No data, return no data.
-                return new StringBuilder("").ToString();
+                return new StringBuilder(string.Empty).ToString();
             }
 
             // every three bytes will be encoded into four bytes
@@ -156,6 +178,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 ntb = len / 3;
             }
+
             // the last one or two bytes will be encoded into
             // four bytes with one or two paddings
             else
@@ -168,13 +191,14 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 twoPaddings = true;
             }
+
             // need one padding
             else if (len % 3 == 2)
             {
                 onePadding = true;
             }
 
-            encodedChars = new char[ntb * 4];
+            var encodedChars = new char[ntb * 4];
 
             // map of decoded and encoded bits
             //     bits in 3 decoded bytes:   765432  107654  321076  543210
@@ -197,36 +221,38 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < len; i += 3, j += 4, k++)
             {
                 // build encodedChars[j]
-                t = 0x00ff & inputBytes[i];
-                encodedChars[j] = emap[t >> 2];
+                var t = 0x00ff & inputBytes[i];
+                encodedChars[j] = Emap[t >> 2];
 
                 // build encodedChars[j+1]
                 if (k == ntb && twoPaddings)
                 {
-                    encodedChars[j + 1] = emap[(t & 0x03) << 4];
+                    encodedChars[j + 1] = Emap[(t & 0x03) << 4];
                     encodedChars[j + 2] = '=';
                     encodedChars[j + 3] = '=';
                     break;
                 }
-                t1 = 0x00ff & inputBytes[i + 1];
-                encodedChars[j + 1] = emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
+
+                var t1 = 0x00ff & inputBytes[i + 1];
+                encodedChars[j + 1] = Emap[((t & 0x03) << 4) + ((t1 & 0xf0) >> 4)];
 
                 // build encodedChars[j+2]
                 if (k == ntb && onePadding)
                 {
-                    encodedChars[j + 2] = emap[(t1 & 0x0f) << 2];
+                    encodedChars[j + 2] = Emap[(t1 & 0x0f) << 2];
                     encodedChars[j + 3] = '=';
                     break;
                 }
-                t2 = 0x00ff & inputBytes[i + 2];
-                encodedChars[j + 2] = emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
+
+                var t2 = 0x00ff & inputBytes[i + 2];
+                encodedChars[j + 2] = Emap[((t1 & 0x0f) << 2) | ((t2 & 0xc0) >> 6)];
 
                 // build encodedChars[j+3]
-                encodedChars[j + 3] = emap[t2 & 0x3f];
+                encodedChars[j + 3] = Emap[t2 & 0x3f];
             }
+
             return new string(encodedChars);
         }
-
 
         /// <summary>
         ///     Decodes the input base64 encoded String.
@@ -239,11 +265,11 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     The decoded byte array.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(string encodedString)
+        public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
             SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
-            return decode(c);
+            return Decode(c);
         }
 
         /// <summary>
@@ -257,19 +283,20 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     A byte array object containing decoded bytes.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(char[] encodedChars)
+        public static byte[] Decode(char[] encodedChars)
         {
             int i, j, k;
             var ecLen = encodedChars.Length; // length of encodedChars
             var gn = ecLen / 4; // number of four-byte groups in encodedChars
             int dByteLen; // length of decoded bytes, default is '0'
             bool onePad = false, twoPads = false;
-            sbyte[] decodedBytes; // decoded bytes
+            byte[] decodedBytes; // decoded bytes
 
             if (encodedChars.Length == 0)
             {
-                return new sbyte[0];
+                return new byte[0];
             }
+
             // the number of encoded bytes should be multiple of 4
             if (ecLen % 4 != 0)
             {
@@ -284,26 +311,28 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // the last four bytes of encodedChars is in the form of '**=='
                 twoPads = true;
+
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into one byte.
                 dByteLen = gn * 3 - 2;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else if (encodedChars[ecLen - 1] == '=')
             {
                 // the last four bytes of encodedChars is in the form of '***='
                 onePad = true;
+
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into two bytes.
                 dByteLen = gn * 3 - 1;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else
             {
                 // the last four bytes of encodedChars is in the form of '****',
                 // e.g. no pad.
                 dByteLen = gn * 3;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
 
             // map of encoded and decoded bits
@@ -325,24 +354,27 @@ namespace Novell.Directory.Ldap.Utilclass
             for (i = 0, j = 0, k = 1; i < ecLen; i += 4, j += 3, k++)
             {
                 // build decodedBytes[j].
-                decodedBytes[j] = (sbyte) ((dmap[encodedChars[i]] << 2) | ((dmap[encodedChars[i + 1]] & 0x30) >> 4));
+                decodedBytes[j] = (byte)((Dmap[encodedChars[i]] << 2) | ((Dmap[encodedChars[i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
                 {
                     break;
                 }
+
                 decodedBytes[j + 1] =
-                    (sbyte) (((dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((dmap[encodedChars[i + 2]] & 0x3c) >> 2));
+                    (byte)(((Dmap[encodedChars[i + 1]] & 0x0f) << 4) | ((Dmap[encodedChars[i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
                 {
                     break;
                 }
+
                 decodedBytes[j + 2] =
-                    (sbyte) (((dmap[encodedChars[i + 2]] & 0x03) << 6) | (dmap[encodedChars[i + 3]] & 0x3f));
+                    (byte)(((Dmap[encodedChars[i + 2]] & 0x03) << 6) | (Dmap[encodedChars[i + 3]] & 0x3f));
             }
+
             return decodedBytes;
         }
 
@@ -363,22 +395,23 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     The end index + 1 of the base64 encoded data.
         /// </param>
         /// <returns>
-        ///     The decoded byte array
+        ///     The decoded byte array.
         /// </returns>
         [CLSCompliant(false)]
-        public static sbyte[] decode(StringBuilder encodedSBuf, int start, int end)
+        public static byte[] Decode(StringBuilder encodedSBuf, int start, int end)
         {
             int i, j, k;
             var esbLen = end - start; // length of the encoded part
             var gn = esbLen / 4; // number of four-bytes group in ebs
             int dByteLen; // length of dbs, default is '0'
             bool onePad = false, twoPads = false;
-            sbyte[] decodedBytes; // decoded bytes
+            byte[] decodedBytes; // decoded bytes
 
             if (encodedSBuf.Length == 0)
             {
-                return new sbyte[0];
+                return new byte[0];
             }
+
             // the number of encoded bytes should be multiple of number 4
             if (esbLen % 4 != 0)
             {
@@ -393,25 +426,27 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // the last four bytes of ebs is in the form of '**=='
                 twoPads = true;
+
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into one byte.
                 dByteLen = gn * 3 - 2;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else if (encodedSBuf[end - 1] == '=')
             {
                 // the last four bytes of ebs is in the form of '***='
                 onePad = true;
+
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into two bytes.
                 dByteLen = gn * 3 - 1;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
             else
             {
                 // the last four bytes of ebs is in the form of '****', eg. no pad.
                 dByteLen = gn * 3;
-                decodedBytes = new sbyte[dByteLen];
+                decodedBytes = new byte[dByteLen];
             }
 
             // map of encoded and decoded bits
@@ -434,26 +469,30 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // build decodedBytes[j].
                 decodedBytes[j] =
-                    (sbyte) ((dmap[encodedSBuf[start + i]] << 2) | ((dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
+                    (byte)((Dmap[encodedSBuf[start + i]] << 2) | ((Dmap[encodedSBuf[start + i + 1]] & 0x30) >> 4));
 
                 // build decodedBytes[j+1]
                 if (k == gn && twoPads)
                 {
                     break;
                 }
+
                 decodedBytes[j + 1] =
-                    (sbyte)
-                    (((dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) | ((dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
+                    (byte)
+                    (((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) |
+                     ((Dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
                 if (k == gn && onePad)
                 {
                     break;
                 }
+
                 decodedBytes[j + 2] =
-                    (sbyte)
-                    (((dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (dmap[encodedSBuf[start + i + 3]] & 0x3f));
+                    (byte)
+                    (((Dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (Dmap[encodedSBuf[start + i + 3]] & 0x3f));
             }
+
             return decodedBytes;
         }
 
@@ -488,15 +527,16 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the bytes to be checked.
         /// </param>
         /// <returns>
-        ///     true if encoding not required for LDIF
+        ///     true if encoding not required for LDIF.
         /// </returns>
         [CLSCompliant(false)]
-        public static bool isLDIFSafe(sbyte[] bytes)
+        public static bool IsLdifSafe(byte[] bytes)
         {
             var len = bytes.Length;
             if (len > 0)
             {
                 int testChar = bytes[0];
+
                 // unsafe if first character is a NON-SAFE-INIT-CHAR
                 if (testChar == 0x00 || testChar == 0x0A || testChar == 0x0D || testChar == 0x20 || testChar == 0x3A ||
                     testChar == 0x3C || testChar < 0)
@@ -504,11 +544,13 @@ namespace Novell.Directory.Ldap.Utilclass
                     // non ascii (>127 is negative)
                     return false;
                 }
+
                 // unsafe if last character is a space
                 if (bytes[len - 1] == ' ')
                 {
                     return false;
                 }
+
                 // unsafe if contains any non safe character
                 if (len > 1)
                 {
@@ -523,6 +565,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                 }
             }
+
             return true;
         }
 
@@ -555,16 +598,15 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the String to be checked.
         /// </param>
         /// <returns>
-        ///     true if encoding not required for LDIF
+        ///     true if encoding not required for LDIF.
         /// </returns>
-        public static bool isLDIFSafe(string str)
+        public static bool IsLdifSafe(string str)
         {
             try
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(str);
-                var sbytes = SupportClass.ToSByteArray(ibytes);
-                return isLDIFSafe(sbytes);
+                return IsLdifSafe(ibytes);
             }
             catch (IOException ue)
             {
@@ -616,55 +658,40 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the number of additional bytes in a UTF-8 character sequence.
         /// </returns>
-        private static int getByteCount(sbyte b)
+        private static int GetByteCount(byte b)
         {
             if (b > 0)
+            {
                 return 0;
+            }
+
             if ((b & 0xE0) == 0xC0)
             {
-                return 1; //one additional byte (2 bytes total)
+                return 1; // one additional byte (2 bytes total)
             }
+
             if ((b & 0xF0) == 0xE0)
             {
-                return 2; //two additional bytes (3 bytes total)
+                return 2; // two additional bytes (3 bytes total)
             }
+
             if ((b & 0xF8) == 0xF0)
             {
-                return 3; //three additional bytes (4 bytes total)
+                return 3; // three additional bytes (4 bytes total)
             }
+
             if ((b & 0xFC) == 0xF8)
             {
-                return 4; //four additional bytes (5 bytes total)
+                return 4; // four additional bytes (5 bytes total)
             }
+
             if ((b & 0xFF) == 0xFC)
             {
-                return 5; //five additional bytes (6 bytes total)
+                return 5; // five additional bytes (6 bytes total)
             }
+
             return -1;
         }
-
-        /// <summary>
-        ///     Bit masks used to determine if a the value of UTF-8 byte sequence
-        ///     is less than the minimum value.
-        ///     If the value of a byte sequence is less than the minimum value then
-        ///     the number should be encoded in fewer bytes and is invalid.  For example
-        ///     If the first byte indicates that a sequence has three bytes in a
-        ///     sequence. Then the top five bits cannot be zero.  Notice the index into
-        ///     the array is one less than the number of bytes in a sequence.
-        ///     A validity test for this could be:
-        /// </summary>
-        private static readonly sbyte[][] lowerBoundMask =
-        {
-            new sbyte[] {0, 0}, new[] {(sbyte) 0x1E, (sbyte) 0x00},
-            new[] {(sbyte) 0x0F, (sbyte) 0x20}, new[] {(sbyte) 0x07, (sbyte) 0x30}, new[] {(sbyte) 0x02, (sbyte) 0x38},
-            new[] {(sbyte) 0x01, (sbyte) 0x3C}
-        };
-
-        /// <summary>mask to AND with a continuation byte: should equal continuationResult </summary>
-        private static readonly sbyte continuationMask = (sbyte) SupportClass.Identity(0xC0);
-
-        /// <summary>expected result of ANDing a continuation byte with continuationMask </summary>
-        private static readonly sbyte continuationResult = (sbyte) SupportClass.Identity(0x80);
 
         /// <summary>
         ///     Determines if an array of bytes contains only valid UTF-8 characters.
@@ -675,39 +702,39 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     2-byte characters). UTF-8 can be encoded as USC2 and UCS4 (4-byte
         ///     characters).  Some valid UTF-8 characters cannot be represented as UCS2
         ///     characters. To determine if all UTF-8 sequences can be encoded into
-        ///     UCS2 characters (a Java String), specify the <code>isUCS2Only</code>
-        ///     parameter as <code>true</code>.
+        ///     UCS2 characters (a Java String), specify the. <code>isUCS2Only</code>
+        ///     parameter as. <code>true</code>.
         /// </summary>
         /// <param name="array">
         ///     An array of bytes that are to be tested for valid UTF-8
         ///     encoding.
         /// </param>
-        /// <param name="isUCS2Only">
+        /// <param name="isUcs2Only">
         ///     true if the UTF-8 values must be restricted to fit
-        ///     within UCS2 encoding (2 bytes)
+        ///     within UCS2 encoding (2 bytes).
         /// </param>
         /// <returns>
         ///     true if all values in the byte array are valid UTF-8
-        ///     sequences.  If <code>isUCS2Only</code> is
+        ///     sequences.  If. <code>isUCS2Only</code> is.
         ///     <code>true</code>, the method returns false if a UTF-8
         ///     sequence generates any character that cannot be
-        ///     represented as a UCS2 character (Java String)
+        ///     represented as a UCS2 character (Java String).
         /// </returns>
         [CLSCompliant(false)]
-        public static bool isValidUTF8(sbyte[] array, bool isUCS2Only)
+        public static bool IsValidUtf8(byte[] array, bool isUcs2Only)
         {
             var index = 0;
             while (index < array.Length)
             {
-                var count = getByteCount(array[index]);
+                var count = GetByteCount(array[index]);
                 if (count == 0)
                 {
-                    //anything that qualifies as count=0 is valid UTF-8
+                    // anything that qualifies as count=0 is valid UTF-8
                     index++;
                     continue;
                 }
 
-                if (count == -1 || index + count >= array.Length || isUCS2Only && count >= 3)
+                if (count == -1 || index + count >= array.Length || isUcs2Only && count >= 3)
                 {
                     /* Any count that puts us out of bounds for the index is
                     * invalid.  Valid UCS2 characters can only have 2 additional
@@ -716,7 +743,8 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 /* Tests if the first and second byte are below the minimum bound */
-                if ((lowerBoundMask[count][0] & array[index]) == 0 && (lowerBoundMask[count][1] & array[index + 1]) == 0)
+                if ((LowerBoundMask[count][0] & array[index]) == 0 &&
+                    (LowerBoundMask[count][1] & array[index + 1]) == 0)
                 {
                     return false;
                 }
@@ -724,13 +752,15 @@ namespace Novell.Directory.Ldap.Utilclass
                 /* testing continuation on the second and following bytes */
                 for (var i = 1; i <= count; i++)
                 {
-                    if ((array[index + i] & continuationMask) != continuationResult)
+                    if ((array[index + i] & ContinuationMask) != ContinuationResult)
                     {
                         return false;
                     }
                 }
+
                 index += count + 1;
             }
+
             return true;
         }
     }

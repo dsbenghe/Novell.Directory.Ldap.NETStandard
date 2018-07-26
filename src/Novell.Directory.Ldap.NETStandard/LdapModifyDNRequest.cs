@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapModifyDNRequest.cs
 //
@@ -35,7 +36,7 @@ using Novell.Directory.Ldap.Rfc2251;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     Represents an Ldap ModifyDN request
+    ///     Represents an Ldap ModifyDN request.
     /// </summary>
     /// <seealso cref="LdapConnection.SendRequest">
     /// </seealso>
@@ -46,77 +47,8 @@ namespace Novell.Directory.Ldap
      *               deleteoldrdn    BOOLEAN,
      *               newSuperior     [0] LdapDN OPTIONAL }
      */
-    public class LdapModifyDNRequest : LdapMessage
+    public class LdapModifyDnRequest : LdapMessage
     {
-        /// <summary>
-        ///     Returns the dn of the entry to rename or move in the directory
-        /// </summary>
-        /// <returns>
-        ///     the dn of the entry to rename or move
-        /// </returns>
-        public virtual string DN
-        {
-            get { return Asn1Object.RequestDN; }
-        }
-
-        /// <summary>
-        ///     Returns the newRDN of the entry to rename or move in the directory
-        /// </summary>
-        /// <returns>
-        ///     the newRDN of the entry to rename or move
-        /// </returns>
-        public virtual string NewRDN
-        {
-            get
-            {
-                // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var relDN = (RfcRelativeLdapDN) req.toArray()[1];
-                return relDN.stringValue();
-            }
-        }
-
-        /// <summary>
-        ///     Returns the DeleteOldRDN flag that applies to the entry to rename or
-        ///     move in the directory
-        /// </summary>
-        /// <returns>
-        ///     the DeleteOldRDN flag for the entry to rename or move
-        /// </returns>
-        public virtual bool DeleteOldRDN
-        {
-            get
-            {
-                // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var delOld = (Asn1Boolean) req.toArray()[2];
-                return delOld.booleanValue();
-            }
-        }
-
-        /// <summary>
-        ///     Returns the ParentDN for the entry move in the directory
-        /// </summary>
-        /// <returns>
-        ///     the ParentDN for the entry to move, or <dd>null</dd>
-        ///     if the request is not a move.
-        /// </returns>
-        public virtual string ParentDN
-        {
-            get
-            {
-                // Get the RFC request object for this request
-                var req = (RfcModifyDNRequest) Asn1Object.getRequest();
-                var seq = req.toArray();
-                if (seq.Length < 4 || seq[3] == null)
-                {
-                    return null;
-                }
-                var parentDN = (RfcLdapDN) req.toArray()[3];
-                return parentDN.stringValue();
-            }
-        }
-
         /// <summary>
         ///     Constructs a ModifyDN (rename) Request.
         /// </summary>
@@ -139,17 +71,84 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the modifyDN request,
         ///     or null if none.
         /// </param>
-        public LdapModifyDNRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
+        public LdapModifyDnRequest(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapControl[] cont)
             : base(
-                MODIFY_RDN_REQUEST,
-                new RfcModifyDNRequest(new RfcLdapDN(dn), new RfcRelativeLdapDN(newRdn), new Asn1Boolean(deleteOldRdn),
-                    (object) newParentdn != null ? new RfcLdapDN(newParentdn) : null), cont)
+                ModifyRdnRequest,
+                new RfcModifyDnRequest(new RfcLdapDn(dn), new RfcRelativeLdapDn(newRdn), new Asn1Boolean(deleteOldRdn),
+                    (object)newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
         {
         }
 
         /// <summary>
+        ///     Returns the dn of the entry to rename or move in the directory.
+        /// </summary>
+        /// <returns>
+        ///     the dn of the entry to rename or move.
+        /// </returns>
+        public string Dn => Asn1Object.RequestDn;
+
+        /// <summary>
+        ///     Returns the newRDN of the entry to rename or move in the directory.
+        /// </summary>
+        /// <returns>
+        ///     the newRDN of the entry to rename or move.
+        /// </returns>
+        public string NewRdn
+        {
+            get
+            {
+                // Get the RFC request object for this request
+                var req = (RfcModifyDnRequest)Asn1Object.GetRequest();
+                var relDn = (RfcRelativeLdapDn)req.ToArray()[1];
+                return relDn.StringValue();
+            }
+        }
+
+        /// <summary>
+        ///     Returns the DeleteOldRDN flag that applies to the entry to rename or
+        ///     move in the directory.
+        /// </summary>
+        /// <returns>
+        ///     the DeleteOldRDN flag for the entry to rename or move.
+        /// </returns>
+        public bool DeleteOldRdn
+        {
+            get
+            {
+                // Get the RFC request object for this request
+                var req = (RfcModifyDnRequest)Asn1Object.GetRequest();
+                var delOld = (Asn1Boolean)req.ToArray()[2];
+                return delOld.BooleanValue();
+            }
+        }
+
+        /// <summary>
+        ///     Returns the ParentDN for the entry move in the directory.
+        /// </summary>
+        /// <returns>
+        ///     the ParentDN for the entry to move, or <dd>null</dd>
+        ///     if the request is not a move.
+        /// </returns>
+        public string ParentDn
+        {
+            get
+            {
+                // Get the RFC request object for this request
+                var req = (RfcModifyDnRequest)Asn1Object.GetRequest();
+                var seq = req.ToArray();
+                if (seq.Length < 4 || seq[3] == null)
+                {
+                    return null;
+                }
+
+                var parentDn = (RfcLdapDn)req.ToArray()[3];
+                return parentDn.StringValue();
+            }
+        }
+
+        /// <summary>
         ///     Return an Asn1 representation of this mod DN request
-        ///     #return an Asn1 representation of this object
+        ///     #return an Asn1 representation of this object.
         /// </summary>
         public override string ToString()
         {

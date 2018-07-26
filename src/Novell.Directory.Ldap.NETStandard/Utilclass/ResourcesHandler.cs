@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Utilclass.ResourcesHandler.cs
 //
@@ -41,13 +42,18 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ResourcesHandler
     {
+        /// <summary> The default Locale.</summary>
+        private static CultureInfo _defaultLocale;
+
+        static ResourcesHandler()
+        {
+            _defaultLocale = CultureInfo.CurrentUICulture;
+        }
+
         // Cannot create an instance of this class
         private ResourcesHandler()
         {
         }
-
-        /// <summary> The default Locale</summary>
-        private static CultureInfo defaultLocale;
 
         /// <summary>
         ///     Returns a string using the MessageOrKey as a key into
@@ -59,15 +65,15 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     Key string for the resource.
         /// </param>
         /// <param name="">
-        ///     arguments
+        ///     arguments.
         /// </param>
         /// <returns>
         ///     the text for the message specified by the MessageKey or the Key
         ///     if it there is no message for that key.
         /// </returns>
-        public static string getMessage(string messageOrKey, object[] arguments)
+        public static string GetMessage(string messageOrKey, object[] arguments)
         {
-            return getMessage(messageOrKey, arguments, null);
+            return GetMessage(messageOrKey, arguments, null);
         }
 
         /// <summary>
@@ -75,13 +81,13 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     specified locale using messageOrKey and argments passed into the
         ///     constructor.  If no string exists in the resource then this returns
         ///     the string stored in message.  (This method is identical to
-        ///     getLdapErrorMessage(Locale locale).)
+        ///     getLdapErrorMessage(Locale locale).).
         /// </summary>
         /// <param name="messageOrKey">
         ///     Key string for the resource.
         /// </param>
         /// <param name="">
-        ///     arguments
+        ///     arguments.
         /// </param>
         /// <param name="locale">
         ///     The Locale that should be used to pull message
@@ -91,17 +97,21 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     the text for the message specified by the MessageKey or the Key
         ///     if it there is no message for that key.
         /// </returns>
-        public static string getMessage(string messageOrKey, object[] arguments, CultureInfo locale)
+        public static string GetMessage(string messageOrKey, object[] arguments, CultureInfo locale)
         {
-            if (defaultLocale == null)
-                defaultLocale = CultureInfo.CurrentUICulture;
+            if (_defaultLocale == null)
+            {
+                _defaultLocale = CultureInfo.CurrentUICulture;
+            }
 
             if (locale == null)
-                locale = defaultLocale;
+            {
+                locale = _defaultLocale;
+            }
 
             if (messageOrKey == null)
             {
-                messageOrKey = "";
+                messageOrKey = string.Empty;
             }
 
             var pattern = ExceptionMessages.GetErrorMessage(messageOrKey);
@@ -112,13 +122,15 @@ namespace Novell.Directory.Ldap.Utilclass
                 var strB = new StringBuilder();
                 strB.AppendFormat(pattern, arguments);
                 pattern = strB.ToString();
-                //				MessageFormat mf = new MessageFormat(pattern);
-                //				pattern=System.String.Format(locale,pattern,arguments);
-                //				mf.setLocale(locale);
-                //this needs to be reset with the new local - i18n defect in java
-                //				mf.applyPattern(pattern);
-                //				pattern = mf.format(arguments);
+
+                // MessageFormat mf = new MessageFormat(pattern);
+                // pattern=System.String.Format(locale,pattern,arguments);
+                // mf.setLocale(locale);
+                // this needs to be reset with the new local - i18n defect in java
+                // mf.applyPattern(pattern);
+                // pattern = mf.format(arguments);
             }
+
             return pattern;
         }
 
@@ -127,14 +139,14 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     default ResultCodeMessages resource.
         /// </summary>
         /// <param name="code">
-        ///     the result code
+        ///     the result code.
         /// </param>
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string getResultString(int code)
+        public static string GetResultString(int code)
         {
-            return getResultString(code, null);
+            return GetResultString(code, null);
         }
 
         /// <summary>
@@ -142,7 +154,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     is obtained from the locale specific ResultCodeMessage resource.
         /// </summary>
         /// <param name="code">
-        ///     the result code
+        ///     the result code.
         /// </param>
         /// <param name="locale">
         ///     The Locale that should be used to pull message
@@ -151,7 +163,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string getResultString(int code, CultureInfo locale)
+        public static string GetResultString(int code, CultureInfo locale)
         {
             string result;
             try
@@ -160,14 +172,10 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (ArgumentNullException)
             {
-                result = getMessage(ExceptionMessages.UNKNOWN_RESULT, new object[] {code}, locale);
+                result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code }, locale);
             }
+
             return result;
         }
-
-        static ResourcesHandler()
-        {
-            defaultLocale = CultureInfo.CurrentUICulture;
-        }
-    } //end class ResourcesHandler
+    } // end class ResourcesHandler
 }

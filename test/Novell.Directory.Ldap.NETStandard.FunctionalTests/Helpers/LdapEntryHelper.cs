@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -27,13 +26,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
         public static void AssertSameAs(this LdapEntry expectedEntry, LdapEntry actualEntry)
         {
-            Assert.Equal(expectedEntry.DN, actualEntry.DN);
-            var expectedAttributes = expectedEntry.getAttributeSet();
-            var actualAttributes = actualEntry.getAttributeSet();
+            Assert.Equal(expectedEntry.Dn, actualEntry.Dn);
+            var expectedAttributes = expectedEntry.GetAttributeSet();
+            var actualAttributes = actualEntry.GetAttributeSet();
             expectedAttributes.AssertSameAs(actualAttributes);
         }
 
-        public static void AssertSameAs(this LdapAttributeSet expectedAttributeSet, LdapAttributeSet actualAttributeSet)
+        private static void AssertSameAs(this LdapAttributeSet expectedAttributeSet, LdapAttributeSet actualAttributeSet)
         {
             AssertSameAs(expectedAttributeSet, actualAttributeSet, new List<string>());
         }
@@ -43,9 +42,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             Assert.Equal(expectedAttributeSet.Count, actualAttributeSet.Count);
             foreach (LdapAttribute expectedAttribute in expectedAttributeSet)
             {
-                if (excludeAttributes.Contains(expectedAttribute.Name)) continue;
-                var actualAttribute = actualAttributeSet.getAttribute(expectedAttribute.Name);
-                expectedAttribute.ByteValues.ShouldBeEquivalentTo(actualAttribute.ByteValues);
+                if (excludeAttributes.Contains(expectedAttribute.Name))
+                {
+                    continue;
+                }
+
+                var actualAttribute = actualAttributeSet.GetAttribute(expectedAttribute.Name);
+                actualAttribute.ByteValues.Should().BeEquivalentTo(expectedAttribute.ByteValues);
             }
         }
     }

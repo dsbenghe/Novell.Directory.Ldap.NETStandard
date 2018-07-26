@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.LdapMatchingRuleSchema.cs
 //
@@ -31,7 +32,6 @@
 
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -53,31 +53,6 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapMatchingRuleSchema : LdapSchemaElement
     {
-        /// <summary>
-        ///     Returns the OIDs of the attributes to which this rule applies.
-        /// </summary>
-        /// <returns>
-        ///     The OIDs of the attributes to which this matching rule applies.
-        /// </returns>
-        public virtual string[] Attributes
-        {
-            get { return attributes; }
-        }
-
-        /// <summary>
-        ///     Returns the OID of the syntax that this matching rule is valid for.
-        /// </summary>
-        /// <returns>
-        ///     The OID of the syntax that this matching rule is valid for.
-        /// </returns>
-        public virtual string SyntaxString
-        {
-            get { return syntaxString; }
-        }
-
-        private readonly string syntaxString;
-        private readonly string[] attributes;
-
         /// <summary>
         ///     Constructs a matching rule definition for adding to or deleting from
         ///     a directory.
@@ -104,20 +79,21 @@ namespace Novell.Directory.Ldap
         ///     The unique object identifer of the syntax of the
         ///     attribute, in dotted numerical format.
         /// </param>
-        public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes, bool obsolete,
-            string syntaxString) : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING])
+        public LdapMatchingRuleSchema(string[] names, string oid, string description, string[] attributes,
+            bool obsolete,
+            string syntaxString)
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
             this.names = new string[names.Length];
             names.CopyTo(this.names, 0);
-            this.oid = oid;
-            this.description = description;
-            this.obsolete = obsolete;
-            this.attributes = new string[attributes.Length];
-            attributes.CopyTo(this.attributes, 0);
-            this.syntaxString = syntaxString;
-            Value = formatString();
+            Oid = oid;
+            Description = description;
+            Obsolete = obsolete;
+            Attributes = new string[attributes.Length];
+            attributes.CopyTo(Attributes, 0);
+            SyntaxString = syntaxString;
+            Value = FormatString();
         }
-
 
         /// <summary>
         ///     Constructs a matching rule definition from the raw string values
@@ -133,23 +109,24 @@ namespace Novell.Directory.Ldap
         ///     query for "matchingRuleUse".
         /// </param>
         public LdapMatchingRuleSchema(string rawMatchingRule, string rawMatchingRuleUse)
-            : base(LdapSchema.schemaTypeNames[LdapSchema.MATCHING])
+            : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
             try
             {
                 var matchParser = new SchemaParser(rawMatchingRule);
                 names = new string[matchParser.Names.Length];
                 matchParser.Names.CopyTo(names, 0);
-                oid = matchParser.ID;
-                description = matchParser.Description;
-                obsolete = matchParser.Obsolete;
-                syntaxString = matchParser.Syntax;
-                if ((object) rawMatchingRuleUse != null)
+                Oid = matchParser.Id;
+                Description = matchParser.Description;
+                Obsolete = matchParser.Obsolete;
+                SyntaxString = matchParser.Syntax;
+                if ((object)rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
-                    attributes = matchUseParser.Applies;
+                    Attributes = matchUseParser.Applies;
                 }
-                Value = formatString();
+
+                Value = FormatString();
             }
             catch (IOException ex)
             {
@@ -158,23 +135,39 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
+        ///     Returns the OIDs of the attributes to which this rule applies.
+        /// </summary>
+        /// <returns>
+        ///     The OIDs of the attributes to which this matching rule applies.
+        /// </returns>
+        public string[] Attributes { get; }
+
+        /// <summary>
+        ///     Returns the OID of the syntax that this matching rule is valid for.
+        /// </summary>
+        /// <returns>
+        ///     The OID of the syntax that this matching rule is valid for.
+        /// </returns>
+        public string SyntaxString { get; }
+
+        /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
         ///     directory, as a value of the particular schema element attribute.
         /// </summary>
         /// <returns>
         ///     A string representation of the attribute's definition.
         /// </returns>
-        protected internal override string formatString()
+        protected internal override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;
-            string[] strArray;
 
-            if ((object) (token = ID) != null)
+            if ((object)(token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
-            strArray = Names;
+
+            var strArray = Names;
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");
@@ -190,23 +183,28 @@ namespace Novell.Directory.Ldap
                     {
                         valueBuffer.Append(" '" + strArray[i] + "'");
                     }
+
                     valueBuffer.Append(" )");
                 }
             }
-            if ((object) (token = Description) != null)
+
+            if ((object)(token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
             }
+
             if (Obsolete)
             {
                 valueBuffer.Append(" OBSOLETE");
             }
-            if ((object) (token = SyntaxString) != null)
+
+            if ((object)(token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);
             }
+
             valueBuffer.Append(" )");
             return valueBuffer.ToString();
         }

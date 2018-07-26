@@ -1,25 +1,26 @@
 /******************************************************************************
 * The MIT License
 * Copyright (c) 2006 Novell Inc.  www.novell.com
-* 
+*
 * Permission is hereby granted, free of charge, to any person obtaining  a copy
 * of this software and associated documentation files (the Software), to deal
 * in the Software without restriction, including  without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
-* copies of the Software, and to  permit persons to whom the Software is 
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to  permit persons to whom the Software is
 * furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in 
+*
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+*
+* THE SOFTWARE IS PROVIDED AS IS, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
+
 //
 // Novell.Directory.Ldap.Extensions.BackupRestoreConstants.cs
 //
@@ -29,7 +30,6 @@
 // (C) 2006 Novell, Inc (http://www.novell.com)
 //
 
-
 using System;
 using System.IO;
 using System.Text;
@@ -37,7 +37,7 @@ using Novell.Directory.Ldap.Asn1;
 
 /**
 *
-* This class provides an LDAP interface for object based backup 
+* This class provides an LDAP interface for object based backup
 * of eDirectory objects. The backup API not only get the objects
 * but all the DS level attributes associated with the objects.
 *
@@ -57,12 +57,11 @@ using Novell.Directory.Ldap.Asn1;
 * <p>The requestValue has the following format:<br>
 *
 * requestValue ::=<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; objectDN&nbsp;&nbsp;&nbsp; 			LDAPDN<br>
+* &nbsp;&nbsp;&nbsp;&nbsp; objectDN&nbsp;&nbsp;&nbsp;           LDAPDN<br>
 * &nbsp;&nbsp;&nbsp;&nbsp; mts(modification timestamp)         INTEGER<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; revision&nbsp;&nbsp;&nbsp;			INTEGER<br>
-* &nbsp;&nbsp;&nbsp;&nbsp; passwd&nbsp;&nbsp;&nbsp;			OCTET STRING</p>
+* &nbsp;&nbsp;&nbsp;&nbsp; revision&nbsp;&nbsp;&nbsp;           INTEGER<br>
+* &nbsp;&nbsp;&nbsp;&nbsp; passwd&nbsp;&nbsp;&nbsp;         OCTET STRING</p>
 */
-
 namespace Novell.Directory.Ldap.Extensions
 {
     public class LdapBackupRequest : LdapExtendedOperation
@@ -73,32 +72,31 @@ namespace Novell.Directory.Ldap.Extensions
             * Register the extendedresponse class which is returned by the server
             * in response to a LdapBackupRequest
             */
-            LdapExtendedResponse.register(BackupRestoreConstants.NLDAP_LDAP_BACKUP_RESPONSE, typeof(LdapBackupResponse));
+            LdapExtendedResponse.Register(BackupRestoreConstants.NldapLdapBackupResponse, typeof(LdapBackupResponse));
         }
 
         /**
         *
         * Constructs an extended operations object for getting data about any Object.
         *
-        * @param objectDN 		The DN of the object to be backed up
+        * @param objectDN       The DN of the object to be backed up
         * <br>
-        * @param passwd 		The encrypted password required for the object to
-        * be backed up
+        * @param passwd         The encrypted password required for the object to
+        * be backed up.
         * <br>
-        * @param stateInfo     The state information of the object to backup. 
-        * This parameter is a String which contains combination of modification 
-        * timestamp and revision number of object being backed up. The format 
+        * @param stateInfo     The state information of the object to backup.
+        * This parameter is a String which contains combination of modification
+        * timestamp and revision number of object being backed up. The format
         * of both modification time stamp and revision should pertain to eDirectoty
         * standard format of taking modification timestamp and revision.
-        * Separator being used between these two is a '+' character.<br> 
+        * Separator being used between these two is a '+' character.<br>
         *
         *
         * @exception LdapException A general exception which includes an error
         *                          message and an LDAP error code.
         */
-
-        public LdapBackupRequest(string objectDN, byte[] passwd, string stateInfo) :
-            base(BackupRestoreConstants.NLDAP_LDAP_BACKUP_REQUEST, null)
+        public LdapBackupRequest(string objectDn, byte[] passwd, string stateInfo)
+            : base(BackupRestoreConstants.NldapLdapBackupRequest, null)
         {
             int mts; // Modifaction time stamp of the Object
             int revision; // Revision number of the Object
@@ -106,13 +104,16 @@ namespace Novell.Directory.Ldap.Extensions
 
             try
             {
-                if (objectDN == null)
+                if (objectDn == null)
+                {
                     throw new ArgumentException("PARAM_ERROR");
+                }
 
-                //If encrypted password has null reference make it null String
+                // If encrypted password has null reference make it null String
                 if (passwd == null)
-                    passwd = Encoding.UTF8.GetBytes("");
-
+                {
+                    passwd = Encoding.UTF8.GetBytes(string.Empty);
+                }
 
                 if (stateInfo == null)
                 {
@@ -127,7 +128,10 @@ namespace Novell.Directory.Ldap.Extensions
                     stateInfo = stateInfo.Trim();
                     var index = stateInfo.IndexOf('+');
                     if (index == -1)
+                    {
                         throw new ArgumentException("PARAM_ERROR");
+                    }
+
                     mtsStr = stateInfo.Substring(0, index);
                     revisionStr = stateInfo.Substring(index + 1);
                     try
@@ -136,9 +140,11 @@ namespace Novell.Directory.Ldap.Extensions
                     }
                     catch (FormatException e)
                     {
-                        throw new LdapLocalException("Invalid Modification Timestamp send in the request",
-                            LdapException.ENCODING_ERROR, e);
+                        throw new LdapLocalException(
+                            "Invalid Modification Timestamp send in the request",
+                            LdapException.EncodingError, e);
                     }
+
                     try
                     {
                         revision = int.Parse(revisionStr);
@@ -147,30 +153,30 @@ namespace Novell.Directory.Ldap.Extensions
                     {
                         throw new LdapLocalException(
                             "Invalid Revision send in the request",
-                            LdapException.ENCODING_ERROR, e);
+                            LdapException.EncodingError, e);
                     }
                 }
 
                 var encodedData = new MemoryStream();
-                var encoder = new LBEREncoder();
+                var encoder = new LberEncoder();
 
                 // Encode data of objectDN, mts and revision
-                var asn1_objectDN = new Asn1OctetString(objectDN);
-                var asn1_mts = new Asn1Integer(mts);
-                var asn1_revision = new Asn1Integer(revision);
-                var asn1_passwd = new Asn1OctetString(SupportClass.ToSByteArray(passwd));
+                var asn1ObjectDn = new Asn1OctetString(objectDn);
+                var asn1Mts = new Asn1Integer(mts);
+                var asn1Revision = new Asn1Integer(revision);
+                var asn1Passwd = new Asn1OctetString(passwd);
 
-                asn1_objectDN.encode(encoder, encodedData);
-                asn1_mts.encode(encoder, encodedData);
-                asn1_revision.encode(encoder, encodedData);
-                asn1_passwd.encode(encoder, encodedData);
+                asn1ObjectDn.Encode(encoder, encodedData);
+                asn1Mts.Encode(encoder, encodedData);
+                asn1Revision.Encode(encoder, encodedData);
+                asn1Passwd.Encode(encoder, encodedData);
 
                 // set the value of operation specific data
-                setValue(SupportClass.ToSByteArray(encodedData.ToArray()));
+                SetValue(encodedData.ToArray());
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.ENCODING_ERROR, null, ioe);
+                throw new LdapException("ENCODING_ERROR", LdapException.EncodingError, null, ioe);
             }
         }
     }
