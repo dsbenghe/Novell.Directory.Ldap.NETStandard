@@ -70,4 +70,4 @@ jobs:
 script:
   - dotnet restore
   - dotnet build --configuration $CONFIGURATION
-  - export TRANSPORT_SECURITY=$SECURITY; dotnet run --configuration $CONFIGURATION --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj $NOTHREADS 45
+  - export TRANSPORT_SECURITY=$SECURITY; dotnet run --configuration $CONFIGURATION --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj $NOTHREADS 30
