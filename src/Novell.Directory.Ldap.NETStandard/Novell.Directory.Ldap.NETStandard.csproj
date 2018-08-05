@@ -4,7 +4,7 @@
     <Summary>.NET Standard LDAP client library</Summary>
     <VersionPrefix>3.0.0-beta</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>
@@ -31,21 +31,24 @@
 <!--    <CodeAnalysisRuleSet>Novell.Directory.Ldap.NETStandard.ruleset</CodeAnalysisRuleSet>-->
 <!--  </PropertyGroup>-->
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
     <Compile Update="ExtensionMethods.*.cs">
       <DependentUpon>ExtensionMethods.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.1.1" />
     <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
     <PackageReference Include="System.Net.Security" Version="4.3.2" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.5.0" />
     <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="1.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.2" />
   </ItemGroup>
 </Project>
