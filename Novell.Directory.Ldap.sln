@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{0ABBF187-A48E-42BB-83F0-96C2E1011C25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +47,7 @@ Global
 		{87646BB4-7F55-49EF-9FE7-49AEE6378453} = {BEE82E9C-181C-443E-A9CC-26D2D432FD56}
 		{332F0714-7ABB-4451-92A1-B656AC26C8AD} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B780926-24FB-4213-9233-C3B61F2209BA}

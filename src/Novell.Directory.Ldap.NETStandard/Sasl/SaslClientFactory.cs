@@ -6,6 +6,11 @@ namespace Novell.Directory.Ldap.Sasl
 {
     public static class SaslClientFactory
     {
+        public const string ProtocolLdap = "ldap";
+
+        public static ISaslClient CreateLdapClient(string mechanism, string authorizationId, string serverName, byte[] credentials, Hashtable props)
+            => CreateClient(mechanism, authorizationId, ProtocolLdap, serverName, credentials, props);
+
         public static ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
         {
             if (string.IsNullOrEmpty(mechanism))
@@ -25,6 +30,9 @@ namespace Novell.Directory.Ldap.Sasl
                     return null;
             }
         }
+
+        public static ISaslClient CreateLdapClient(IReadOnlyCollection<string> mechanisms, string authorizationId, string serverName, byte[] credentials, Hashtable props)
+            => CreateClient(mechanisms, authorizationId, ProtocolLdap, serverName, credentials, props);
 
         public static ISaslClient CreateClient(IReadOnlyCollection<string> mechanisms, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
         {

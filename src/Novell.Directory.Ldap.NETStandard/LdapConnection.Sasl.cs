@@ -30,7 +30,7 @@ namespace Novell.Directory.Ldap
 
             Hashtable saslBindProperties = null;
 
-            using (var saslClient = SaslClientFactory.CreateClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId, "ldap", Host, saslRequest.Credentials, saslBindProperties))
+            using (var saslClient = SaslClientFactory.CreateLdapClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId, Host, saslRequest.Credentials, saslBindProperties))
             {
                 if (saslClient == null)
                 {
