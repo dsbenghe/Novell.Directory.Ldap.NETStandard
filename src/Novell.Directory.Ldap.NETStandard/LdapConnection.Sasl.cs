@@ -3,12 +3,65 @@ using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
-using System.Text;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Novell.Directory.Ldap
 {
     public partial class LdapConnection : ILdapConnection
     {
+        private ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
+
+        public IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories()
+            => _saslClientFactories.Values.ToList();
+
+        public void RegisterSaslClientFactory(ISaslClientFactory saslClientFactory)
+        {
+            if (saslClientFactory == null) throw new ArgumentNullException(nameof(saslClientFactory));
+
+            var mechanisms = saslClientFactory.SupportedMechanisms;
+            if (mechanisms.IsEmpty())
+            {
+                throw new ArgumentException("A SASL Client Factory must support at least one mechanism.", nameof(saslClientFactory));
+            }
+
+            foreach (var mechanism in mechanisms)
+            {
+                var factoryInDict = _saslClientFactories.GetOrAdd(mechanism, saslClientFactory);
+                if (factoryInDict != saslClientFactory)
+                {
+                    var typeName = factoryInDict.GetType().Name;
+                    var msg = $"There is already a SASL Client Factory registered for '{mechanism}': {typeName}";
+                    throw new InvalidOperationException(msg);
+                }
+            }
+        }
+
+        public bool IsSaslMechanismSupported(string mechanism)
+        {
+            // Registered Mechanisms always take precedence over the default
+            if (_saslClientFactories?.ContainsKey(mechanism) == true)
+            {
+                return true;
+            }
+
+            return DefaultSaslClientFactory.IsSaslMechanismSupported(mechanism);
+        }
+
+        /// <summary>
+        /// Internal for Unit-Test purposes only
+        /// </summary>
+        internal ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable saslBindProperties)
+        {
+            if (_saslClientFactories.TryGetValue(mechanism, out var factory))
+            {
+                return factory.CreateClient(mechanism, authorizationId, protocol, serverName, credentials, saslBindProperties);
+            }
+
+            return DefaultSaslClientFactory.CreateClient(mechanism, authorizationId, protocol, serverName, credentials, saslBindProperties);
+        }
+
         /// <summary>
         ///     Returns the properties if any specified on binding with a
         ///     SASL mechanism.
@@ -31,7 +84,9 @@ namespace Novell.Directory.Ldap
 
             Hashtable saslBindProperties = null;
 
-            using (var saslClient = SaslClientFactory.CreateLdapClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId, Host, saslRequest.Credentials, saslBindProperties))
+            using (var saslClient = CreateClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId,
+                                                 DefaultSaslClientFactory.ProtocolLdap, Host,
+                                                saslRequest.Credentials, saslBindProperties))
             {
                 if (saslClient == null)
                 {

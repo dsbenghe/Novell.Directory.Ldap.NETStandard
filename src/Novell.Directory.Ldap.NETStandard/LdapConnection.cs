@@ -32,8 +32,10 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Text;
 using Novell.Directory.Ldap.Rfc2251;
+using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -1475,8 +1477,10 @@ namespace Novell.Directory.Ldap
 
         private void InitBlock()
         {
+            // TODO: Just move this into the constructor, since we only have one anyway?
             _defSearchCons = new LdapSearchConstraints();
             _responseCtlSemaphore = new object();
+            _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
         }
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
