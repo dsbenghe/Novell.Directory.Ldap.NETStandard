@@ -1,4 +1,5 @@
-﻿using Novell.Directory.Ldap.Sasl;
+﻿using Novell.Directory.Ldap.Rfc2251;
+using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
@@ -55,7 +56,7 @@ namespace Novell.Directory.Ldap
                     {
                         try
                         {
-                            var replyBuf = SendLdapSaslBindRequest(clientResponse, saslClient.MechanismName, bindProps);
+                            var replyBuf = SendLdapSaslBindRequest(clientResponse, saslClient.MechanismName, bindProps, constraints);
 
                             if (replyBuf != null)
                             {
@@ -80,18 +81,18 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private byte[] SendLdapSaslBindRequest(byte[] toWrite, string mechanism, BindProperties bindProps)
+        private byte[] SendLdapSaslBindRequest(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
         {
-            var cons = _defSearchCons;       
-            var msg = new LdapSaslBindRequest(LdapV3, mechanism, cons.GetControls(), toWrite);
+            constraints = constraints ?? _defSearchCons;
+            var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
 
-            var queue = SendRequestToServer(msg, cons.TimeLimit, null, bindProps);
+            var queue = SendRequestToServer(msg, constraints.TimeLimit, null, bindProps);
             if (!(queue.GetResponse() is LdapResponse ldapResponse))
             {
                 throw new LdapException("Bind failure, no response received.");
             }
 
-            var bindResponse = ((Rfc2251.RfcBindResponse)ldapResponse.Asn1Object.get_Renamed(1));
+            var bindResponse = ((RfcBindResponse)ldapResponse.Asn1Object.get_Renamed(1));
             lock (_responseCtlSemaphore)
             {
                 _responseCtls = ldapResponse.Controls;
