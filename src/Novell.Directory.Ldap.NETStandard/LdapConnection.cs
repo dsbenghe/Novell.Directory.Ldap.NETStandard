@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
     ///     application may have more than one LdapConnection object, connected
     ///     to the same or different directory servers.
     /// </summary>
-    public class LdapConnection : ILdapConnection
+    public partial class LdapConnection : ILdapConnection
     {
         /// <summary>
         ///     Used with search to specify that the scope of entrys to search is to
@@ -257,54 +257,6 @@ namespace Novell.Directory.Ldap
                 }
 
                 return Connection.BindProperties.AuthenticationMethod;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the properties if any specified on binding with a
-        ///     SASL mechanism.
-        ///     Null is returned if no authentication has been performed
-        ///     or no authentication Map is present.
-        /// </summary>
-        /// <returns>
-        ///     The bind properties Map Object used for SASL bind or null if
-        ///     the connection is not present or not authenticated.
-        /// </returns>
-        public IDictionary SaslBindProperties
-        {
-            get
-            {
-                var prop = Connection.BindProperties;
-                if (prop == null)
-                {
-                    return null;
-                }
-
-                return Connection.BindProperties.SaslBindProperties;
-            }
-        }
-
-        /// <summary>
-        ///     Returns the call back handler if any specified on binding with a
-        ///     SASL mechanism.
-        ///     Null is returned if no authentication has been performed
-        ///     or no authentication call back handler is present.
-        /// </summary>
-        /// <returns>
-        ///     The call back handler used for SASL bind or null if the
-        ///     object is not present or not authenticated.
-        /// </returns>
-        public object SaslBindCallbackHandler
-        {
-            get
-            {
-                var prop = Connection.BindProperties;
-                if (prop == null)
-                {
-                    return null;
-                }
-
-                return Connection.BindProperties.SaslCallbackHandler;
             }
         }
 
@@ -2022,7 +1974,7 @@ namespace Novell.Directory.Ldap
             LdapMessage msg = new LdapBindRequest(version, dn, passwd, cons.GetControls());
 
             var msgId = msg.MessageId;
-            var bindProps = new BindProperties(version, dn, "simple", anonymous, null, null);
+            var bindProps = new BindProperties(version, dn, "simple", anonymous, null);
 
             // For bind requests, if not connected, attempt to reconnect
             if (!Connection.Connected)

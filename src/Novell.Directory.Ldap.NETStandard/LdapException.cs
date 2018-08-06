@@ -854,6 +854,16 @@ namespace Novell.Directory.Ldap
         {
         }
 
+        public LdapException(string messageOrKey)
+              : this(messageOrKey, LdapException.Other, "")
+        {
+        }
+
+        public LdapException(Exception rootException)
+            : this(rootException?.Message ?? "", LdapException.Other, "", rootException)
+        {
+        }
+
         /// <summary>
         ///     Constructs an exception with a detailed message obtained from the
         ///     specified. <code>MessageOrKey</code> String, the result code,

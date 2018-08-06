@@ -187,18 +187,7 @@ namespace Novell.Directory.Ldap
         internal int BindSemId { get; private set; }
 
         /// <summary> checks if the writeSemaphore id used for active bind operation is clear.</summary>
-        internal bool BindSemIdClear
-        {
-            get
-            {
-                if (BindSemId == 0)
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
+        internal bool BindSemIdClear => BindSemId == 0;
 
         /// <summary>
         ///     Return whether the application is bound to this connection.
@@ -711,6 +700,16 @@ namespace Novell.Directory.Ldap
         internal void ClearBindSemId()
         {
             BindSemId = 0;
+        }
+
+        internal void SetBindSemId(int bindSemId)
+        {
+            if (!BindSemIdClear)
+            {
+                throw new InvalidOperationException($"There is already a Bind Semaphore ID set ({BindSemId}), setting it to {bindSemId} not possible.");
+            }
+
+            BindSemId = bindSemId;
         }
 
         /// <summary>
