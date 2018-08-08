@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.Sasl;
+using System;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
@@ -273,6 +275,18 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
+
+        /// <summary>
+        /// Bind via a SASL Mechanism
+        /// </summary>
+        /// <param name="saslRequest"></param>
+        void Bind(SaslRequest saslRequest);
+
+        IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories();
+
+        void RegisterSaslClientFactory(ISaslClientFactory saslClientFactory);
+
+        bool IsSaslMechanismSupported(string mechanism);
 
         /// <summary>
         ///     Connects to the specified host and port.
