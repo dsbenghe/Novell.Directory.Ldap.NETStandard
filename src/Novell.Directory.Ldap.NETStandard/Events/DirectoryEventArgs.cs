@@ -34,10 +34,9 @@ namespace Novell.Directory.Ldap.Events
 {
     /// <summary>
     ///     This is the base class for other EventArgs corresponding to
-    ///     Ldap and Edir events.
+    ///     Ldap events.
     /// </summary>
     /// <seealso cref='Novell.Directory.Ldap.Events.LdapEventArgs' />
-    /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventArgs' />
     public class DirectoryEventArgs : BaseEventArgs
     {
         protected EventClassifiers EClassification;

@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap.Events
     {
         ClassificationUnknown = -1,
         ClassificationLdapPsearch = 0,
-        ClassificationEdirEvent = 1
+        /* 1 was Novell eDirectory, do not reuse: ClassificationEdirEvent */
     }
 
     /// <summary>
