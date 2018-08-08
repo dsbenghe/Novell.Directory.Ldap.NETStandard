@@ -144,7 +144,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string GetResultString(int code)
+        public static string GetResultString(LdapResultCode code)
         {
             return GetResultString(code, null);
         }
@@ -163,12 +163,12 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     the String representing the result code.
         /// </returns>
-        public static string GetResultString(int code, CultureInfo locale)
+        public static string GetResultString(LdapResultCode code, CultureInfo locale)
         {
             string result;
             try
             {
-                result = ResultCodeMessages.GetResultCode(Convert.ToString(code));
+                result = ResultCodeMessages.GetResultCode(code);
             }
             catch (ArgumentNullException)
             {

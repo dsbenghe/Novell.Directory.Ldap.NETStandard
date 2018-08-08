@@ -125,7 +125,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception ex)
                         {
-                            throw new LdapException("Unexpected SASL error.", LdapException.Other, null, ex);
+                            throw new LdapException("Unexpected SASL error.", LdapResultCode.Other, null, ex);
                         }
                     }
                 }
@@ -156,7 +156,7 @@ namespace Novell.Directory.Ldap
             var resultCode = ldapResponse.ResultCode;
 
             byte[] replyBuf = null;
-            if (resultCode == LdapException.SaslBindInProgress || resultCode == LdapException.Success)
+            if (resultCode == LdapResultCode.SaslBindInProgress || resultCode == LdapResultCode.Success)
             {
                 if (serverCreds != null)
                 {

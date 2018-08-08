@@ -159,15 +159,15 @@ namespace Novell.Directory.Ldap
                                 if (resp.HasException())
                                 {
                                     // Fake it, results in an exception when msg read
-                                    resultCode = LdapException.ConnectError;
+                                    resultCode = LdapResultCode.ConnectError;
                                 }
 
-                                if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
+                                if (resultCode == LdapResultCode.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
 // referralConn = conn.chaseReferral(queue, cons, resp, resp.Referrals, 0, false, referralConn);
                                 }
-                                else if (resultCode != LdapException.Success)
+                                else if (resultCode != LdapResultCode.Success)
                                 {
                                     // Results in an exception when message read
                                     _entries.Add(resp);
@@ -189,7 +189,7 @@ namespace Novell.Directory.Ldap
                         {
                             // We get here if the connection timed out
                             // we have no responses, no message IDs and no exceptions
-                            var e = new LdapException(null, LdapException.LdapTimeout, null);
+                            var e = new LdapException(null, LdapResultCode.LdapTimeout, null);
                             _entries.Add(e);
                             break;
                         }
@@ -325,7 +325,7 @@ namespace Novell.Directory.Ldap
                 // we are very confused.
                 // LdapSearchResults.next(): No entry found & request is not complete
                 throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next" },
-                    LdapException.LocalError, null);
+                    LdapResultCode.LocalError, null);
             }
 
             return (LdapEntry)element;

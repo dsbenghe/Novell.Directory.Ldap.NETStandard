@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap.Extensions
                 throw new IOException("LDAP Extended Operation not supported");
             }
 
-            if (ResultCode == LdapException.Success)
+            if (ResultCode == LdapResultCode.Success)
             {
                 // Get the contents of the reply
 
@@ -217,7 +217,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             else
             {
-                // Intialize all these if getResultCode() != LdapException.SUCCESS
+                // Intialize all these if getResultCode() != LdapResultCode.SUCCESS
                 _bufferLength = 0;
                 _stateInfo = null;
                 _chunkSizesString = null;

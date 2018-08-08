@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
         ///     maximum time limit. This limit is enforced for an
         ///     operation by the API, not by the server.
         ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT
+        ///     API with a result code of LdapResultCode.Ldap_TIMEOUT
         ///     if the operation exceeds the time limit.
         /// </param>
         /// <param name="doReferrals">
@@ -108,15 +108,15 @@ namespace Novell.Directory.Ldap
         ///     The default value is 10. A value of 0 means no limit.
         ///     The operation will be abandoned and terminated by the
         ///     API with a result code of
-        ///     LdapException.REFERRAL_LIMIT_EXCEEDED if the
+        ///     LdapResultCode.REFERRAL_LIMIT_EXCEEDED if the
         ///     number of referrals in a sequence exceeds the limit.
         ///     It is ignored for asynchronous operations.
         /// </param>
-        /// <seealso cref="LdapException.LdapTimeout">
+        /// <seealso cref="LdapResultCode.LdapTimeout">
         /// </seealso>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
+        /// <seealso cref="LdapResultCode.ReferralLimitExceeded">
         /// </seealso>
-        /// <seealso cref="LdapException.Referral">
+        /// <seealso cref="LdapResultCode.Referral">
         /// </seealso>
         /// <seealso cref="LdapReferralException">
         /// </seealso>
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns the maximum number of referrals to follow during automatic
         ///     referral following.  The operation will be abandoned and terminated by
-        ///     the API with a result code of LdapException.REFERRAL_LIMIT_EXCEEDED
+        ///     the API with a result code of LdapResultCode.REFERRAL_LIMIT_EXCEEDED
         ///     if the number of referrals in a sequence exceeds the limit.
         ///     It is ignored for asynchronous operations.
         /// </summary>
@@ -146,7 +146,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="HopLimit">
         /// </seealso>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
+        /// <seealso cref="LdapResultCode.ReferralLimitExceeded">
         /// </seealso>
         /// <summary>
         ///     Sets the maximum number of referrals to follow in sequence during
@@ -158,11 +158,11 @@ namespace Novell.Directory.Ldap
         ///     The default value is 10. A value of 0 means no limit.
         ///     The operation will be abandoned and terminated by the
         ///     API with a result code of
-        ///     LdapException.REFERRAL_LIMIT_EXCEEDED if the
+        ///     LdapResultCode.REFERRAL_LIMIT_EXCEEDED if the
         ///     number of referrals in a sequence exceeds the limit.
         ///     It is ignored for asynchronous operations.
         /// </param>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
+        /// <seealso cref="LdapResultCode.ReferralLimitExceeded">
         /// </seealso>
         public int HopLimit { get; set; } = 10;
 
@@ -218,13 +218,13 @@ namespace Novell.Directory.Ldap
         ///     platform.  This limit is enforced the the API on an
         ///     operation, not by the server.
         ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
+        ///     API with a result code of LdapResultCode.Ldap_TIMEOUT if the
         ///     operation exceeds the time limit.
         /// </summary>
         /// <returns>
         ///     The maximum number of milliseconds to wait for the operation.
         /// </returns>
-        /// <seealso cref="LdapException.LdapTimeout">
+        /// <seealso cref="LdapResultCode.LdapTimeout">
         /// </seealso>
         /// <summary>
         ///     Sets the maximum number of milliseconds the client waits for
@@ -233,13 +233,13 @@ namespace Novell.Directory.Ldap
         ///     API on waiting for the operation results. The actual granularity of
         ///     the timeout depends on the platform.
         ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
+        ///     API with a result code of LdapResultCode.Ldap_TIMEOUT if the
         ///     operation exceeds the time limit.
         /// </summary>
         /// <param name="msLimit">
         ///     The maximum milliseconds to wait.
         /// </param>
-        /// <seealso cref="LdapException.LdapTimeout">
+        /// <seealso cref="LdapResultCode.LdapTimeout">
         /// </seealso>
         public int TimeLimit { get; set; }
 

@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap
         /// <param name="resultCode">
         ///     The result code returned.
         /// </param>
-        public LdapLocalException(string messageOrKey, int resultCode)
+        public LdapLocalException(string messageOrKey, LdapResultCode resultCode)
             : base(messageOrKey, resultCode, null)
         {
         }
@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap
         /// <param name="resultCode">
         ///     The result code returned.
         /// </param>
-        public LdapLocalException(string messageOrKey, object[] arguments, int resultCode)
+        public LdapLocalException(string messageOrKey, object[] arguments, LdapResultCode resultCode)
             : base(messageOrKey, arguments, resultCode, null)
         {
         }
@@ -108,9 +108,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="rootException">
         ///     A throwable which is the underlying cause
-        ///     of the LdapException.
+        ///     of the LdapResultCode.
         /// </param>
-        public LdapLocalException(string messageOrKey, int resultCode, Exception rootException)
+        public LdapLocalException(string messageOrKey, LdapResultCode resultCode, Exception rootException)
             : base(messageOrKey, resultCode, null, rootException)
         {
         }
@@ -141,9 +141,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <param name="rootException">
         ///     A throwable which is the underlying cause
-        ///     of the LdapException.
+        ///     of the LdapResultCode.
         /// </param>
-        public LdapLocalException(string messageOrKey, object[] arguments, int resultCode, Exception rootException)
+        public LdapLocalException(string messageOrKey, object[] arguments, LdapResultCode resultCode, Exception rootException)
             : base(messageOrKey, arguments, resultCode, null, rootException)
         {
         }

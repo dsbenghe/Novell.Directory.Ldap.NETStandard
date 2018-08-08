@@ -426,7 +426,7 @@ namespace Novell.Directory.Ldap
                     break;
 
                 default:
-                    int res;
+                    LdapResultCode res;
                     StopTimer();
 
                     // Accept no more results for this message
@@ -435,8 +435,8 @@ namespace Novell.Directory.Ldap
                     Complete = true;
                     if (_bindprops != null)
                     {
-                        res = ((IRfcResponse)message.Response).GetResultCode().IntValue();
-                        if (res != LdapException.SaslBindInProgress)
+                        res = ((IRfcResponse)message.Response).GetResultCode().AsResultCode();
+                        if (res != LdapResultCode.SaslBindInProgress)
                         {
                             if (_conn == null)
                             {
@@ -449,7 +449,7 @@ namespace Novell.Directory.Ldap
                             int id;
 
                             // We either have success or failure on the bind
-                            if (res == LdapException.Success)
+                            if (res == LdapResultCode.Success)
                             {
                                 // Set bind properties into connection object
                                 _conn.BindProperties = _bindprops;
@@ -543,7 +543,7 @@ namespace Novell.Directory.Ldap
                         // Note: Abandon clears the bind semaphore after failed bind.
                         _message.Abandon(
                             null,
-                            new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
+                            new InterThreadException("Client request timed out", null, LdapResultCode.LdapTimeout, null,
                                 _message));
                     }
                     else

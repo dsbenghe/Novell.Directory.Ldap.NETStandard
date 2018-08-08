@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap.Extensions
         public ListReplicasResponse(RfcLdapMessage rfcMessage)
             : base(rfcMessage)
         {
-            if (ResultCode != LdapException.Success)
+            if (ResultCode != LdapResultCode.Success)
             {
                 ReplicaList = new string[0];
             }

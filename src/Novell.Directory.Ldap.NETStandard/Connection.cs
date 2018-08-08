@@ -440,7 +440,7 @@ namespace Novell.Directory.Ldap
                     _deadReader = null;
 
                     // Reader thread terminated
-                    throw new LdapException(ExceptionMessages.ConnectionReader, LdapException.ConnectError, null,
+                    throw new LdapException(ExceptionMessages.ConnectionReader, LdapResultCode.ConnectError, null,
                         readerException);
                 }
 
@@ -588,7 +588,7 @@ namespace Novell.Directory.Ldap
                     _sock = null;
                     _socket = null;
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] {host, port },
-                        LdapException.ConnectError, null, se);
+                        LdapResultCode.ConnectError, null, se);
                 }
 
                 catch (IOException ioe)
@@ -596,7 +596,7 @@ namespace Novell.Directory.Ldap
                     _sock = null;
                     _socket = null;
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] {host, port },
-                        LdapException.ConnectError, null, ioe);
+                        LdapResultCode.ConnectError, null, ioe);
                 }
 
                 // Set host and port
@@ -673,7 +673,7 @@ namespace Novell.Directory.Ldap
                         * from an API call or from the object being finalized.
                         */
                         var notify = new InterThreadException(ExceptionMessages.ConnectionClosed, null,
-                            LdapException.ConnectError, null, null);
+                            LdapResultCode.ConnectError, null, null);
 
                         // Destroy old connection
                         Destroy("destroy clone", 0, notify);
@@ -736,7 +736,7 @@ namespace Novell.Directory.Ldap
             else
             {
                 throw new LdapException(ExceptionMessages.ConnectionClosed, new object[] {Host, Port },
-                    LdapException.ConnectError, null);
+                    LdapResultCode.ConnectError, null);
             }
         }
 
@@ -786,7 +786,7 @@ namespace Novell.Directory.Ldap
                 if (msg.Type == LdapMessage.BindRequest && Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] {Host, Port }, LdapException.SslHandshakeFailed, null,
+                    throw new LdapException(strMsg, new object[] {Host, Port }, LdapResultCode.SslHandshakeFailed, null,
                         ioe);
                 }
 
@@ -806,12 +806,12 @@ namespace Novell.Directory.Ldap
                     {
                         // got server shutdown
                         throw new LdapException(ExceptionMessages.ServerShutdownReq, new object[] {Host, Port },
-                            LdapException.ConnectError, null, ioe);
+                            LdapResultCode.ConnectError, null, ioe);
                     }
 
                     // Other I/O Exceptions on host:port are reported as is
                     throw new LdapException(ExceptionMessages.IoException, new object[] {Host, Port },
-                        LdapException.ConnectError, null, ioe);
+                        LdapResultCode.ConnectError, null, ioe);
                 }
             }
             finally
@@ -1011,7 +1011,7 @@ namespace Novell.Directory.Ldap
             catch (Exception ex)
             {
                 _nonTlsBackup = null;
-                throw new LdapException("Error starting TLS", LdapException.ConnectError, null, ex);
+                throw new LdapException("Error starting TLS", LdapResultCode.ConnectError, null, ex);
             }
         }
 
@@ -1057,7 +1057,7 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.StoptlsError, LdapException.ConnectError, null, ioe);
+                throw new LdapException(ExceptionMessages.StoptlsError, LdapResultCode.ConnectError, null, ioe);
             }
             finally
             {
@@ -1239,7 +1239,7 @@ namespace Novell.Directory.Ldap
                                     notify = new InterThreadException(
                                         ExceptionMessages.ServerShutdownReq,
                                         new object[] {_enclosingInstance.Host, _enclosingInstance.Port },
-                                        LdapException.ConnectError, null, null);
+                                        LdapResultCode.ConnectError, null, null);
 
                                     return;
                                 }
@@ -1262,7 +1262,7 @@ namespace Novell.Directory.Ldap
                         // Connection lost waiting for results from host:port
                         notify = new InterThreadException(
                             ExceptionMessages.ConnectionWait,
-                            new object[] {_enclosingInstance.Host, _enclosingInstance.Port }, LdapException.ConnectError,
+                            new object[] {_enclosingInstance.Host, _enclosingInstance.Port }, LdapResultCode.ConnectError,
                             ex, info);
                     }
 

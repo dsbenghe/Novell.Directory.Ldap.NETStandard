@@ -61,7 +61,7 @@ namespace Novell.Directory.Ldap.Extensions
         public GetEffectivePrivilegesResponse(RfcLdapMessage rfcMessage)
             : base(rfcMessage)
         {
-            if (ResultCode == LdapException.Success)
+            if (ResultCode == LdapResultCode.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;

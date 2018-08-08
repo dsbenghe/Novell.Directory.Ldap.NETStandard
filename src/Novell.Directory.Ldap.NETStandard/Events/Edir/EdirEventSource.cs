@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             {
                 throw new LdapException(
                     null,
-                    LdapException.LocalError,
+                    LdapResultCode.LocalError,
                     "Unable to Obtain Message Id");
             }
 

@@ -159,7 +159,7 @@ namespace Novell.Directory.Ldap
         ///     maximum time limit. This limit is enforced for an
         ///     operation by the API, not by the server.
         ///     The operation will be abandoned and terminated by the
-        ///     API with an LdapException.Ldap_TIMEOUT if the
+        ///     API with an LdapResultCode.Ldap_TIMEOUT if the
         ///     operation exceeds the time limit.
         /// </param>
         /// <param name="serverTimeLimit">
@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap
         ///     server-enforced limit.  The default of 0 means
         ///     no time limit.
         ///     The operation will be terminated by the server with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the search
+        ///     LdapResultCode.TIME_LIMIT_EXCEEDED if the search
         ///     operation exceeds the time limit.
         /// </param>
         /// <param name="dereference">
@@ -181,7 +181,7 @@ namespace Novell.Directory.Ldap
         ///     The maximum number of search results to return
         ///     for a search request.
         ///     The search operation will be terminated by the server
-        ///     with an LdapException.SIZE_LIMIT_EXCEEDED if the
+        ///     with an LdapResultCode.SIZE_LIMIT_EXCEEDED if the
         ///     number of results exceed the maximum.
         ///     Default: 1000.
         /// </param>
@@ -189,7 +189,7 @@ namespace Novell.Directory.Ldap
         ///     Determines whether to automatically follow
         ///     referrals or not. Specify true to follow
         ///     referrals automatically, and false to throw
-        ///     an LdapException.REFERRAL if the server responds
+        ///     an LdapResultCode.REFERRAL if the server responds
         ///     with a referral.
         ///     It is ignored for asynchronous operations.
         ///     Default: false.
@@ -216,16 +216,16 @@ namespace Novell.Directory.Ldap
         ///     The default value is 10. A value of 0 means no limit.
         ///     It is ignored for asynchronous operations.
         ///     The operation will be abandoned and terminated by the
-        ///     API with an LdapException.REFERRAL_LIMIT_EXCEEDED if the
+        ///     API with an LdapResultCode.REFERRAL_LIMIT_EXCEEDED if the
         ///     number of referrals in a sequence exceeds the limit.
         /// </param>
-        /// <seealso cref="LdapException.LdapTimeout">
+        /// <seealso cref="LdapResultCode.LdapTimeout">
         /// </seealso>
-        /// <seealso cref="LdapException.Referral">
+        /// <seealso cref="LdapResultCode.Referral">
         /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
+        /// <seealso cref="LdapResultCode.SizeLimitExceeded">
         /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
+        /// <seealso cref="LdapResultCode.TimeLimitExceeded">
         /// </seealso>
         public LdapSearchConstraints(int msLimit, int serverTimeLimit, int dereference, int maxResults,
             bool doReferrals,
@@ -315,7 +315,7 @@ namespace Novell.Directory.Ldap
         ///     Returns the maximum number of search results to be returned for
         ///     a search operation. A value of 0 means no limit.  Default: 1000
         ///     The search operation will be terminated with an
-        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
+        ///     LdapResultCode.SIZE_LIMIT_EXCEEDED if the number of results
         ///     exceed the maximum.
         /// </summary>
         /// <returns>
@@ -323,13 +323,13 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="MaxResults">
         /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
+        /// <seealso cref="LdapResultCode.SizeLimitExceeded">
         /// </seealso>
         /// <summary>
         ///     Sets the maximum number of search results to be returned from a
         ///     search operation. The value 0 means no limit.  The default is 1000.
         ///     The search operation will be terminated with an
-        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
+        ///     LdapResultCode.SIZE_LIMIT_EXCEEDED if the number of results
         ///     exceed the maximum.
         /// </summary>
         /// <param name="maxResults">
@@ -337,7 +337,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="MaxResults">
         /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
+        /// <seealso cref="LdapResultCode.SizeLimitExceeded">
         /// </seealso>
         public int MaxResults { get; set; } = 1000;
 
@@ -345,7 +345,7 @@ namespace Novell.Directory.Ldap
         ///     Returns the maximum number of seconds that the server waits when
         ///     returning search results.
         ///     The search operation will be terminated with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
+        ///     LdapResultCode.TIME_LIMIT_EXCEEDED if the operation exceeds the time
         ///     limit.
         /// </summary>
         /// <returns>
@@ -354,13 +354,13 @@ namespace Novell.Directory.Ldap
         /// </returns>
         /// <seealso cref="ServerTimeLimit">
         /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
+        /// <seealso cref="LdapResultCode.TimeLimitExceeded">
         /// </seealso>
         /// <summary>
         ///     Sets the maximum number of seconds that the server is to wait when
         ///     returning search results.
         ///     The search operation will be terminated with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
+        ///     LdapResultCode.TIME_LIMIT_EXCEEDED if the operation exceeds the time
         ///     limit.
         ///     The parameter is only recognized on search operations.
         /// </summary>
@@ -369,7 +369,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="ServerTimeLimit">
         /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
+        /// <seealso cref="LdapResultCode.TimeLimitExceeded">
         /// </seealso>
         public int ServerTimeLimit { get; set; }
 

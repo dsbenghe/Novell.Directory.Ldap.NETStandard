@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap.Extensions
         public GetReplicationFilterResponse(RfcLdapMessage rfcMessage)
             : base(rfcMessage)
         {
-            if (ResultCode != LdapException.Success)
+            if (ResultCode != LdapResultCode.Success)
             {
                 ReturnedFilter = new string[0][];
                 for (var i = 0; i < 0; i++)

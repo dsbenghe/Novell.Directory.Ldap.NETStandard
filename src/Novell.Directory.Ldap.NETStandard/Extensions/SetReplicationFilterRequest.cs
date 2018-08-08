@@ -140,7 +140,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException(ExceptionMessages.EncodingError, LdapException.EncodingError, null, ioe);
+                throw new LdapException(ExceptionMessages.EncodingError, LdapResultCode.EncodingError, null, ioe);
             }
         }
     }

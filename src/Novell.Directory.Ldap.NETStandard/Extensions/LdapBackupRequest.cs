@@ -142,7 +142,7 @@ namespace Novell.Directory.Ldap.Extensions
                     {
                         throw new LdapLocalException(
                             "Invalid Modification Timestamp send in the request",
-                            LdapException.EncodingError, e);
+                            LdapResultCode.EncodingError, e);
                     }
 
                     try
@@ -153,7 +153,7 @@ namespace Novell.Directory.Ldap.Extensions
                     {
                         throw new LdapLocalException(
                             "Invalid Revision send in the request",
-                            LdapException.EncodingError, e);
+                            LdapResultCode.EncodingError, e);
                     }
                 }
 
@@ -176,7 +176,7 @@ namespace Novell.Directory.Ldap.Extensions
             }
             catch (IOException ioe)
             {
-                throw new LdapException("ENCODING_ERROR", LdapException.EncodingError, null, ioe);
+                throw new LdapException("ENCODING_ERROR", LdapResultCode.EncodingError, null, ioe);
             }
         }
     }

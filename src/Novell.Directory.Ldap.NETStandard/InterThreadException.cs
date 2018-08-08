@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap
         /// <param name="request">
         ///     The Message class associated with this exception.
         /// </param>
-        internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
+        internal InterThreadException(string message, object[] arguments, LdapResultCode resultCode, Exception rootException,
             Message request)
             : base(message, arguments, resultCode, null, rootException)
         {
