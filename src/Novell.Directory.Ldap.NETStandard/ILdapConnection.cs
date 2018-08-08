@@ -413,7 +413,7 @@ namespace Novell.Directory.Ldap
         ///     adds a new attribute value, or removes an existing attribute value.
         ///     The LdapModification object specifies both the change to be made and
         ///     the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -435,7 +435,7 @@ namespace Novell.Directory.Ldap
         ///     adds a new attribute value, or removes an existing attribute value.
         ///     The LdapModification object specifies both the change to be
         ///     made and the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -461,7 +461,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">
@@ -484,7 +484,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">

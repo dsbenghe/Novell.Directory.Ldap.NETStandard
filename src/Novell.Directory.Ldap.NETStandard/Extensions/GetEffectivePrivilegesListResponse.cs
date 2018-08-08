@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Extensions
             /// </summary>
             /// <exception> IOException The responseValue could not be decoded.
             /// </exception>
-            if (ResultCode == LdapException.Success)
+            if (ResultCode == LdapResultCode.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;

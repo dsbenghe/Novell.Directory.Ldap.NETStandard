@@ -295,7 +295,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             if (_op == null)
             {
-                throw new LdapException("DUP_ERROR", LdapException.LocalError, null);
+                throw new LdapException("DUP_ERROR", LdapResultCode.LocalError, null);
             }
 
             var newMsg = new RfcLdapMessage(ToArray(), (IRfcRequest)get_Renamed(1), dn, filter, reference);

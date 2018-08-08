@@ -22,5 +22,10 @@ namespace Novell.Directory.Ldap
         /// Shortcut for Encoding.UTF8.GetBytes
         /// </summary>
         internal static byte[] ToUtf8Bytes(this string input) => Encoding.UTF8.GetBytes(input);
+
+        internal static LdapResultCode AsResultCode (this Asn1.Asn1Numeric asn1Num)
+        {
+            return (LdapResultCode)asn1Num.IntValue();
+        }
     }
 }

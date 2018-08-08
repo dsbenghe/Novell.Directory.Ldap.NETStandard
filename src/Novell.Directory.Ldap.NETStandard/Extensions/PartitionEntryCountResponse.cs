@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap.Extensions
         public PartitionEntryCountResponse(RfcLdapMessage rfcMessage)
             : base(rfcMessage)
         {
-            if (ResultCode == LdapException.Success)
+            if (ResultCode == LdapResultCode.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;

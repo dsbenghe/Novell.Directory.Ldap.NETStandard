@@ -148,7 +148,7 @@ namespace Novell.Directory.Ldap
         ///     The maximum number of search results to return
         ///     for a search request.
         ///     The search operation will be terminated by the server
-        ///     with an LdapException.SIZE_LIMIT_EXCEEDED if the
+        ///     with an LdapResultCode.SIZE_LIMIT_EXCEEDED if the
         ///     number of results exceed the maximum.
         /// </param>
         /// <param name="serverTimeLimit">
@@ -215,7 +215,7 @@ namespace Novell.Directory.Ldap
         ///     The maximum number of search results to return
         ///     for a search request.
         ///     The search operation will be terminated by the server
-        ///     with an LdapException.SIZE_LIMIT_EXCEEDED if the
+        ///     with an LdapResultCode.SIZE_LIMIT_EXCEEDED if the
         ///     number of results exceed the maximum.
         /// </param>
         /// <param name="serverTimeLimit">

@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         private readonly InterThreadException _exception;
 
         /// <summary>
-        ///     Creates an LdapResponse using an LdapException.
+        ///     Creates an LdapResponse using an LdapResultCode.
         ///     Used to wake up the user following an abandon.
         ///     Note: The abandon doesn't have to be user initiated
         ///     but may be the result of error conditions.
@@ -99,7 +99,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapMessage">
         /// </seealso>
         public LdapResponse(int type)
-            : this(type, LdapException.Success, null, null, null, null)
+            : this(type, LdapResultCode.Success, null, null, null, null)
         {
         }
 
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap
         ///     The message type as defined in LdapMessage.
         /// </param>
         /// <param name="resultCode">
-        ///     The result code as defined in LdapException.
+        ///     The result code as defined in LdapResultCode.
         /// </param>
         /// <param name="matchedDn">
         ///     The name of the lowest entry that was matched
@@ -135,7 +135,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException">
         /// </seealso>
-        public LdapResponse(int type, int resultCode, string matchedDn, string serverMessage, string[] referrals,
+        public LdapResponse(int type, LdapResultCode resultCode, string matchedDn, string serverMessage, string[] referrals,
             LdapControl[] controls)
             : base(new RfcLdapMessage(RfcResultFactory(type, resultCode, matchedDn, serverMessage, referrals)))
         {
@@ -253,7 +253,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The result code.
         /// </returns>
-        public int ResultCode
+        public LdapResultCode ResultCode
         {
             get
             {
@@ -264,10 +264,10 @@ namespace Novell.Directory.Ldap
 
                 if ((IRfcResponse)Message.Response is RfcIntermediateResponse)
                 {
-                    return 0;
+                    return LdapResultCode.Success;
                 }
 
-                return ((IRfcResponse)Message.Response).GetResultCode().IntValue();
+                return ((IRfcResponse)Message.Response).GetResultCode().AsResultCode();
             }
         }
 
@@ -282,16 +282,16 @@ namespace Novell.Directory.Ldap
                 LdapException ex = null;
                 switch (ResultCode)
                 {
-                    case LdapException.Success:
-                    case LdapException.CompareTrue:
-                    case LdapException.CompareFalse:
+                    case LdapResultCode.Success:
+                    case LdapResultCode.CompareTrue:
+                    case LdapResultCode.CompareFalse:
                         break;
 
-                    case LdapException.Referral:
+                    case LdapResultCode.Referral:
                         var refs = Referrals;
                         ex = new LdapReferralException(
                             "Automatic referral following not enabled",
-                            LdapException.Referral, ErrorMessage);
+                            LdapResultCode.Referral, ErrorMessage);
                         ((LdapReferralException)ex).SetReferrals(refs);
                         break;
 
@@ -383,7 +383,7 @@ namespace Novell.Directory.Ldap
             get;
         }
 
-        private static Asn1Sequence RfcResultFactory(int type, int resultCode, string matchedDn, string serverMessage,
+        private static Asn1Sequence RfcResultFactory(int type, LdapResultCode resultCode, string matchedDn, string serverMessage,
             string[] referrals)
         {
             Asn1Sequence ret;
@@ -398,10 +398,12 @@ namespace Novell.Directory.Ldap
                 serverMessage = string.Empty;
             }
 
+            var rcInt = (int)resultCode;
+
             switch (type)
             {
                 case SearchResult:
-                    ret = new RfcSearchResultDone(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcSearchResultDone(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
@@ -414,27 +416,27 @@ namespace Novell.Directory.Ldap
                     break;
 
                 case ModifyResponse:
-                    ret = new RfcModifyResponse(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcModifyResponse(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
                 case AddResponse:
-                    ret = new RfcAddResponse(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcAddResponse(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
                 case DelResponse:
-                    ret = new RfcDelResponse(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcDelResponse(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
                 case ModifyRdnResponse:
-                    ret = new RfcModifyDnResponse(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcModifyDnResponse(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
                 case CompareResponse:
-                    ret = new RfcCompareResponse(new Asn1Enumerated(resultCode), new RfcLdapDn(matchedDn),
+                    ret = new RfcCompareResponse(new Asn1Enumerated(rcInt), new RfcLdapDn(matchedDn),
                         new RfcLdapString(serverMessage), null);
                     break;
 
@@ -480,7 +482,7 @@ namespace Novell.Directory.Ldap
         ///     Indicates if this response is an embedded exception response.
         /// </summary>
         /// <returns>
-        ///     true if contains an embedded Ldapexception.
+        ///     true if contains an embedded LdapResultCode.
         /// </returns>
         /*package*/
         internal bool HasException()

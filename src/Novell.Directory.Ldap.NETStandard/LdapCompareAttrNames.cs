@@ -141,7 +141,7 @@ namespace Novell.Directory.Ldap
             InitBlock();
             if (attrNames.Length != ascendingFlags.Length)
             {
-                throw new LdapException(ExceptionMessages.UnequalLengths, LdapException.InappropriateMatching, null);
+                throw new LdapException(ExceptionMessages.UnequalLengths, LdapResultCode.InappropriateMatching, null);
 
                 // "Length of attribute Name array does not equal length of Flags array"
             }

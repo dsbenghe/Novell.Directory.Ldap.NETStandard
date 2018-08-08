@@ -22,7 +22,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             var ldapException = Assert.Throws<LdapException>(
                 () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(TestHelper.BuildDn(Guid.NewGuid().ToString())); }));
-            Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
+            Assert.Equal(LdapResultCode.NoSuchObject, ldapException.ResultCode);
         }
     }
 }

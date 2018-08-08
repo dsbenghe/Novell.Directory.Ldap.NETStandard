@@ -26,7 +26,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                             TestsConfig.LdapServer.RootUserDn,
                             TestsConfig.LdapServer.RootUserPassword + "1");
                     }));
-            Assert.Equal(LdapException.InvalidCredentials, ldapException.ResultCode);
+            Assert.Equal(LdapResultCode.InvalidCredentials, ldapException.ResultCode);
         }
     }
 }

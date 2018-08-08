@@ -508,7 +508,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw new LdapLocalException(
                         ExceptionMessages.OutstandingOperations,
-                        LdapException.OperationsError);
+                        LdapResultCode.OperationsError);
                 }
 
                 // Stop reader when response to startTLS request received
@@ -553,7 +553,7 @@ namespace Novell.Directory.Ldap
         {
             if (!Tls)
             {
-                throw new LdapLocalException(ExceptionMessages.NoStarttls, LdapException.OperationsError);
+                throw new LdapLocalException(ExceptionMessages.NoStarttls, LdapResultCode.OperationsError);
             }
 
             var semaphoreId = Connection.AcquireWriteSemaphore();
@@ -563,7 +563,7 @@ namespace Novell.Directory.Ldap
                 {
                     throw new LdapLocalException(
                         ExceptionMessages.OutstandingOperations,
-                        LdapException.OperationsError);
+                        LdapResultCode.OperationsError);
                 }
 
                 // stopTLS stops and starts the reader thread for us.
@@ -1107,7 +1107,7 @@ namespace Novell.Directory.Ldap
         ///     adds a new attribute value, or removes an existing attribute value.
         ///     The LdapModification object specifies both the change to be made and
         ///     the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -1132,7 +1132,7 @@ namespace Novell.Directory.Ldap
         ///     adds a new attribute value, or removes an existing attribute value.
         ///     The LdapModification object specifies both the change to be
         ///     made and the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -1163,7 +1163,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">
@@ -1189,7 +1189,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">
@@ -1319,7 +1319,7 @@ namespace Novell.Directory.Ldap
             if (sr.HasMore())
             {
                 // "Read response is ambiguous, multiple entries returned"
-                throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
+                throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapResultCode.AmbiguousResponse);
             }
 
             return ret;
@@ -1989,7 +1989,7 @@ namespace Novell.Directory.Ldap
                 }
                 else
                 {
-                    throw new LdapException(ExceptionMessages.ConnectionImpossible, LdapException.ConnectError, null);
+                    throw new LdapException(ExceptionMessages.ConnectionImpossible, LdapResultCode.ConnectError, null);
                 }
             }
 
@@ -2071,11 +2071,11 @@ namespace Novell.Directory.Ldap
                 _responseCtls = res.Controls;
             }
 
-            if (res.ResultCode == LdapException.CompareTrue)
+            if (res.ResultCode == LdapResultCode.CompareTrue)
             {
                 ret = true;
             }
-            else if (res.ResultCode == LdapException.CompareFalse)
+            else if (res.ResultCode == LdapResultCode.CompareFalse)
             {
                 ret = false;
             }
@@ -2091,8 +2091,8 @@ namespace Novell.Directory.Ldap
         ///     Asynchronously compares an attribute value with one in the directory,
         ///     using the specified queue.
         ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     one of two status codes: LdapResultCode.COMPARE_TRUE if the entry
+        ///     has the value, and LdapResultCode.COMPARE_FALSE if the entry
         ///     does not have the value or the attribute.
         /// </summary>
         /// <param name="dn">
@@ -2111,9 +2111,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
+        /// <seealso cref="LdapResultCode.CompareTrue">
         /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
+        /// <seealso cref="LdapResultCode.CompareFalse">
         /// </seealso>
         public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
         {
@@ -2124,8 +2124,8 @@ namespace Novell.Directory.Ldap
         ///     Asynchronously compares an attribute value with one in the directory,
         ///     using the specified queue and contraints.
         ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     one of two status codes: LdapResultCode.COMPARE_TRUE if the entry
+        ///     has the value, and LdapResultCode.COMPARE_FALSE if the entry
         ///     does not have the value or the attribute.
         /// </summary>
         /// <param name="dn">
@@ -2147,9 +2147,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
+        /// <seealso cref="LdapResultCode.CompareTrue">
         /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
+        /// <seealso cref="LdapResultCode.CompareFalse">
         /// </seealso>
         public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
             LdapConstraints cons)
@@ -2357,7 +2357,7 @@ namespace Novell.Directory.Ldap
         ///     add a new attribute value, or remove an existing attribute value.
         ///     The LdapModification object specifies both the change to be made and
         ///     the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -2387,7 +2387,7 @@ namespace Novell.Directory.Ldap
         ///     add a new attribute value, or remove an existing attribute value.
         ///     The LdapModification object specifies both the change to be made
         ///     and the LdapAttribute value to be changed.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modification.
         /// </summary>
         /// <param name="dn">
@@ -2424,7 +2424,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">
@@ -2455,7 +2455,7 @@ namespace Novell.Directory.Ldap
         ///     Because the server applies all changes in an LdapModification array
         ///     atomically, the application can expect that no changes
         ///     have been performed if an error is returned.
-        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     If the request fails with {@link LdapResultCode.CONNECT_ERROR},
         ///     it is indeterminate whether or not the server made the modifications.
         /// </summary>
         /// <param name="dn">
@@ -3152,7 +3152,7 @@ namespace Novell.Directory.Ldap
                     if (refInfo == null)
                     {
                         // Could not match LdapBind.bind() connecction with URL list
-                        ex = new LdapLocalException(ExceptionMessages.ReferralBindMatch, LdapException.ConnectError);
+                        ex = new LdapLocalException(ExceptionMessages.ReferralBindMatch, LdapResultCode.ConnectError);
                     }
                 }
                 catch (Exception lex)
@@ -3180,7 +3180,7 @@ namespace Novell.Directory.Ldap
                     ldapex = new LdapLocalException(
                         ExceptionMessages.ServerConnectError,
                         new object[] {Connection.Host },
-                        LdapException.ConnectError, ex);
+                        LdapResultCode.ConnectError, ex);
                 }
 
                 // Error attempting to follow a referral
@@ -3213,7 +3213,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         private void ChkResultCode(LdapMessageQueue queue, LdapConstraints cons, LdapResponse response)
         {
-            if (response.ResultCode == LdapException.Referral && cons.ReferralFollowing)
+            if (response.ResultCode == LdapResultCode.Referral && cons.ReferralFollowing)
             {
                 // Perform referral following and return
                 ArrayList refConn = null;
@@ -3301,7 +3301,7 @@ namespace Novell.Directory.Ldap
             {
                 // Not a search request
                 var resp = (LdapResponse)queue.GetResponse();
-                if (resp.ResultCode != LdapException.Referral)
+                if (resp.ResultCode != LdapResultCode.Referral)
                 {
                     // Not referral result,throw Exception if nonzero result
                     resp.ChkResultCode();
@@ -3319,7 +3319,7 @@ namespace Novell.Directory.Ldap
                 // increment hop count, check max hops
                 if (hopCount++ > cons.HopLimit)
                 {
-                    throw new LdapLocalException("Max hops exceeded", LdapException.ReferralLimitExceeded);
+                    throw new LdapLocalException("Max hops exceeded", LdapResultCode.ReferralLimitExceeded);
                 }
 
                 // Get a connection to follow the referral
@@ -3349,7 +3349,7 @@ namespace Novell.Directory.Ldap
                 catch (InterThreadException ex)
                 {
                     // Error ending request to referred server
-                    var rex = new LdapReferralException(ExceptionMessages.ReferralSend, LdapException.ConnectError,
+                    var rex = new LdapReferralException(ExceptionMessages.ReferralSend, LdapResultCode.ConnectError,
                         null, ex);
                     rex.SetReferrals(initialReferrals);
                     var refRenamed = rconn.Connection.ActiveReferral;
@@ -3439,7 +3439,7 @@ namespace Novell.Directory.Ldap
                     break;
                 default:
                     throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] {msg.Type },
-                        LdapException.LocalError);
+                        LdapResultCode.LocalError);
             }
 
             return msg.Clone(dn, filter, reference);
@@ -3574,13 +3574,13 @@ namespace Novell.Directory.Ldap
             if (values == null || values.Length < 1)
             {
                 throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] {dn },
-                    LdapException.NoResultsReturned);
+                    LdapResultCode.NoResultsReturned);
             }
 
             if (values.Length > 1)
             {
                 throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] {dn },
-                    LdapException.ConstraintViolation);
+                    LdapResultCode.ConstraintViolation);
             }
 
             return values[0];

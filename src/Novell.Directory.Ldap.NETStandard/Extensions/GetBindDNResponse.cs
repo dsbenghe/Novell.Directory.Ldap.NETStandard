@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Extensions
         public GetBindDnResponse(RfcLdapMessage rfcMessage)
             : base(rfcMessage)
         {
-            if (ResultCode == LdapException.Success)
+            if (ResultCode == LdapResultCode.Success)
             {
                 // parse the contents of the reply
                 var returnedValue = Value;

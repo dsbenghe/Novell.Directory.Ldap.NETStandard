@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     ldapConnection.Modify(ldapEntry.Dn, modification);
                 }));
 
-            Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
+            Assert.Equal(LdapResultCode.NoSuchObject, ldapException.ResultCode);
         }
     }
 }

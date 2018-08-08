@@ -18,7 +18,7 @@
             {
                 return TestHelper.WithAuthenticatedLdapConnection(ldapConnection => ldapConnection.Read(dn));
             }
-            catch (LdapException ldapException) when (ldapException.ResultCode == LdapException.NoSuchObject /* not found */)
+            catch (LdapException ldapException) when (ldapException.ResultCode == LdapResultCode.NoSuchObject /* not found */)
             {
                 return null;
             }

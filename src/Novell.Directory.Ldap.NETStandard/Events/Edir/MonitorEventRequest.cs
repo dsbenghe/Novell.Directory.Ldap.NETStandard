@@ -115,7 +115,7 @@ namespace Novell.Directory.Ldap.Events.Edir
             {
                 throw new LdapException(
                     ExceptionMessages.EncodingError,
-                    LdapException.EncodingError,
+                    LdapResultCode.EncodingError,
                     null, e);
             }
 

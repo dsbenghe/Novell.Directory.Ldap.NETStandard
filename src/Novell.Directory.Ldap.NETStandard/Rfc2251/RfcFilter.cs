@@ -189,13 +189,13 @@ namespace Novell.Directory.Ldap.Rfc2251
             // missing opening parenthesis ?
             if (ch != '(')
             {
-                throw new LdapLocalException(ExceptionMessages.MissingLeftParen, LdapException.FilterError);
+                throw new LdapLocalException(ExceptionMessages.MissingLeftParen, LdapResultCode.FilterError);
             }
 
             // missing closing parenthesis ?
             if (filterExpr[len - 1] != ')')
             {
-                throw new LdapLocalException(ExceptionMessages.MissingRightParen, LdapException.FilterError);
+                throw new LdapLocalException(ExceptionMessages.MissingRightParen, LdapResultCode.FilterError);
             }
 
             // unmatched parentheses ?
@@ -215,12 +215,12 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             if (parenCount > 0)
             {
-                throw new LdapLocalException(ExceptionMessages.MissingRightParen, LdapException.FilterError);
+                throw new LdapLocalException(ExceptionMessages.MissingRightParen, LdapResultCode.FilterError);
             }
 
             if (parenCount < 0)
             {
-                throw new LdapLocalException(ExceptionMessages.MissingLeftParen, LdapException.FilterError);
+                throw new LdapLocalException(ExceptionMessages.MissingLeftParen, LdapResultCode.FilterError);
             }
 
             _ft = new FilterTokenizer(this, filterExpr);
@@ -482,7 +482,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     {
                         // Invalid escape value(not a hex character)
                         throw new LdapLocalException(ExceptionMessages.InvalidEscape, new object[] {ch },
-                            LdapException.FilterError);
+                            LdapResultCode.FilterError);
                     }
 
                     // V3 escaped: \\**
@@ -555,7 +555,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                             throw new LdapLocalException(
                                 ExceptionMessages.InvalidCharInFilter,
-                                new object[] {ch, escString }, LdapException.FilterError);
+                                new object[] {ch, escString }, LdapResultCode.FilterError);
                         }
                     }
                     catch (IOException ue)
@@ -568,7 +568,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Verify that any escape sequence completed
             if (escStart || escape)
             {
-                throw new LdapLocalException(ExceptionMessages.ShortEscape, LdapException.FilterError);
+                throw new LdapLocalException(ExceptionMessages.ShortEscape, LdapResultCode.FilterError);
             }
 
             var toReturn = new byte[iOctets];
@@ -635,7 +635,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 {
                     throw new LdapLocalException(
                         "Attemp to create more than one 'not' sub-filter",
-                        LdapException.FilterError);
+                        LdapResultCode.FilterError);
                 }
             }
 
@@ -693,21 +693,21 @@ namespace Novell.Directory.Ldap.Rfc2251
                 {
                     throw new LdapLocalException(
                         "Attempt to add an invalid " + "substring type",
-                        LdapException.FilterError);
+                        LdapResultCode.FilterError);
                 }
 
                 if (type == Initial && substringSeq.Size() != 0)
                 {
                     throw new LdapLocalException(
                         "Attempt to add an initial " + "substring match after the first substring",
-                        LdapException.FilterError);
+                        LdapResultCode.FilterError);
                 }
 
                 if (_finalFound)
                 {
                     throw new LdapLocalException(
                         "Attempt to add a substring " + "match after a final substring match",
-                        LdapException.FilterError);
+                        LdapResultCode.FilterError);
                 }
 
                 if (type == Final)
@@ -723,7 +723,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 throw new LdapLocalException(
                     "A call to addSubstring occured " + "without calling startSubstring",
-                    LdapException.FilterError, e);
+                    LdapResultCode.FilterError, e);
             }
         }
 
@@ -740,12 +740,12 @@ namespace Novell.Directory.Ldap.Rfc2251
                 var substringSeq = (Asn1SequenceOf)_filterStack.Peek();
                 if (substringSeq.Size() == 0)
                 {
-                    throw new LdapLocalException("Empty substring filter", LdapException.FilterError);
+                    throw new LdapLocalException("Empty substring filter", LdapResultCode.FilterError);
                 }
             }
             catch (InvalidCastException e)
             {
-                throw new LdapLocalException("Missmatched ending of substrings", LdapException.FilterError, e);
+                throw new LdapLocalException("Missmatched ending of substrings", LdapResultCode.FilterError, e);
             }
 
             _filterStack.Pop();
@@ -774,7 +774,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 // If a sequenceof is on the stack then substring is left on the stack
                 throw new LdapLocalException(
                     "Cannot insert an attribute assertion in a substring",
-                    LdapException.FilterError);
+                    LdapResultCode.FilterError);
             }
 
             if (rfcType != EqualityMatch && rfcType != GreaterOrEqual && rfcType != LessOrEqual &&
@@ -782,7 +782,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 throw new LdapLocalException(
                     "Invalid filter type for AttributeValueAssertion",
-                    LdapException.FilterError);
+                    LdapResultCode.FilterError);
             }
 
             Asn1Object current = new Asn1Tagged(
@@ -867,7 +867,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 throw new LdapLocalException(
                     "Attempt to create a nested filter other than AND, OR or NOT",
-                    LdapException.FilterError);
+                    LdapResultCode.FilterError);
             }
 
             AddObject(current);
@@ -890,7 +890,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             var topOfStackType = ((Asn1Object)_filterStack.Peek()).GetIdentifier().Tag;
             if (topOfStackType != rfcType)
             {
-                throw new LdapLocalException("Missmatched ending of nested filter", LdapException.FilterError);
+                throw new LdapLocalException("Missmatched ending of nested filter", LdapResultCode.FilterError);
             }
 
             _filterStack.Pop();
@@ -1310,7 +1310,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     if (_offset >= _filterLength)
                     {
                         // "Unexpected end of filter",
-                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                     }
 
                     int ret;
@@ -1334,7 +1334,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     {
                         if (_filter.Substring(_offset).StartsWith(":="))
                         {
-                            throw new LdapLocalException(ExceptionMessages.NoMatchingRule, LdapException.FilterError);
+                            throw new LdapLocalException(ExceptionMessages.NoMatchingRule, LdapResultCode.FilterError);
                         }
 
                         if (_filter.Substring(_offset).StartsWith("::=") ||
@@ -1342,7 +1342,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             throw new LdapLocalException(
                                 ExceptionMessages.NoDnNorMatchingRule,
-                                LdapException.FilterError);
+                                LdapResultCode.FilterError);
                         }
 
                         // get first component of 'item' (attr or :dn or :matchingrule)
@@ -1360,7 +1360,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         // is there an attribute name specified in the filter ?
                         if (Attr.Length == 0 || Attr[0] == ';')
                         {
-                            throw new LdapLocalException(ExceptionMessages.NoAttributeName, LdapException.FilterError);
+                            throw new LdapLocalException(ExceptionMessages.NoAttributeName, LdapResultCode.FilterError);
                         }
 
                         for (index = 0; index < Attr.Length; index++)
@@ -1374,12 +1374,12 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 {
                                     throw new LdapLocalException(
                                         ExceptionMessages.InvalidEscInDescr,
-                                        LdapException.FilterError);
+                                        LdapResultCode.FilterError);
                                 }
 
                                 throw new LdapLocalException(
                                     ExceptionMessages.InvalidCharInDescr,
-                                    new object[] {atIndex }, LdapException.FilterError);
+                                    new object[] {atIndex }, LdapResultCode.FilterError);
                             }
                         }
 
@@ -1387,7 +1387,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         index = Attr.IndexOf(';');
                         if (index != -1 && index == Attr.Length - 1)
                         {
-                            throw new LdapLocalException(ExceptionMessages.NoOption, LdapException.FilterError);
+                            throw new LdapLocalException(ExceptionMessages.NoOption, LdapResultCode.FilterError);
                         }
 
                         ret = -1;
@@ -1408,7 +1408,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     if (_offset >= _filterLength)
                     {
                         // "Unexpected end of filter",
-                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                     }
 
                     int ret;
@@ -1442,7 +1442,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         // "Invalid comparison operator",
                         throw new LdapLocalException(
                             ExceptionMessages.InvalidFilterComparison,
-                            LdapException.FilterError);
+                            LdapResultCode.FilterError);
                     }
 
                     return ret;
@@ -1457,7 +1457,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     if (_offset >= _filterLength)
                     {
                         // "Unexpected end of filter",
-                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                        throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                     }
 
                     var idx = _filter.IndexOf(')', _offset);
@@ -1496,7 +1496,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (_offset >= _filterLength)
                 {
                     // "Unexpected end of filter",
-                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                 }
 
                 if (_filter[_offset++] != '(')
@@ -1504,7 +1504,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     // "Missing left paren",
                     throw new LdapLocalException(
                         ExceptionMessages.ExpectingLeftParen,
-                        new object[] {_filter[_offset -= 1] }, LdapException.FilterError);
+                        new object[] {_filter[_offset -= 1] }, LdapResultCode.FilterError);
                 }
             }
 
@@ -1517,7 +1517,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (_offset >= _filterLength)
                 {
                     // "Unexpected end of filter",
-                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                 }
 
                 if (_filter[_offset++] != ')')
@@ -1525,7 +1525,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     // "Missing right paren",
                     throw new LdapLocalException(
                         ExceptionMessages.ExpectingRightParen,
-                        new object[] {_filter[_offset - 1] }, LdapException.FilterError);
+                        new object[] {_filter[_offset - 1] }, LdapResultCode.FilterError);
                 }
             }
 
@@ -1539,7 +1539,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (_offset >= _filterLength)
                 {
                     // "Unexpected end of filter",
-                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapException.FilterError);
+                    throw new LdapLocalException(ExceptionMessages.UnexpectedEnd, LdapResultCode.FilterError);
                 }
 
                 return _filter[_offset];
