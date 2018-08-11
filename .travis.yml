@@ -66,6 +66,7 @@ jobs:
       - export TRANSPORT_SECURITY=OFF; dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj
       - export TRANSPORT_SECURITY=SSL; dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj
       - export TRANSPORT_SECURITY=TLS; dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj
+      - dotnet test --configuration $CONFIGURATION test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj
 
 script:
   - dotnet restore
