@@ -36,7 +36,6 @@ namespace Novell.Directory.Ldap.Events
     ///     This class gives the EventArgs for Directory exceptions.
     /// </summary>
     /// <seealso cref='Novell.Directory.Ldap.Events.LdapEventArgs' />
-    /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventArgs' />
     public class DirectoryExceptionEventArgs : BaseEventArgs
     {
         public DirectoryExceptionEventArgs(LdapMessage message, LdapException ldapException)

@@ -39,7 +39,6 @@ namespace Novell.Directory.Ldap.Events
     ///     This is the base class for any EventSource.
     /// </summary>
     /// <seealso cref='Novell.Directory.Ldap.Events.PSearchEventSource' />
-    /// <seealso cref='Novell.Directory.Ldap.Events.Edir.EdirEventSource' />
     public abstract class LdapEventSource
     {
         /// <summary>
