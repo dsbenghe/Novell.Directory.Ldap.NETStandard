@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap.Controls
 
                 key.Add(new Asn1OctetString(keys[i].Key));
 
-                if ((object)keys[i].MatchRule != null)
+                if (keys[i].MatchRule != null)
                 {
                     key.Add(new Asn1Tagged(
                         new Asn1Identifier(Asn1Identifier.Context, false, OrderingRule),

@@ -85,7 +85,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if ((object)baseRenamed != null)
+            if (baseRenamed != null)
             {
                 set_Renamed(0, new RfcLdapDn(baseRenamed));
             }
@@ -103,7 +103,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
 
             // Replace the filter if specified, otherwise keep original filter
-            if ((object)filter != null)
+            if (filter != null)
             {
                 set_Renamed(6, new RfcFilter(filter));
             }

@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            if ((object)baseRenamed == null)
+            if (baseRenamed == null)
             {
                 return new RfcDelRequest(ByteValue());
             }

@@ -395,8 +395,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             tag = new Asn1Tagged(
                                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                                 new RfcMatchingRuleAssertion(
-                                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                                    (object)type == null ? null : new RfcAttributeDescription(type),
+                                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                                    type == null ? null : new RfcAttributeDescription(type),
                                     new RfcAssertionValue(UnescapeString(valueRenamed)),
                                     dnAttributes == false ? null : new Asn1Boolean(true)), false);
                             break;
@@ -834,8 +834,8 @@ namespace Novell.Directory.Ldap.Rfc2251
             Asn1Object current = new Asn1Tagged(
                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                 new RfcMatchingRuleAssertion(
-                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                    (object)attrName == null ? null : new RfcAttributeDescription(attrName),
+                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                    attrName == null ? null : new RfcAttributeDescription(attrName),
                     new RfcAssertionValue(valueRenamed), useDnMatching == false ? null : new Asn1Boolean(true)), false);
             AddObject(current);
         }

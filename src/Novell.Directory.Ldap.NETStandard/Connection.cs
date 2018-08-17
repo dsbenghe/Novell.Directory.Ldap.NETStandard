@@ -723,7 +723,7 @@ namespace Novell.Directory.Ldap
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
-            if (info.BindRequest && Connected == false && (object)Host != null)
+            if (info.BindRequest && Connected == false && Host != null)
             {
                 Connect(Host, Port, info.MessageId);
             }

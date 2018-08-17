@@ -101,7 +101,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapAttribute(string attrName)
         {
-            if ((object)attrName == null)
+            if (attrName == null)
             {
                 throw new ArgumentException("Attribute name cannot be null");
             }
@@ -150,7 +150,7 @@ namespace Novell.Directory.Ldap
         public LdapAttribute(string attrName, string attrString)
             : this(attrName)
         {
-            if ((object)attrString == null)
+            if (attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
@@ -191,7 +191,7 @@ namespace Novell.Directory.Ldap
             {
                 try
                 {
-                    if ((object)attrStrings[i] == null)
+                    if (attrStrings[i] == null)
                     {
                         throw new ArgumentException("Attribute value " + "at array index " + i + " cannot be null");
                     }
@@ -475,7 +475,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public virtual void AddValue(string attrString)
         {
-            if ((object)attrString == null)
+            if (attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
@@ -522,7 +522,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public void AddBase64Value(string attrString)
         {
-            if ((object)attrString == null)
+            if (attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }
@@ -586,7 +586,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public void AddUrlValue(string url)
         {
-            if ((object)url == null)
+            if (url == null)
             {
                 throw new ArgumentException("Attribute URL cannot be null");
             }
@@ -679,7 +679,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public static string GetBaseName(string attrName)
         {
-            if ((object)attrName == null)
+            if (attrName == null)
             {
                 throw new ArgumentException("Attribute name cannot be null");
             }
@@ -721,7 +721,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public static string[] GetSubtypes(string attrName)
         {
-            if ((object)attrName == null)
+            if (attrName == null)
             {
                 throw new ArgumentException("Attribute name cannot be null");
             }
@@ -758,7 +758,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool HasSubtype(string subtype)
         {
-            if ((object)subtype == null)
+            if (subtype == null)
             {
                 throw new ArgumentException("subtype cannot be null");
             }
@@ -804,7 +804,7 @@ namespace Novell.Directory.Ldap
             {
                 for (var j = 0; j < _subTypes.Length; j++)
                 {
-                    if ((object)_subTypes[j] == null)
+                    if (_subTypes[j] == null)
                     {
                         throw new ArgumentException("subtype " + "at array index " + i + " cannot be null");
                     }
@@ -833,7 +833,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public virtual void RemoveValue(string attrString)
         {
-            if ((object)attrString == null)
+            if (attrString == null)
             {
                 throw new ArgumentException("Attribute value cannot be null");
             }

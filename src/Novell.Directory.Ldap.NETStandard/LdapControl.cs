@@ -75,7 +75,7 @@ namespace Novell.Directory.Ldap
         [CLSCompliant(false)]
         public LdapControl(string oid, bool critical, byte[] values)
         {
-            if ((object)oid == null)
+            if (oid == null)
             {
                 throw new ArgumentException("An OID must be specified");
             }

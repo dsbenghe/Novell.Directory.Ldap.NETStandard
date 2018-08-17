@@ -262,7 +262,7 @@ namespace Novell.Directory.Ldap
             var msg = GetExceptionString("LdapReferralException");
 
             // Add failed referral information
-            if ((object)FailedReferral != null)
+            if (FailedReferral != null)
             {
                 tmsg = ResourcesHandler.GetMessage(
                     "FAILED_REFERRAL",

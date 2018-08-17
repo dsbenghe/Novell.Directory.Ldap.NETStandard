@@ -129,12 +129,12 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object)parser.Id != null)
+                if (parser.Id != null)
                 {
                     Oid = parser.Id;
                 }
 
-                if ((object)parser.Description != null)
+                if (parser.Description != null)
                 {
                     Description = parser.Description;
                 }
@@ -226,7 +226,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object)(token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -252,7 +252,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)(token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");

@@ -382,7 +382,7 @@ namespace Novell.Directory.Ldap.Controls
 
             /* Add the optional context string if one is available.
             */
-            if ((object)_mContext != null)
+            if (_mContext != null)
             {
                 _mVlvRequest.Add(new Asn1OctetString(_mContext));
             }
@@ -417,7 +417,7 @@ namespace Novell.Directory.Ldap.Controls
 
             /* Add the optional context string if one is available.
             */
-            if ((object)_mContext != null)
+            if (_mContext != null)
             {
                 _mVlvRequest.Add(new Asn1OctetString(_mContext));
             }

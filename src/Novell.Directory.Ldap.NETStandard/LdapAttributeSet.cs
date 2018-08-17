@@ -356,7 +356,7 @@ namespace Novell.Directory.Ldap
                 attributeName = ((LdapAttribute)objectRenamed).Name;
             }
 
-            if ((object)attributeName == null)
+            if (attributeName == null)
             {
                 return false;
             }
