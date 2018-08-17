@@ -105,7 +105,6 @@ namespace Novell.Directory.Ldap
          *
          * @return The value of the response.
          */
-        [CLSCompliant(false)]
         public byte[] GetValue()
         {
             var tempString =

@@ -37,7 +37,6 @@ using System.Text;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the OCTET STRING type.</summary>
-    [CLSCompliant(true)]
     public class Asn1OctetString : Asn1Object
     {
         /// <summary> ASN.1 OCTET STRING tag definition.</summary>
@@ -63,7 +62,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte array representing the string that
         ///     will be contained in the this Asn1OctetString object.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1OctetString(byte[] content)
             : base(Id)
         {
@@ -104,7 +102,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
@@ -134,7 +131,6 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Returns the content of this Asn1OctetString as a byte array.</summary>
-        [CLSCompliant(false)]
         public byte[] ByteValue()
         {
             return _content;

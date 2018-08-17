@@ -87,7 +87,6 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="values">
         ///     The control-specific data.
         /// </param>
-        [CLSCompliant(false)]
         public LdapSortResponse(string oid, bool critical, byte[] values)
             : base(oid, critical, values)
         {

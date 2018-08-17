@@ -67,7 +67,6 @@ namespace Novell.Directory.Ldap.Rfc2251
             Add(auth);
         }
 
-        [CLSCompliant(false)]
         public RfcBindRequest(int version, string dn, string mechanism, byte[] credentials)
             : this(new Asn1Integer(version), new RfcLdapDn(dn), new RfcAuthenticationChoice(mechanism, credentials))
         {

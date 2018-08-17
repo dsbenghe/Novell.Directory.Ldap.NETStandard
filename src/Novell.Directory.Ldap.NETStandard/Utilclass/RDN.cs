@@ -162,7 +162,6 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     @throws IllegalArgumentException if the application compares a name
         ///     with an OID.
         /// </param>
-        [CLSCompliant(false)]
         public bool Equals(Rdn rdn)
         {
             if (_values.Count != rdn._values.Count)
@@ -256,7 +255,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     An RDN string.
         /// </returns>
-        [CLSCompliant(false)]
         public string ToString(bool noTypes)
         {
             var length = _types.Count;

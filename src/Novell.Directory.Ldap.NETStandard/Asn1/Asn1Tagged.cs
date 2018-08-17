@@ -46,7 +46,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     If the type is to be encoded EXPLICITLY, the base type will be encoded as
     ///     usual after the Asn1Tagged identifier has been encoded.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Tagged : Asn1Object
     {
         private Asn1Object _content;
@@ -90,7 +89,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1Tagged(IAsn1Decoder dec, Stream inRenamed, int len, Asn1Identifier identifier)
             : base(identifier)
         {
@@ -102,7 +100,6 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Sets the Asn1Object tagged value.</summary>
-        [CLSCompliant(false)]
         public Asn1Object TaggedValue
         {
             set

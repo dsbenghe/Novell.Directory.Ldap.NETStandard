@@ -819,7 +819,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        [CLSCompliant(false)]
         public void Bind(int version, string dn, byte[] passwd)
         {
             Bind(version, dn, passwd, _defSearchCons);
@@ -856,7 +855,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        [CLSCompliant(false)]
         public void Bind(int version, string dn, byte[] passwd, LdapConstraints cons)
         {
             var queue = Bind(version, dn, passwd, null, cons);
@@ -1901,7 +1899,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        [CLSCompliant(false)]
         public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue)
         {
             return Bind(version, dn, passwd, queue, _defSearchCons);
@@ -1943,7 +1940,6 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        [CLSCompliant(false)]
         public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue,
             LdapConstraints cons)
         {

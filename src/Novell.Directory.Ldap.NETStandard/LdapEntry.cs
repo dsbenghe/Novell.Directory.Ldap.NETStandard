@@ -106,7 +106,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name of the entry.
         /// </returns>
-        [CLSCompliant(false)]
         public string Dn { get; set; }
 
         /// <summary>

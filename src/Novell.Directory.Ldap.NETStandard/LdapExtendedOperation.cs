@@ -55,7 +55,6 @@ namespace Novell.Directory.Ldap
         /// <param name="vals">
         ///     The operation-specific data of the operation.
         /// </param>
-        [CLSCompliant(false)]
         public LdapExtendedOperation(string oid, byte[] vals)
         {
             _oid = oid;
@@ -101,7 +100,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The operation-specific data.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[] GetValue()
         {
             return _vals;
@@ -113,7 +111,6 @@ namespace Novell.Directory.Ldap
         /// <param name="newVals">
         ///     The byte array of operation-specific data.
         /// </param>
-        [CLSCompliant(false)]
         protected void SetValue(byte[] newVals)
         {
             _vals = newVals;

@@ -75,7 +75,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the assertion value.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[] AssertionValue => ((RfcAssertionValue)get_Renamed(1)).ByteValue();
     }
 }

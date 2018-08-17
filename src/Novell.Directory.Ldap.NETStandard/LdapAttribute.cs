@@ -122,7 +122,6 @@ namespace Novell.Directory.Ldap
         ///     Note: If attrBytes represents a string it should be UTF-8 encoded.
         ///     @throws IllegalArgumentException if attrName or attrBytes is null.
         /// </param>
-        [CLSCompliant(false)]
         public LdapAttribute(string attrName, byte[] attrBytes)
             : this(attrName)
         {
@@ -229,7 +228,6 @@ namespace Novell.Directory.Ldap
         ///     The values as an array of bytes or an empty array if there are
         ///     no values.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[][] ByteValueArray
         {
             get
@@ -334,7 +332,6 @@ namespace Novell.Directory.Ldap
         ///     <code>null</code> if. <code>this</code> attribute doesn't have a value.
         ///     If the attribute has no values. <code>null</code> is returned.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[] ByteValue
         {
             get
@@ -482,7 +479,6 @@ namespace Novell.Directory.Ldap
         ///     Note: If attrBytes represents a string it should be UTF-8 encoded.
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
-        [CLSCompliant(false)]
         public void AddValue(byte[] attrBytes)
         {
             if (attrBytes == null)
@@ -842,7 +838,6 @@ namespace Novell.Directory.Ldap
         ///     no effect.
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
-        [CLSCompliant(false)]
         public void RemoveValue(byte[] attrBytes)
         {
             if (attrBytes == null)

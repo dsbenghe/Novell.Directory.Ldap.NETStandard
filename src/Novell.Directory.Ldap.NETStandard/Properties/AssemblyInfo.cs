@@ -47,7 +47,6 @@ using System.Reflection;
 [assembly: AssemblyCopyright(" (C) 2003 Novell, Inc, 2016 dsbenghe")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: CLSCompliant(true)]
 
 //
 // Version information for an assembly consists of the following four values:

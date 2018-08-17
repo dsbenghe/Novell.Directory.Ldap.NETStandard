@@ -148,7 +148,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the base64 encoded data.
         /// </returns>
-        [CLSCompliant(false)]
         public static string Encode(byte[] inputBytes)
         {
             int i, j, k;
@@ -253,7 +252,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
@@ -271,7 +269,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     A byte array object containing decoded bytes.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(char[] encodedChars)
         {
             int i, j, k;
@@ -386,7 +383,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(StringBuilder encodedSBuf, int start, int end)
         {
             int i, j, k;
@@ -518,7 +514,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF.
         /// </returns>
-        [CLSCompliant(false)]
         public static bool IsLdifSafe(byte[] bytes)
         {
             var len = bytes.Length;
@@ -698,7 +693,6 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     sequence generates any character that cannot be
         ///     represented as a UCS2 character (Java String).
         /// </returns>
-        [CLSCompliant(false)]
         public static bool IsValidUtf8(byte[] array, bool isUcs2Only)
         {
             var index = 0;

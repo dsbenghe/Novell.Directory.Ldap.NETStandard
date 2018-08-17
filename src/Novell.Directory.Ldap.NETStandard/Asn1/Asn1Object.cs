@@ -37,7 +37,6 @@ using System.Text;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This is the base class for all other Asn1 types.</summary>
-    [CLSCompliant(true)]
     public abstract class Asn1Object
     {
         private Asn1Identifier _id;
@@ -87,7 +86,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     defined in Asn1Object but will usually be implemented
         ///     in the child Asn1 classses.
         /// </summary>
-        [CLSCompliant(false)]
         public byte[] GetEncoding(IAsn1Encoder enc)
         {
             var outRenamed = new MemoryStream();
@@ -106,7 +104,6 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>
-        [CLSCompliant(false)]
         public override string ToString()
         {
             string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };

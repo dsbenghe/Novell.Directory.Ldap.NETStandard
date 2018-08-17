@@ -679,7 +679,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException   Occurs if this method is called out of
         ///     sequence or the type added is out of sequence.
         /// </param>
-        [CLSCompliant(false)]
         public void AddSubstring(int type, byte[] valueRenamed)
         {
             try
@@ -762,7 +761,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when the filter type is not a valid attribute assertion.
         /// </param>
-        [CLSCompliant(false)]
         public void AddAttributeValueAssertion(int rfcType, string attrName, byte[] valueRenamed)
         {
             if (_filterStack != null && !(_filterStack.Count == 0) && _filterStack.Peek() is Asn1SequenceOf)
@@ -823,7 +821,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
-        [CLSCompliant(false)]
         public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed,
             bool useDnMatching)
         {
