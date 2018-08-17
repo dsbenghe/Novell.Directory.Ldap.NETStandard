@@ -40,7 +40,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     distinct type. This class inherits from the Asn1Structured class
     ///     which already provides functionality to hold multiple Asn1 components.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Set : Asn1Structured
     {
         /// <summary> ASN.1 SET tag definition.</summary>
@@ -90,7 +89,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
@@ -101,7 +99,6 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Returns a String representation of this Asn1Set.</summary>
-        [CLSCompliant(false)]
         public override string ToString()
         {
             return ToString("SET: { ");

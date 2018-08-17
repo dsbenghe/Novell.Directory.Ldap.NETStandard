@@ -138,7 +138,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object)(token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -164,7 +164,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)(token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");

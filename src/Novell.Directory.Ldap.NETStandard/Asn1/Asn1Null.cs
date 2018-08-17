@@ -36,7 +36,6 @@ using System.IO;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class represents the ASN.1 NULL type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Null : Asn1Object
     {
         /// <summary> ASN.1 NULL tag definition.</summary>

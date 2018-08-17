@@ -37,7 +37,6 @@ using System.Text;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the OCTET STRING type.</summary>
-    [CLSCompliant(true)]
     public class Asn1OctetString : Asn1Object
     {
         /// <summary> ASN.1 OCTET STRING tag definition.</summary>
@@ -63,7 +62,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte array representing the string that
         ///     will be contained in the this Asn1OctetString object.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1OctetString(byte[] content)
             : base(Id)
         {
@@ -83,18 +81,8 @@ namespace Novell.Directory.Ldap.Asn1
         {
             try
             {
-/*                System.Text.UTF8Encoding utf8 = new System.Text.UTF8Encoding();
-                byte[] bytes = utf8.GetBytes (content);
-                byte[] sbytes = new byte[bytes.Length+1]; //signed bytes
-                sbytes[0] = 0; //set sign byte to zero.
-                for(int i=1; i<sbytes.Length; i++)
-                    sbytes[i] = (byte) bytes[i-1]; //cast byte-->byte
-*/
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(content);
+                var ibytes = content.ToUtf8Bytes();
                 _content = ibytes;
-
-// this.content = content.getBytes("UTF8");
             }
             catch (IOException uee)
             {
@@ -114,7 +102,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
@@ -144,7 +131,6 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Returns the content of this Asn1OctetString as a byte array.</summary>
-        [CLSCompliant(false)]
         public byte[] ByteValue()
         {
             return _content;
@@ -156,15 +142,11 @@ namespace Novell.Directory.Ldap.Asn1
             string s = null;
             try
             {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var dchar = encoder.GetChars(_content);
-                s = new string(dchar);
-
-// byte *sb=content;
-// s = new  String(sb,0,content.Length, new System.Text.UTF8Encoding());
+                s = _content.ToUtf8String();
             }
             catch (IOException uee)
             {
+                // TODO: Why? Just remove the try..catch?
                 throw new Exception(uee.ToString());
             }
 

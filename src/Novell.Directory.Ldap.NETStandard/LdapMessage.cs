@@ -511,7 +511,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object)_stringTag != null)
+                if (_stringTag != null)
                 {
                     return _stringTag;
                 }

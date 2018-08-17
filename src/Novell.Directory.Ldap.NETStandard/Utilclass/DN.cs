@@ -31,7 +31,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -78,11 +78,10 @@ namespace Novell.Directory.Ldap.Utilclass
 
         */
 
-        private ArrayList _rdnList;
+        private List<Rdn> _rdnList = new List<Rdn>();
 
         public Dn()
         {
-            InitBlock();
         }
 
         /// <summary>
@@ -100,7 +99,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </exception>
         public Dn(string dnString)
         {
-            InitBlock();
             /* the empty string is a valid DN */
             if (dnString.Length == 0)
             {
@@ -501,20 +499,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     list of RDNs.
         /// </returns>
-        public ArrayList RdNs
-        {
-            get
-            {
-                var size = _rdnList.Count;
-                var v = new ArrayList(size);
-                for (var i = 0; i < size; i++)
-                {
-                    v.Add(_rdnList[i]);
-                }
-
-                return v;
-            }
-        }
+        public IReadOnlyList<Rdn> RdNs => new List<Rdn>(_rdnList);
 
         /// <summary> Returns the Parent of this DN.</summary>
         /// <returns>
@@ -526,20 +511,16 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 var parent = new Dn
                 {
-                    _rdnList = (ArrayList)_rdnList.Clone()
+                    _rdnList = new List<Rdn>(_rdnList)
                 };
+
                 if (parent._rdnList.Count >= 1)
                 {
-                    parent._rdnList.Remove(_rdnList[0]); // remove first object
+                    parent._rdnList.RemoveAt(0); // remove first object
                 }
 
                 return parent;
             }
-        }
-
-        private void InitBlock()
-        {
-            _rdnList = new ArrayList();
         }
 
         /// <summary>
@@ -725,20 +706,7 @@ namespace Novell.Directory.Ldap.Utilclass
             return dn;
         }
 
-        /// <summary>
-        ///     Compares this DN to the specified DN to determine if they are equal.
-        /// </summary>
-        /// <param name="toDN">
-        ///     the DN to compare to.
-        /// </param>
-        /// <returns>
-        ///     <code>true</code> if the DNs are equal; otherwise.
-        ///     <code>false</code>
-        /// </returns>
-        public ArrayList GetrdnList()
-        {
-            return _rdnList;
-        }
+        public IReadOnlyList<Rdn> GetRdnList() => _rdnList;
 
         public override bool Equals(object toDn)
         {
@@ -747,7 +715,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public bool Equals(Dn toDn)
         {
-            var aList = toDn.GetrdnList();
+            var aList = toDn.GetRdnList();
             var length = aList.Count;
 
             if (_rdnList.Count != length)
@@ -757,7 +725,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             for (var i = 0; i < length; i++)
             {
-                if (!((Rdn)_rdnList[i]).Equals((Rdn)toDn.GetrdnList()[i]))
+                if (!(_rdnList[i]).Equals(toDn.GetRdnList()[i]))
                 {
                     return false;
                 }
@@ -786,7 +754,7 @@ namespace Novell.Directory.Ldap.Utilclass
             var rdns = new string[length];
             for (var i = 0; i < length; i++)
             {
-                rdns[i] = ((Rdn)_rdnList[i]).ToString(noTypes);
+                rdns[i] = (_rdnList[i]).ToString(noTypes);
             }
 
             return rdns;
@@ -821,7 +789,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             // Search from the end of the DN for an RDN that matches the end RDN of
             // containerDN.
-            while (!((Rdn)_rdnList[j]).Equals((Rdn)containerDn._rdnList[i]))
+            while (!(_rdnList[j]).Equals(containerDn._rdnList[i]))
             {
                 j--;
                 if (j <= 0)
@@ -839,7 +807,7 @@ namespace Novell.Directory.Ldap.Utilclass
             // step backwards to verify that all RDNs in containerDN exist in this DN
             for (; i >= 0 && j >= 0; i--, j--)
             {
-                if (!((Rdn)_rdnList[j]).Equals((Rdn)containerDn._rdnList[i]))
+                if (!(_rdnList[j]).Equals(containerDn._rdnList[i]))
                 {
                     return false;
                 }
@@ -881,5 +849,5 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             _rdnList.Add(rdn);
         }
-    } // end class DN
+    }
 }

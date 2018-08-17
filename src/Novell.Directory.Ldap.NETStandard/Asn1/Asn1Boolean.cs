@@ -36,7 +36,6 @@ using System.IO;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the ASN.1 BOOLEAN type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Boolean : Asn1Object
     {
         /// <summary> ASN.1 BOOLEAN tag definition.</summary>
@@ -80,7 +79,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1Boolean(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {

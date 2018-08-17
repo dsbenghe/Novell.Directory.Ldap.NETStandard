@@ -64,7 +64,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="dn">
         ///     The Distinguished Name of the entry to delete.
         /// </param>
-        [CLSCompliant(false)]
         public RfcDelRequest(byte[] dn)
             : base(dn)
         {
@@ -72,7 +71,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            if ((object)baseRenamed == null)
+            if (baseRenamed == null)
             {
                 return new RfcDelRequest(ByteValue());
             }

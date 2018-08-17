@@ -72,7 +72,6 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the simple bind request,
         ///     or null if none.
         /// </param>
-        [CLSCompliant(false)]
         public LdapBindRequest(int version, string dn, byte[] passwd, LdapControl[] cont)
             : base(
                 BindRequest,

@@ -137,7 +137,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Will decode an RfcLdapMessage directly from an InputStream.</summary>
-        [CLSCompliant(false)]
         public RfcLdapMessage(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(dec, inRenamed, len)
         {

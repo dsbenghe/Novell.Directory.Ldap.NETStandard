@@ -128,7 +128,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapAttribute GetAttribute(string attrName)
         {
-            return (LdapAttribute)_map[attrName.ToUpper()];
+            return (LdapAttribute)_map[attrName.ToUpper()]; // TODO: Make _map a Dictionary with a IgnoreCase comparer
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Novell.Directory.Ldap
         public LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;
-            return (LdapAttribute)_map[key.ToUpper()];
+            return (LdapAttribute)_map[key.ToUpper()]; // TODO: Make _map a Dictionary with a IgnoreCase comparer
         }
 
         /// <summary>
@@ -298,7 +298,7 @@ namespace Novell.Directory.Ldap
         public override bool Contains(object attr)
         {
             var attribute = (LdapAttribute)attr;
-            return _map.ContainsKey(attribute.Name.ToUpper());
+            return _map.ContainsKey(attribute.Name.ToUpper()); // TODO: Make _map a Dictionary with a IgnoreCase comparer
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace Novell.Directory.Ldap
         {
             // We must enforce that attr is an LdapAttribute
             var attribute = (LdapAttribute)attr;
-            var name = attribute.Name.ToUpper();
+            var name = attribute.Name.ToUpper(); // TODO: Make _map a Dictionary with a IgnoreCase comparer
             if (_map.ContainsKey(name))
             {
                 return false;
@@ -356,12 +356,12 @@ namespace Novell.Directory.Ldap
                 attributeName = ((LdapAttribute)objectRenamed).Name;
             }
 
-            if ((object)attributeName == null)
+            if (attributeName == null)
             {
                 return false;
             }
 
-            return SupportClass.HashtableRemove(_map, attributeName.ToUpper()) != null;
+            return SupportClass.HashtableRemove(_map, attributeName.ToUpper()) != null; // TODO: Make _map a Dictionary with a IgnoreCase comparer
         }
 
         /// <summary> Removes all of the elements from this set.</summary>

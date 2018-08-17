@@ -64,7 +64,6 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the compare request,
         ///     or null if none.
         /// </param>
-        [CLSCompliant(false)]
         public LdapCompareRequest(string dn, string name, byte[] valueRenamed, LdapControl[] cont)
             : base(
                 CompareRequest,
@@ -97,7 +96,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the LdapAttribute.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[] AssertionValue
         {
             get

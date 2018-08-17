@@ -1116,7 +1116,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object)_serverMessage != null && _serverMessage.Length == 0)
+                if (_serverMessage != null && _serverMessage.Length == 0)
                 {
                     return null;
                 }
@@ -1258,18 +1258,18 @@ namespace Novell.Directory.Ldap
                 new object[] {exception, base.Message, ResultCode, ResultCodeToString() });
 
             // If found no string from resource file, use a default string
-            if (msg.ToUpper().Equals("TOSTRING".ToUpper()))
+            if (msg.EqualsOrdinalCI("TOSTRING"))
             {
                 msg = exception + ": (" + ResultCode + ") " + ResultCodeToString();
             }
 
             // Add server message
-            if ((object)_serverMessage != null && _serverMessage.Length != 0)
+            if (!string.IsNullOrEmpty(_serverMessage))
             {
                 tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] {exception, _serverMessage });
 
                 // If found no string from resource file, use a default string
-                if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
+                if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
                 {
                     tmsg = exception + ": Server Message: " + _serverMessage;
                 }
@@ -1278,12 +1278,12 @@ namespace Novell.Directory.Ldap
             }
 
             // Add Matched DN message
-            if ((object)MatchedDn != null)
+            if (MatchedDn != null)
             {
                 tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, MatchedDn });
 
                 // If found no string from resource file, use a default string
-                if (tmsg.ToUpper().Equals("MATCHED_DN".ToUpper()))
+                if (tmsg.EqualsOrdinalCI("MATCHED_DN"))
                 {
                     tmsg = exception + ": Matched DN: " + MatchedDn;
                 }
