@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                         var nameList = new ArrayList();
                                         while (st2.NextToken() == '\'')
                                         {
-                                            if ((object)st2.StringValue != null)
+                                            if (st2.StringValue != null)
                                             {
                                                 nameList.Add(st2.StringValue);
                                             }

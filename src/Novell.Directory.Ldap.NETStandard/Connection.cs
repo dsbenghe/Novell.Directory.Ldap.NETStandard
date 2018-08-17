@@ -148,7 +148,7 @@ namespace Novell.Directory.Ldap
 
         static Connection()
         {
-            Sdk = new StringBuilder("2.2.1").ToString();
+            Sdk = "2.2.1";
             Protocol = 3;
         }
 
@@ -723,7 +723,7 @@ namespace Novell.Directory.Ldap
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
-            if (info.BindRequest && Connected == false && (object)Host != null)
+            if (info.BindRequest && Connected == false && Host != null)
             {
                 Connect(Host, Port, info.MessageId);
             }

@@ -589,7 +589,7 @@ namespace Novell.Directory.Ldap
                 url.Append(":" + _port);
             }
 
-            if ((object)_dn == null && AttributeArray == null && Scope == DefaultScope && (object)Filter == null &&
+            if (_dn == null && AttributeArray == null && Scope == DefaultScope && Filter == null &&
                 Extensions == null)
 
             {
@@ -598,13 +598,13 @@ namespace Novell.Directory.Ldap
 
             url.Append("/");
 
-            if ((object)_dn != null)
+            if (_dn != null)
 
             {
                 url.Append(_dn);
             }
 
-            if (AttributeArray == null && Scope == DefaultScope && (object)Filter == null && Extensions == null)
+            if (AttributeArray == null && Scope == DefaultScope && Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -632,7 +632,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if (Scope == DefaultScope && (object)Filter == null && Extensions == null)
+            if (Scope == DefaultScope && Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -658,7 +658,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)Filter == null && Extensions == null)
+            if (Filter == null && Extensions == null)
 
             {
                 return url.ToString();
@@ -666,7 +666,7 @@ namespace Novell.Directory.Ldap
 
             // filter
 
-            if ((object)Filter == null)
+            if (Filter == null)
 
             {
                 url.Append("?");
@@ -802,7 +802,7 @@ namespace Novell.Directory.Ldap
 
             var scanEnd = url.Length;
 
-            if ((object)url == null)
+            if (url == null)
 
             {
                 throw new UriFormatException("LdapUrl: URL cannot be null");

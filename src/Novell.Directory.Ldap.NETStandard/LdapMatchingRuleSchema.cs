@@ -120,7 +120,7 @@ namespace Novell.Directory.Ldap
                 Description = matchParser.Description;
                 Obsolete = matchParser.Obsolete;
                 SyntaxString = matchParser.Syntax;
-                if ((object)rawMatchingRuleUse != null)
+                if (rawMatchingRuleUse != null)
                 {
                     var matchUseParser = new SchemaParser(rawMatchingRuleUse);
                     Attributes = matchUseParser.Applies;
@@ -162,7 +162,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object)(token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -188,7 +188,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)(token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -199,7 +199,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(" OBSOLETE");
             }
 
-            if ((object)(token = SyntaxString) != null)
+            if ((token = SyntaxString) != null)
             {
                 valueBuffer.Append(" SYNTAX ");
                 valueBuffer.Append(token);

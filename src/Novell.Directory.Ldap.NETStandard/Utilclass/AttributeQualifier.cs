@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public AttributeQualifier(string name, string[] valueRenamed)
         {
-            if ((object)name == null || valueRenamed == null)
+            if (name == null || valueRenamed == null)
             {
                 throw new ArgumentException("A null name or value " +
                                             "was passed in for a schema definition qualifier");

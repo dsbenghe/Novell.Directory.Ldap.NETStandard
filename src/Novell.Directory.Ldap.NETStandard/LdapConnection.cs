@@ -783,7 +783,7 @@ namespace Novell.Directory.Ldap
         public void Bind(int version, string dn, string passwd, LdapConstraints cons)
         {
             byte[] pw = null;
-            if ((object)passwd != null)
+            if (passwd != null)
             {
                 var encoder = Encoding.GetEncoding("utf-8");
                 var ibytes = encoder.GetBytes(passwd);
@@ -1860,7 +1860,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("The LdapEntry parameter" + " cannot be null");
             }
 
-            if ((object)entry.Dn == null)
+            if (entry.Dn == null)
             {
                 throw new ArgumentException("The DN value must be present" + " in the LdapEntry object");
             }
@@ -1954,7 +1954,7 @@ namespace Novell.Directory.Ldap
                 cons = _defSearchCons;
             }
 
-            if ((object)dn == null)
+            if (dn == null)
             {
                 dn = string.Empty;
             }
@@ -1983,7 +1983,7 @@ namespace Novell.Directory.Ldap
             // For bind requests, if not connected, attempt to reconnect
             if (!Connection.Connected)
             {
-                if ((object)Connection.Host != null)
+                if (Connection.Host != null)
                 {
                     Connection.Connect(Connection.Host, Connection.Port);
                 }
@@ -2159,7 +2159,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("compare: Exactly one value " + "must be present in the LdapAttribute");
             }
 
-            if ((object)dn == null)
+            if (dn == null)
             {
                 // Invalid parameter
                 throw new ArgumentException("compare: DN cannot be null");
@@ -2221,7 +2221,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
         {
-            if ((object)dn == null)
+            if (dn == null)
             {
                 // Invalid DN parameter
                 throw new ArgumentException(ExceptionMessages.DnParamError);
@@ -2341,7 +2341,7 @@ namespace Novell.Directory.Ldap
             }
 
             // error check the parameters
-            if ((object)op.GetId() == null)
+            if (op.GetId() == null)
             {
                 // Invalid extended operation parameter, no OID specified
                 throw new ArgumentException(ExceptionMessages.OpParamError);
@@ -2479,7 +2479,7 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue,
             LdapConstraints cons)
         {
-            if ((object)dn == null)
+            if (dn == null)
             {
                 // Invalid DN parameter
                 throw new ArgumentException(ExceptionMessages.DnParamError);
@@ -2688,7 +2688,7 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
             LdapResponseQueue queue, LdapConstraints cons)
         {
-            if ((object)dn == null || (object)newRdn == null)
+            if (dn == null || newRdn == null)
             {
                 // Invalid DN or RDN parameter
                 throw new ArgumentException(ExceptionMessages.RdnParamError);
@@ -2795,7 +2795,7 @@ namespace Novell.Directory.Ldap
         public LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchQueue queue, LdapSearchConstraints cons)
         {
-            if ((object)filter == null)
+            if (filter == null)
             {
                 filter = "objectclass=*";
             }

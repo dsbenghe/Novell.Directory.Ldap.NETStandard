@@ -146,9 +146,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Parses an RFC 2251 filter string into an ASN.1 Ldap Filter object.</summary>
         private Asn1Tagged Parse(string filterExpr)
         {
-            if ((object)filterExpr == null || filterExpr.Equals(string.Empty))
+            if (string.IsNullOrEmpty(filterExpr))
             {
-                filterExpr = new StringBuilder("(objectclass=*)").ToString();
+                filterExpr = "(objectclass=*)";
             }
 
             int idx;
@@ -296,7 +296,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
 
-                                var lastTok = new StringBuilder(string.Empty).ToString();
+                                var lastTok = string.Empty;
 
                                 while (sub.HasMoreTokens())
                                 {
@@ -395,8 +395,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             tag = new Asn1Tagged(
                                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                                 new RfcMatchingRuleAssertion(
-                                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                                    (object)type == null ? null : new RfcAttributeDescription(type),
+                                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                                    type == null ? null : new RfcAttributeDescription(type),
                                     new RfcAssertionValue(UnescapeString(valueRenamed)),
                                     dnAttributes == false ? null : new Asn1Boolean(true)), false);
                             break;
@@ -834,8 +834,8 @@ namespace Novell.Directory.Ldap.Rfc2251
             Asn1Object current = new Asn1Tagged(
                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                 new RfcMatchingRuleAssertion(
-                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                    (object)attrName == null ? null : new RfcAttributeDescription(attrName),
+                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                    attrName == null ? null : new RfcAttributeDescription(attrName),
                     new RfcAssertionValue(valueRenamed), useDnMatching == false ? null : new Asn1Boolean(true)), false);
             AddObject(current);
         }

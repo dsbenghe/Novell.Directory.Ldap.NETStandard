@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapEntry(string dn, LdapAttributeSet attrs)
         {
-            if ((object)dn == null)
+            if (dn == null)
             {
                 dn = string.Empty;
             }
