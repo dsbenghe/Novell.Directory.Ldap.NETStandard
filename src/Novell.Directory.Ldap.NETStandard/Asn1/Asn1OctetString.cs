@@ -83,18 +83,8 @@ namespace Novell.Directory.Ldap.Asn1
         {
             try
             {
-/*                System.Text.UTF8Encoding utf8 = new System.Text.UTF8Encoding();
-                byte[] bytes = utf8.GetBytes (content);
-                byte[] sbytes = new byte[bytes.Length+1]; //signed bytes
-                sbytes[0] = 0; //set sign byte to zero.
-                for(int i=1; i<sbytes.Length; i++)
-                    sbytes[i] = (byte) bytes[i-1]; //cast byte-->byte
-*/
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(content);
+                var ibytes = content.ToUtf8Bytes();
                 _content = ibytes;
-
-// this.content = content.getBytes("UTF8");
             }
             catch (IOException uee)
             {
@@ -156,15 +146,11 @@ namespace Novell.Directory.Ldap.Asn1
             string s = null;
             try
             {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var dchar = encoder.GetChars(_content);
-                s = new string(dchar);
-
-// byte *sb=content;
-// s = new  String(sb,0,content.Length, new System.Text.UTF8Encoding());
+                s = _content.ToUtf8String();
             }
             catch (IOException uee)
             {
+                // TODO: Why? Just remove the try..catch?
                 throw new Exception(uee.ToString());
             }
 

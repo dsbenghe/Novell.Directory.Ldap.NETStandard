@@ -136,18 +136,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     a String containing the encoded value of the input.
         /// </returns>
         public static string Encode(string inputString)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(inputString);
-                return Encode(ibytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("US-ASCII String encoding not supported by JVM", ue);
-            }
-        }
+            => Encode(inputString.ToUtf8Bytes());
 
         /// <summary>
         ///     Encodes the specified bytes into a base64 array of bytes.
@@ -601,18 +590,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     true if encoding not required for LDIF.
         /// </returns>
         public static bool IsLdifSafe(string str)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(str);
-                return IsLdifSafe(ibytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("UTF-8 String encoding not supported by JVM", ue);
-            }
-        }
+            => IsLdifSafe(str.ToUtf8Bytes());
 
         /* **************UTF-8 Validation methods and members*******************
         * The following text is taken from draft-yergeau-rfc2279bis-02 and explains

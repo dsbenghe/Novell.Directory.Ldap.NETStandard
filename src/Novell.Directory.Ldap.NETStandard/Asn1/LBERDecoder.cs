@@ -265,9 +265,7 @@ namespace Novell.Directory.Ldap.Asn1
                 octets[i] = (byte)ret;
             }
 
-            var encoder = Encoding.GetEncoding("utf-8");
-            var dchar = encoder.GetChars(octets);
-            var rval = new string(dchar);
+            var rval = octets.ToUtf8String();
 
             return rval; // new String( "UTF8");
         }

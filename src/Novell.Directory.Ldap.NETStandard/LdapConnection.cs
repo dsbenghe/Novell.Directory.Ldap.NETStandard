@@ -785,9 +785,7 @@ namespace Novell.Directory.Ldap
             byte[] pw = null;
             if (passwd != null)
             {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(passwd);
-                pw = ibytes;
+                pw = passwd.ToUtf8Bytes();
             }
 
             Bind(version, dn, pw, cons);
