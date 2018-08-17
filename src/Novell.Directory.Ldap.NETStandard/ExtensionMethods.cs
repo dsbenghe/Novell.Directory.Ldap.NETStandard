@@ -38,7 +38,7 @@ namespace Novell.Directory.Ldap
         /// Shortcut for <see cref="UTF8Encoding.GetString"/>
         /// Will return an empty string if <paramref name="input"/> is null or empty.
         /// </summary>
-        internal static string FromUtf8Bytes(this byte[] input)
+        internal static string ToUtf8String(this byte[] input)
             => input.IsNotEmpty() ? Encoding.UTF8.GetString(input) : string.Empty;
 
         /// <summary>
