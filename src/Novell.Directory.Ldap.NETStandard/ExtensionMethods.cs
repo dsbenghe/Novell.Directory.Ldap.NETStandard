@@ -44,11 +44,13 @@ namespace Novell.Directory.Ldap
         /// <summary>
         /// Compare two strings using <see cref="StringComparison.Ordinal"/>
         /// </summary>
-        internal static bool EqualsOrdinal(this string input, string other) => string.Equals(input, other, StringComparison.Ordinal);
+        internal static bool EqualsOrdinal(this string input, string other)
+            => string.Equals(input, other, StringComparison.Ordinal);
 
         /// <summary>
         /// Compare two strings using <see cref="StringComparison.OrdinalIgnoreCase"/>
         /// </summary>
-        internal static bool EqualsOrdinalCI(this string input, string other) => string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
+        internal static bool EqualsOrdinalCI(this string input, string other)
+            => string.Equals(input, other, StringComparison.OrdinalIgnoreCase);
     }
 }
