@@ -745,7 +745,7 @@ namespace Novell.Directory.Ldap
             {
                 for (var i = 0; i < _subTypes.Length; i++)
                 {
-                    if (_subTypes[i].ToUpper().Equals(subtype.ToUpper()))
+                    if (_subTypes[i].EqualsOrdinalCI(subtype))
                     {
                         return true;
                     }
@@ -787,7 +787,7 @@ namespace Novell.Directory.Ldap
                         throw new ArgumentException("subtype " + "at array index " + i + " cannot be null");
                     }
 
-                    if (_subTypes[j].ToUpper().Equals(subtypes[i].ToUpper()))
+                    if (_subTypes[j].EqualsOrdinalCI(subtypes[i]))
                     {
                         goto gotSubType;
                     }

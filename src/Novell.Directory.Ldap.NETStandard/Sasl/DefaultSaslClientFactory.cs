@@ -9,12 +9,12 @@ namespace Novell.Directory.Ldap.Sasl
 
         public static ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
         {
-            if (string.IsNullOrEmpty(mechanism) || !IsSaslMechanismSupported(mechanism))
+            if (!IsSaslMechanismSupported(mechanism))
             {
                 return null;
             }
 
-            switch (mechanism.ToUpperInvariant())
+            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
             {
                 case SaslConstants.Mechanism.CramMd5:
                     return CramMD5Client.CreateClient(authorizationId, protocol, serverName, credentials, props);
@@ -31,7 +31,7 @@ namespace Novell.Directory.Ldap.Sasl
         {
             if (string.IsNullOrEmpty(mechanism)) return false;
 
-            switch (mechanism.ToUpperInvariant())
+            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
             {
                 case SaslConstants.Mechanism.CramMd5:
                     return true;

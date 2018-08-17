@@ -1595,17 +1595,17 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public object GetProperty(string name)
         {
-            if (name.ToUpper().Equals(LdapPropertySdk.ToUpper()))
+            if (name.EqualsOrdinalCI(LdapPropertySdk))
             {
                 return Connection.Sdk;
             }
 
-            if (name.ToUpper().Equals(LdapPropertyProtocol.ToUpper()))
+            if (name.EqualsOrdinalCI(LdapPropertyProtocol))
             {
                 return Connection.Protocol;
             }
 
-            if (name.ToUpper().Equals(LdapPropertySecurity.ToUpper()))
+            if (name.EqualsOrdinalCI(LdapPropertySecurity))
             {
                 return Connection.Security;
             }
@@ -3131,7 +3131,7 @@ namespace Novell.Directory.Ldap
                         try
                         {
                             var url = new LdapUrl(referrals[idx]);
-                            if (url.Host.ToUpper().Equals(rconn.Host.ToUpper()) && url.Port == rconn.Port)
+                            if (url.Host.EqualsOrdinalCI(rconn.Host) && url.Port == rconn.Port)
                             {
                                 refInfo = new ReferralInfo(rconn, referrals, url);
                                 break;

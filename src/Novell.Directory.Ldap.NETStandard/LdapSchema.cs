@@ -165,7 +165,7 @@ namespace Novell.Directory.Ldap
                 string valueRenamed, attrName = attr.Name;
                 var enumString = attr.StringValues;
 
-                if (attrName.ToUpper().Equals(SchemaTypeNames[ObjectClass].ToUpper()))
+                if (attrName.EqualsOrdinalCI(SchemaTypeNames[ObjectClass]))
                 {
                     LdapObjectClassSchema classSchema;
                     while (enumString.MoveNext())
@@ -184,7 +184,7 @@ namespace Novell.Directory.Ldap
                         AddElement(ObjectClass, classSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[Attribute].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Attribute]))
                 {
                     LdapAttributeSchema attrSchema;
                     while (enumString.MoveNext())
@@ -203,7 +203,7 @@ namespace Novell.Directory.Ldap
                         AddElement(Attribute, attrSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[Syntax].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Syntax]))
                 {
                     LdapSyntaxSchema syntaxSchema;
                     while (enumString.MoveNext())
@@ -213,7 +213,7 @@ namespace Novell.Directory.Ldap
                         AddElement(Syntax, syntaxSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[Matching].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Matching]))
                 {
                     LdapMatchingRuleSchema matchingRuleSchema;
                     while (enumString.MoveNext())
@@ -223,7 +223,7 @@ namespace Novell.Directory.Ldap
                         AddElement(Matching, matchingRuleSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[MatchingUse].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[MatchingUse]))
                 {
                     LdapMatchingRuleUseSchema matchingRuleUseSchema;
                     while (enumString.MoveNext())
@@ -233,7 +233,7 @@ namespace Novell.Directory.Ldap
                         AddElement(MatchingUse, matchingRuleUseSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[Ditcontent].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditcontent]))
                 {
                     LdapDitContentRuleSchema dItContentRuleSchema;
                     while (enumString.MoveNext())
@@ -243,7 +243,7 @@ namespace Novell.Directory.Ldap
                         AddElement(Ditcontent, dItContentRuleSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[Ditstructure].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditstructure]))
                 {
                     LdapDitStructureRuleSchema dItStructureRuleSchema;
                     while (enumString.MoveNext())
@@ -253,7 +253,7 @@ namespace Novell.Directory.Ldap
                         AddElement(Ditstructure, dItStructureRuleSchema);
                     }
                 }
-                else if (attrName.ToUpper().Equals(SchemaTypeNames[NameForm].ToUpper()))
+                else if (attrName.EqualsOrdinalCI(SchemaTypeNames[NameForm]))
                 {
                     LdapNameFormSchema nameFormSchema;
                     while (enumString.MoveNext())

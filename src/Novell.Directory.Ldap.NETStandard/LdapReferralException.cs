@@ -269,7 +269,7 @@ namespace Novell.Directory.Ldap
                     new object[] {"LdapReferralException", FailedReferral });
 
                 // If found no string from resource file, use a default string
-                if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
+                if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
                 {
                     tmsg = "LdapReferralException: Failed Referral: " + FailedReferral;
                 }
@@ -287,7 +287,7 @@ namespace Novell.Directory.Ldap
                         new object[] {"LdapReferralException", _referrals[i] });
 
                     // If found no string from resource file, use a default string
-                    if (tmsg.ToUpper().Equals("SERVER_MSG".ToUpper()))
+                    if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
                     {
                         tmsg = "LdapReferralException: Referral: " + _referrals[i];
                     }
