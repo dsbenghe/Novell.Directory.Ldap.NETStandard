@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 throw new ArgumentException("Invalid RDN: see API " + "documentation");
             }
 
-            var thisRdn = (Rdn)rdns[0];
+            var thisRdn = rdns[0];
             _types = thisRdn._types;
             _values = thisRdn._values;
             RawValue = thisRdn.RawValue;
