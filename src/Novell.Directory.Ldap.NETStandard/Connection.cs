@@ -551,29 +551,33 @@ namespace Novell.Directory.Ldap
                 {
                     if (_inStream == null || _outStream == null)
                     {
+                        Host = host;
+                        Port = port;
+                        var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                        var ipAddress = ipAddresses.First(ip =>
+                            ip.AddressFamily == AddressFamily.InterNetwork ||
+                            ip.AddressFamily == AddressFamily.InterNetworkV6);
+
                         if (Ssl)
                         {
-                            Host = host;
-                            Port = port;
-                            _sock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
-                            var hostadd = ipAddresses.First(ip => ip.AddressFamily == AddressFamily.InterNetwork);
-                            var ephost = new IPEndPoint(hostadd, port);
-                            _sock.Connect(ephost);
-                            var nstream = new NetworkStream(_sock, true);
+                            _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
+                            var ipEndPoint = new IPEndPoint(ipAddress, port);
+                            _sock.Connect(ipEndPoint);
 
                             var sslstream = new SslStream(
-                                nstream,
+                                new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback);
                             sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
+
                             _inStream = sslstream;
                             _outStream = sslstream;
                         }
                         else
                         {
-                            _socket = new TcpClient();
+                            _socket = new TcpClient(ipAddress.AddressFamily);
                             _socket.ConnectAsync(host, port).WaitAndUnwrap(ConnectionTimeout);
+
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
                         }
