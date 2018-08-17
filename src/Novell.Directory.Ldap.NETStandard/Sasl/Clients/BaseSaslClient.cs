@@ -5,13 +5,11 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 {
     public abstract class BaseSaslClient : ISaslClient
     {
-        protected string Protocol { get; }
         protected string ServerName { get; }
         protected Hashtable Props { get; }
 
-        protected BaseSaslClient(string protocol, string serverName, Hashtable props)
+        protected BaseSaslClient(string serverName, Hashtable props)
         {
-            Protocol = protocol;
             ServerName = serverName;
             Props = props;
         }

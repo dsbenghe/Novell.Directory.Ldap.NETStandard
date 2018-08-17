@@ -5,9 +5,7 @@ namespace Novell.Directory.Ldap.Sasl
 {
     public static class DefaultSaslClientFactory // static, thus not implementing ISaslClientFactory. Should be be non-static and do?
     {
-        public const string ProtocolLdap = "ldap";
-
-        public static ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
+        public static ISaslClient CreateClient(string mechanism, string authorizationId, string serverName, byte[] credentials, Hashtable props)
         {
             if (!IsSaslMechanismSupported(mechanism))
             {
@@ -17,7 +15,7 @@ namespace Novell.Directory.Ldap.Sasl
             switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
             {
                 case SaslConstants.Mechanism.CramMd5:
-                    return CramMD5Client.CreateClient(authorizationId, protocol, serverName, credentials, props);
+                    return CramMD5Client.CreateClient(authorizationId, serverName, credentials, props);
 
                 //case LdapConstants.SaslMechanism.DigestMd5:
                 //case LdapConstants.SaslMechanism.Plain:

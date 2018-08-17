@@ -17,7 +17,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
     /// </summary>
     public class DigestMD5Client : BaseSaslClient
     {
-        public DigestMD5Client(string protocol, string serverName, Hashtable props) : base(protocol, serverName, props)
+        public DigestMD5Client(string serverName, Hashtable props) : base(serverName, props)
         {
         }
 

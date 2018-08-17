@@ -8,13 +8,12 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
     public class SaslClientFactoryTests
     {
-        private const string _proto = DefaultSaslClientFactory.ProtocolLdap;
         private const string _gibberish = "7c566abfaae049d893df01cc811d3e17";
 
         [Fact]
         public void CramMd5_CreatesCramMD5Client()
         {
-            var client = DefaultSaslClientFactory.CreateClient(SaslConstants.Mechanism.CramMd5, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = DefaultSaslClientFactory.CreateClient(SaslConstants.Mechanism.CramMd5, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.NotNull(client);
             Assert.IsType<CramMD5Client>(client);
             Assert.Equal(SaslConstants.Mechanism.CramMd5, client.MechanismName);
@@ -24,7 +23,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void Unknown_ReturnsNull()
         {
-            var client = DefaultSaslClientFactory.CreateClient(_gibberish, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = DefaultSaslClientFactory.CreateClient(_gibberish, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.Null(client);
         }
 
@@ -70,7 +69,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void LdapConnection_CreateClient_Unknown_Null()
         {
             var conn = new LdapConnection();
-            var client = conn.CreateClient(_gibberish, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = conn.CreateClient(_gibberish, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.Null(client);
         }
 
@@ -78,7 +77,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void LdapConnection_CreateClient_CramMd5_DefaultCramMD5Client()
         {
             var conn = new LdapConnection();
-            var client = conn.CreateClient(SaslConstants.Mechanism.CramMd5, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = conn.CreateClient(SaslConstants.Mechanism.CramMd5, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.NotNull(client);
             Assert.IsType<CramMD5Client>(client);
             Assert.Equal(SaslConstants.Mechanism.CramMd5, client.MechanismName);
@@ -90,13 +89,13 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             const string mechanism = "MyNewMechanism";
             var conn = new LdapConnection();
-            var client = conn.CreateClient(mechanism, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = conn.CreateClient(mechanism, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.Null(client);
 
             var factory = new TestSaslClientFactory(mechanism);
             conn.RegisterSaslClientFactory(factory);
 
-            client = conn.CreateClient(mechanism, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            client = conn.CreateClient(mechanism, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.NotNull(client);
             Assert.IsType<TestSaslClient>(client);
         }
@@ -106,14 +105,14 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             const string mechanism = SaslConstants.Mechanism.CramMd5;
             var conn = new LdapConnection();
-            var client = conn.CreateClient(mechanism, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            var client = conn.CreateClient(mechanism, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.NotNull(client);
             Assert.IsType<CramMD5Client>(client);
 
             var factory = new TestSaslClientFactory(mechanism);
             conn.RegisterSaslClientFactory(factory);
 
-            client = conn.CreateClient(mechanism, "unused", _proto, "unused", new byte[] { 0x00 }, new Hashtable());
+            client = conn.CreateClient(mechanism, "unused", "unused", new byte[] { 0x00 }, new Hashtable());
             Assert.NotNull(client);
             Assert.IsType<TestSaslClient>(client);
         }

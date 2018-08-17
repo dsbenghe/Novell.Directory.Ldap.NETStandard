@@ -6,17 +6,17 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 #pragma warning disable CA5351 // Do Not Use Broken Cryptographic Algorithms - Yes, MD5 is broken. But the LDAP Standard uses it.
     public class CramMD5Client : BaseSaslClient
     {
-        public static CramMD5Client CreateClient(string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
+        public static CramMD5Client CreateClient(string authorizationId, string serverName, byte[] credentials, Hashtable props)
         {
-            return new CramMD5Client(authorizationId, protocol, serverName, credentials, props);
+            return new CramMD5Client(authorizationId, serverName, credentials, props);
         }
 
         private readonly string _username;
         private readonly byte[] _password;
         private State _currentState = State.Initial;
 
-        private CramMD5Client(string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
-            : base(protocol, serverName, props)
+        private CramMD5Client(string authorizationId, string serverName, byte[] credentials, Hashtable props)
+            : base(serverName, props)
         {
             if (string.IsNullOrEmpty(authorizationId) || credentials.IsEmpty())
             {

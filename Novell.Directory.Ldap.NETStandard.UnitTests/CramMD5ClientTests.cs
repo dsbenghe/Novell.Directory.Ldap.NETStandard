@@ -32,12 +32,12 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient(null, "ldap", "localhost", new byte[] { 0x00 }, new Hashtable());
+                var client = CramMD5Client.CreateClient(null, "localhost", new byte[] { 0x00 }, new Hashtable());
             });
 
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("", "ldap", "localhost", new byte[] { 0x00 }, new Hashtable());
+                var client = CramMD5Client.CreateClient("", "localhost", new byte[] { 0x00 }, new Hashtable());
             });
         }
 
@@ -46,19 +46,19 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("authId", "ldap", "localhost", null, new Hashtable());
+                var client = CramMD5Client.CreateClient("authId", "localhost", null, new Hashtable());
             });
 
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("authId", "ldap", "localhost", Array.Empty<byte>(), new Hashtable());
+                var client = CramMD5Client.CreateClient("authId", "localhost", Array.Empty<byte>(), new Hashtable());
             });
         }
 
         [Fact]
         public void EvaluateChallenge_Success()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "ldap", "localhost", PasswordBytes, new Hashtable());
+            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void EvaluateChallenge_NonEmptyServerResponse_Exception()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "ldap", "localhost", PasswordBytes, new Hashtable());
+            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
@@ -93,7 +93,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void EvaluateChallenge_Disposed_Exception()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "ldap", "localhost", PasswordBytes, new Hashtable());
+            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
             Assert.False(client.IsComplete);
             client.Dispose();
             Assert.True(client.IsComplete);
