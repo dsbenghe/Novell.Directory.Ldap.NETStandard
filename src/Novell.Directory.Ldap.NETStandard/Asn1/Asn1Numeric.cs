@@ -39,7 +39,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     for all Asn1 numeric (integral) types. These include
     ///     Asn1Integer and Asn1Enumerated.
     /// </summary>
-    [CLSCompliant(true)]
     public abstract class Asn1Numeric : Asn1Object
     {
         private readonly long _content;

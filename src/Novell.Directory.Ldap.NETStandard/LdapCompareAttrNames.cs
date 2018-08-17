@@ -298,7 +298,7 @@ namespace Novell.Directory.Ldap
                     return false;
                 }
 
-                if (!comp._sortByNames[i].ToUpper().Equals(_sortByNames[i].ToUpper()))
+                if (!comp._sortByNames[i].EqualsOrdinalCI(_sortByNames[i]))
                 {
                     return false;
                 }

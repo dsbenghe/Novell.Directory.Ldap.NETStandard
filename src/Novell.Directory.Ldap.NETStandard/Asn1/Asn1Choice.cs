@@ -41,7 +41,6 @@ namespace Novell.Directory.Ldap.Asn1
     /// </summary>
     /* Can a CHOICE contain anything BUT a TAGGED Type?
     */
-    [CLSCompliant(true)]
     public class Asn1Choice : Asn1Object
     {
         /* Constructors for Asn1Choice
@@ -79,7 +78,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        [CLSCompliant(false)]
         protected Asn1Object ChoiceValue { set; get; }
 
         /* Asn1Object implementation

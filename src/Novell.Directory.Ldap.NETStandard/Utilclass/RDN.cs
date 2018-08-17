@@ -32,6 +32,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -50,8 +52,8 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </seealso>
     public class Rdn : object
     {
-        private readonly ArrayList _types; // list of Type strings
-        private readonly ArrayList _values; // list of Value strings
+        private readonly List<string> _types;
+        private readonly List<string> _values;
 
         /// <summary>
         ///     Creates an RDN object from the DN component specified in the string RDN.
@@ -71,7 +73,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 throw new ArgumentException("Invalid RDN: see API " + "documentation");
             }
 
-            var thisRdn = (Rdn)rdns[0];
+            var thisRdn = rdns[0];
             _types = thisRdn._types;
             _values = thisRdn._values;
             RawValue = thisRdn.RawValue;
@@ -79,8 +81,8 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public Rdn()
         {
-            _types = new ArrayList();
-            _values = new ArrayList();
+            _types = new List<string>();
+            _values = new List<string>();
             RawValue = string.Empty;
         }
 
@@ -100,25 +102,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute.
         /// </returns>
-        public string Type => (string)_types[0];
+        public string Type => _types[0];
 
         /// <summary> Returns all the types for this RDN.</summary>
         /// <returns>
         ///     list of types.
         /// </returns>
-        public string[] Types
-        {
-            get
-            {
-                var toReturn = new string[_types.Count];
-                for (var i = 0; i < _types.Count; i++)
-                {
-                    toReturn[i] = (string)_types[i];
-                }
-
-                return toReturn;
-            }
-        }
+        public string[] Types => _types.ToArray();
 
         /// <summary>
         ///     Returns the values of this RDN.  If multivalues attributes are used only
@@ -127,25 +117,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     Type of attribute.
         /// </returns>
-        public string Value => (string)_values[0];
+        public string Value => _values[0];
 
-        /// <summary> Returns all the types for this RDN.</summary>
+        /// <summary> Returns all the values for this RDN.</summary>
         /// <returns>
-        ///     list of types.
+        ///     list of values.
         /// </returns>
-        public string[] Values
-        {
-            get
-            {
-                var toReturn = new string[_values.Count];
-                for (var i = 0; i < _values.Count; i++)
-                {
-                    toReturn[i] = (string)_values[i];
-                }
-
-                return toReturn;
-            }
-        }
+        public string[] Values => _values.ToArray();
 
         /// <summary> Determines if this RDN is multivalued or not.</summary>
         /// <returns>
@@ -162,7 +140,6 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     @throws IllegalArgumentException if the application compares a name
         ///     with an OID.
         /// </param>
-        [CLSCompliant(false)]
         public bool Equals(Rdn rdn)
         {
             if (_values.Count != rdn._values.Count)
@@ -170,23 +147,21 @@ namespace Novell.Directory.Ldap.Utilclass
                 return false;
             }
 
-            int j, i;
-            for (i = 0; i < _values.Count; i++)
+            for (var i = 0; i < _values.Count; i++)
             {
                 // verify that the current value and type exists in the other list
-                j = 0;
+                var j = 0;
 
-                // May need a more intellegent compare
-                while (j < _values.Count &&
-                       (!((string)_values[i]).ToUpper().Equals(((string)rdn._values[j]).ToUpper()) ||
-                        !EqualAttrType((string)_types[i], (string)rdn._types[j])))
+                var valuesEqual = _values[i].EqualsOrdinalCI(rdn._values[j]);
+                var isEqualAttrType = EqualAttrType(_types[i], rdn._types[j]);
+
+                while (j < _values.Count && (!valuesEqual || !isEqualAttrType))
                 {
                     j++;
                 }
 
+                // couldn't find first value
                 if (j >= rdn._values.Count)
-
-                    // couldn't find first value
                 {
                     return false;
                 }
@@ -205,14 +180,13 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private bool EqualAttrType(string attr1, string attr2)
         {
-            if (char.IsDigit(attr1[0]) ^ char.IsDigit(attr2[0]))
-
-                // isDigit tests if it is an OID
+            // If it starts with a number, it's considered an OID
+            if (char.IsDigit(attr1[0]) != char.IsDigit(attr2[0]))
             {
-                throw new ArgumentException("OID numbers are not " + "currently compared to attribute names");
+                throw new ArgumentException("OID numbers can not be compared to attribute names");
             }
 
-            return attr1.ToUpper().Equals(attr2.ToUpper());
+            return attr1.EqualsOrdinalCI(attr2);
         }
 
         /// <summary>
@@ -241,10 +215,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     An RDN string.
         /// </returns>
-        public override string ToString()
-        {
-            return ToString(false);
-        }
+        public override string ToString() => ToString(false);
 
         /// <summary>
         ///     Creates a string that represents this RDN.
@@ -256,7 +227,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     An RDN string.
         /// </returns>
-        [CLSCompliant(false)]
         public string ToString(bool noTypes)
         {
             var length = _types.Count;
@@ -326,5 +296,5 @@ namespace Novell.Directory.Ldap.Utilclass
 
             return toReturn;
         }
-    } // end class RDN
+    }
 }

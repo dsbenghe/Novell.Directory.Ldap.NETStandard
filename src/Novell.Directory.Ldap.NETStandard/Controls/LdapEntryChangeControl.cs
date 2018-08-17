@@ -72,7 +72,6 @@ namespace Novell.Directory.Ldap.Controls
         /// <param name="value">
         ///     The control-specific data.
         /// </param>
-        [CLSCompliant(false)]
         public LdapEntryChangeControl(string oid, bool critical, byte[] valueRenamed)
             : base(oid, critical, valueRenamed)
         {

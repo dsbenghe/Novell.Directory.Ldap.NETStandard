@@ -60,7 +60,6 @@ namespace Novell.Directory.Ldap
         ///     Returns true if the two strings correspond to the same DN; false
         ///     if the DNs are different.
         /// </returns>
-        [CLSCompliant(false)]
         public static bool Equals(string dn1, string dn2)
         {
             var dnA = new Dn(dn1);

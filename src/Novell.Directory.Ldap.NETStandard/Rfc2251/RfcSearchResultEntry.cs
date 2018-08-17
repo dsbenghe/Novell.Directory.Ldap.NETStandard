@@ -54,7 +54,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a SearchResultEntry is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        [CLSCompliant(false)]
         public RfcSearchResultEntry(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(dec, inRenamed, len)
         {

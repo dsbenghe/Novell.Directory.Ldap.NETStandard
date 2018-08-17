@@ -146,9 +146,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Parses an RFC 2251 filter string into an ASN.1 Ldap Filter object.</summary>
         private Asn1Tagged Parse(string filterExpr)
         {
-            if ((object)filterExpr == null || filterExpr.Equals(string.Empty))
+            if (string.IsNullOrEmpty(filterExpr))
             {
-                filterExpr = new StringBuilder("(objectclass=*)").ToString();
+                filterExpr = "(objectclass=*)";
             }
 
             int idx;
@@ -296,7 +296,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
 
-                                var lastTok = new StringBuilder(string.Empty).ToString();
+                                var lastTok = string.Empty;
 
                                 while (sub.HasMoreTokens())
                                 {
@@ -395,8 +395,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             tag = new Asn1Tagged(
                                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                                 new RfcMatchingRuleAssertion(
-                                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                                    (object)type == null ? null : new RfcAttributeDescription(type),
+                                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                                    type == null ? null : new RfcAttributeDescription(type),
                                     new RfcAssertionValue(UnescapeString(valueRenamed)),
                                     dnAttributes == false ? null : new Asn1Boolean(true)), false);
                             break;
@@ -519,9 +519,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             {
                                 // char > 0x7f, could be encoded in 2 or 3 bytes
                                 ca[0] = ch;
-                                var encoder = Encoding.GetEncoding("utf-8");
-                                var ibytes = encoder.GetBytes(new string(ca));
-                                utf8Bytes = ibytes;
+                                utf8Bytes = Encoding.UTF8.GetBytes(ca);
 
                                 // copy utf8 encoded character into octets
                                 Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
@@ -535,11 +533,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             // found invalid character
                             var escString = string.Empty;
                             ca[0] = ch;
-                            var encoder = Encoding.GetEncoding("utf-8");
-                            var ibytes = encoder.GetBytes(new string(ca));
-                            utf8Bytes = ibytes;
+                            utf8Bytes = Encoding.UTF8.GetBytes(ca);
 
-// utf8Bytes = new System.String(ca).getBytes("UTF-8");
                             for (var i = 0; i < utf8Bytes.Length; i++)
                             {
                                 var u = utf8Bytes[i];
@@ -560,6 +555,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     }
                     catch (IOException ue)
                     {
+                        // TODO: This can be removed? In Java, Encoding.GetEncoding("utf-8") might not work, but in .net we always have UTF-8
                         throw new Exception("UTF-8 String encoding not supported by JVM", ue);
                     }
                 }
@@ -683,7 +679,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException   Occurs if this method is called out of
         ///     sequence or the type added is out of sequence.
         /// </param>
-        [CLSCompliant(false)]
         public void AddSubstring(int type, byte[] valueRenamed)
         {
             try
@@ -766,7 +761,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when the filter type is not a valid attribute assertion.
         /// </param>
-        [CLSCompliant(false)]
         public void AddAttributeValueAssertion(int rfcType, string attrName, byte[] valueRenamed)
         {
             if (_filterStack != null && !(_filterStack.Count == 0) && _filterStack.Peek() is Asn1SequenceOf)
@@ -827,15 +821,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
-        [CLSCompliant(false)]
         public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed,
             bool useDnMatching)
         {
             Asn1Object current = new Asn1Tagged(
                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                 new RfcMatchingRuleAssertion(
-                    (object)matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
-                    (object)attrName == null ? null : new RfcAttributeDescription(attrName),
+                    matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
+                    attrName == null ? null : new RfcAttributeDescription(attrName),
                     new RfcAssertionValue(valueRenamed), useDnMatching == false ? null : new Asn1Boolean(true)), false);
             AddObject(current);
         }
@@ -1060,21 +1053,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         private static string ByteString(byte[] valueRenamed)
         {
-            string toReturn = null;
             if (Base64.IsValidUtf8(valueRenamed, true))
             {
-                try
-                {
-                    var encoder = Encoding.GetEncoding("utf-8");
-                    var dchar = encoder.GetChars(valueRenamed);
-                    toReturn = new string(dchar);
-
-// toReturn = new String(value_Renamed, "UTF-8");
-                }
-                catch (IOException e)
-                {
-                    throw new Exception("Default JVM does not support UTF-8 encoding" + e);
-                }
+                return valueRenamed.ToUtf8String();
             }
             else
             {
@@ -1096,10 +1077,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                     }
                 }
 
-                toReturn = binary.ToString();
+                return binary.ToString();
             }
-
-            return toReturn;
         }
 
         /// <summary>

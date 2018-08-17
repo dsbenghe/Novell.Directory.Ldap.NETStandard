@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapEntry(string dn, LdapAttributeSet attrs)
         {
-            if ((object)dn == null)
+            if (dn == null)
             {
                 dn = string.Empty;
             }
@@ -106,7 +106,6 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name of the entry.
         /// </returns>
-        [CLSCompliant(false)]
         public string Dn { get; set; }
 
         /// <summary>
