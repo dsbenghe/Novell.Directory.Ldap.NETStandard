@@ -124,14 +124,14 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object)parser.Id != null)
+                if (parser.Id != null)
                 {
-                    Oid = new StringBuilder(parser.Id).ToString();
+                    Oid = parser.Id;
                 }
 
-                if ((object)parser.Description != null)
+                if (parser.Description != null)
                 {
-                    Description = new StringBuilder(parser.Description).ToString();
+                    Description = parser.Description;
                 }
 
                 if (parser.Required != null)
@@ -146,7 +146,7 @@ namespace Novell.Directory.Ldap
                     parser.Optional.CopyTo(OptionalNamingAttributes, 0);
                 }
 
-                if ((object)parser.ObjectClass != null)
+                if (parser.ObjectClass != null)
                 {
                     ObjectClass = parser.ObjectClass;
                 }

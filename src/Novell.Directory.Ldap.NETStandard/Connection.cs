@@ -148,7 +148,7 @@ namespace Novell.Directory.Ldap
 
         static Connection()
         {
-            Sdk = new StringBuilder("2.2.1").ToString();
+            Sdk = "2.2.1";
             Protocol = 3;
         }
 

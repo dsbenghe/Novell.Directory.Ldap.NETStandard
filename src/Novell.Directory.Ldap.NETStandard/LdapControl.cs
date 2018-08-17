@@ -103,7 +103,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object ID of the control.
         /// </returns>
-        public string Id => new StringBuilder(Asn1Object.ControlType.StringValue()).ToString();
+        public string Id => Asn1Object.ControlType.StringValue();
 
         /// <summary>
         ///     Returns whether the control is critical for the operation.

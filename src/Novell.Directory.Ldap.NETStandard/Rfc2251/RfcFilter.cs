@@ -146,9 +146,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Parses an RFC 2251 filter string into an ASN.1 Ldap Filter object.</summary>
         private Asn1Tagged Parse(string filterExpr)
         {
-            if ((object)filterExpr == null || filterExpr.Equals(string.Empty))
+            if (string.IsNullOrEmpty(filterExpr))
             {
-                filterExpr = new StringBuilder("(objectclass=*)").ToString();
+                filterExpr = "(objectclass=*)";
             }
 
             int idx;
@@ -296,7 +296,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
 
-                                var lastTok = new StringBuilder(string.Empty).ToString();
+                                var lastTok = string.Empty;
 
                                 while (sub.HasMoreTokens())
                                 {
