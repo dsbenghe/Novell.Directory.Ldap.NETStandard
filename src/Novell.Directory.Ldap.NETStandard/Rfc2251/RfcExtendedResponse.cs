@@ -65,7 +65,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a ExtendedResponse is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        [CLSCompliant(false)]
         public RfcExtendedResponse(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(dec, inRenamed, len)
         {
@@ -103,7 +102,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid)get_Renamed(_responseNameIndex) : null;
 
         /// <summary> </summary>
-        [CLSCompliant(false)]
         public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString)get_Renamed(_responseIndex) : null;
 
         // *************************************************************************

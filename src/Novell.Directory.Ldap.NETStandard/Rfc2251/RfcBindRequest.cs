@@ -67,7 +67,6 @@ namespace Novell.Directory.Ldap.Rfc2251
             Add(auth);
         }
 
-        [CLSCompliant(false)]
         public RfcBindRequest(int version, string dn, string mechanism, byte[] credentials)
             : this(new Asn1Integer(version), new RfcLdapDn(dn), new RfcAuthenticationChoice(mechanism, credentials))
         {
@@ -81,7 +80,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base
-            if ((object)baseRenamed != null)
+            if (baseRenamed != null)
             {
                 set_Renamed(1, new RfcLdapDn(baseRenamed));
             }

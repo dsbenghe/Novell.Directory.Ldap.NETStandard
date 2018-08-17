@@ -1116,7 +1116,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if ((object)_serverMessage != null && _serverMessage.Length == 0)
+                if (_serverMessage != null && _serverMessage.Length == 0)
                 {
                     return null;
                 }
@@ -1264,7 +1264,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Add server message
-            if ((object)_serverMessage != null && _serverMessage.Length != 0)
+            if (!string.IsNullOrEmpty(_serverMessage))
             {
                 tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] {exception, _serverMessage });
 
@@ -1278,7 +1278,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Add Matched DN message
-            if ((object)MatchedDn != null)
+            if (MatchedDn != null)
             {
                 tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, MatchedDn });
 

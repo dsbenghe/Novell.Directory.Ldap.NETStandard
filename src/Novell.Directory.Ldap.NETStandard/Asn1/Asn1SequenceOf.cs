@@ -41,7 +41,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     from the Asn1Structured class which already provides
     ///     functionality to hold multiple Asn1 components.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1SequenceOf : Asn1Structured
     {
         /// <summary> ASN.1 SEQUENCE OF tag definition.</summary>
@@ -105,7 +104,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
@@ -116,7 +114,6 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Returns a String representation of this Asn1SequenceOf object.</summary>
-        [CLSCompliant(false)]
         public override string ToString()
         {
             return ToString("SEQUENCE OF: { ");

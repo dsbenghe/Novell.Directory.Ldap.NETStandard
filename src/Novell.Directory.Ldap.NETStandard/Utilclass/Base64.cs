@@ -136,18 +136,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     a String containing the encoded value of the input.
         /// </returns>
         public static string Encode(string inputString)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(inputString);
-                return Encode(ibytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("US-ASCII String encoding not supported by JVM", ue);
-            }
-        }
+            => Encode(inputString.ToUtf8Bytes());
 
         /// <summary>
         ///     Encodes the specified bytes into a base64 array of bytes.
@@ -159,7 +148,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     a String containing the base64 encoded data.
         /// </returns>
-        [CLSCompliant(false)]
         public static string Encode(byte[] inputBytes)
         {
             int i, j, k;
@@ -170,7 +158,7 @@ namespace Novell.Directory.Ldap.Utilclass
             if (len == 0)
             {
                 // No data, return no data.
-                return new StringBuilder(string.Empty).ToString();
+                return string.Empty;
             }
 
             // every three bytes will be encoded into four bytes
@@ -264,7 +252,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
@@ -282,7 +269,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     A byte array object containing decoded bytes.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(char[] encodedChars)
         {
             int i, j, k;
@@ -397,7 +383,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     The decoded byte array.
         /// </returns>
-        [CLSCompliant(false)]
         public static byte[] Decode(StringBuilder encodedSBuf, int start, int end)
         {
             int i, j, k;
@@ -529,7 +514,6 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     true if encoding not required for LDIF.
         /// </returns>
-        [CLSCompliant(false)]
         public static bool IsLdifSafe(byte[] bytes)
         {
             var len = bytes.Length;
@@ -601,18 +585,7 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     true if encoding not required for LDIF.
         /// </returns>
         public static bool IsLdifSafe(string str)
-        {
-            try
-            {
-                var encoder = Encoding.GetEncoding("utf-8");
-                var ibytes = encoder.GetBytes(str);
-                return IsLdifSafe(ibytes);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception("UTF-8 String encoding not supported by JVM", ue);
-            }
-        }
+            => IsLdifSafe(str.ToUtf8Bytes());
 
         /* **************UTF-8 Validation methods and members*******************
         * The following text is taken from draft-yergeau-rfc2279bis-02 and explains
@@ -720,7 +693,6 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     sequence generates any character that cannot be
         ///     represented as a UCS2 character (Java String).
         /// </returns>
-        [CLSCompliant(false)]
         public static bool IsValidUtf8(byte[] array, bool isUcs2Only)
         {
             var index = 0;

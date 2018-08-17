@@ -69,7 +69,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///         1 1 1 1 1 (> 30) multiple octet tag, more octets follow
     ///     </pre>
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1Identifier : object
     {
         /// <summary>
@@ -185,7 +184,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="Universal">
         /// </seealso>
-        [CLSCompliant(false)]
         public bool IsUniversal => Asn1Class == Universal;
 
         /// <summary>
@@ -194,7 +192,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="Application">
         /// </seealso>
-        [CLSCompliant(false)]
         public bool IsApplication => Asn1Class == Application;
 
         /// <summary>
@@ -203,7 +200,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         /// <seealso cref="Context">
         /// </seealso>
-        [CLSCompliant(false)]
         public bool IsContext => Asn1Class == Context;
 
         /// <summary>
@@ -211,7 +207,6 @@ namespace Novell.Directory.Ldap.Asn1
         ///     has a TAG CLASS of PRIVATE.
         /// </summary>
         /// <seealso cref="Private"></seealso>
-        [CLSCompliant(false)]
         public bool IsPrivate => Asn1Class == Private;
 
         /// <summary>

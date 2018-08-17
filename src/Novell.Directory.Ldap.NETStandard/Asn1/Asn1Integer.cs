@@ -36,7 +36,6 @@ using System.IO;
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary> This class encapsulates the ASN.1 INTEGER type.</summary>
-    [CLSCompliant(true)]
     public class Asn1Integer : Asn1Numeric
     {
         /// <summary> ASN.1 INTEGER tag definition.</summary>
@@ -90,7 +89,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="in">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        [CLSCompliant(false)]
         public Asn1Integer(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
         {

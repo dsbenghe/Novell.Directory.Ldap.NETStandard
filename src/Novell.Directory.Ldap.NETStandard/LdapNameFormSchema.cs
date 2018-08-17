@@ -124,14 +124,14 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object)parser.Id != null)
+                if (parser.Id != null)
                 {
-                    Oid = new StringBuilder(parser.Id).ToString();
+                    Oid = parser.Id;
                 }
 
-                if ((object)parser.Description != null)
+                if (parser.Description != null)
                 {
-                    Description = new StringBuilder(parser.Description).ToString();
+                    Description = parser.Description;
                 }
 
                 if (parser.Required != null)
@@ -146,7 +146,7 @@ namespace Novell.Directory.Ldap
                     parser.Optional.CopyTo(OptionalNamingAttributes, 0);
                 }
 
-                if ((object)parser.ObjectClass != null)
+                if (parser.ObjectClass != null)
                 {
                     ObjectClass = parser.ObjectClass;
                 }
@@ -206,7 +206,7 @@ namespace Novell.Directory.Ldap
             var valueBuffer = new StringBuilder("( ");
             string token;
 
-            if ((object)(token = Id) != null)
+            if ((token = Id) != null)
             {
                 valueBuffer.Append(token);
             }
@@ -232,7 +232,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)(token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -243,7 +243,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(" OBSOLETE");
             }
 
-            if ((object)(token = ObjectClass) != null)
+            if ((token = ObjectClass) != null)
             {
                 valueBuffer.Append(" OC ");
                 valueBuffer.Append("'" + token + "'");

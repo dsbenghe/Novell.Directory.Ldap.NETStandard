@@ -39,7 +39,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     identical type. This class inherits from the Asn1Structured class
     ///     which already provides functionality to hold multiple Asn1 components.
     /// </summary>
-    [CLSCompliant(true)]
     public class Asn1SetOf : Asn1Structured
     {
         /// <summary> ASN.1 SET OF tag definition.</summary>
@@ -94,7 +93,6 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Return a String representation of this Asn1SetOf.</summary>
-        [CLSCompliant(false)]
         public override string ToString()
         {
             return ToString("SET OF: { ");

@@ -72,10 +72,9 @@ namespace Novell.Directory.Ldap
         /// <param name="values">
         ///     The control-specific data.
         /// </param>
-        [CLSCompliant(false)]
         public LdapControl(string oid, bool critical, byte[] values)
         {
-            if ((object)oid == null)
+            if (oid == null)
             {
                 throw new ArgumentException("An OID must be specified");
             }
@@ -103,7 +102,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The object ID of the control.
         /// </returns>
-        public string Id => new StringBuilder(Asn1Object.ControlType.StringValue()).ToString();
+        public string Id => Asn1Object.ControlType.StringValue();
 
         /// <summary>
         ///     Returns whether the control is critical for the operation.
@@ -171,7 +170,6 @@ namespace Novell.Directory.Ldap
         ///     The control-specific data of the object as a byte array,
         ///     or null if the control has no data.
         /// </returns>
-        [CLSCompliant(false)]
         public byte[] GetValue()
         {
             byte[] result = null;
@@ -188,7 +186,6 @@ namespace Novell.Directory.Ldap
         ///     Sets the control-specific data of the object.  This method is for
         ///     use by an extension of LdapControl.
         /// </summary>
-        [CLSCompliant(false)]
         protected void SetValue(byte[] controlValue)
         {
             Asn1Object.ControlValue = new Asn1OctetString(controlValue);

@@ -56,7 +56,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Note: If serverSaslCreds is included in the BindResponse, it does not
         ///     need to be decoded since it is already an OCTET STRING.
         /// </summary>
-        [CLSCompliant(false)]
         public RfcBindResponse(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(dec, inRenamed, len)
         {

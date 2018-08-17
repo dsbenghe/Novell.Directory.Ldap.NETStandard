@@ -115,12 +115,12 @@ namespace Novell.Directory.Ldap
                     parser.Names.CopyTo(names, 0);
                 }
 
-                if ((object)parser.Id != null)
+                if (parser.Id != null)
                 {
                     RuleId = int.Parse(parser.Id);
                 }
 
-                if ((object)parser.Description != null)
+                if (parser.Description != null)
                 {
                     Description = parser.Description;
                 }
@@ -131,7 +131,7 @@ namespace Novell.Directory.Ldap
                     parser.Superiors.CopyTo(Superiors, 0);
                 }
 
-                if ((object)parser.NameForm != null)
+                if (parser.NameForm != null)
                 {
                     NameForm = parser.NameForm;
                 }
@@ -220,7 +220,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            if ((object)(token = Description) != null)
+            if ((token = Description) != null)
             {
                 valueBuffer.Append(" DESC ");
                 valueBuffer.Append("'" + token + "'");
@@ -231,7 +231,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(" OBSOLETE");
             }
 
-            if ((object)(token = NameForm) != null)
+            if ((token = NameForm) != null)
             {
                 valueBuffer.Append(" FORM ");
                 valueBuffer.Append("'" + token + "'");

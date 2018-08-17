@@ -48,7 +48,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     includes a BER decoder no application provided decoder is needed for
     ///     building Ldap packets.
     /// </summary>
-    [CLSCompliant(false)]
     public interface IAsn1Decoder
     {
         /// <summary>

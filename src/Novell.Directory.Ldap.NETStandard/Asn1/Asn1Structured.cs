@@ -40,7 +40,6 @@ namespace Novell.Directory.Ldap.Asn1
     ///     This class serves as the base type for all ASN.1
     ///     structured types.
     /// </summary>
-    [CLSCompliant(true)]
     public abstract class Asn1Structured : Asn1Object
     {
         private Asn1Object[] _content;
@@ -99,7 +98,6 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
-        [CLSCompliant(false)]
         protected internal void DecodeStructured(IAsn1Decoder dec, Stream inRenamed, int len)
         {
             var componentLen = new int[1]; // collects length of component
@@ -205,7 +203,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// <returns>
         ///     the String representation of this object.
         /// </returns>
-        [CLSCompliant(false)]
         public string ToString(string type)
         {
             var sb = new StringBuilder();

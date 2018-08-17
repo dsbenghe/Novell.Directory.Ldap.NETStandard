@@ -75,7 +75,7 @@ namespace Novell.Directory.Ldap
             : base(
                 ModifyRdnRequest,
                 new RfcModifyDnRequest(new RfcLdapDn(dn), new RfcRelativeLdapDn(newRdn), new Asn1Boolean(deleteOldRdn),
-                    (object)newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
+                    newParentdn != null ? new RfcLdapDn(newParentdn) : null), cont)
         {
         }
 

@@ -148,7 +148,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream.</summary>
-        [CLSCompliant(false)]
         public RfcLdapResult(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(dec, inRenamed, len)
         {
