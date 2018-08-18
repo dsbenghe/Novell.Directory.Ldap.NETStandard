@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
@@ -10,6 +11,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 {
     public class MultiThreadTest
     {
+        private const double PercentOfAcceptedLdapExceptions = 0.02;
         private static readonly TimeSpan DefaultTestingThreadReportingPeriod = TimeSpan.FromMinutes(1);
 
         private readonly int _noOfThreads;
@@ -60,10 +62,21 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             monitoringThreadData.WaitHandle.Set();
             monitoringThread.Join();
 
+            var failRun = ReportRunResult(threadDatas);
+
+            return failRun ? 1 : 0;
+        }
+
+        private bool ReportRunResult(ThreadRunner[] threadDatas)
+        {
             var noOfRuns = threadDatas.Sum(x => x.Count);
-            _logger.LogInformation(string.Format("Number of test runs = {0} on {1} threads, no of exceptions: {2}", noOfRuns,
-                _noOfThreads, Exceptions.Count));
-            return Exceptions.Count;
+            var noOfLdapExceptions = Exceptions.Count(x => x.Ex is LdapException);
+            var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
+            var percentOfLdapExceptions = (float) noOfLdapExceptions * 100 / noOfRuns;
+            var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
+            _logger.LogInformation(
+                $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
+            return failRun;
         }
 
         private void MonitoringThread(object param)
@@ -135,6 +148,11 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                     }
                     catch (Exception ex)
                     {
+                        _logger.LogError("Error in runner thread - {0}", ex);
+                        if (ex is TargetInvocationException && ex.InnerException != null)
+                        {
+                            ex = ex.InnerException;
+                        }
                         lock (Exceptions)
                         {
                             Exceptions.Add(new ExceptionInfo
@@ -142,7 +160,6 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                                 Ex = ex,
                                 ThreadId = Thread.CurrentThread.ManagedThreadId
                             });
-                            _logger.LogError("Error in runner thread - {0}", ex);
                         }
                     }
 

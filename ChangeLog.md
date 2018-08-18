@@ -1,5 +1,13 @@
 # Changelog
 
+### 3.0.0
+* change ILdapConnection interface to improve testability & mockability
+* IPv6 support
+* ...
+
+### 2.3.8
+* Added connect timeout
+
 ### 2.3.7
 * Disconnect method added to ILdapConnection
 
