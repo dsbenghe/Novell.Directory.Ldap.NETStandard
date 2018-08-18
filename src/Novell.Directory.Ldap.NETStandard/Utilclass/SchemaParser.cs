@@ -31,6 +31,7 @@
 //
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         private readonly int _result;
         private string _objectClass;
-        private ArrayList _qualifiers = new ArrayList();
+        private List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
 
         public SchemaParser(string aString)
         {
@@ -474,7 +475,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public string[] Names { get; }
 
-        public IEnumerator Qualifiers => new ArrayEnumeration(_qualifiers.ToArray());
+        public IEnumerator<AttributeQualifier> Qualifiers => _qualifiers.GetEnumerator();
 
         public string Id { get; }
 

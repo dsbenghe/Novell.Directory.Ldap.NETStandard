@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -83,9 +84,9 @@ namespace Novell.Directory.Ldap
         // these to be local variables that can be modified using
         // the setProperty method.
 
-        internal static string Sdk;
+        internal readonly static string Sdk = "2.2.1";
 
-        internal static int Protocol;
+        internal readonly static int Protocol = 3;
 
         internal static string Security = "simple";
 
@@ -137,7 +138,7 @@ namespace Novell.Directory.Ldap
         // Connection created to follow referral
 
         // Place to save unsolicited message listeners
-        private ArrayList _unsolicitedListeners;
+        private IList<ILdapUnsolicitedNotificationListener> _unsolicitedListeners;
 
         // Indicates we have received a server shutdown unsolicited notification
         private bool _unsolSvrShutDnNotification;
@@ -146,23 +147,17 @@ namespace Novell.Directory.Ldap
         private int _writeSemaphoreCount;
         private int _writeSemaphoreOwner;
 
-        static Connection()
-        {
-            Sdk = "2.2.1";
-            Protocol = 3;
-        }
-
         /// <summary>
         ///     Create a new Connection object.
         /// </summary>
-        /// <param name="factory">
-        ///     specifies the factory to use to produce SSL sockets.
-        /// </param>
-
-        // internal Connection(LdapSocketFactory factory)
         internal Connection()
         {
-            InitBlock();
+            _writeSemaphore = new object();
+            _encoder = new LberEncoder();
+            _decoder = new LberDecoder();
+            _stopReaderMessageId = ContinueReading;
+            _messages = new MessageVector(5, 5);
+            _unsolicitedListeners = new List<ILdapUnsolicitedNotificationListener>(3);
         }
 
         /// <summary>
@@ -268,16 +263,6 @@ namespace Novell.Directory.Ldap
             }
 
             return strMsg;
-        }
-
-        private void InitBlock()
-        {
-            _writeSemaphore = new object();
-            _encoder = new LberEncoder();
-            _decoder = new LberDecoder();
-            _stopReaderMessageId = ContinueReading;
-            _messages = new MessageVector(5, 5);
-            _unsolicitedListeners = new ArrayList(3);
         }
 
         /// <summary>
@@ -1081,7 +1066,7 @@ namespace Novell.Directory.Ldap
         /// <summary>Remove the specific object from current list of listeners.</summary>
         internal void RemoveUnsolicitedNotificationListener(ILdapUnsolicitedNotificationListener listener)
         {
-            SupportClass.VectorRemoveElement(_unsolicitedListeners, listener);
+            _unsolicitedListeners.Remove(listener);
         }
 
         private void NotifyAllUnsolicitedListeners(RfcLdapMessage message)
@@ -1102,7 +1087,7 @@ namespace Novell.Directory.Ldap
             for (var i = 0; i < numOfListeners; i++)
             {
                 // Get next listener
-                var listener = (ILdapUnsolicitedNotificationListener)_unsolicitedListeners[i];
+                var listener = _unsolicitedListeners[i];
 
                 // Create a new ExtendedResponse each time as we do not want each listener
                 // to have its own copy of the message
@@ -1330,17 +1315,12 @@ namespace Novell.Directory.Ldap
             internal UnsolicitedListenerThread(Connection enclosingInstance, ILdapUnsolicitedNotificationListener l,
                 LdapExtendedResponse m)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 _listenerObj = l;
                 _unsolicitedMsg = m;
             }
 
-            private Connection EnclosingInstance { get; set; }
-
-            private void InitBlock(Connection enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
+            private Connection EnclosingInstance { get; }
 
             public override void Run()
             {

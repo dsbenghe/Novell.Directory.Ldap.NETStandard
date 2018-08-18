@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.Collections;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -41,7 +40,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class AttributeQualifier
     {
-        private readonly ArrayList _values;
+        private readonly string[] _values;
 
         public AttributeQualifier(string name, string[] valueRenamed)
         {
@@ -52,31 +51,11 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             Name = name;
-            _values = new ArrayList(5);
-            for (var i = 0; i < valueRenamed.Length; i++)
-            {
-                _values.Add(valueRenamed[i]);
-            }
+            _values = (string[])valueRenamed.Clone();
         }
 
         public string Name { get; }
 
-        public string[] Values
-        {
-            get
-            {
-                string[] strValues = null;
-                if (_values.Count > 0)
-                {
-                    strValues = new string[_values.Count];
-                    for (var i = 0; i < _values.Count; i++)
-                    {
-                        strValues[i] = (string)_values[i];
-                    }
-                }
-
-                return strValues;
-            }
-        }
+        public string[] Values => _values.IsEmpty() ? null : (string[])_values.Clone();
     }
 }

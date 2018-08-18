@@ -32,6 +32,8 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -215,7 +217,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public IEnumerator Attributes => new ArrayEnumeration(AttributeArray);
+        public IEnumerator<string> Attributes => new ArrayEnumeration<string>(AttributeArray);
 
         /// <summary>
         ///     Returns any Ldap URL extensions specified, or null if none are
