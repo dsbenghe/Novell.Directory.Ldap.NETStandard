@@ -140,8 +140,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator());
+        public IEnumerator QualifierNames
+            => new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier
