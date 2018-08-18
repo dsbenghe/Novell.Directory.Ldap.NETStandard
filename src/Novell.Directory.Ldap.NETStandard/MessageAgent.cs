@@ -38,16 +38,9 @@ namespace Novell.Directory.Ldap
 {
     internal class MessageAgent
     {
-        private static object _nameLock = new object();
-        private static int _agentNum = 0; // Debug, agent number
+        public virtual DebugId DebugId { get; } = DebugId.ForType<MessageAgent>();
         private int _indexLastRead;
-
         private MessageVector _messages = new MessageVector(5, 5);
-
-        internal MessageAgent()
-        {
-            // Get a unique agent id for debug
-        }
 
         /// <summary>
         ///     Get a list of message ids controlled by this agent.
@@ -71,18 +64,6 @@ namespace Novell.Directory.Ldap
 
                 return ids;
             }
-        }
-
-        /// <summary>
-        ///     Get the maessage agent number for debugging.
-        /// </summary>
-        /// <returns>
-        ///     the agent number.
-        /// </returns>
-        internal string AgentName
-        {
-            /*packge*/
-            get;
         }
 
         /// <summary> Get a count of all messages queued.</summary>
@@ -392,11 +373,6 @@ namespace Novell.Directory.Ldap
                     Monitor.Wait(_messages);
                 } /* end while */
             } /* end synchronized */
-        }
-
-        /// <summary> Debug code to print messages in message vector.</summary>
-        private void DebugDisplayMessages()
-        {
         }
     }
 }

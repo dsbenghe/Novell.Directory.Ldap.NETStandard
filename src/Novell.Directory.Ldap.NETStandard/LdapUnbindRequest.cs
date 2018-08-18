@@ -44,6 +44,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapUnbindRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapUnbindRequest>();
+
         /// <summary>
         ///     Constructs an Ldap Unbind Request.
         /// </summary>

@@ -342,10 +342,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /*
         * If both of the vectors are empty, get more data for them.

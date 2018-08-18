@@ -19,6 +19,8 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         public abstract string MechanismName { get; }
         public abstract bool HasInitialResponse { get; }
         public abstract bool IsComplete { get; }
+        public abstract DebugId DebugId { get; }
+
         public abstract byte[] EvaluateChallenge(byte[] challenge);
 
         public void Dispose()

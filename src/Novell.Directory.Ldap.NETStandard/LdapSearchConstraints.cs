@@ -93,23 +93,14 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public const int DerefAlways = 3;
 
-        private static object _nameLock; // protect agentNum
-        private static int _lSConsNum = 0; // Debug, LdapConnection number
-
-        private string _name; // String name for debug
-
-        static LdapSearchConstraints()
-        {
-            _nameLock = new object();
-        }
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchConstraints>();
 
         /// <summary>
         ///     Constructs an LdapSearchConstraints object with a default set
         ///     of search constraints.
         /// </summary>
         public LdapSearchConstraints()
-        {
-            // Get a unique connection name for debug
+        {            
         }
 
         /// <summary>
@@ -142,8 +133,6 @@ namespace Novell.Directory.Ldap
                 MaxResults = scons.MaxResults;
                 BatchSize = scons.BatchSize;
             }
-
-            // Get a unique connection name for debug
         }
 
         /// <summary>
@@ -233,8 +222,6 @@ namespace Novell.Directory.Ldap
             Dereference = dereference;
             MaxResults = maxResults;
             BatchSize = batchSize;
-
-            // Get a unique connection name for debug
         }
 
         /// <summary>

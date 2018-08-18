@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap
     ///     operating systems do not time slice.
     /// </summary>
     /*package*/
-    internal class Connection
+    internal class Connection : IDebugIdentifier
     {
         // Ldap message IDs are all positive numbers so we can use negative
         //  numbers as flags.  This are flags assigned to stopReaderMessageID
@@ -76,8 +76,6 @@ namespace Novell.Directory.Ldap
         private const int ContinueReading = -99;
 
         private const int StopReading = -98;
-
-        // Connection number & name used only for debug
 
         // These attributes can be retreived using the getProperty
         // method in LdapConnection.  Future releases might require
@@ -143,16 +141,17 @@ namespace Novell.Directory.Ldap
         // Indicates we have received a server shutdown unsolicited notification
         private bool _unsolSvrShutDnNotification;
 
-        private object _writeSemaphore;
+        private readonly object _writeSemaphore = new object();
         private int _writeSemaphoreCount;
         private int _writeSemaphoreOwner;
+
+        public virtual DebugId DebugId { get; } = DebugId.ForType<Connection>();
 
         /// <summary>
         ///     Create a new Connection object.
         /// </summary>
         internal Connection()
         {
-            _writeSemaphore = new object();
             _encoder = new LberEncoder();
             _decoder = new LberDecoder();
             _stopReaderMessageId = ContinueReading;
@@ -226,14 +225,6 @@ namespace Novell.Directory.Ldap
         ///     follow referrals.
         /// </summary>
         internal ReferralInfo ActiveReferral { get; set; }
-
-        /// <summary>
-        ///     Returns the name of this Connection, used for debug only.
-        /// </summary>
-        /// <returns>
-        ///     the name of this connection.
-        /// </returns>
-        internal string ConnectionName { get; } = string.Empty;
 
         /// <summary>
         ///     Indicates if the conenction is using TLS protection
@@ -415,7 +406,7 @@ namespace Novell.Directory.Ldap
                 if (thread == _deadReader)
                 {
                     if (thread == null)
-                        /* then we wanted a shutdown */
+                    /* then we wanted a shutdown */
                     {
                         return;
                     }
@@ -576,7 +567,7 @@ namespace Novell.Directory.Ldap
                 {
                     _sock = null;
                     _socket = null;
-                    throw new LdapException(ExceptionMessages.ConnectionError, new object[] {host, port },
+                    throw new LdapException(ExceptionMessages.ConnectionError, new object[] { host, port },
                         LdapException.ConnectError, null, se);
                 }
 
@@ -584,7 +575,7 @@ namespace Novell.Directory.Ldap
                 {
                     _sock = null;
                     _socket = null;
-                    throw new LdapException(ExceptionMessages.ConnectionError, new object[] {host, port },
+                    throw new LdapException(ExceptionMessages.ConnectionError, new object[] { host, port },
                         LdapException.ConnectError, null, ioe);
                 }
 
@@ -724,7 +715,7 @@ namespace Novell.Directory.Ldap
             }
             else
             {
-                throw new LdapException(ExceptionMessages.ConnectionClosed, new object[] {Host, Port },
+                throw new LdapException(ExceptionMessages.ConnectionClosed, new object[] { Host, Port },
                     LdapException.ConnectError, null);
             }
         }
@@ -775,7 +766,7 @@ namespace Novell.Directory.Ldap
                 if (msg.Type == LdapMessage.BindRequest && Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] {Host, Port }, LdapException.SslHandshakeFailed, null,
+                    throw new LdapException(strMsg, new object[] { Host, Port }, LdapException.SslHandshakeFailed, null,
                         ioe);
                 }
 
@@ -794,12 +785,12 @@ namespace Novell.Directory.Ldap
                     if (_unsolSvrShutDnNotification)
                     {
                         // got server shutdown
-                        throw new LdapException(ExceptionMessages.ServerShutdownReq, new object[] {Host, Port },
+                        throw new LdapException(ExceptionMessages.ServerShutdownReq, new object[] { Host, Port },
                             LdapException.ConnectError, null, ioe);
                     }
 
                     // Other I/O Exceptions on host:port are reported as is
-                    throw new LdapException(ExceptionMessages.IoException, new object[] {Host, Port },
+                    throw new LdapException(ExceptionMessages.IoException, new object[] { Host, Port },
                         LdapException.ConnectError, null, ioe);
                 }
             }
@@ -1227,7 +1218,7 @@ namespace Novell.Directory.Ldap
                                 {
                                     notify = new InterThreadException(
                                         ExceptionMessages.ServerShutdownReq,
-                                        new object[] {_enclosingInstance.Host, _enclosingInstance.Port },
+                                        new object[] { _enclosingInstance.Host, _enclosingInstance.Port },
                                         LdapException.ConnectError, null, null);
 
                                     return;
@@ -1251,7 +1242,7 @@ namespace Novell.Directory.Ldap
                         // Connection lost waiting for results from host:port
                         notify = new InterThreadException(
                             ExceptionMessages.ConnectionWait,
-                            new object[] {_enclosingInstance.Host, _enclosingInstance.Port }, LdapException.ConnectError,
+                            new object[] { _enclosingInstance.Host, _enclosingInstance.Port }, LdapException.ConnectError,
                             ex, info);
                     }
 

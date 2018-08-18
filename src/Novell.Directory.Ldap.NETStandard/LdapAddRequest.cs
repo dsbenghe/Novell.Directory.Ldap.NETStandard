@@ -47,6 +47,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapAddRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapAddRequest>();
+
         /// <summary>
         ///     Constructs a request to add an entry to the directory.
         /// </summary>

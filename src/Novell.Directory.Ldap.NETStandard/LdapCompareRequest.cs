@@ -47,6 +47,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapCompareRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapCompareRequest>();
+
         /// <summary>
         ///     Constructs an LdapCompareRequest Object.
         /// </summary>

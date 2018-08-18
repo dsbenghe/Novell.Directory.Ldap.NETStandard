@@ -49,6 +49,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapBindRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapBindRequest>();
+
         /// <summary>
         ///     Constructs a simple bind request.
         /// </summary>

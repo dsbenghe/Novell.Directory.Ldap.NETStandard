@@ -61,6 +61,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapSearchRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchRequest>();
+
         // *************************************************************************
         // Public variables for Filter
         // *************************************************************************

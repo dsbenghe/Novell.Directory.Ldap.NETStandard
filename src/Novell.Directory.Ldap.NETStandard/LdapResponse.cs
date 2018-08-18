@@ -51,6 +51,7 @@ namespace Novell.Directory.Ldap
         */
     public class LdapResponse : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapResponse>();
         private readonly InterThreadException _exception;
 
         /// <summary>

@@ -7,7 +7,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Interface for all the minimal operations.
     /// </summary>
-    public interface ILdapConnection : IDisposable
+    public interface ILdapConnection : IDisposable, IDebugIdentifier
     {
         /// <summary>
         ///     Starts Transport Layer Security (TLS) protocol on this connection

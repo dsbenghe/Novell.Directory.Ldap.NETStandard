@@ -154,14 +154,13 @@ namespace Novell.Directory.Ldap
         /// <summary> The OID string that identifies a StartTLS request and response.</summary>
         private const string StartTlsOid = "1.3.6.1.4.1.1466.20037";
 
-        private static object _nameLock; // protect agentNum
-        private static int _lConnNum = 0; // Debug, LdapConnection number
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapConnection>();
 
         private LdapSearchConstraints _defSearchCons;
         private LdapControl[] _responseCtls;
 
         // Synchronization Object used to synchronize access to responseCtls
-        private object _responseCtlSemaphore;
+        private readonly object _responseCtlSemaphore = new object();
 
         /*
         * Constructors
@@ -178,10 +177,7 @@ namespace Novell.Directory.Ldap
         public LdapConnection()
         {
             _defSearchCons = new LdapSearchConstraints();
-            _responseCtlSemaphore = new object();
             _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
-
-            // Get a unique connection name for debug
             Connection = new Connection();
         }
 
