@@ -109,8 +109,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public LdapSearchConstraints()
         {
-            InitBlock();
-
             // Get a unique connection name for debug
         }
 
@@ -122,7 +120,6 @@ namespace Novell.Directory.Ldap
         public LdapSearchConstraints(LdapConstraints cons)
             : base(cons.TimeLimit, cons.ReferralFollowing, cons.getReferralHandler(), cons.HopLimit)
         {
-            InitBlock();
             var lsc = cons.GetControls();
             if (lsc != null)
             {
@@ -232,7 +229,6 @@ namespace Novell.Directory.Ldap
             int batchSize, ILdapReferralHandler handler, int hopLimit)
             : base(msLimit, doReferrals, handler, hopLimit)
         {
-            InitBlock();
             ServerTimeLimit = serverTimeLimit;
             Dereference = dereference;
             MaxResults = maxResults;
@@ -309,7 +305,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="Dereference">
         /// </seealso>
-        public int Dereference { get; set; }
+        public int Dereference { get; set; } = DerefNever;
 
         /// <summary>
         ///     Returns the maximum number of search results to be returned for
@@ -372,10 +368,5 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapException.TimeLimitExceeded">
         /// </seealso>
         public int ServerTimeLimit { get; set; }
-
-        private void InitBlock()
-        {
-            Dereference = DerefNever;
-        }
     }
 }

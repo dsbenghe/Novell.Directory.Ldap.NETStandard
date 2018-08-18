@@ -105,17 +105,12 @@ namespace Novell.Directory.Ldap.Utilclass
 
             public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 MyOid = oid;
                 MyClass = controlClass;
             }
 
-            public RespControlVector EnclosingInstance { get; private set; }
-
-            private void InitBlock(RespControlVector enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
+            public RespControlVector EnclosingInstance { get; }
         }
     }
 }

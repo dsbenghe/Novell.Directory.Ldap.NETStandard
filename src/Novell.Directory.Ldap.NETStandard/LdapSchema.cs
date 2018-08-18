@@ -149,7 +149,8 @@ namespace Novell.Directory.Ldap
         public LdapSchema(LdapEntry ent)
             : base(ent.Dn, ent.GetAttributeSet())
         {
-            InitBlock();
+            _nameTable = new Hashtable[8];
+            _idTable = new Hashtable[8];
 
             // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
@@ -396,12 +397,6 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public IEnumerator ObjectClassNames =>
             new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
-
-        private void InitBlock()
-        {
-            _nameTable = new Hashtable[8];
-            _idTable = new Hashtable[8];
-        }
 
         /// <summary>
         ///     Adds the schema definition to the idList and nameList HashMaps.

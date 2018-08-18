@@ -68,13 +68,8 @@ namespace Novell.Directory.Ldap.Asn1
     {
         // used to speed up decode, so it doesn't need to recreate an identifier every time
         // instead just reset is called CANNOT be static for multiple connections
-        private Asn1Identifier _asn1Id;
-        private Asn1Length _asn1Len;
-
-        public LberDecoder()
-        {
-            InitBlock();
-        }
+        private Asn1Identifier _asn1Id = new Asn1Identifier();
+        private Asn1Length _asn1Len = new Asn1Length();
 
         /* Generic decode routines
         */
@@ -266,12 +261,6 @@ namespace Novell.Directory.Ldap.Asn1
             var rval = octets.ToUtf8String();
 
             return rval; // new String( "UTF8");
-        }
-
-        private void InitBlock()
-        {
-            _asn1Id = new Asn1Identifier();
-            _asn1Len = new Asn1Length();
         }
     }
 }

@@ -40,11 +40,11 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         private readonly int _result;
         private string _objectClass;
-        private ArrayList _qualifiers;
+        private ArrayList _qualifiers = new ArrayList();
 
         public SchemaParser(string aString)
         {
-            InitBlock();
+            Usage = LdapAttributeSchema.UserApplications;
 
             int index;
 
@@ -517,12 +517,6 @@ namespace Novell.Directory.Ldap.Utilclass
         public string NameForm { get; }
 
         public string ObjectClass => NameForm;
-
-        private void InitBlock()
-        {
-            Usage = LdapAttributeSchema.UserApplications;
-            _qualifiers = new ArrayList();
-        }
 
         private AttributeQualifier ParseQualifier(SchemaTokenCreator st, string name)
         {

@@ -177,7 +177,9 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapConnection()
         {
-            InitBlock();
+            _defSearchCons = new LdapSearchConstraints();
+            _responseCtlSemaphore = new object();
+            _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
 
             // Get a unique connection name for debug
             Connection = new Connection();
@@ -1469,14 +1471,6 @@ namespace Novell.Directory.Ldap
             }
 
             return new LdapSearchResults(queue, cons);
-        }
-
-        private void InitBlock()
-        {
-            // TODO: Just move this into the constructor, since we only have one anyway?
-            _defSearchCons = new LdapSearchConstraints();
-            _responseCtlSemaphore = new object();
-            _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
         }
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
@@ -3209,6 +3203,9 @@ namespace Novell.Directory.Ldap
         {
             if (response.ResultCode == LdapException.Referral && cons.ReferralFollowing)
             {
+                // BUG: refConn is not used, and thus ReleaseReferralConnections won't do anything?
+                // Pretty sure that the last argument to ChaseReferral should be refConn instead of null
+
                 // Perform referral following and return
                 ArrayList refConn = null;
                 try

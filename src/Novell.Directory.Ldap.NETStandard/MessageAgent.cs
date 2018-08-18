@@ -38,21 +38,14 @@ namespace Novell.Directory.Ldap
 {
     internal class MessageAgent
     {
-        private static object _nameLock; // protect agentNum
+        private static object _nameLock = new object();
         private static int _agentNum = 0; // Debug, agent number
         private int _indexLastRead;
 
-        private MessageVector _messages;
-
-        static MessageAgent()
-        {
-            _nameLock = new object();
-        }
+        private MessageVector _messages = new MessageVector(5, 5);
 
         internal MessageAgent()
         {
-            InitBlock();
-
             // Get a unique agent id for debug
         }
 
@@ -107,11 +100,6 @@ namespace Novell.Directory.Ldap
 
                 return count;
             }
-        }
-
-        private void InitBlock()
-        {
-            _messages = new MessageVector(5, 5);
         }
 
         /// <summary>

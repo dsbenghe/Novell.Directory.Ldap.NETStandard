@@ -135,7 +135,6 @@ namespace Novell.Directory.Ldap
             bool isUserModifiable, int usage)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
-            InitBlock();
             this.names = names;
             Oid = oid;
             Description = description;
@@ -163,7 +162,6 @@ namespace Novell.Directory.Ldap
         public LdapAttributeSchema(string raw)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
-            InitBlock();
             try
             {
                 var parser = new SchemaParser(raw);
@@ -291,12 +289,7 @@ namespace Novell.Directory.Ldap
         ///     DIRECTORY_OPERATION, DISTRIBUTED_OPERATION or
         ///     DSA_OPERATION.
         /// </returns>
-        public int Usage { get; private set; }
-
-        private void InitBlock()
-        {
-            Usage = UserApplications;
-        }
+        public int Usage { get; private set; } = UserApplications;
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
