@@ -157,7 +157,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapMessage GetResponse(int msgid)
         {
-            return GetResponse(new Integer32(msgid));
+            return GetResponse((int?)msgid);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Novell.Directory.Ldap
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case.
         /// </summary>
-        private LdapMessage GetResponse(Integer32 msgid)
+        private LdapMessage GetResponse(int? msgid)
         {
             object resp;
             LdapMessage response;

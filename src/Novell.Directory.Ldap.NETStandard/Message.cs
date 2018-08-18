@@ -553,7 +553,5 @@ namespace Novell.Directory.Ldap
                 }
             }
         }
-
-        /// <summary> sets the agent for this message</summary>
     }
 }

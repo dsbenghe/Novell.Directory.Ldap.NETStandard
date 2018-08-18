@@ -322,15 +322,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns a response queued, or waits if none queued.
         /// </summary>
-
-
-// internal System.Object getLdapMessage(System.Int32 msgId)
-        internal object GetLdapMessage(int msgId)
-        {
-            return GetLdapMessage(new Integer32(msgId));
-        }
-
-        internal object GetLdapMessage(Integer32 msgId)
+        internal object GetLdapMessage(int? msgId)
         {
             object rfcMsg;
 
@@ -340,14 +332,13 @@ namespace Novell.Directory.Ldap
                 return null;
             }
 
-            if (msgId != null)
+            if (msgId.HasValue)
             {
                 // Request messages for a specific ID
                 try
                 {
                     // Get message for this ID
-// Message info = messages.findMessageById(msgId);
-                    var info = _messages.FindMessageById(msgId.IntValue);
+                    var info = _messages.FindMessageById(msgId.Value);
                     rfcMsg = info.WaitForReply(); // blocks for a response
                     if (!info.AcceptsReplies() && !info.HasReplies())
                     {
