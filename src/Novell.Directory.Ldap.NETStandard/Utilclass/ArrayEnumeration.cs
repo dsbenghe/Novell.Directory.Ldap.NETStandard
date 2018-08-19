@@ -32,12 +32,13 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    public class ArrayEnumeration : IEnumerator
+    public sealed class ArrayEnumeration<T> : IEnumerator<T>
     {
-        private readonly object[] _eArray;
+        private readonly T[] _eArray;
         private int _index;
 
         /// <summary>
@@ -46,7 +47,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <param name="eArray">
         ///     the array to use for the Enumeration.
         /// </param>
-        public ArrayEnumeration(object[] eArray)
+        public ArrayEnumeration(T[] eArray)
         {
             _eArray = eArray;
         }
@@ -64,10 +65,13 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void Reset()
         {
-            Current = null;
+            Current = default(T);
+            _index = 0;
         }
 
-        public object Current { get; private set; }
+        public T Current { get; private set; }
+
+        object IEnumerator.Current => Current;
 
         public bool HasMoreElements()
         {
@@ -79,7 +83,7 @@ namespace Novell.Directory.Ldap.Utilclass
             return _index < _eArray.Length;
         }
 
-        public object NextElement()
+        public T NextElement()
         {
             if (_eArray == null || _index >= _eArray.Length)
             {
@@ -88,5 +92,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             return _eArray[_index++];
         }
+
+        public void Dispose() { }
     }
 }

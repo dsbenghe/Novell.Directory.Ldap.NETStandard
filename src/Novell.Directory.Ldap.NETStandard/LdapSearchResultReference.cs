@@ -40,16 +40,8 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class LdapSearchResultReference : LdapMessage
     {
-        private static object _nameLock; // protect agentNum
-        private static int _refNum = 0; // Debug, LdapConnection number
-        private string _name; // String name for debug
-
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResultReference>();
         private string[] _srefs;
-
-        static LdapSearchResultReference()
-        {
-            _nameLock = new object();
-        }
 
         /*package*/
 

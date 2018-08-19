@@ -31,6 +31,7 @@
 //
 
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -40,11 +41,11 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         private readonly int _result;
         private string _objectClass;
-        private ArrayList _qualifiers;
+        private List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
 
         public SchemaParser(string aString)
         {
-            InitBlock();
+            Usage = LdapAttributeSchema.UserApplications;
 
             int index;
 
@@ -474,7 +475,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public string[] Names { get; }
 
-        public IEnumerator Qualifiers => new ArrayEnumeration(_qualifiers.ToArray());
+        public IEnumerator<AttributeQualifier> Qualifiers => _qualifiers.GetEnumerator();
 
         public string Id { get; }
 
@@ -517,12 +518,6 @@ namespace Novell.Directory.Ldap.Utilclass
         public string NameForm { get; }
 
         public string ObjectClass => NameForm;
-
-        private void InitBlock()
-        {
-            Usage = LdapAttributeSchema.UserApplications;
-            _qualifiers = new ArrayList();
-        }
 
         private AttributeQualifier ParseQualifier(SchemaTokenCreator st, string name)
         {

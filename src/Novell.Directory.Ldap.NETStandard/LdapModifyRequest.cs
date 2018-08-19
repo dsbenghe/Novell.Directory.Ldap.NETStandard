@@ -53,6 +53,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapModifyRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapModifyRequest>();
+
         /// <summary>
         ///     Constructs an Ldap Modify request.
         /// </summary>

@@ -129,22 +129,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Identifier(Stream inRenamed)
         {
-            var r = inRenamed.ReadByte();
-            EncodedLength++;
-            if (r < 0)
-            {
-                throw new EndOfStreamException("BERDecoder: decode: EOF in Identifier");
-            }
-
-            Asn1Class = r >> 6;
-            Constructed = (r & 0x20) != 0;
-            Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (Tag == 0x1F)
-
-                // if true, its a multiple octet identifier.
-            {
-                Tag = DecodeTagNumber(inRenamed);
-            }
+            Reset(inRenamed);
         }
 
         public Asn1Identifier()

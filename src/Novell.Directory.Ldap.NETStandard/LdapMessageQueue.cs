@@ -40,27 +40,12 @@ namespace Novell.Directory.Ldap
     ///     It is the common interface for {@link LdapResponseQueue} and
     ///     {@link LdapSearchQueue}.
     /// </summary>
-    public abstract class LdapMessageQueue
+    public abstract class LdapMessageQueue : IDebugIdentifier
     {
-        // nameLock used to protect queueNum during increment
-
-        internal static object NameLock;
-
-        // Queue number used only for debug
-
-        internal static int QueueNum = 0;
-
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapMessageQueue>();
+    
         /// <summary> The message agent object associated with this queue.</summary>
         internal MessageAgent Agent;
-
-        // Queue name used only for debug
-
-        internal string Name = string.Empty;
-
-        static LdapMessageQueue()
-        {
-            NameLock = new object();
-        }
 
         /// <summary>
         ///     Constructs a response queue using the specified message agent.
@@ -70,17 +55,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
-            // Get a unique connection name for debug
             Agent = agent;
         }
-
-        /// <summary>
-        ///     Returns the name used for debug.
-        /// </summary>
-        /// <returns>
-        ///     name of object instance used for debug.
-        /// </returns>
-        internal string DebugName => Name;
 
         /// <summary>
         ///     Returns the internal client message agent.
@@ -157,7 +133,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapMessage GetResponse(int msgid)
         {
-            return GetResponse(new Integer32(msgid));
+            return GetResponse((int?)msgid);
         }
 
         /// <summary>
@@ -165,7 +141,7 @@ namespace Novell.Directory.Ldap
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case.
         /// </summary>
-        private LdapMessage GetResponse(Integer32 msgid)
+        private LdapMessage GetResponse(int? msgid)
         {
             object resp;
             LdapMessage response;

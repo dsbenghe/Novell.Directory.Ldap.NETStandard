@@ -1102,11 +1102,11 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             public FilterIterator(RfcFilter enclosingInstance, Asn1Tagged root)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 Root = root;
             }
 
-            public RfcFilter EnclosingInstance { get; private set; }
+            public RfcFilter EnclosingInstance { get; }
 
             public void Reset()
             {
@@ -1237,11 +1237,6 @@ namespace Novell.Directory.Ldap.Rfc2251
                 return _hasMore;
             }
 
-            private void InitBlock(RfcFilter enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
-
             public void Remove()
             {
                 throw new NotSupportedException("Remove is not supported on a filter iterator");
@@ -1266,7 +1261,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             /// <summary> Constructs a FilterTokenizer for a filter.</summary>
             public FilterTokenizer(RfcFilter enclosingInstance, string filter)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 _filter = filter;
                 _offset = 0;
                 _filterLength = filter.Length;
@@ -1455,12 +1450,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             /// <summary> Returns the current attribute identifier.</summary>
             public string Attr { get; private set; }
 
-            public RfcFilter EnclosingInstance { get; private set; }
-
-            private void InitBlock(RfcFilter enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
+            public RfcFilter EnclosingInstance { get; }
 
             // *************************************************************************
             // Tokenizer methods

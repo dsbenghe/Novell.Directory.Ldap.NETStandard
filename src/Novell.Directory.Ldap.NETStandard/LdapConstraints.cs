@@ -43,20 +43,12 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapConnection.Constraints">
     /// </seealso>
-    public class LdapConstraints
+    public class LdapConstraints : IDebugIdentifier
     {
-        private static object _nameLock; // protect agentNum
-        private static int _lConsNum = 0; // Debug, LdapConstraints num
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapConstraints>();
         private LdapControl[] _controls;
-
-        private string _name; // String name for debug
         private Hashtable _properties; // Properties
         private ILdapReferralHandler _refHandler;
-
-        static LdapConstraints()
-        {
-            _nameLock = new object();
-        }
 
         /// <summary>
         ///     Constructs a new LdapConstraints object that specifies the default
@@ -64,7 +56,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public LdapConstraints()
         {
-            // Get a unique constraints name for debug
         }
 
         /// <summary>
@@ -130,8 +121,6 @@ namespace Novell.Directory.Ldap
             ReferralFollowing = doReferrals;
             _refHandler = handler;
             HopLimit = hopLimit;
-
-            // Get a unique constraints name for debug
         }
 
         /// <summary>

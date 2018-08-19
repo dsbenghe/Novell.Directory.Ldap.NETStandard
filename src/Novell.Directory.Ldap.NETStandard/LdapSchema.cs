@@ -149,7 +149,8 @@ namespace Novell.Directory.Ldap
         public LdapSchema(LdapEntry ent)
             : base(ent.Dn, ent.GetAttributeSet())
         {
-            InitBlock();
+            _nameTable = new Hashtable[8];
+            _idTable = new Hashtable[8];
 
             // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
@@ -274,7 +275,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute definitions.
         /// </returns>
-        public IEnumerator AttributeSchemas => new EnumeratedIterator(_idTable[Attribute].Values.GetEnumerator());
+        public IEnumerator AttributeSchemas => _idTable[Attribute].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule definitions.
@@ -282,7 +283,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule definitions.
         /// </returns>
-        public IEnumerator DitContentRuleSchemas => new EnumeratedIterator(_idTable[Ditcontent].Values.GetEnumerator());
+        public IEnumerator DitContentRuleSchemas => _idTable[Ditcontent].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule definitions.
@@ -290,8 +291,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule definitions.
         /// </returns>
-        public IEnumerator DitStructureRuleSchemas =>
-            new EnumeratedIterator(_idTable[Ditstructure].Values.GetEnumerator());
+        public IEnumerator DitStructureRuleSchemas => _idTable[Ditstructure].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule definitions.
@@ -299,7 +299,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule definitions.
         /// </returns>
-        public IEnumerator MatchingRuleSchemas => new EnumeratedIterator(_idTable[Matching].Values.GetEnumerator());
+        public IEnumerator MatchingRuleSchemas => _idTable[Matching].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule use definitions.
@@ -307,8 +307,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use definitions.
         /// </returns>
-        public IEnumerator MatchingRuleUseSchemas =>
-            new EnumeratedIterator(_idTable[MatchingUse].Values.GetEnumerator());
+        public IEnumerator MatchingRuleUseSchemas => _idTable[MatchingUse].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of name form definitions.
@@ -316,7 +315,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form definitions.
         /// </returns>
-        public IEnumerator NameFormSchemas => new EnumeratedIterator(_idTable[NameForm].Values.GetEnumerator());
+        public IEnumerator NameFormSchemas => _idTable[NameForm].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of object class definitions.
@@ -324,7 +323,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class definitions.
         /// </returns>
-        public IEnumerator ObjectClassSchemas => new EnumeratedIterator(_idTable[ObjectClass].Values.GetEnumerator());
+        public IEnumerator ObjectClassSchemas => _idTable[ObjectClass].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of syntax definitions.
@@ -332,7 +331,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of syntax definitions.
         /// </returns>
-        public IEnumerator SyntaxSchemas => new EnumeratedIterator(_idTable[Syntax].Values.GetEnumerator());
+        public IEnumerator SyntaxSchemas => _idTable[Syntax].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of attribute names.
@@ -340,8 +339,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public IEnumerator AttributeNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator());
+        public IEnumerator AttributeNames => new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule names.
@@ -349,8 +347,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule names.
         /// </returns>
-        public IEnumerator DitContentRuleNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator());
+        public IEnumerator DitContentRuleNames
+            => new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule names.
@@ -358,8 +356,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule names.
         /// </returns>
-        public IEnumerator DitStructureRuleNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator());
+        public IEnumerator DitStructureRuleNames
+            => new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule names.
@@ -367,8 +365,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule names.
         /// </returns>
-        public IEnumerator MatchingRuleNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator());
+        public IEnumerator MatchingRuleNames
+            => new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule use names.
@@ -376,8 +374,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use names.
         /// </returns>
-        public IEnumerator MatchingRuleUseNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator());
+        public IEnumerator MatchingRuleUseNames
+            => new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of name form names.
@@ -385,8 +383,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form names.
         /// </returns>
-        public IEnumerator NameFormNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator());
+        public IEnumerator NameFormNames
+            => new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of object class names.
@@ -394,14 +392,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class names.
         /// </returns>
-        public IEnumerator ObjectClassNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator());
-
-        private void InitBlock()
-        {
-            _nameTable = new Hashtable[8];
-            _idTable = new Hashtable[8];
-        }
+        public IEnumerator ObjectClassNames
+            => new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator();
 
         /// <summary>
         ///     Adds the schema definition to the idList and nameList HashMaps.

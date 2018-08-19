@@ -2,7 +2,7 @@
 
 namespace Novell.Directory.Ldap.Sasl
 {
-    public interface ISaslClient : IDisposable
+    public interface ISaslClient : IDisposable, IDebugIdentifier
     {
         string MechanismName { get; }
 

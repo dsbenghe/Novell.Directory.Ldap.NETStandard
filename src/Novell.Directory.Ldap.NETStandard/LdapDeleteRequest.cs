@@ -44,6 +44,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapDeleteRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapDeleteRequest>();
+
         /// <summary>
         ///     Constructs a request to delete an entry from the directory.
         /// </summary>

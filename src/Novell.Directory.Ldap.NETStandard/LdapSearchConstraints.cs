@@ -93,25 +93,14 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public const int DerefAlways = 3;
 
-        private static object _nameLock; // protect agentNum
-        private static int _lSConsNum = 0; // Debug, LdapConnection number
-
-        private string _name; // String name for debug
-
-        static LdapSearchConstraints()
-        {
-            _nameLock = new object();
-        }
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchConstraints>();
 
         /// <summary>
         ///     Constructs an LdapSearchConstraints object with a default set
         ///     of search constraints.
         /// </summary>
         public LdapSearchConstraints()
-        {
-            InitBlock();
-
-            // Get a unique connection name for debug
+        {            
         }
 
         /// <summary>
@@ -122,7 +111,6 @@ namespace Novell.Directory.Ldap
         public LdapSearchConstraints(LdapConstraints cons)
             : base(cons.TimeLimit, cons.ReferralFollowing, cons.getReferralHandler(), cons.HopLimit)
         {
-            InitBlock();
             var lsc = cons.GetControls();
             if (lsc != null)
             {
@@ -145,8 +133,6 @@ namespace Novell.Directory.Ldap
                 MaxResults = scons.MaxResults;
                 BatchSize = scons.BatchSize;
             }
-
-            // Get a unique connection name for debug
         }
 
         /// <summary>
@@ -232,13 +218,10 @@ namespace Novell.Directory.Ldap
             int batchSize, ILdapReferralHandler handler, int hopLimit)
             : base(msLimit, doReferrals, handler, hopLimit)
         {
-            InitBlock();
             ServerTimeLimit = serverTimeLimit;
             Dereference = dereference;
             MaxResults = maxResults;
             BatchSize = batchSize;
-
-            // Get a unique connection name for debug
         }
 
         /// <summary>
@@ -309,7 +292,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         /// <seealso cref="Dereference">
         /// </seealso>
-        public int Dereference { get; set; }
+        public int Dereference { get; set; } = DerefNever;
 
         /// <summary>
         ///     Returns the maximum number of search results to be returned for
@@ -372,10 +355,5 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapException.TimeLimitExceeded">
         /// </seealso>
         public int ServerTimeLimit { get; set; }
-
-        private void InitBlock()
-        {
-            Dereference = DerefNever;
-        }
     }
 }

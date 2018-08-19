@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap
         ///     A hash table that contains the vendor-specific qualifiers (for example,
         ///     the X-NDS flags).
         /// </summary>
-        private Hashtable _hashQualifier;
+        private Hashtable _hashQualifier = new Hashtable();
 
         /// <summary>
         ///     A string array of optional, or vendor-specific, qualifiers for the
@@ -63,10 +63,10 @@ namespace Novell.Directory.Ldap
         ///     These optional qualifiers begin with "X-"; the Novell eDirectory
         ///     specific qualifiers begin with "X-NDS".
         /// </summary>
-        private string[] _qualifier = {string.Empty };
+        private string[] _qualifier = { string.Empty };
 
         /// <summary> The names of the schema element.</summary>
-        protected internal string[] names = {string.Empty };
+        protected internal string[] names = { string.Empty };
 
         /// <summary> The OID for the schema element.</summary>
         protected string Oid = string.Empty;
@@ -87,7 +87,6 @@ namespace Novell.Directory.Ldap
         protected internal LdapSchemaElement(string attrName)
             : base(attrName)
         {
-            InitBlock();
         }
 
         /// <summary>
@@ -141,8 +140,8 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames =>
-            new EnumeratedIterator(new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator());
+        public IEnumerator QualifierNames
+            => new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator();
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier
@@ -153,11 +152,6 @@ namespace Novell.Directory.Ldap
         ///     false if OBSOLETE qualifier is not present.
         /// </returns>
         public bool Obsolete { get; set; }
-
-        private void InitBlock()
-        {
-            _hashQualifier = new Hashtable();
-        }
 
         /// <summary>
         ///     Returns an array of all values of a specified optional or non-
