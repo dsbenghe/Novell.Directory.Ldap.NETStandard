@@ -4,6 +4,8 @@ namespace Novell.Directory.Ldap
 {
     public class LdapSaslBindRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSaslBindRequest>();
+
         /// <summary>
         ///     Constructs a simple bind request.
         /// </summary>

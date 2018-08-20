@@ -47,6 +47,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapExtendedRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedRequest>();
+
         /// <summary>
         ///     Constructs an LdapExtendedRequest.
         /// </summary>

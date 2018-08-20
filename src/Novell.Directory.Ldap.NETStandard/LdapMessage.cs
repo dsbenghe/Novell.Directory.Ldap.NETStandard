@@ -40,8 +40,10 @@ namespace Novell.Directory.Ldap
     ///     The base class for Ldap request and response messages.
     ///     Subclassed by response messages used in asynchronous operations.
     /// </summary>
-    public class LdapMessage
+    public class LdapMessage : IDebugIdentifier
     {
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapMessage>();
+
         /// <summary>
         ///     A bind request operation.
         ///     BIND_REQUEST = 0.

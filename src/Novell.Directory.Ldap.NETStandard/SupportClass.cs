@@ -60,16 +60,6 @@ namespace Novell.Directory.Ldap
         void Run();
     }
 
-    public class Integer32 : object
-    {
-        public Integer32(int ival)
-        {
-            IntValue = ival;
-        }
-
-        public int IntValue { get; set; }
-    }
-
     /// <summary>
     ///     Contains conversion support elements such as classes, interfaces and static methods.
     /// </summary>

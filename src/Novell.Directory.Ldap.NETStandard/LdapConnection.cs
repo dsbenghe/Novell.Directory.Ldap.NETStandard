@@ -154,14 +154,13 @@ namespace Novell.Directory.Ldap
         /// <summary> The OID string that identifies a StartTLS request and response.</summary>
         private const string StartTlsOid = "1.3.6.1.4.1.1466.20037";
 
-        private static object _nameLock; // protect agentNum
-        private static int _lConnNum = 0; // Debug, LdapConnection number
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapConnection>();
 
         private LdapSearchConstraints _defSearchCons;
         private LdapControl[] _responseCtls;
 
         // Synchronization Object used to synchronize access to responseCtls
-        private object _responseCtlSemaphore;
+        private readonly object _responseCtlSemaphore = new object();
 
         /*
         * Constructors
@@ -177,9 +176,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapConnection()
         {
-            InitBlock();
-
-            // Get a unique connection name for debug
+            _defSearchCons = new LdapSearchConstraints();
+            _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
             Connection = new Connection();
         }
 
@@ -1469,14 +1467,6 @@ namespace Novell.Directory.Ldap
             }
 
             return new LdapSearchResults(queue, cons);
-        }
-
-        private void InitBlock()
-        {
-            // TODO: Just move this into the constructor, since we only have one anyway?
-            _defSearchCons = new LdapSearchConstraints();
-            _responseCtlSemaphore = new object();
-            _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
         }
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
@@ -3209,6 +3199,9 @@ namespace Novell.Directory.Ldap
         {
             if (response.ResultCode == LdapException.Referral && cons.ReferralFollowing)
             {
+                // BUG: refConn is not used, and thus ReleaseReferralConnections won't do anything?
+                // Pretty sure that the last argument to ChaseReferral should be refConn instead of null
+
                 // Perform referral following and return
                 ArrayList refConn = null;
                 try

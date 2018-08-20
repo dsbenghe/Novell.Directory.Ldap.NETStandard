@@ -44,6 +44,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapSearchResult : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResult>();
         private LdapEntry _entry;
 
         /// <summary>

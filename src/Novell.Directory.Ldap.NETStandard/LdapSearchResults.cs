@@ -43,9 +43,9 @@ namespace Novell.Directory.Ldap
         private readonly int _batchSize; // Application specified batch size
         private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
 
-        private readonly ArrayList _entries; // Search entries
+        private readonly ArrayList _entries; // Search entries // TODO: Can't make Generic, holds different types
         private readonly LdapSearchQueue _queue;
-        private readonly ArrayList _references; // Search Result References
+        private readonly List<string[]> _references; // Search Result References
         private bool _completed; // All entries received
         private int _entryCount; // # Search entries in vector
         private int _entryIndex; // Current position in vector
@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap
             _entryIndex = 0;
 
             // setup search reference Vector
-            _references = new ArrayList(5);
+            _references = new List<string[]>(5);
             _referenceCount = 0;
             _referenceIndex = 0;
 
@@ -283,7 +283,7 @@ namespace Novell.Directory.Ldap
             // We only get here if not following referrals/references
             if (_referenceIndex < _referenceCount)
             {
-                var refs = (string[])_references[_referenceIndex++];
+                var refs = _references[_referenceIndex++];
                 var rex = new LdapReferralException(ExceptionMessages.ReferenceNofollow);
                 rex.SetReferrals(refs);
                 throw rex;
@@ -342,10 +342,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /*
         * If both of the vectors are empty, get more data for them.
@@ -361,7 +358,7 @@ namespace Novell.Directory.Ldap
             // Checks if we have run out of references
             if (_referenceIndex != 0 && _referenceIndex >= _referenceCount)
             {
-                SupportClass.SetSize(_references, 0);
+                _references.Clear();
                 _referenceCount = 0;
                 _referenceIndex = 0;
             }

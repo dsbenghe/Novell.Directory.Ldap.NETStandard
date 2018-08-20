@@ -32,7 +32,9 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
@@ -211,7 +213,7 @@ namespace Novell.Directory.Ldap
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );.
         /// </returns>
-        public IEnumerator ByteValues => new ArrayEnumeration(ByteValueArray);
+        public IEnumerator<byte[]> ByteValues => new ArrayEnumeration<byte[]>(ByteValueArray);
 
         /// <summary>
         ///     Returns an enumerator for the string values of an attribute.
@@ -219,7 +221,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public IEnumerator StringValues => new ArrayEnumeration(StringValueArray);
+        public IEnumerator<string> StringValues => new ArrayEnumeration<string>(StringValueArray);
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -596,7 +598,7 @@ namespace Novell.Directory.Ldap
                 var inRenamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
 
                 // Read the bytes into buffers and store the them in an arraylist
-                var bufs = new ArrayList();
+                var bufs = new List<UrlData>();
                 var buf = new byte[4096];
                 int len, totalLength = 0;
                 while ((len = SupportClass.ReadInput(inRenamed, ref buf, 0, 4096)) != -1)
@@ -612,10 +614,10 @@ namespace Novell.Directory.Ldap
                 * it in this LdapAttribute
                 */
                 var data = new byte[totalLength];
-                var offset = 0; //
+                var offset = 0;
                 for (var i = 0; i < bufs.Count; i++)
                 {
-                    var b = (UrlData)bufs[i];
+                    var b = bufs[i];
                     len = b.GetLength();
                     Array.Copy(b.GetData(), 0, data, offset, len);
                     offset += len;
@@ -1045,17 +1047,12 @@ namespace Novell.Directory.Ldap
 
             public UrlData(LdapAttribute enclosingInstance, byte[] data, int length)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 _length = length;
                 _data = data;
             }
 
-            public LdapAttribute EnclosingInstance { get; private set; }
-
-            private void InitBlock(LdapAttribute enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
+            public LdapAttribute EnclosingInstance { get; }
 
             public int GetLength()
             {

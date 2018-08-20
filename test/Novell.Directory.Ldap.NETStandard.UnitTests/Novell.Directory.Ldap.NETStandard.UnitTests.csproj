@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj" />
+    <ProjectReference Include="..\..\src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj" />
   </ItemGroup>
 
 </Project>

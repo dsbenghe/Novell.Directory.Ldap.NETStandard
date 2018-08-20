@@ -49,6 +49,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapModifyDnRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapModifyDnRequest>();
+
         /// <summary>
         ///     Constructs a ModifyDN (rename) Request.
         /// </summary>

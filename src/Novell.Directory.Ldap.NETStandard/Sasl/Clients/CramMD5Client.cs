@@ -11,6 +11,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             return new CramMD5Client(authorizationId, serverName, credentials, props);
         }
 
+        public override DebugId DebugId { get; } = DebugId.ForType<CramMD5Client>();
         private readonly string _username;
         private readonly byte[] _password;
         private State _currentState = State.Initial;

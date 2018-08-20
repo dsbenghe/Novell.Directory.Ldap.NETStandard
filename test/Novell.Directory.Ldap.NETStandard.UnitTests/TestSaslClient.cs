@@ -21,6 +21,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 
     public class TestSaslClient : ISaslClient
     {
+        public virtual DebugId DebugId { get; } = DebugId.ForType<TestSaslClient>();
         public TestSaslClient(string mechanism)
         {
             MechanismName = mechanism;

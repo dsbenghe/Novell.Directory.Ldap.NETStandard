@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{0ABBF187-A48E-42BB-83F0-96C2E1011C25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "test\Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

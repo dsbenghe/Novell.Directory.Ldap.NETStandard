@@ -44,6 +44,8 @@ namespace Novell.Directory.Ldap
      */
     public class LdapAbandonRequest : LdapMessage
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<LdapAbandonRequest>();
+
         /// <summary>
         ///     Construct an Ldap Abandon Request.
         /// </summary>

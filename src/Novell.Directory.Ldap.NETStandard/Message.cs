@@ -59,15 +59,11 @@ namespace Novell.Directory.Ldap
         internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, LdapMessageQueue queue,
             BindProperties bindprops)
         {
-            if (conn == null)
-            {
-                throw new ArgumentNullException(nameof(conn));
-            }
+            _conn = conn ?? throw new ArgumentNullException(nameof(conn));
 
             _stackTraceCreation = Environment.StackTrace;
-            InitBlock();
+            _replies = new MessageVector(5, 5);
             Request = msg;
-            _conn = conn;
             MessageAgent = agent;
             _queue = queue;
             _mslimit = mslimit;
@@ -179,11 +175,6 @@ namespace Novell.Directory.Ldap
         ///     the MessageAgent associated with this message.
         /// </returns>
         internal MessageAgent MessageAgent { get; private set; }
-
-        private void InitBlock()
-        {
-            _replies = new MessageVector(5, 5);
-        }
 
         /// <summary>
         ///     Returns true if replies are queued.
@@ -515,17 +506,12 @@ namespace Novell.Directory.Ldap
 
             internal Timeout(Message enclosingInstance, int interval, Message msg)
             {
-                InitBlock(enclosingInstance);
+                EnclosingInstance = enclosingInstance;
                 _timeToWait = interval;
                 _message = msg;
             }
 
-            public Message EnclosingInstance { get; private set; }
-
-            private void InitBlock(Message enclosingInstance)
-            {
-                EnclosingInstance = enclosingInstance;
-            }
+            public Message EnclosingInstance { get; }
 
             /// <summary>
             ///     The timeout thread.  If it wakes from the sleep, future input
@@ -553,7 +539,5 @@ namespace Novell.Directory.Ldap
                 }
             }
         }
-
-        /// <summary> sets the agent for this message</summary>
     }
 }
