@@ -24,6 +24,9 @@
   <PropertyGroup>
     <NoWarn>1701;1702;1705;CS1570;CS1571;CS1572;CS1573;CS1591;CS0419</NoWarn>
   </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>Novell.Directory.Ldap.NETStandard.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
 <!--  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">-->
 <!--    <CodeAnalysisRuleSet>Novell.Directory.Ldap.NETStandard.ruleset</CodeAnalysisRuleSet>-->
 <!--  </PropertyGroup>-->
@@ -31,13 +34,21 @@
 <!--    <CodeAnalysisRuleSet>Novell.Directory.Ldap.NETStandard.ruleset</CodeAnalysisRuleSet>-->
 <!--  </PropertyGroup>-->
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
+  <ItemGroup>
     <Compile Update="ExtensionMethods.*.cs">
       <DependentUpon>ExtensionMethods.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Roslynator.Analyzers" Version="1.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Roslynator.CodeFixes" Version="1.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
     <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
