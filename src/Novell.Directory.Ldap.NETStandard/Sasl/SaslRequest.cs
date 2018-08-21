@@ -17,6 +17,12 @@ namespace Novell.Directory.Ldap.Sasl
         public void AddAllControls(IEnumerable<LdapControl> controls) => Controls.AddRange(controls ?? Enumerable.Empty<LdapControl>());
         public IReadOnlyCollection<LdapControl> GetAllControls() => Controls.Select(c => c.Clone() as LdapControl).ToArray();
 
+        // Not supporting auth-int and auth-conf yet
+        public QualityOfProtection QualityOfProtection => QualityOfProtection.AuthenticationOnly;
+
+        // Not sure if there's any point supporting Medium and Low, ever?
+        public ProtectionStrength ProtectionStrength => ProtectionStrength.High;
+
         protected SaslRequest(string saslMechanism)
         {
             SaslMechanism = saslMechanism;
