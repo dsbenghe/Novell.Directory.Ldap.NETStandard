@@ -1,24 +1,25 @@
-﻿using System.Collections;
+﻿using System;
 using Novell.Directory.Ldap.Sasl.Clients;
 
 namespace Novell.Directory.Ldap.Sasl
 {
     public static class DefaultSaslClientFactory // static, thus not implementing ISaslClientFactory. Should be be non-static and do?
     {
-        public static ISaslClient CreateClient(string mechanism, string authorizationId, string serverName, byte[] credentials, Hashtable props)
+        public static ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (!IsSaslMechanismSupported(mechanism))
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+
+            if (!IsSaslMechanismSupported(saslRequest.SaslMechanism))
             {
                 return null;
             }
 
-            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
+            switch (saslRequest.SaslMechanism)
             {
                 case SaslConstants.Mechanism.CramMd5:
-                    return CramMD5Client.CreateClient(authorizationId, serverName, credentials, props);
-
+                    return new CramMD5Client(saslRequest);
                 case SaslConstants.Mechanism.DigestMd5:
-                    return DigestMD5Client.CreateClient(authorizationId, serverName, credentials, props);
+                    return new DigestMD5Client(saslRequest);
                 //case LdapConstants.SaslMechanism.Plain:
                 //case LdapConstants.SaslMechanism.GssApi:
                 default:
@@ -30,7 +31,7 @@ namespace Novell.Directory.Ldap.Sasl
         {
             if (string.IsNullOrEmpty(mechanism)) return false;
 
-            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
+            switch (mechanism)
             {
                 case SaslConstants.Mechanism.CramMd5:
                 case SaslConstants.Mechanism.DigestMd5:

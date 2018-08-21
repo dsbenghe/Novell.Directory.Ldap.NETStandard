@@ -5,20 +5,22 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 {
     public abstract class BaseSaslClient : ISaslClient
     {
-        protected string ServerName { get; }
+        public abstract DebugId DebugId { get; }
         protected Hashtable Props { get; }
+        public QualityOfProtection QualityOfProtection { get; }
+        public ProtectionStrength ProtectionStrength { get; }
 
-        protected BaseSaslClient(string serverName, Hashtable props)
+        protected BaseSaslClient(SaslRequest saslRequest)
         {
-            ServerName = serverName;
-            Props = props;
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            QualityOfProtection = saslRequest.QualityOfProtection;
+            ProtectionStrength = saslRequest.ProtectionStrength;
+            Props = saslRequest.SaslBindProperties;  // Clone?
         }
 
         public abstract string MechanismName { get; }
         public abstract bool HasInitialResponse { get; }
         public abstract bool IsComplete { get; }
-        public abstract DebugId DebugId { get; }
-
         public abstract byte[] EvaluateChallenge(byte[] challenge);
 
         public void Dispose()

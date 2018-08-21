@@ -52,14 +52,15 @@ namespace Novell.Directory.Ldap
         /// <summary>
         /// Internal for Unit-Test purposes only
         /// </summary>
-        internal ISaslClient CreateClient(string mechanism, string authorizationId, string serverName, byte[] credentials, Hashtable saslBindProperties)
+        internal ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (_saslClientFactories.TryGetValue(mechanism, out var factory))
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (_saslClientFactories.TryGetValue(saslRequest.SaslMechanism, out var factory))
             {
-                return factory.CreateClient(mechanism, authorizationId, serverName, credentials, saslBindProperties);
+                return factory.CreateClient(saslRequest);
             }
 
-            return DefaultSaslClientFactory.CreateClient(mechanism, authorizationId, serverName, credentials, saslBindProperties);
+            return DefaultSaslClientFactory.CreateClient(saslRequest);
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace Novell.Directory.Ldap
 
             Hashtable saslBindProperties = null;
 
-            using (var saslClient = CreateClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId, Host, saslRequest.Credentials, saslBindProperties))
+            using (var saslClient = CreateClient(saslRequest))
             {
                 if (saslClient == null)
                 {

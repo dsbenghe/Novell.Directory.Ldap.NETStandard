@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,8 @@ namespace Novell.Directory.Ldap.Sasl
 
         // Not sure if there's any point supporting Medium and Low, ever?
         public ProtectionStrength ProtectionStrength => ProtectionStrength.High;
+
+        public Hashtable SaslBindProperties { get; set; }
 
         protected SaslRequest(string saslMechanism)
         {
