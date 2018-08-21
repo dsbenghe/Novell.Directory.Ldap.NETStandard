@@ -32,5 +32,20 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         protected virtual void Dispose(bool disposing)
         {
         }
+
+        public static string GetQOPString(QualityOfProtection qop)
+        {
+            switch (qop)
+            {
+                case QualityOfProtection.AuthenticationOnly:
+                    return "auth";
+                case QualityOfProtection.AuthenticationWithIntegrityProtection:
+                    return "auth-int";
+                case QualityOfProtection.AuthenticationWithIntegrityAndPrivacyProtection:
+                    return "auth-conf";
+                default:
+                    return "";
+            }
+        }
     }
 }

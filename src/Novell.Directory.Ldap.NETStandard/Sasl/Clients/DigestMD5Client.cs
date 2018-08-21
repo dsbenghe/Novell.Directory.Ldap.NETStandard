@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Security.Cryptography;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -17,25 +16,41 @@ namespace Novell.Directory.Ldap.Sasl.Clients
     /// However, it is still in use.
     /// </para>
     /// </summary>
-    public class DigestMD5Client : BaseSaslClient
+    public partial class DigestMD5Client : BaseSaslClient
     {
-       
+        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+
+        public string RSPAuthValue { get; private set; }
+
         public override DebugId DebugId { get; } = DebugId.ForType<DigestMD5Client>();
         private readonly string _username;
         private readonly byte[] _password;
         private readonly string _realm;
+        private readonly string _host;
         private State _currentState = State.Initial;
 
         public DigestMD5Client(SaslRequest saslRequest)
             : base(saslRequest)
         {
-            if (string.IsNullOrEmpty(saslRequest.AuthorizationId) || saslRequest.Credentials.IsEmpty())
+            if (saslRequest == null)
+            {
+                throw new ArgumentNullException(nameof(saslRequest));
+            }
+
+            if (!(saslRequest is SaslDigestMd5Request dr))
+            {
+                throw new ArgumentException($"{nameof(saslRequest)} must be of type {nameof(SaslDigestMd5Request)}, but was of type {saslRequest.GetType().Name}");
+            }
+
+            if (string.IsNullOrEmpty(dr.AuthorizationId) || dr.Credentials.IsEmpty())
             {
                 throw new SaslException("Authorization ID and password must be specified");
             }
-            _username = saslRequest.AuthorizationId;
-            _password = saslRequest.Credentials; // Clone?
-            _realm = saslRequest.RealmName;
+
+            _username = dr.AuthorizationId;
+            _password = dr.Credentials;
+            _realm = dr.RealmName;
+            _host = dr.Host;
         }
 
         public override string MechanismName => SaslConstants.Mechanism.DigestMd5;
@@ -57,14 +72,21 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             switch (_currentState)
             {
                 case State.Initial:
-                    // challenge:
-                    // 1#( realm | nonce | qop | stale | maxbuf | charset | algorithm | cipher | auth-param )
-                    // qop="auth,auth-int,auth-conf",cipher="3des,rc4",algorithm=md5-sess,nonce="+Upgraded+v176b482ddcd22e21e5828127b41734095a6e4fedff738d401df5aad1990bdf973348e1aeeaf096f001d27b9d50e2a32871c4c4a51365a60d8",charset=utf-8,realm="int.devdomains.org"
-
-                    var c = Encoding.UTF8.GetString(challenge);
-                    var qa = Utilclass.QueryStringHelper.ParseQueryString(c);
-                    response = null;
-                    _currentState = State.ValidServerResponse;
+                    var challengeInfo = new ChallengeInfo(challenge);
+                    response = CreateDigestResponse(challengeInfo);
+                    _currentState = State.DigestResponseSent;
+                    break;
+                case State.DigestResponseSent:
+                    if (CheckServerResponseAuth(challenge))
+                    {
+                        _currentState = State.ValidServerResponse;
+                    }
+                    else
+                    {
+                        _currentState = State.InvalidServerResponse;
+                        throw new SaslException("Could not validate response-auth " +
+                                                "value from server");
+                    }
                     break;
                 case State.ValidServerResponse:
                 case State.InvalidServerResponse:
@@ -78,10 +100,123 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             return response;
         }
 
+        private bool CheckServerResponseAuth(byte[] serverResponse)
+        {
+            if (serverResponse.IsEmpty())
+            {
+                return false;
+            }
+
+            // "rspauth=9248d55132cc512a91caa7d9c042aebd"
+            var str = serverResponse.ToUtf8String();
+            if (str.StartsWith("rspauth="))
+            {
+                RSPAuthValue = str.Substring("rspauth=".Length);
+                return true;
+            }
+            return false;
+        }
+
+        private byte[] CreateDigestResponse(ChallengeInfo challenge)
+        {
+            if ((challenge.QOP & QualityOfProtection.AuthenticationOnly) == 0)
+            {
+                throw new SaslException("Currently, DigestMD5Client only supports \"auth\" QOP value.");
+            }
+
+            // cipher is only used in "auth-conf", which we don't support yet.
+
+            if (!challenge.Algorithm.EqualsOrdinalCI("md5-sess"))
+            {
+                throw new SaslException($"Invalid DIGEST-MD5 Algorithm: '{challenge.Algorithm}' - must be 'md5-sess'");
+            }
+
+            if (!challenge.Realms.Contains(_realm))
+            {
+                // Do we care? The server would reject us anyway if the Realm is invalid
+            }
+
+            var result = new DigestResponse
+            {
+                Username = _username,
+                Realm = _realm,
+                QOP = QualityOfProtection.AuthenticationOnly,
+                Charset = "utf-8",
+                NonceCount = 1,
+                MaxBuf = 65536,
+                Nonce = challenge.Nonce,
+                DigestUri = "ldap/" + _host
+            };
+
+            var cnonce = new byte[32];
+            _rng.GetBytes(cnonce);
+            result.CNonce = Utilclass.Base64.Encode(cnonce);
+
+            var ha1 = DigestCalcHa1(result);
+            result.Response = DigestCalcResponse(result, ha1);
+            var resultStr = result.ToString();
+            return resultStr.ToUtf8Bytes();
+        }
+
+        private static readonly byte[] Colon = ":".ToUtf8Bytes();
+
+        private byte[] DigestCalcHa1(DigestResponse result)
+        {
+            var md5 = new MD5Digest();
+            byte[] hash = new byte[md5.GetDigestSize()];
+            byte[] ha1 = new byte[md5.GetDigestSize()];
+
+            md5.BlockUpdate(result.Username.ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.Realm.ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(_password);
+            md5.DoFinal(hash);
+
+            md5.BlockUpdate(hash);
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.Nonce.ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.CNonce.ToUtf8Bytes());
+            md5.DoFinal(ha1);
+            return ha1;
+        }
+
+        private byte[] DigestCalcResponse(DigestResponse result, byte[] ha1)
+        {
+            var md5 = new MD5Digest();
+            var ha2 = new byte[md5.GetDigestSize()];
+            var digestResponse = new byte[md5.GetDigestSize()];
+
+            // HA2
+            md5.BlockUpdate("AUTHENTICATE:".ToUtf8Bytes());
+            md5.BlockUpdate(result.DigestUri.ToUtf8Bytes());
+            if (result.QOP != QualityOfProtection.AuthenticationOnly)
+            {
+                md5.BlockUpdate(":00000000000000000000000000000000".ToUtf8Bytes());
+            }
+            md5.DoFinal(ha2, 0);
+
+            // The actual Digest Response
+            md5.BlockUpdate(ha1.ToHexString().ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.Nonce.ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.NonceCountString().ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(result.CNonce.ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(GetQOPString(result.QOP).ToUtf8Bytes());
+            md5.BlockUpdate(Colon);
+            md5.BlockUpdate(ha2.ToHexString().ToUtf8Bytes());
+            md5.DoFinal(digestResponse);
+            return digestResponse;
+        }
+
         private enum State
         {
             Initial = 0,
-
+            DigestResponseSent,
             ValidServerResponse,
             InvalidServerResponse,
             Disposed

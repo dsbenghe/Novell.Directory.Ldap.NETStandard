@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -91,6 +90,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
         private static string HMacMD5(byte[] key, byte[] input)
         {
+            // TODO: Use BouncyCastle's HMAC MD5, as it's fully managed
             using (var hmd5 = new HMACMD5(key))
             {
                 var hash = hmd5.ComputeHash(input);
