@@ -1,17 +1,16 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Sasl.Clients;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
     public class CramMD5ClientTests
     {
-        private readonly static string AuthId = "uid=diradmin,cn=users,dc=macds,dc=local";
-        private readonly static byte[] PasswordBytes = Encoding.UTF8.GetBytes("Password1!");
+        private const string AuthId = "uid=diradmin,cn=users,dc=macds,dc=local";
+        private const string Password = "Password1!";
+
         private readonly static byte[] Challenge
             = new byte[] { 0x3c, 0x38, 0x38, 0x32, 0x34, 0x38, 0x38, 0x35,
                            0x31, 0x30, 0x2e, 0x35, 0x38, 0x33, 0x36, 0x38,
@@ -32,12 +31,12 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient(null, "localhost", new byte[] { 0x00 }, new Hashtable());
+                var client = new CramMD5Client(new SaslCramMd5Request(null, Password));
             });
 
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("", "localhost", new byte[] { 0x00 }, new Hashtable());
+                var client = new CramMD5Client(new SaslCramMd5Request("", Password));
             });
         }
 
@@ -46,19 +45,19 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("authId", "localhost", null, new Hashtable());
+                var client = new CramMD5Client(new SaslCramMd5Request(AuthId, null));
             });
 
             Assert.Throws<SaslException>(() =>
             {
-                var client = CramMD5Client.CreateClient("authId", "localhost", Array.Empty<byte>(), new Hashtable());
+                var client = new CramMD5Client(new SaslCramMd5Request(AuthId, ""));
             });
         }
 
         [Fact]
         public void EvaluateChallenge_Success()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
+            var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
@@ -77,7 +76,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void EvaluateChallenge_NonEmptyServerResponse_Exception()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
+            var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
@@ -93,7 +92,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void EvaluateChallenge_Disposed_Exception()
         {
-            var client = CramMD5Client.CreateClient(AuthId, "localhost", PasswordBytes, new Hashtable());
+            var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
             client.Dispose();
             Assert.True(client.IsComplete);

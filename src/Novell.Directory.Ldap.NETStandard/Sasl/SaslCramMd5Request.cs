@@ -11,7 +11,7 @@ namespace Novell.Directory.Ldap.Sasl
         public SaslCramMd5Request(string username, string password) : this()
         {
             AuthorizationId = username;
-            Credentials = password.ToUtf8Bytes();
+            Credentials = password.IsNotEmpty() ? password.ToUtf8Bytes() : null;
         }
     }
 }
