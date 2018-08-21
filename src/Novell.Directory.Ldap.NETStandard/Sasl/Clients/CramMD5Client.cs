@@ -87,8 +87,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         private string CreateCramMd5Response(byte[] challenge)
         {
             var digest = HMacMD5(_password, challenge);
-            var response = _username + " " + digest;
-            return response;
+            return _username + " " + digest;
         }
 
         // Most failures (Invalid Credentials etc.) won't even reach us here anyway.

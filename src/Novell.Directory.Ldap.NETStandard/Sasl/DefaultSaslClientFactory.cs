@@ -17,7 +17,8 @@ namespace Novell.Directory.Ldap.Sasl
                 case SaslConstants.Mechanism.CramMd5:
                     return CramMD5Client.CreateClient(authorizationId, serverName, credentials, props);
 
-                //case LdapConstants.SaslMechanism.DigestMd5:
+                case SaslConstants.Mechanism.DigestMd5:
+                    return DigestMD5Client.CreateClient(authorizationId, serverName, credentials, props);
                 //case LdapConstants.SaslMechanism.Plain:
                 //case LdapConstants.SaslMechanism.GssApi:
                 default:
@@ -32,6 +33,7 @@ namespace Novell.Directory.Ldap.Sasl
             switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
             {
                 case SaslConstants.Mechanism.CramMd5:
+                case SaslConstants.Mechanism.DigestMd5:
                     return true;
                 default:
                     return false;
