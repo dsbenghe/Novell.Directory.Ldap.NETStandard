@@ -70,7 +70,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConnection.FetchSchema">
     /// </seealso>
-    /// <seealso cref="LdapConnection.GetSchemaDN">
+    /// <seealso cref="LdapConnection.GetSchemaDn">
     /// </seealso>
     public class LdapSchema : LdapEntry
     {

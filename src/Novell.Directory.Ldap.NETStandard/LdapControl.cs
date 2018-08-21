@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConstraints.GetControls">
     /// </seealso>
-    /// <seealso cref="LdapConstraints.setControls">
+    /// <seealso cref="LdapConstraints.SetControls">
     /// </seealso>
     public class LdapControl
     {

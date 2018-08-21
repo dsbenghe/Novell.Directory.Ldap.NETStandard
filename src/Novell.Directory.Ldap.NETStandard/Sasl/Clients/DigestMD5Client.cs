@@ -7,6 +7,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 {
 #pragma warning disable CA5351 // Do Not Use Broken Cryptographic Algorithms
     /// <summary>
+    /// <para>
     /// Digest Authentication as defined in RFC 2831:
     /// https://tools.ietf.org/html/rfc2831
     /// 
@@ -14,9 +15,12 @@ namespace Novell.Directory.Ldap.Sasl.Clients
     /// https://tools.ietf.org/html/rfc6331
     /// 
     /// However, it is still in use.
+    /// </para>
     /// </summary>
     public class DigestMD5Client : BaseSaslClient
     {
+        public override DebugId DebugId { get; } = DebugId.ForType<CramMD5Client>();
+
         public DigestMD5Client(string serverName, Hashtable props) : base(serverName, props)
         {
         }

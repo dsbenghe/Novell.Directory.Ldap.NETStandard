@@ -11,7 +11,7 @@ namespace Novell.Directory.Ldap
 {
     public partial class LdapConnection : ILdapConnection
     {
-        private ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
+        private readonly ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
 
         public IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories()
             => _saslClientFactories.Values.ToList();
@@ -119,7 +119,6 @@ namespace Novell.Directory.Ldap
                             {
                                 clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                             }
-
                         }
                         catch (Exception ex)
                         {
