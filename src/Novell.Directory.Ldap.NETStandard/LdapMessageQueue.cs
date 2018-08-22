@@ -152,9 +152,9 @@ namespace Novell.Directory.Ldap
             }
 
             // Local error occurred, contains a LocalException
-            if (resp is LdapResponse)
+            if (resp is LdapResponse ldapResponse)
             {
-                return (LdapMessage)resp;
+                return ldapResponse;
             }
 
             // Normal message handling

@@ -53,7 +53,6 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                         _currentState = State.CramMd5ResponseSent;
                     }
                     break;
-
                 case State.CramMd5ResponseSent:
                     if (CheckServerResponseAuth(challenge))
                     {

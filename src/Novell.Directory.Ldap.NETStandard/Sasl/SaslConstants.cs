@@ -79,6 +79,15 @@
             public const string GssSPNego = "GSS-SPNEGO";
 
             /// <summary>
+            /// The PLAIN SASL mechanism does not provide a security layer.
+            /// 
+            /// The PLAIN mechanism should not be used without adequate data security
+            /// protection as this mechanism affords no integrity or confidentiality
+            /// protections itself.  The mechanism is intended to be used with data
+            /// security protections provided by application-layer protocol,
+            /// generally through its use of Transport Layer Security (TLS)
+            /// services.
+            /// 
             /// RFC 4616:
             /// https://tools.ietf.org/html/rfc4616
             /// </summary>
