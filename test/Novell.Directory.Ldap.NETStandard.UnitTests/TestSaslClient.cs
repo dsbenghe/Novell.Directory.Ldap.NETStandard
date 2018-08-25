@@ -13,9 +13,9 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 
         public IReadOnlyList<string> SupportedMechanisms { get; }
 
-        public ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable saslBindProperties)
+        public ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            return new TestSaslClient(mechanism);
+            return new TestSaslClient(saslRequest?.SaslMechanism);
         }
     }
 

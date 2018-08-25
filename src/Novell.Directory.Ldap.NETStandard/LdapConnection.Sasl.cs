@@ -11,7 +11,7 @@ namespace Novell.Directory.Ldap
 {
     public partial class LdapConnection : ILdapConnection
     {
-        private ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
+        private readonly ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
 
         public IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories()
             => _saslClientFactories.Values.ToList();
@@ -52,14 +52,15 @@ namespace Novell.Directory.Ldap
         /// <summary>
         /// Internal for Unit-Test purposes only
         /// </summary>
-        internal ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable saslBindProperties)
+        internal ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (_saslClientFactories.TryGetValue(mechanism, out var factory))
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (_saslClientFactories.TryGetValue(saslRequest.SaslMechanism, out var factory))
             {
-                return factory.CreateClient(mechanism, authorizationId, protocol, serverName, credentials, saslBindProperties);
+                return factory.CreateClient(saslRequest);
             }
 
-            return DefaultSaslClientFactory.CreateClient(mechanism, authorizationId, protocol, serverName, credentials, saslBindProperties);
+            return DefaultSaslClientFactory.CreateClient(saslRequest);
         }
 
         /// <summary>
@@ -84,9 +85,7 @@ namespace Novell.Directory.Ldap
 
             Hashtable saslBindProperties = null;
 
-            using (var saslClient = CreateClient(saslRequest.SaslMechanism, saslRequest.AuthorizationId,
-                                                 DefaultSaslClientFactory.ProtocolLdap, Host,
-                                                saslRequest.Credentials, saslBindProperties))
+            using (var saslClient = CreateClient(saslRequest))
             {
                 if (saslClient == null)
                 {
@@ -121,7 +120,6 @@ namespace Novell.Directory.Ldap
                             {
                                 clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                             }
-
                         }
                         catch (Exception ex)
                         {

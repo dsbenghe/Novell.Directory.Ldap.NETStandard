@@ -5,22 +5,22 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 {
     public abstract class BaseSaslClient : ISaslClient
     {
-        protected string Protocol { get; }
-        protected string ServerName { get; }
+        public abstract DebugId DebugId { get; }
         protected Hashtable Props { get; }
+        public QualityOfProtection QualityOfProtection { get; }
+        public ProtectionStrength ProtectionStrength { get; }
 
-        protected BaseSaslClient(string protocol, string serverName, Hashtable props)
+        protected BaseSaslClient(SaslRequest saslRequest)
         {
-            Protocol = protocol;
-            ServerName = serverName;
-            Props = props;
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            QualityOfProtection = saslRequest.QualityOfProtection;
+            ProtectionStrength = saslRequest.ProtectionStrength;
+            Props = saslRequest.SaslBindProperties;  // Clone?
         }
 
         public abstract string MechanismName { get; }
         public abstract bool HasInitialResponse { get; }
         public abstract bool IsComplete { get; }
-        public abstract DebugId DebugId { get; }
-
         public abstract byte[] EvaluateChallenge(byte[] challenge);
 
         public void Dispose()
@@ -31,6 +31,21 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        public static string GetQOPString(QualityOfProtection qop)
+        {
+            switch (qop)
+            {
+                case QualityOfProtection.AuthenticationOnly:
+                    return "auth";
+                case QualityOfProtection.AuthenticationWithIntegrityProtection:
+                    return "auth-int";
+                case QualityOfProtection.AuthenticationWithIntegrityAndPrivacyProtection:
+                    return "auth-conf";
+                default:
+                    return "";
+            }
         }
     }
 }

@@ -111,5 +111,14 @@
     <Rule Id="SA1641" Action="None" />
     <Rule Id="SA1642" Action="None" />
     <Rule Id="SA1643" Action="None" />
+    <Rule Id="IDE0004" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Roslynator.CSharp.Analyzers" RuleNamespace="Roslynator.CSharp.Analyzers">
+    <Rule Id="RCS1129" Action="None" />
+    <Rule Id="RCS1138" Action="None" />
+    <Rule Id="RCS1139" Action="None" />
+    <Rule Id="RCS1141" Action="None" />
+    <Rule Id="RCS1194" Action="None" />
+    <Rule Id="RCS1226" Action="None" />
   </Rules>
 </RuleSet>

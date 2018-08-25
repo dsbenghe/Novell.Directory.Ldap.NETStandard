@@ -1094,12 +1094,11 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal LdapException(string messageOrKey, object[] arguments, int resultCode, string serverMsg,
             string matchedDn, Exception rootException)
-            : base(ResourcesHandler.GetMessage(messageOrKey, arguments))
+            : base(ResourcesHandler.GetMessage(messageOrKey, arguments), rootException)
         {
             _messageOrKey = messageOrKey;
             _arguments = arguments;
             ResultCode = resultCode;
-            Cause = rootException;
             MatchedDn = matchedDn;
             _serverMessage = serverMsg;
         }
@@ -1124,13 +1123,6 @@ namespace Novell.Directory.Ldap
                 return _serverMessage;
             }
         }
-
-        /// <summary>
-        ///     Returns the lower level Exception which caused the failure, if any.
-        ///     For example, an IOException with additional information may be returned
-        ///     on a CONNECT_ERROR failure.
-        /// </summary>
-        public Exception Cause { get; }
 
         /// <summary>
         ///     Returns the result code from the exception.
@@ -1291,9 +1283,9 @@ namespace Novell.Directory.Ldap
                 msg = msg + '\n' + tmsg;
             }
 
-            if (Cause != null)
+            if (InnerException != null)
             {
-                msg = msg + '\n' + Cause;
+                msg = msg + '\n' + InnerException;
             }
 
             return msg;

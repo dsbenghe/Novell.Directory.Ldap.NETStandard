@@ -1095,7 +1095,6 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        /// TLS not supported in first release
         public class ReaderThread
         {
             private readonly Connection _enclosingInstance;

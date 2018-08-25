@@ -13,7 +13,7 @@
         /// </summary>
         public static RootDseInfo GetRootDseInfo(this ILdapConnection conn)
         {
-            var searchResults = conn.Search("", LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "supportedExtension" }, false);
+            var searchResults = conn.Search("", LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false);
             if (searchResults.HasMore())
             {
                 var sr = searchResults.Next();

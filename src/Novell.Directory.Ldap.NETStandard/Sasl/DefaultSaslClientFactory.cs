@@ -1,26 +1,27 @@
-﻿using System.Collections;
+﻿using System;
 using Novell.Directory.Ldap.Sasl.Clients;
 
 namespace Novell.Directory.Ldap.Sasl
 {
     public static class DefaultSaslClientFactory // static, thus not implementing ISaslClientFactory. Should be be non-static and do?
     {
-        public const string ProtocolLdap = "ldap";
-
-        public static ISaslClient CreateClient(string mechanism, string authorizationId, string protocol, string serverName, byte[] credentials, Hashtable props)
+        public static ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (!IsSaslMechanismSupported(mechanism))
+            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+
+            if (!IsSaslMechanismSupported(saslRequest.SaslMechanism))
             {
                 return null;
             }
 
-            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
+            switch (saslRequest.SaslMechanism)
             {
                 case SaslConstants.Mechanism.CramMd5:
-                    return CramMD5Client.CreateClient(authorizationId, protocol, serverName, credentials, props);
-
-                //case LdapConstants.SaslMechanism.DigestMd5:
-                //case LdapConstants.SaslMechanism.Plain:
+                    return new CramMD5Client(saslRequest);
+                case SaslConstants.Mechanism.DigestMd5:
+                    return new DigestMD5Client(saslRequest);
+                case SaslConstants.Mechanism.Plain:
+                    return new PlainClient(saslRequest);
                 //case LdapConstants.SaslMechanism.GssApi:
                 default:
                     return null;
@@ -31,9 +32,11 @@ namespace Novell.Directory.Ldap.Sasl
         {
             if (string.IsNullOrEmpty(mechanism)) return false;
 
-            switch (mechanism.ToUpperInvariant()) // TODO: Remove this ToUpperInvariant
+            switch (mechanism)
             {
                 case SaslConstants.Mechanism.CramMd5:
+                case SaslConstants.Mechanism.DigestMd5:
+                case SaslConstants.Mechanism.Plain:
                     return true;
                 default:
                     return false;
