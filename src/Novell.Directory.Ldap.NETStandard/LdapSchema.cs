@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -129,7 +130,7 @@ namespace Novell.Directory.Ldap
         ///     case-insensibility, the Keys for this table will be a String cast to
         ///     Uppercase.
         /// </summary>
-        private Hashtable[] _nameTable;
+        private readonly List<Dictionary<string, LdapSchemaElement>> _nameTable;
 
         /// <summary>
         ///     Constructs an LdapSchema object from attributes of an LdapEntry.
@@ -149,14 +150,14 @@ namespace Novell.Directory.Ldap
         public LdapSchema(LdapEntry ent)
             : base(ent.Dn, ent.GetAttributeSet())
         {
-            _nameTable = new Hashtable[8];
+            _nameTable = new List<Dictionary<string, LdapSchemaElement>>(8);
             _idTable = new Hashtable[8];
 
             // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
             {
                 _idTable[i] = new Hashtable();
-                _nameTable[i] = new Hashtable();
+                _nameTable[i] = new Dictionary<string, LdapSchemaElement>();
             }
 
             var itr = GetAttributeSet().GetEnumerator();
@@ -339,7 +340,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public IEnumerator AttributeNames => new SupportClass.SetSupport(_nameTable[Attribute].Keys).GetEnumerator();
+        public IEnumerator<string> AttributeNames => _nameTable[Attribute].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule names.
@@ -347,8 +348,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule names.
         /// </returns>
-        public IEnumerator DitContentRuleNames
-            => new SupportClass.SetSupport(_nameTable[Ditcontent].Keys).GetEnumerator();
+        public IEnumerator<string> DitContentRuleNames => _nameTable[Ditcontent].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule names.
@@ -356,8 +356,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule names.
         /// </returns>
-        public IEnumerator DitStructureRuleNames
-            => new SupportClass.SetSupport(_nameTable[Ditstructure].Keys).GetEnumerator();
+        public IEnumerator<string> DitStructureRuleNames => _nameTable[Ditstructure].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule names.
@@ -365,8 +364,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule names.
         /// </returns>
-        public IEnumerator MatchingRuleNames
-            => new SupportClass.SetSupport(_nameTable[Matching].Keys).GetEnumerator();
+        public IEnumerator<string> MatchingRuleNames => _nameTable[Matching].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule use names.
@@ -374,8 +372,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use names.
         /// </returns>
-        public IEnumerator MatchingRuleUseNames
-            => new SupportClass.SetSupport(_nameTable[MatchingUse].Keys).GetEnumerator();
+        public IEnumerator<string> MatchingRuleUseNames => _nameTable[MatchingUse].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of name form names.
@@ -383,8 +380,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form names.
         /// </returns>
-        public IEnumerator NameFormNames
-            => new SupportClass.SetSupport(_nameTable[NameForm].Keys).GetEnumerator();
+        public IEnumerator<string> NameFormNames => _nameTable[NameForm].Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of object class names.
@@ -392,8 +388,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class names.
         /// </returns>
-        public IEnumerator ObjectClassNames
-            => new SupportClass.SetSupport(_nameTable[ObjectClass].Keys).GetEnumerator();
+        public IEnumerator<string> ObjectClassNames => _nameTable[ObjectClass].Keys.GetEnumerator();
 
         /// <summary>
         ///     Adds the schema definition to the idList and nameList HashMaps.
@@ -415,9 +410,9 @@ namespace Novell.Directory.Ldap
         {
             SupportClass.PutElement(_idTable[schemaType], element.Id, element);
             var names = element.Names;
-            for (var i = 0; i < names.Length; i++)
+            foreach (var name in names)
             {
-                SupportClass.PutElement(_nameTable[schemaType], names[i].ToUpper(), element);
+                _nameTable[schemaType][name.ToUpper()] = element;
             }
         }
 
@@ -458,7 +453,7 @@ namespace Novell.Directory.Ldap
             }
 
             // name lookup
-            return (LdapSchemaElement)_nameTable[schemaType][key.ToUpper()];
+            return _nameTable[schemaType][key.ToUpper()];
         }
 
         /// <summary>

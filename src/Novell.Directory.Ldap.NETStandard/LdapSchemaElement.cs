@@ -32,6 +32,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -55,18 +56,10 @@ namespace Novell.Directory.Ldap
         ///     A hash table that contains the vendor-specific qualifiers (for example,
         ///     the X-NDS flags).
         /// </summary>
-        private Hashtable _hashQualifier = new Hashtable();
-
-        /// <summary>
-        ///     A string array of optional, or vendor-specific, qualifiers for the
-        ///     schema element.
-        ///     These optional qualifiers begin with "X-"; the Novell eDirectory
-        ///     specific qualifiers begin with "X-NDS".
-        /// </summary>
-        private string[] _qualifier = { string.Empty };
+        private readonly Dictionary<string, AttributeQualifier> _hashQualifier = new Dictionary<string, AttributeQualifier>();
 
         /// <summary> The names of the schema element.</summary>
-        protected internal string[] names = { string.Empty };
+        protected string[] names = { string.Empty };
 
         /// <summary> The OID for the schema element.</summary>
         protected string Oid = string.Empty;
@@ -140,8 +133,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames
-            => new SupportClass.SetSupport(_hashQualifier.Keys).GetEnumerator();
+        public IEnumerator QualifierNames => _hashQualifier.Keys.GetEnumerator();
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier
@@ -167,13 +159,8 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public string[] GetQualifier(string name)
         {
-            var attr = (AttributeQualifier)_hashQualifier[name];
-            if (attr != null)
-            {
-                return attr.Values;
-            }
-
-            return null;
+            var attr = _hashQualifier[name];
+            return attr?.Values;
         }
 
         /// <summary>
@@ -211,9 +198,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public void SetQualifier(string name, string[] values)
         {
-            var attrQualifier = new AttributeQualifier(name, values);
-            SupportClass.PutElement(_hashQualifier, name, attrQualifier);
-
+            _hashQualifier[name] = new AttributeQualifier(name, values);
             /*
             * This is the only method that modifies the schema element.
             * We need to reset the attribute value since it has changed.
