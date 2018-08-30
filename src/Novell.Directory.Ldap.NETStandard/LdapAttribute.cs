@@ -481,7 +481,7 @@ namespace Novell.Directory.Ldap
         ///     Note: If attrBytes represents a string it should be UTF-8 encoded.
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
-        public void AddValue(byte[] attrBytes)
+        public virtual void AddValue(byte[] attrBytes)
         {
             if (attrBytes == null)
             {
@@ -840,7 +840,7 @@ namespace Novell.Directory.Ldap
         ///     no effect.
         ///     @throws IllegalArgumentException if attrBytes is null.
         /// </param>
-        public void RemoveValue(byte[] attrBytes)
+        public virtual void RemoveValue(byte[] attrBytes)
         {
             if (attrBytes == null)
             {

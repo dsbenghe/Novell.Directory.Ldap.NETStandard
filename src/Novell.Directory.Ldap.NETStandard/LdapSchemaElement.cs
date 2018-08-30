@@ -195,7 +195,7 @@ namespace Novell.Directory.Ldap
         ///     setQualifier requires reconstructing the string value of the schema
         ///     element.
         /// </summary>
-        protected internal abstract string FormatString();
+        protected abstract string FormatString();
 
         /// <summary>
         ///     Sets the values of a specified optional or non-standard qualifier of
@@ -238,7 +238,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public void AddValue(byte[] valueRenamed)
+        public override void AddValue(byte[] valueRenamed)
         {
             throw new NotSupportedException("addValue is not supported by LdapSchemaElement");
         }
@@ -260,7 +260,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public void RemoveValue(byte[] valueRenamed)
+        public override void RemoveValue(byte[] valueRenamed)
         {
             throw new NotSupportedException("removeValue is not supported by LdapSchemaElement");
         }

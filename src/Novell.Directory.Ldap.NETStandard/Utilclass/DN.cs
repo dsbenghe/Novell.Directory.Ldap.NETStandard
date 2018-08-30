@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     /// <seealso cref="Rdn">
     /// </seealso>
-    public class Dn : object
+    public class Dn
     {
         // parser state identifiers.
         private const int LookForRdnAttrType = 1;
@@ -848,6 +848,13 @@ namespace Novell.Directory.Ldap.Utilclass
         public void AddRdnToBack(Rdn rdn)
         {
             _rdnList.Add(rdn);
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 5751775;
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Rdn>>.Default.GetHashCode(_rdnList);
+            return hashCode;
         }
     }
 }

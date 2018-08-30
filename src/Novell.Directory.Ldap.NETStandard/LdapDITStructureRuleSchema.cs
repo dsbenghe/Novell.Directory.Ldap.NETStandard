@@ -192,7 +192,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the class' definition.
         /// </returns>
-        protected internal override string FormatString()
+        protected override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
 

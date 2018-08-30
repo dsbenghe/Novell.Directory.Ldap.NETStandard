@@ -295,5 +295,17 @@ namespace Novell.Directory.Ldap
 
             return true;
         }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (_sortAscending != null ? _sortAscending.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_sortByNames != null ? _sortByNames.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_collator != null ? _collator.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (_location != null ? _location.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 }

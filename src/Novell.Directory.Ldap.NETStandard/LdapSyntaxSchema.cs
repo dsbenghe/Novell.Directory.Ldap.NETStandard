@@ -118,7 +118,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A string representation of the syntax's definition.
         /// </returns>
-        protected internal override string FormatString()
+        protected override string FormatString()
         {
             var valueBuffer = new StringBuilder("( ");
             string token;

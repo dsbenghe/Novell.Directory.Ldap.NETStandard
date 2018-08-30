@@ -59,8 +59,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         private readonly int _mResponseNameIndex;
         private readonly int _mResponseValueIndex;
 
-        private int _mReferralIndex;
-
         // *************************************************************************
         // Constructors for ExtendedResponse
         // *************************************************************************
