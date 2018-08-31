@@ -33,7 +33,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -123,7 +122,7 @@ namespace Novell.Directory.Ldap
         ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
         ///     is used for retrieving enumerations.
         /// </summary>
-        private Hashtable[] _idTable;
+        private readonly List<Dictionary<string, LdapSchemaElement>> _idTable;
 
         /// <summary>
         ///     The nameTable will hash on the names (if available). To insure
@@ -151,12 +150,12 @@ namespace Novell.Directory.Ldap
             : base(ent.Dn, ent.GetAttributeSet())
         {
             _nameTable = new List<Dictionary<string, LdapSchemaElement>>(8);
-            _idTable = new Hashtable[8];
+            _idTable = new List<Dictionary<string, LdapSchemaElement>>(8);
 
             // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
             {
-                _idTable[i] = new Hashtable();
+                _idTable[i] = new Dictionary<string, LdapSchemaElement>();
                 _nameTable[i] = new Dictionary<string, LdapSchemaElement>();
             }
 
@@ -169,10 +168,10 @@ namespace Novell.Directory.Ldap
 
                 if (attrName.EqualsOrdinalCI(SchemaTypeNames[ObjectClass]))
                 {
-                    LdapObjectClassSchema classSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
+                        valueRenamed = enumString.Current;
+                        LdapObjectClassSchema classSchema;
                         try
                         {
                             classSchema = new LdapObjectClassSchema(valueRenamed);
@@ -188,10 +187,10 @@ namespace Novell.Directory.Ldap
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Attribute]))
                 {
-                    LdapAttributeSchema attrSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
+                        valueRenamed = enumString.Current;
+                        LdapAttributeSchema attrSchema;
                         try
                         {
                             attrSchema = new LdapAttributeSchema(valueRenamed);
@@ -207,61 +206,55 @@ namespace Novell.Directory.Ldap
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Syntax]))
                 {
-                    LdapSyntaxSchema syntaxSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        syntaxSchema = new LdapSyntaxSchema(valueRenamed);
+                        valueRenamed = enumString.Current;
+                        var syntaxSchema = new LdapSyntaxSchema(valueRenamed);
                         AddElement(Syntax, syntaxSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Matching]))
                 {
-                    LdapMatchingRuleSchema matchingRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        matchingRuleSchema = new LdapMatchingRuleSchema(valueRenamed, null);
+                        valueRenamed = enumString.Current;
+                        var matchingRuleSchema = new LdapMatchingRuleSchema(valueRenamed, null);
                         AddElement(Matching, matchingRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[MatchingUse]))
                 {
-                    LdapMatchingRuleUseSchema matchingRuleUseSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        matchingRuleUseSchema = new LdapMatchingRuleUseSchema(valueRenamed);
+                        valueRenamed = enumString.Current;
+                        var matchingRuleUseSchema = new LdapMatchingRuleUseSchema(valueRenamed);
                         AddElement(MatchingUse, matchingRuleUseSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditcontent]))
                 {
-                    LdapDitContentRuleSchema dItContentRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        dItContentRuleSchema = new LdapDitContentRuleSchema(valueRenamed);
+                        valueRenamed = enumString.Current;
+                        var dItContentRuleSchema = new LdapDitContentRuleSchema(valueRenamed);
                         AddElement(Ditcontent, dItContentRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditstructure]))
                 {
-                    LdapDitStructureRuleSchema dItStructureRuleSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        dItStructureRuleSchema = new LdapDitStructureRuleSchema(valueRenamed);
+                        valueRenamed = enumString.Current;
+                        var dItStructureRuleSchema = new LdapDitStructureRuleSchema(valueRenamed);
                         AddElement(Ditstructure, dItStructureRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[NameForm]))
                 {
-                    LdapNameFormSchema nameFormSchema;
                     while (enumString.MoveNext())
                     {
-                        valueRenamed = (string)enumString.Current;
-                        nameFormSchema = new LdapNameFormSchema(valueRenamed);
+                        valueRenamed = enumString.Current;
+                        var nameFormSchema = new LdapNameFormSchema(valueRenamed);
                         AddElement(NameForm, nameFormSchema);
                     }
                 }
@@ -276,7 +269,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of attribute definitions.
         /// </returns>
-        public IEnumerator AttributeSchemas => _idTable[Attribute].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> AttributeSchemas => _idTable[Attribute].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT content rule definitions.
@@ -284,7 +277,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT content rule definitions.
         /// </returns>
-        public IEnumerator DitContentRuleSchemas => _idTable[Ditcontent].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> DitContentRuleSchemas => _idTable[Ditcontent].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of DIT structure rule definitions.
@@ -292,7 +285,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of DIT structure rule definitions.
         /// </returns>
-        public IEnumerator DitStructureRuleSchemas => _idTable[Ditstructure].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> DitStructureRuleSchemas => _idTable[Ditstructure].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule definitions.
@@ -300,7 +293,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule definitions.
         /// </returns>
-        public IEnumerator MatchingRuleSchemas => _idTable[Matching].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> MatchingRuleSchemas => _idTable[Matching].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of matching rule use definitions.
@@ -308,7 +301,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of matching rule use definitions.
         /// </returns>
-        public IEnumerator MatchingRuleUseSchemas => _idTable[MatchingUse].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> MatchingRuleUseSchemas => _idTable[MatchingUse].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of name form definitions.
@@ -316,7 +309,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of name form definitions.
         /// </returns>
-        public IEnumerator NameFormSchemas => _idTable[NameForm].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> NameFormSchemas => _idTable[NameForm].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of object class definitions.
@@ -324,7 +317,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of object class definitions.
         /// </returns>
-        public IEnumerator ObjectClassSchemas => _idTable[ObjectClass].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> ObjectClassSchemas => _idTable[ObjectClass].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of syntax definitions.
@@ -332,7 +325,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of syntax definitions.
         /// </returns>
-        public IEnumerator SyntaxSchemas => _idTable[Syntax].Values.GetEnumerator();
+        public IEnumerator<LdapSchemaElement> SyntaxSchemas => _idTable[Syntax].Values.GetEnumerator();
 
         /// <summary>
         ///     Returns an enumeration of attribute names.
@@ -408,7 +401,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         private void AddElement(int schemaType, LdapSchemaElement element)
         {
-            SupportClass.PutElement(_idTable[schemaType], element.Id, element);
+            _idTable[schemaType][element.Id] = element;
             var names = element.Names;
             foreach (var name in names)
             {
@@ -449,7 +442,7 @@ namespace Novell.Directory.Ldap
             if (c >= '0' && c <= '9')
             {
                 // oid lookup
-                return (LdapSchemaElement)_idTable[schemaType][key];
+                return _idTable[schemaType][key];
             }
 
             // name lookup
@@ -513,8 +506,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public LdapDitStructureRuleSchema GetDitStructureRuleSchema(int id)
         {
-            var idKey = id;
-            return (LdapDitStructureRuleSchema)_idTable[Ditstructure][idKey];
+            return (LdapDitStructureRuleSchema)_idTable[Ditstructure][id.ToString()];
         }
 
         /// <summary>

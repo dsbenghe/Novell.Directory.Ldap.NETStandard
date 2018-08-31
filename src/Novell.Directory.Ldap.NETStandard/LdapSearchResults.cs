@@ -366,7 +366,7 @@ namespace Novell.Directory.Ldap
             // Checks if we have run out of entries
             if (_entryIndex != 0 && _entryIndex >= _entryCount)
             {
-                SupportClass.SetSize(_entries, 0);
+                _entries.RemoveRange(0, _entries.Count);
                 _entryCount = 0;
                 _entryIndex = 0;
             }

@@ -111,7 +111,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                 {
                                     if (st2.Lastttype == '(')
                                     {
-                                        var nameList = new ArrayList();
+                                        var nameList = new List<string>();
                                         while (st2.NextToken() == '\'')
                                         {
                                             if (st2.StringValue != null)
@@ -122,8 +122,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                         if (nameList.Count > 0)
                                         {
-                                            Names = new string[nameList.Count];
-                                            SupportClass.ArrayListSupport.ToArray(nameList, Names);
+                                            Names = nameList.ToArray();
                                         }
                                     }
                                 }
@@ -206,7 +205,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("SUP"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -229,8 +228,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Superiors = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Superiors);
+                                    Superiors = values.ToArray();
                                 }
 
                                 continue;
@@ -262,7 +260,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("MUST"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -284,8 +282,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Required = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Required);
+                                    Required = values.ToArray();
                                 }
 
                                 continue;
@@ -293,7 +290,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("MAY"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -315,8 +312,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Optional = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Optional);
+                                    Optional = values.ToArray();
                                 }
 
                                 continue;
@@ -324,7 +320,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("NOT"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -346,8 +342,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Precluded = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Precluded);
+                                    Precluded = values.ToArray();
                                 }
 
                                 continue;
@@ -355,7 +350,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("AUX"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -377,8 +372,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Auxiliary = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Auxiliary);
+                                    Auxiliary = values.ToArray();
                                 }
 
                                 continue;
@@ -430,7 +424,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                             if (st2.StringValue.EqualsOrdinalCI("APPLIES"))
                             {
-                                var values = new ArrayList();
+                                var values = new List<string>();
                                 st2.NextToken();
                                 if (st2.Lastttype == '(')
                                 {
@@ -452,8 +446,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                                 if (values.Count > 0)
                                 {
-                                    Applies = new string[values.Count];
-                                    SupportClass.ArrayListSupport.ToArray(values, Applies);
+                                    Applies = values.ToArray();
                                 }
 
                                 continue;
@@ -521,7 +514,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         private AttributeQualifier ParseQualifier(SchemaTokenCreator st, string name)
         {
-            var values = new ArrayList(5);
+            var values = new List<string>(5);
             if (st.NextToken() == '\'')
             {
                 values.Add(st.StringValue);
@@ -536,10 +529,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                 }
             }
-
-            var valArray = new string[values.Count];
-            valArray = (string[])SupportClass.ArrayListSupport.ToArray(values, valArray);
-            return new AttributeQualifier(name, valArray);
+            return new AttributeQualifier(name, values.ToArray());
         }
     }
 }

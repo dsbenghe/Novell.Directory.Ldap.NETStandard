@@ -31,7 +31,8 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -40,13 +41,13 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>
-    public class RespExtensionSet : SupportClass.AbstractSetSupport
+    public class RespExtensionSet
     {
-        private readonly Hashtable _map;
+        private readonly ConcurrentDictionary<string, Type> _map;
 
         public RespExtensionSet()
         {
-            _map = new Hashtable();
+            _map = new ConcurrentDictionary<string, Type>();
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     number of extensions in this set.
         /// </returns>
-        public override int Count => _map.Count;
+        public int Count => _map.Count;
 
         /* Adds a responseExtension to the current list of registered responses.
         *
@@ -63,13 +64,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void RegisterResponseExtension(string oid, Type extClass)
         {
-            lock (this)
-            {
-                if (!_map.ContainsKey(oid))
-                {
-                    _map.Add(oid, extClass);
-                }
-            }
+            _map.TryAdd(oid, extClass);
         }
 
         /// <summary>
@@ -79,7 +74,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     iterator over the responses in this set.
         /// </returns>
-        public override IEnumerator GetEnumerator()
+        public IEnumerator<Type> GetEnumerator()
         {
             return _map.Values.GetEnumerator();
         }
@@ -91,16 +86,8 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public Type FindResponseExtension(string searchOid)
         {
-            lock (this)
-            {
-                if (_map.ContainsKey(searchOid))
-                {
-                    return (Type)_map[searchOid];
-                }
-
-                /* The requested extension does not have a registered response class */
-                return null;
-            }
+            _map.TryGetValue(searchOid, out var retValue);
+            return retValue;
         }
     }
 }

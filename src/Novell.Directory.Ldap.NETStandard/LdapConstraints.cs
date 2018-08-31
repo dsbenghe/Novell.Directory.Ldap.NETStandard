@@ -348,7 +348,7 @@ namespace Novell.Directory.Ldap
                 _properties = new Hashtable();
             }
 
-            SupportClass.PutElement(_properties, name, valueRenamed);
+            _properties.Add(name, valueRenamed);
         }
 
         /// <summary>

@@ -31,10 +31,8 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
@@ -431,14 +429,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     clone of this LdapAttribute.
         /// </returns>
-        public object Clone()
+        public LdapAttribute Clone()
         {
             try
             {
-                var newObj = MemberwiseClone();
+                var newObj = (LdapAttribute)MemberwiseClone();
                 if (_values != null)
                 {
-                    Array.Copy(_values, 0, ((LdapAttribute)newObj)._values, 0, _values.Length);
+                    Array.Copy(_values, 0, newObj._values, 0, _values.Length);
                 }
 
                 return newObj;
