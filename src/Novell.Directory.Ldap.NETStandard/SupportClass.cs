@@ -41,9 +41,6 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -65,38 +62,6 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public partial class SupportClass
     {
-        /// <summary>
-        ///     Converts a string to an array of bytes.
-        /// </summary>
-        /// <param name="sourceString">The string to be converted.</param>
-        /// <returns>The new array of bytes.</returns>
-        public static byte[] ToByteArray(string sourceString)
-        {
-            var byteArray = new byte[sourceString.Length];
-            for (var index = 0; index < sourceString.Length; index++)
-            {
-                byteArray[index] = (byte)sourceString[index];
-            }
-
-            return byteArray;
-        }
-
-        /// <summary>
-        ///     Converts a array of object-type instances to a byte-type array.
-        /// </summary>
-        /// <param name="tempObjectArray">Array to convert.</param>
-        /// <returns>An array of byte type elements.</returns>
-        public static byte[] ToByteArray(object[] tempObjectArray)
-        {
-            var byteArray = new byte[tempObjectArray.Length];
-            for (var index = 0; index < tempObjectArray.Length; index++)
-            {
-                byteArray[index] = (byte)tempObjectArray[index];
-            }
-
-            return byteArray;
-        }
-
         /*******************************/
 
         /// <summary>
@@ -150,43 +115,6 @@ namespace Novell.Directory.Ldap
             return bytesRead;
         }
 
-        /// <summary>
-        ///     Reads a number of characters from the current source TextReader and writes the data to the target array at the
-        ///     specified index.
-        /// </summary>
-        /// <param name="sourceTextReader">The source TextReader to read from.</param>
-        /// <param name="target">Contains the array of characteres read from the source TextReader.</param>
-        /// <param name="start">The starting index of the target array.</param>
-        /// <param name="count">The maximum number of characters to read from the source TextReader.</param>
-        /// <returns>
-        ///     The number of characters read. The number will be less than or equal to count depending on the data available
-        ///     in the source TextReader. Returns -1 if the end of the stream is reached.
-        /// </returns>
-        public static int ReadInput(TextReader sourceTextReader, ref byte[] target, int start, int count)
-        {
-            // Returns 0 bytes if not enough space in target
-            if (target.Length == 0)
-            {
-                return 0;
-            }
-
-            var charArray = new char[target.Length];
-            var bytesRead = sourceTextReader.Read(charArray, start, count);
-
-            // Returns -1 if EOF
-            if (bytesRead == 0)
-            {
-                return -1;
-            }
-
-            for (var index = start; index < start + bytesRead; index++)
-            {
-                target[index] = (byte)charArray[index];
-            }
-
-            return bytesRead;
-        }
-
         /*******************************/
 
         /// <summary>
@@ -197,51 +125,6 @@ namespace Novell.Directory.Ldap
         public static long Identity(long literal)
         {
             return literal;
-        }
-
-        /// <summary>
-        ///     This method returns the literal value received.
-        /// </summary>
-        /// <param name="literal">The literal to return.</param>
-        /// <returns>The received value.</returns>
-        public static ulong Identity(ulong literal)
-        {
-            return literal;
-        }
-
-        /// <summary>
-        ///     This method returns the literal value received.
-        /// </summary>
-        /// <param name="literal">The literal to return.</param>
-        /// <returns>The received value.</returns>
-        public static float Identity(float literal)
-        {
-            return literal;
-        }
-
-        /// <summary>
-        ///     This method returns the literal value received.
-        /// </summary>
-        /// <param name="literal">The literal to return.</param>
-        /// <returns>The received value.</returns>
-        public static double Identity(double literal)
-        {
-            return literal;
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Gets the DateTimeFormat instance and date instance to obtain the date with the format passed.
-        /// </summary>
-        /// <param name="format">The DateTimeFormat to obtain the time and date pattern.</param>
-        /// <param name="date">The date instance used to get the date.</param>
-        /// <returns>A string representing the date with the time and date patterns.</returns>
-        public static string FormatDateTime(DateTimeFormatInfo format, DateTime date)
-        {
-            var timePattern = DateTimeFormatManager.Manager.GetTimeFormatPattern(format);
-            var datePattern = DateTimeFormatManager.Manager.GetDateFormatPattern(format);
-            return date.ToString(datePattern + " " + timePattern, format);
         }
 
         /*******************************/
@@ -258,22 +141,6 @@ namespace Novell.Directory.Ldap
             arrayList.Remove(element);
             return containsItem;
         }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Adds an element to the top end of a Stack instance.
-        /// </summary>
-        /// <param name="stack">The Stack instance.</param>
-        /// <param name="element">The element to add.</param>
-        /// <returns>The element added.</returns>
-        public static object StackPush(Stack stack, object element)
-        {
-            stack.Push(element);
-            return element;
-        }
-
-        /*******************************/
 
         /// <summary>
         ///     Copies an array of chars obtained from a String into a specified array of chars.
@@ -295,118 +162,7 @@ namespace Novell.Directory.Ldap
                 sourceCounter++;
                 destinationCounter++;
             }
-        }
-     
-        /*******************************/
-
-        /// <summary>
-        ///     Determines whether two Collections instances are equals.
-        /// </summary>
-        /// <param name="source">The first Collections to compare. </param>
-        /// <param name="target">The second Collections to compare. </param>
-        /// <returns>Return true if the first collection is the same instance as the second collection, otherwise return false.</returns>
-        public static bool EqualsSupport(ICollection source, ICollection target)
-        {
-            var sourceEnumerator = ReverseStack(source);
-            var targetEnumerator = ReverseStack(target);
-
-            if (source.Count != target.Count)
-            {
-                return false;
-            }
-
-            while (sourceEnumerator.MoveNext() && targetEnumerator.MoveNext())
-            {
-                if (!sourceEnumerator.Current.Equals(targetEnumerator.Current))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        ///     Determines if a Collection is equal to the Object.
-        /// </summary>
-        /// <param name="source">The first Collections to compare.</param>
-        /// <param name="target">The Object to compare.</param>
-        /// <returns>Return true if the first collection contains the same values of the second Object, otherwise return false.</returns>
-        public static bool EqualsSupport(ICollection source, object target)
-        {
-            if (target.GetType() != typeof(ICollection))
-            {
-                return false;
-            }
-
-            return EqualsSupport(source, (ICollection)target);
-        }
-
-        /// <summary>
-        ///     Determines if a IDictionaryEnumerator is equal to the Object.
-        /// </summary>
-        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
-        /// <param name="target">The second Object to compare.</param>
-        /// <returns>
-        ///     Return true if the first IDictionaryEnumerator contains the same values of the second Object, otherwise return
-        ///     false.
-        /// </returns>
-        public static bool EqualsSupport(IDictionaryEnumerator source, object target)
-        {
-            if (target.GetType() != typeof(IDictionaryEnumerator))
-            {
-                return false;
-            }
-
-            return EqualsSupport(source, (IDictionaryEnumerator)target);
-        }
-
-        /// <summary>
-        ///     Determines whether two IDictionaryEnumerator instances are equals.
-        /// </summary>
-        /// <param name="source">The first IDictionaryEnumerator to compare.</param>
-        /// <param name="target">The second IDictionaryEnumerator to compare.</param>
-        /// <returns>
-        ///     Return true if the first IDictionaryEnumerator contains the same values as the second IDictionaryEnumerator,
-        ///     otherwise return false.
-        /// </returns>
-        public static bool EqualsSupport(IDictionaryEnumerator source, IDictionaryEnumerator target)
-        {
-            while (source.MoveNext() && target.MoveNext())
-            {
-                if (source.Key.Equals(target.Key))
-                {
-                    if (source.Value.Equals(target.Value))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        ///     Reverses the Stack Collection received.
-        /// </summary>
-        /// <param name="collection">The collection to reverse.</param>
-        /// <returns>
-        ///     The collection received in reverse order if it was a System.Collections.Stack type, otherwise it does
-        ///     nothing to the collection.
-        /// </returns>
-        public static IEnumerator ReverseStack(ICollection collection)
-        {
-            if (collection.GetType() == typeof(Stack))
-            {
-                var collectionStack = new ArrayList(collection);
-                collectionStack.Reverse();
-                return collectionStack.GetEnumerator();
-            }
-
-            return collection.GetEnumerator();
-        }
-
-        /*******************************/
+        }      
 
         /// <summary>
         ///     The class performs token processing from strings.
@@ -589,103 +345,6 @@ namespace Novell.Directory.Ldap
                     }
                 }
             }
-        }
-
-        /*******************************/
-
-        /// <summary>
-        ///     Provides support for DateFormat.
-        /// </summary>
-        public class DateTimeFormatManager
-        {
-            public static DateTimeFormatHashTable Manager = new DateTimeFormatHashTable();
-
-            /// <summary>
-            ///     Hashtable class to provide functionality for dateformat properties.
-            /// </summary>
-            public class DateTimeFormatHashTable : Hashtable
-            {
-                /// <summary>
-                ///     Sets the format for datetime.
-                /// </summary>
-                /// <param name="format">DateTimeFormat instance to set the pattern.</param>
-                /// <param name="newPattern">A string with the pattern format.</param>
-                public void SetDateFormatPattern(DateTimeFormatInfo format, string newPattern)
-                {
-                    if (this[format] != null)
-                    {
-                        ((DateTimeFormatProperties)this[format]).DateFormatPattern = newPattern;
-                    }
-                    else
-                    {
-                        var tempProps = new DateTimeFormatProperties
-                        {
-                            DateFormatPattern = newPattern
-                        };
-                        Add(format, tempProps);
-                    }
-                }
-
-                /// <summary>
-                ///     Gets the current format pattern of the DateTimeFormat instance.
-                /// </summary>
-                /// <param name="format">The DateTimeFormat instance which the value will be obtained.</param>
-                /// <returns>The string representing the current datetimeformat pattern.</returns>
-                public string GetDateFormatPattern(DateTimeFormatInfo format)
-                {
-                    if (this[format] == null)
-                    {
-                        return "d-MMM-yy";
-                    }
-
-                    return ((DateTimeFormatProperties)this[format]).DateFormatPattern;
-                }
-
-                /// <summary>
-                ///     Sets the datetimeformat pattern to the giving format.
-                /// </summary>
-                /// <param name="format">The datetimeformat instance to set.</param>
-                /// <param name="newPattern">The new datetimeformat pattern.</param>
-                public void SetTimeFormatPattern(DateTimeFormatInfo format, string newPattern)
-                {
-                    if (this[format] != null)
-                    {
-                        ((DateTimeFormatProperties)this[format]).TimeFormatPattern = newPattern;
-                    }
-                    else
-                    {
-                        var tempProps = new DateTimeFormatProperties
-                        {
-                            TimeFormatPattern = newPattern
-                        };
-                        Add(format, tempProps);
-                    }
-                }
-
-                /// <summary>
-                ///     Gets the current format pattern of the DateTimeFormat instance.
-                /// </summary>
-                /// <param name="format">The DateTimeFormat instance which the value will be obtained.</param>
-                /// <returns>The string representing the current datetimeformat pattern.</returns>
-                public string GetTimeFormatPattern(DateTimeFormatInfo format)
-                {
-                    if (this[format] == null)
-                    {
-                        return "h:mm:ss tt";
-                    }
-
-                    return ((DateTimeFormatProperties)this[format]).TimeFormatPattern;
-                }
-
-                /// <summary>
-                ///     Internal class to provides the DateFormat and TimeFormat pattern properties on .NET.
-                /// </summary>
-                private class DateTimeFormatProperties
-                {
-                    public string DateFormatPattern = "d-MMM-yy";
-                    public string TimeFormatPattern = "h:mm:ss tt";
-                }
-            }
-        }
+        }      
     }
 }

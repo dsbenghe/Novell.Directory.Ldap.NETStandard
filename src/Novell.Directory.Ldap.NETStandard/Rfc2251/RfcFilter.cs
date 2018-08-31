@@ -658,7 +658,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 new Asn1Identifier(Asn1Identifier.Context, true, Substrings),
                 new RfcSubstringFilter(new RfcAttributeDescription(attrName), seq), false);
             AddObject(current);
-            SupportClass.StackPush(_filterStack, seq);
+            _filterStack.Push(seq);
         }
 
         /// <summary>
