@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     internal class MessageVector : ArrayList
     {
-        internal MessageVector(int cap, int incr)
+        internal MessageVector(int cap)
             : base(cap)
         {
         }

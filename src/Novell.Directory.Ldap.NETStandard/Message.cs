@@ -48,24 +48,20 @@ namespace Novell.Directory.Ldap
 
         private int _mslimit; // client time limit in milliseconds
 
-        private LdapMessageQueue _queue; // Application message queue
-
         // Note: MessageVector is synchronized
-        private MessageVector _replies; // place to store replies
+        private readonly MessageVector _replies; // place to store replies
         private string _stackTraceCleanup;
         private SupportClass.ThreadClass _timer; // Timeout thread
         private bool _waitForReplyRenamedField = true; // true if wait for reply
 
-        internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, LdapMessageQueue queue,
-            BindProperties bindprops)
+        internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, BindProperties bindprops)
         {
             _conn = conn ?? throw new ArgumentNullException(nameof(conn));
 
             _stackTraceCreation = Environment.StackTrace;
-            _replies = new MessageVector(5, 5);
+            _replies = new MessageVector(5);
             Request = msg;
             MessageAgent = agent;
-            _queue = queue;
             _mslimit = mslimit;
             MessageId = msg.MessageId;
             _bindprops = bindprops;
@@ -184,13 +180,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal bool HasReplies()
         {
-            if (_replies == null)
-            {
-                // abandoned request
-                return false;
-            }
-
-            return _replies.Count > 0;
+            return _replies?.Count > 0;
         }
 
         /// <summary>
@@ -209,7 +199,6 @@ namespace Novell.Directory.Ldap
             // sync on message so don't confuse with timer thread
             lock (_replies)
             {
-                object msg = null;
                 while (_waitForReplyRenamedField)
                 {
                     if (_replies.Count == 0)
@@ -225,7 +214,7 @@ namespace Novell.Directory.Ldap
 
                     var tempObject = _replies[0];
                     _replies.RemoveAt(0);
-                    msg = tempObject; // Atomic get and remove
+                    var msg = tempObject;
                     if ((Complete || !_acceptReplies) && _replies.Count == 0)
                     {
                         // Remove msg from connection queue when last reply read
@@ -266,7 +255,7 @@ namespace Novell.Directory.Ldap
                         break;
 
                     default:
-                        _timer = new Timeout(this, _mslimit, this)
+                        _timer = new Timeout(_mslimit, this)
                         {
                             IsBackground = true // If this is the last thread running, allow exit.
                         };
@@ -362,21 +351,10 @@ namespace Novell.Directory.Ldap
             try
             {
                 _acceptReplies = false;
-                if (_conn != null)
-                {
-                    _conn.RemoveMessage(this);
-                }
+                _conn?.RemoveMessage(this);
 
                 // Empty out any accumuluated replies
-                if (_replies != null)
-                {
-                    while (_replies.Count != 0)
-                    {
-                        var tempObject = _replies[0];
-                        _replies.RemoveAt(0);
-                        var generatedAux = tempObject;
-                    }
-                }
+                _replies?.Clear();
             }
             catch (Exception ex)
             {
@@ -390,7 +368,6 @@ namespace Novell.Directory.Ldap
             Request = null;
 
             // agent = null;  // leave this reference
-            _queue = null;
 
             // replies = null; //leave this since we use it as a semaphore
             _bindprops = null;
@@ -472,13 +449,10 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> stops the timeout timer from running.</summary>
-        internal void StopTimer()
+        private void StopTimer()
         {
             // If timer thread started, stop it
-            if (_timer != null)
-            {
-                _timer.Stop();
-            }
+            _timer?.Stop();
         }
 
         /// <summary> Notifies all waiting threads.</summary>
@@ -504,14 +478,11 @@ namespace Novell.Directory.Ldap
 
             private readonly int _timeToWait;
 
-            internal Timeout(Message enclosingInstance, int interval, Message msg)
+            internal Timeout(int interval, Message msg)
             {
-                EnclosingInstance = enclosingInstance;
                 _timeToWait = interval;
                 _message = msg;
             }
-
-            public Message EnclosingInstance { get; }
 
             /// <summary>
             ///     The timeout thread.  If it wakes from the sleep, future input

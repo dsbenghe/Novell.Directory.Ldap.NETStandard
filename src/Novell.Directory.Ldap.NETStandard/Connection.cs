@@ -155,7 +155,7 @@ namespace Novell.Directory.Ldap
             _encoder = new LberEncoder();
             _decoder = new LberDecoder();
             _stopReaderMessageId = ContinueReading;
-            _messages = new MessageVector(5, 5);
+            _messages = new MessageVector(5);
             _unsolicitedListeners = new List<ILdapUnsolicitedNotificationListener>(3);
         }
 

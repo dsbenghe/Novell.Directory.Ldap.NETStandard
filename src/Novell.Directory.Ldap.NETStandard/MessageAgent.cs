@@ -36,11 +36,11 @@ using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
-    internal class MessageAgent
+    internal sealed class MessageAgent
     {
-        public virtual DebugId DebugId { get; } = DebugId.ForType<MessageAgent>();
+        public DebugId DebugId { get; } = DebugId.ForType<MessageAgent>();
         private int _indexLastRead;
-        private MessageVector _messages = new MessageVector(5, 5);
+        private readonly MessageVector _messages = new MessageVector(5);
 
         /// <summary>
         ///     Get a list of message ids controlled by this agent.
@@ -145,7 +145,6 @@ namespace Novell.Directory.Ldap
         {
             var size = _messages.Count;
             var next = _indexLastRead + 1;
-            Message info;
             for (var i = 0; i < size; i++)
             {
                 if (next == size)
@@ -153,7 +152,7 @@ namespace Novell.Directory.Ldap
                     next = 0;
                 }
 
-                info = (Message)_messages[next];
+                var info = (Message)_messages[next];
                 if (info.HasReplies())
                 {
                     return true;
@@ -190,14 +189,11 @@ namespace Novell.Directory.Ldap
         ///     constraints associated with this request.
         /// </param>
         internal void Abandon(int msgId, LdapConstraints cons)
-
-            // , boolean informUser)
         {
-            Message info = null;
             try
             {
                 // Send abandon request and remove from connection list
-                info = _messages.FindMessageById(msgId);
+                var info = _messages.FindMessageById(msgId);
                 SupportClass.VectorRemoveElement(_messages, info); // This message is now dead
                 info.Abandon(cons, null);
             }
@@ -211,11 +207,10 @@ namespace Novell.Directory.Ldap
         internal void AbandonAll()
         {
             var size = _messages.Count;
-            Message info;
 
             for (var i = 0; i < size; i++)
             {
-                info = (Message)_messages[i];
+                var info = (Message)_messages[i];
 
                 // Message complete and no more replies, remove from id list
                 SupportClass.VectorRemoveElement(_messages, info);
@@ -249,17 +244,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns the Message object for a given messageID.
-        /// </summary>
-        /// <param name="msgid">
-        ///     the message ID.
-        /// </param>
-        internal Message GetMessage(int msgid)
-        {
-            return _messages.FindMessageById(msgid);
-        }
-
-        /// <summary>
         ///     Send a request to the server.  A Message class is created
         ///     for the specified request which causes the message to be sent.
         ///     The request is added to the list of messages being managed by
@@ -283,7 +267,7 @@ namespace Novell.Directory.Ldap
         {
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
-            var message = new Message(msg, timeOut, conn, this, queue, bindProps);
+            var message = new Message(msg, timeOut, conn, this, bindProps);
             _messages.Add(message);
             message.SendMessage(); // Now send message to server
         }
@@ -331,7 +315,6 @@ namespace Novell.Directory.Ldap
                 while (true)
                 {
                     var next = _indexLastRead + 1;
-                    Message info;
                     for (var i = 0; i < _messages.Count; i++)
                     {
                         if (next >= _messages.Count)
@@ -339,7 +322,7 @@ namespace Novell.Directory.Ldap
                             next = 0;
                         }
 
-                        info = (Message)_messages[next];
+                        var info = (Message)_messages[next];
                         _indexLastRead = next++;
                         rfcMsg = info.Reply;
 
