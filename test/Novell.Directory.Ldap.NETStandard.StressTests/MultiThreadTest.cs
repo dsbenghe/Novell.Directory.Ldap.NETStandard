@@ -52,10 +52,18 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             {
                 threadData.ShouldStop = true;
             }
+            Thread.Sleep(TimeSpan.FromSeconds(60));
+            foreach (var thread in threads)
+            {
+                thread.Join(TimeSpan.FromSeconds(1));
+            }
 
             foreach (var thread in threads)
             {
-                thread.Join();
+                if (thread.IsAlive)
+                {
+                    thread.Abort();
+                }
             }
 
             _logger.LogInformation("Exiting monitoring thread");
@@ -120,7 +128,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
                 _testingThreadReportingPeriod = testingThreadReportingPeriod;
-                _logger = logger;
+                _logger = logger;                
                 Count = 0;
                 ShouldStop = false;
                 LastPingDate = DateTime.Now;
@@ -148,33 +156,44 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError("Error in runner thread - {0}", ex);
-                        if (ex is TargetInvocationException && ex.InnerException != null)
-                        {
-                            ex = ex.InnerException;
-                        }
-                        lock (Exceptions)
-                        {
-                            Exceptions.Add(new ExceptionInfo
-                            {
-                                Ex = ex,
-                                ThreadId = Thread.CurrentThread.ManagedThreadId
-                            });
-                        }
+                        ReportException(ex);
                     }
 
                     i++;
-                    if (stopWatch.Elapsed > _testingThreadReportingPeriod)
-                    {
-                        stopWatch.Stop();
-                        lock (this)
-                        {
-                            Count = i;
-                            LastPingDate = DateTime.Now;
-                        }
+                    ReportAliveness(stopWatch, i);
+                }
+            }
 
-                        stopWatch.Restart();
+            private void ReportAliveness(Stopwatch stopWatch, int i)
+            {
+                if (stopWatch.Elapsed > _testingThreadReportingPeriod)
+                {
+                    stopWatch.Stop();
+                    lock (this)
+                    {
+                        Count = i;
+                        LastPingDate = DateTime.Now;
                     }
+
+                    stopWatch.Restart();
+                }
+            }
+
+            private void ReportException(Exception ex)
+            {
+                _logger.LogError("Error in runner thread - {0}", ex);
+                if (ex is TargetInvocationException && ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
+
+                lock (Exceptions)
+                {
+                    Exceptions.Add(new ExceptionInfo
+                    {
+                        Ex = ex,
+                        ThreadId = Thread.CurrentThread.ManagedThreadId
+                    });
                 }
             }
         }
