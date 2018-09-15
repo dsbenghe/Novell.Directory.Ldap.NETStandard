@@ -2803,7 +2803,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(Connection, msg, cons.TimeLimit, myqueue, null);
+            agent.SendMessage(Connection, msg, cons.TimeLimit, null);
             return myqueue;
         }
 
@@ -2980,7 +2980,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            agent.SendMessage(Connection, request, cons.TimeLimit, myqueue, null);
+            agent.SendMessage(Connection, request, cons.TimeLimit, null);
 
             return myqueue;
         }
@@ -3023,7 +3023,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(Connection, msg, timeout, queue, bindProps);
+            agent.SendMessage(Connection, msg, timeout, bindProps);
             return queue;
         }
 
@@ -3331,7 +3331,7 @@ namespace Novell.Directory.Ldap
                         agent = queue.MessageAgent;
                     }
 
-                    agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, queue, null);
+                    agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, null);
                 }
                 catch (InterThreadException ex)
                 {

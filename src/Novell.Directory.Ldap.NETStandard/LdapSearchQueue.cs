@@ -52,27 +52,5 @@ namespace Novell.Directory.Ldap
             : base("LdapSearchQueue", agent)
         {
         }
-
-        /// <summary>
-        ///     Merges two message queues.  It appends the current and
-        ///     future contents from another queue to this one.
-        ///     After the operation, queue2.getMessageIDs()
-        ///     returns an empty array, and its outstanding responses
-        ///     have been removed and appended to this queue.
-        /// </summary>
-        /// <param name="queue2">
-        ///     The queue that is merged from.  Following
-        ///     the merge, this queue object will no
-        ///     longer receive any data, and calls made
-        ///     to its methods will fail with a RuntimeException.
-        ///     The queue can be reactivated by using it in an
-        ///     Ldap request, after which it will receive responses
-        ///     for that request..
-        /// </param>
-        public void Merge(LdapMessageQueue queue2)
-        {
-            var q = (LdapSearchQueue)queue2;
-            Agent.Merge(q.MessageAgent);
-        }
     }
 }

@@ -54,11 +54,10 @@ namespace Novell.Directory.Ldap
             {
                 var size = _messages.Count;
                 var ids = new int[size];
-                Message info;
 
                 for (var i = 0; i < size; i++)
                 {
-                    info = (Message)_messages[i];
+                    var info = (Message)_messages[i];
                     ids[i] = info.MessageId;
                 }
 
@@ -259,11 +258,7 @@ namespace Novell.Directory.Ldap
         ///     the interval to wait for the message to complete or.
         ///     <code>null</code> if infinite.
         /// </param>
-        /// <param name="queue">
-        ///     the LdapMessageQueue associated with this request.
-        /// </param>
-        internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, LdapMessageQueue queue,
-            BindProperties bindProps)
+        internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
         {
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
