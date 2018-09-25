@@ -43,6 +43,8 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapExtendedOperation
     {
+        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapExtendedOperation>();
+
         private string _oid;
         private byte[] _vals;
 
