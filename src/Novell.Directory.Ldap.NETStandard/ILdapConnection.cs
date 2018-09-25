@@ -380,7 +380,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapResponse ExtendedOperation(LdapExtendedOperation op);
+        LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op);
 
         /// <summary>
         ///     Provides a synchronous means to access extended, non-mandatory
@@ -404,7 +404,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons);
+        LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously makes a single change to an existing entry in the

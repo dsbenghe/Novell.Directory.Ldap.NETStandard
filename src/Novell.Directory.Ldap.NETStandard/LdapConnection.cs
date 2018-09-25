@@ -1039,7 +1039,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapResponse ExtendedOperation(LdapExtendedOperation op)
+        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op)
         {
             return ExtendedOperation(op, _defSearchCons);
         }
@@ -1070,11 +1070,12 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
+        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
         {
             // Call asynchronous API and get back handler to reponse queue
             var queue = ExtendedOperation(op, cons, null);
-            var response = queue.GetResponse() as LdapResponse;
+            var queueResponse = queue.GetResponse();
+            var response = queueResponse as LdapExtendedResponse;
 
             // Set local copy of responseControls synchronously - if there were any
             lock (_responseCtlSemaphore)
