@@ -2,6 +2,10 @@
 
 namespace Novell.Directory.Ldap
 {
+    /// <summary>
+    /// RFC 4532: LDAP "Who am I?" Operation
+    /// https://tools.ietf.org/html/rfc4532
+    /// </summary>
     public class LdapWhoAmIOperation : LdapExtendedOperation
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapWhoAmIOperation>();
@@ -31,6 +35,25 @@ namespace Novell.Directory.Ldap
 
             if (!string.IsNullOrEmpty(AuthzId))
             {
+                // Seems like sometimes, control characters are prepended to the actual value
+                var cutIndex = 0;
+                foreach (var c in AuthzId)
+                {
+                    if (char.IsControl(c) || c == '"')
+                    {
+                        cutIndex++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                if (cutIndex > 0)
+                {
+                    AuthzId = AuthzId.Substring(cutIndex);
+                }
+
                 if (AuthzId.StartsWith("u:"))
                 {
                     AuthzIdType = AuthzType.User;
