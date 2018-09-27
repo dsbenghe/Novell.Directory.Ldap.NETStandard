@@ -1074,7 +1074,8 @@ namespace Novell.Directory.Ldap
         {
             // Call asynchronous API and get back handler to reponse queue
             var queue = ExtendedOperation(op, cons, null);
-            var response = (LdapExtendedResponse)queue.GetResponse();
+            var queueResponse = queue.GetResponse();
+            var response = (LdapExtendedResponse)queueResponse;
 
             // Set local copy of responseControls synchronously - if there were any
             lock (_responseCtlSemaphore)

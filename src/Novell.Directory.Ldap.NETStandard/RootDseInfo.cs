@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Novell.Directory.Ldap
 {
@@ -71,5 +72,8 @@ namespace Novell.Directory.Ldap
             SupportedExtensions = SupportedExtensions ?? Array.Empty<string>();
             SupportedLDAPPolicies = SupportedLDAPPolicies ?? Array.Empty<string>();
         }
+
+        public bool SupportsExtension(string oid)
+            => SupportedExtensions != null && SupportedExtensions.Contains(oid);
     }
 }
