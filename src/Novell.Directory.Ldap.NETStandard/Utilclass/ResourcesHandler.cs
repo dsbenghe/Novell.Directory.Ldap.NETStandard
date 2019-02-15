@@ -153,16 +153,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public static string getResultString(int code, CultureInfo locale)
         {
-            string result;
-            try
-            {
-                result = ResultCodeMessages.GetResultCode(Convert.ToString(code));
-            }
-            catch (ArgumentNullException)
-            {
-                result = getMessage(ExceptionMessages.UNKNOWN_RESULT, new object[] {code}, locale);
-            }
-            return result;
+            return ResultCodeMessages.GetResultCode(Convert.ToString(code)) ?? getMessage(ExceptionMessages.UNKNOWN_RESULT, new object[] { code }, locale);
         }
 
         static ResourcesHandler()

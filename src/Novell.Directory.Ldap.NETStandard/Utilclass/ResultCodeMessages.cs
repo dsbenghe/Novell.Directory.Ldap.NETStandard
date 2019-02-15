@@ -120,7 +120,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public static string GetResultCode(string code)
         {
-            return errorCodes.ContainsKey(code) ? errorCodes[code] : code;
+            return errorCodes.ContainsKey(code) ? errorCodes[code] : null;
         }
     } //End ResultCodeMessages
 }
