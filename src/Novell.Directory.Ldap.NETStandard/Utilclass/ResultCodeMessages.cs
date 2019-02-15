@@ -74,13 +74,17 @@ namespace Novell.Directory.Ldap.Utilclass
             {"52", "Unavailable"},
             {"53", "Unwilling To Perform"},
             {"54", "Loop Detect"},
+            {"60", "Sort Control Missing"},
+            {"61", "Offset Range Error"},
             {"64", "Naming Violation"},
             {"65", "Object Class Violation"},
             {"66", "Not Allowed On Non-leaf"},
             {"67", "Not Allowed On RDN"},
             {"68", "Entry Already Exists"},
             {"69", "Object Class Modifications Prohibited"},
+            {"70", "Results Too Large"},
             {"71", "Affects Multiple DSAs"},
+            {"76", "VirtualListView Error Or Control Error"},
             {"80", "Other"},
             {"81", "Server Down"},
             {"82", "Local Error"},
@@ -99,14 +103,24 @@ namespace Novell.Directory.Ldap.Utilclass
             {"95", "More Results To Return"},
             {"96", "Client Loop"},
             {"97", "Referral Limit Exceeded"},
+            {"100", "Invalid Response"},
+            {"101", "Ambiguous Response"},
             {"112", "TLS not supported"},
             {"113", "SSL handshake failed"},
-            {"114", "SSL Provider not found"}
+            {"114", "SSL Provider not found"},
+            {"118", "Canceled"},
+            {"119", "No Such Operation"},
+            {"120", "Too Late"},
+            {"121", "Cannot Cancel"},
+            {"122", "Assertion Failed"},
+            {"123", "Authorization Denied"},
+            {"4096", "E-sync Refresh Required"},
+            {"16654", "No Operation"}
         };
 
         public static string GetResultCode(string code)
         {
-            return errorCodes[code];
+            return errorCodes.ContainsKey(code) ? errorCodes[code] : code;
         }
     } //End ResultCodeMessages
 }
