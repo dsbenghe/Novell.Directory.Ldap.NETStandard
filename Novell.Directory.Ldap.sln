@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEE82E9C-181C-443E-A9CC-26D2D432FD56}"
 EndProject
@@ -10,7 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Novell.Directory.Ldap.NETStandard", "src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.xproj", "{87646BB4-7F55-49EF-9FE7-49AEE6378453}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard", "src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj", "{87646BB4-7F55-49EF-9FE7-49AEE6378453}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6E28F0DF-400F-4A78-8DD0-B8D843F96010}"
 EndProject
@@ -44,5 +44,8 @@ Global
 		{87646BB4-7F55-49EF-9FE7-49AEE6378453} = {BEE82E9C-181C-443E-A9CC-26D2D432FD56}
 		{332F0714-7ABB-4451-92A1-B656AC26C8AD} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1DFBAD2C-EE17-445E-8307-633C83E060AC}
 	EndGlobalSection
 EndGlobal
