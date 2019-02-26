@@ -32,7 +32,7 @@
 using System;
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
+using NLog;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap.Asn1
             }
             catch (IOException ioe)
             {
-                Logger.Log.LogWarning("Exception swallowed", ioe);
+                LogManager.GetCurrentClassLogger().Warn("Exception swallowed", ioe);
             }
             return asn1;
         }

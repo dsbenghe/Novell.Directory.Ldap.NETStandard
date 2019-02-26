@@ -31,7 +31,7 @@
 
 using System;
 using System.Collections;
-using Microsoft.Extensions.Logging;
+using NLog;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -370,7 +370,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Log.LogWarning("Exception swallowed", e);
+                            LogManager.GetCurrentClassLogger().Warn("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
                         addElement(OBJECT_CLASS, classSchema);
@@ -388,7 +388,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Log.LogWarning("Exception swallowed", e);
+                            LogManager.GetCurrentClassLogger().Warn("Exception swallowed", e);
                             continue; //Error parsing: do not add this definition
                         }
                         addElement(ATTRIBUTE, attrSchema);

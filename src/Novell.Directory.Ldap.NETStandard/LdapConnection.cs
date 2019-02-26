@@ -32,6 +32,7 @@
 using System;
 using System.Collections;
 using System.Text;
+using NLog;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -897,7 +898,7 @@ namespace Novell.Directory.Ldap
             }
             catch (FieldAccessException fae)
             {
-                Logger.Log.LogWarning("Exception swallowed", fae);
+                LogManager.GetCurrentClassLogger().Warn("Exception swallowed", fae);
             }
         }
 
@@ -3200,7 +3201,7 @@ namespace Novell.Directory.Ldap
                             }
                             catch (LdapException ldapException)
                             {
-                                Logger.Log.LogWarning("Exception swallowed", ldapException);
+                                LogManager.GetCurrentClassLogger().Warn("Exception swallowed", ldapException);
                             }
                         }
                     }
@@ -3233,7 +3234,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Log.LogWarning("Exception swallowed", e);
+                            LogManager.GetCurrentClassLogger().Warn("Exception swallowed", e);
                         }
                     }
                     if (refInfo == null)
@@ -3548,11 +3549,11 @@ namespace Novell.Directory.Ldap
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", ex);
+                    LogManager.GetCurrentClassLogger().Warn("Exception swallowed", ex);
                 }
                 catch (LdapException lex)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", lex);
+                    LogManager.GetCurrentClassLogger().Warn("Exception swallowed", lex);
                 }
             }
         }

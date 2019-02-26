@@ -31,7 +31,7 @@
 
 using System.IO;
 using System.Text;
-using Microsoft.Extensions.Logging;
+using NLog;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -126,7 +126,7 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ex)
             {
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                LogManager.GetCurrentClassLogger().Warn("Exception swallowed", ex);
             }
         }
 
