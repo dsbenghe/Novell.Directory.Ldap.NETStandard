@@ -159,7 +159,7 @@ namespace Novell.Directory.Ldap
                                 // We are done only when we have read all messages
                                 // including those received from following referrals
                                 var msgIDs = queue.MessageIDs;
-                                if (msgIDs.Length == 0)
+                                if (msgIDs.Length == 0 && (controls == null || controls.Length == 0))
                                 {
                                     // Release referral exceptions
 									conn.ReleaseReferralConnections(referralConn);
@@ -184,6 +184,23 @@ namespace Novell.Directory.Ldap
                 }
                 return false; // search not completed
             }
+        }
+
+        /// <summary>
+        /// Release referral connections
+        /// </summary>
+        public void ReleaseReferralConnections()
+        {
+            conn.ReleaseReferralConnections(referralConn);
+        }
+
+        /// <summary>
+        /// Get referral connections
+        /// </summary>
+        /// <returns></returns>
+        public ArrayList GetReferralConnections()
+        {
+            return referralConn;
         }
 
         private readonly ArrayList entries; // Search entries
