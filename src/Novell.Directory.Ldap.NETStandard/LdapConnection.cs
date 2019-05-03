@@ -910,18 +910,24 @@ namespace Novell.Directory.Ldap
                 {
                     var specifiedPort = port;
                     var address = hostList.NextToken();
-                    var colonIndex = address.IndexOf(':'); // after the colon is the port
-                    if (colonIndex != -1 && colonIndex + 1 != address.Length)
+
+                    if (address.Split(':').Length <= 2)
                     {
-                        // parse Port out of address
-                        try
+                        // IPv4 format
+                        var colonIndex = address.LastIndexOf(':'); //after the colon is the port
+
+                        if (colonIndex != -1 && colonIndex + 1 != address.Length)
                         {
-                            specifiedPort = int.Parse(address.Substring(colonIndex + 1));
-                            address = address.Substring(0, colonIndex - 0);
-                        }
-                        catch (Exception e)
-                        {
-                            throw new ArgumentException(ExceptionMessages.InvalidAddress, e);
+                            //parse Port out of address
+                            try
+                            {
+                                specifiedPort = int.Parse(address.Substring(colonIndex + 1));
+                                address = address.Substring(0, colonIndex - 0);
+                            }
+                            catch (Exception e)
+                            {
+                                throw new ArgumentException(ExceptionMessages.InvalidAddress, e);
+                            }
                         }
                     }
 
