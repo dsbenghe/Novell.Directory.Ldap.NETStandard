@@ -1472,9 +1472,16 @@ namespace Novell.Directory.Ldap
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
         {
-            add => Connection.OnCertificateValidation += value;
+            add => Connection.OnRemoteCertificateValidation += value;
 
-            remove => Connection.OnCertificateValidation -= value;
+            remove => Connection.OnRemoteCertificateValidation -= value;
+        }
+
+        public event LocalCertificateSelectionCallback UserDefinedClientCertSelectionDelegate
+        {
+            add => Connection.OnLocalCertificateSelection += value;
+
+            remove => Connection.OnLocalCertificateSelection -= value;
         }
 
         /*

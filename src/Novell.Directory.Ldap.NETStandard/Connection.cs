@@ -49,6 +49,9 @@ namespace Novell.Directory.Ldap
 {
     public delegate bool RemoteCertificateValidationCallback(
         object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors);
+    
+    public delegate X509Certificate LocalCertificateSelectionCallback(
+        object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers);
 
     /// <summary>
     ///     The class that creates a connection to the Ldap server. After the
@@ -232,7 +235,9 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal bool Tls => _nonTlsBackup != null;
 
-        public event RemoteCertificateValidationCallback OnCertificateValidation;
+        public event RemoteCertificateValidationCallback OnRemoteCertificateValidation;
+        
+        public event LocalCertificateSelectionCallback OnLocalCertificateSelection;
 
         private string GetSslHandshakeErrors()
         {
@@ -452,12 +457,19 @@ namespace Novell.Directory.Ldap
         public bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
-            if (OnCertificateValidation != null)
+            if (OnRemoteCertificateValidation != null)
             {
-                return OnCertificateValidation(sender, certificate, chain, sslPolicyErrors);
+                return OnRemoteCertificateValidation(sender, certificate, chain, sslPolicyErrors);
             }
 
             return DefaultCertificateValidationHandler(certificate, chain, sslPolicyErrors);
+        }
+
+        public X509Certificate LocalCertificateSelectionCallback(object sender, string targetHost,
+            X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers)
+        {
+            return OnLocalCertificateSelection?.Invoke(sender, targetHost, localCertificates,
+                remoteCertificate, acceptableIssuers);
         }
 
         public bool DefaultCertificateValidationHandler(X509Certificate certificate, X509Chain chain,
@@ -543,7 +555,8 @@ namespace Novell.Directory.Ldap
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
-                                RemoteCertificateValidationCallback);
+                                RemoteCertificateValidationCallback,
+                                LocalCertificateSelectionCallback);
                             sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
 
                             _inStream = sslstream;
@@ -982,7 +995,8 @@ namespace Novell.Directory.Ldap
                 var sslstream = new SslStream(
                     _socket.GetStream(),
                     true,
-                    RemoteCertificateValidationCallback);
+                    RemoteCertificateValidationCallback,
+                    LocalCertificateSelectionCallback);
                 sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
                 _inStream = sslstream;
                 _outStream = sslstream;
