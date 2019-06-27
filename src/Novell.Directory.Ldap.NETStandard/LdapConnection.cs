@@ -1467,7 +1467,7 @@ namespace Novell.Directory.Ldap
                 cons = _defSearchCons;
             }
 
-            return new LdapSearchResults(queue, cons);
+            return new LdapSearchResults(this, queue, cons);
         }
 
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
@@ -3439,7 +3439,7 @@ namespace Novell.Directory.Ldap
         * @param list the list of the connections
         */
 
-        private void ReleaseReferralConnections(ArrayList list)
+        internal void ReleaseReferralConnections(ArrayList list)
         {
             if (list == null)
             {

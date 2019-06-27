@@ -46,14 +46,14 @@ namespace Novell.Directory.Ldap
         private readonly ArrayList _entries; // Search entries // TODO: Can't make Generic, holds different types
         private readonly LdapSearchQueue _queue;
         private readonly List<string[]> _references; // Search Result References
+        private readonly LdapConnection _conn;
         private bool _completed; // All entries received
         private int _entryCount; // # Search entries in vector
         private int _entryIndex; // Current position in vector
         private int _referenceCount; // # Search Result Reference in vector
 
         private int _referenceIndex; // Current position in vector
-
-        // private ArrayList referralConn = null; // Referral Connections
+        private ArrayList _referralConn; // Referral Connections
 
         /// <summary>
         ///     Constructs a queue object for search results.
@@ -64,9 +64,10 @@ namespace Novell.Directory.Ldap
         /// <param name="cons">
         ///     The LdapSearchConstraints associated with this search.
         /// </param>
-        internal LdapSearchResults(LdapSearchQueue queue, LdapSearchConstraints cons)
+        internal LdapSearchResults(LdapConnection conn, LdapSearchQueue queue, LdapSearchConstraints cons)
         {
             // setup entry Vector
+            _conn = conn;
             _cons = cons;
             var requestedBatchSize = cons.BatchSize;
             _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
@@ -141,7 +142,7 @@ namespace Novell.Directory.Ldap
 
                                 if (_cons.ReferralFollowing)
                                 {
-// referralConn = conn.chaseReferral(queue, cons, msg, refs, 0, true, referralConn);
+                                    _referralConn = _conn.ChaseReferral(_queue, _cons, msg, refs, 0, true, _referralConn);
                                 }
                                 else
                                 {
@@ -165,7 +166,7 @@ namespace Novell.Directory.Ldap
                                 if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
-// referralConn = conn.chaseReferral(queue, cons, resp, resp.Referrals, 0, false, referralConn);
+                                    _referralConn = _conn.ChaseReferral(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn);
                                 }
                                 else if (resultCode != LdapException.Success)
                                 {
@@ -177,10 +178,11 @@ namespace Novell.Directory.Ldap
                                 // We are done only when we have read all messages
                                 // including those received from following referrals
                                 var msgIDs = _queue.MessageIDs;
-                                if (msgIDs.Length == 0)
+                                var controls = _cons.GetControls();
+                                if (msgIDs.Length == 0 && (controls == null || controls.Length == 0))
                                 {
                                     // Release referral exceptions
-// conn.releaseReferralConnections(referralConn);
+                                    _conn.ReleaseReferralConnections(_referralConn);
                                     return true; // search completed
                                 }
                             }
@@ -388,6 +390,15 @@ namespace Novell.Directory.Ldap
             // next, clear out enumeration
             ResetVectors();
             _completed = true;
+        }
+        
+        /// <summary>
+        /// Get referral connections
+        /// </summary>
+        /// <returns></returns>
+        public ArrayList GetReferralConnections()
+        {
+            return _referralConn;
         }
     }
 }
