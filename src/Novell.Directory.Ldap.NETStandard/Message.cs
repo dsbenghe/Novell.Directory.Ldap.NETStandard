@@ -490,24 +490,14 @@ namespace Novell.Directory.Ldap
             /// </summary>
             public override void Run()
             {
-                for (var i = 0; i < 10000; i++)
-                {
-                    if (!IsStopping)
-                    {
-                        Thread.Sleep(new TimeSpan(_timeToWait));
-                        _message._acceptReplies = false;
+                Thread.Sleep(new TimeSpan.FromMilliseconds(_timeToWait));
+                _message._acceptReplies = false;
 
-                        // Note: Abandon clears the bind semaphore after failed bind.
-                        _message.Abandon(
-                            null,
-                            new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
-                                _message));
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                // Note: Abandon clears the bind semaphore after failed bind.
+                _message.Abandon(
+                    null,
+                    new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
+                        _message));
             }
         }
     }
