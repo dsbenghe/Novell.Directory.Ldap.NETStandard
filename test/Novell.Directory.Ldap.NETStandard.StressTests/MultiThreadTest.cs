@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         private bool ReportRunResult(ThreadRunner[] threadDatas)
         {
             var noOfRuns = threadDatas.Sum(x => x.Count);
-            var noOfLdapExceptions = Exceptions.Count(x => x.Ex is LdapException);
+            var noOfLdapExceptions = Exceptions.Count(x => (x.Ex as LdapException) != null);
             var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
             var percentOfLdapExceptions = (float) noOfLdapExceptions * 100 / noOfRuns;
             var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;

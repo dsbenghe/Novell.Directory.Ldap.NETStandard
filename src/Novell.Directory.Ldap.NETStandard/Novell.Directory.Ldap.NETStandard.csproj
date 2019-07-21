@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Description>.NET Standard (1.3 and up) LDAP client library: .NET Core, .NET Framework 4.6, Universal Windows Platform, Xamarin (iOS, Android, UWP). Works with any LDAP server (including Microsoft Active Directory - AD)</Description>
     <Summary>.NET Standard LDAP client library</Summary>
-    <VersionPrefix>3.0.0-beta4</VersionPrefix>
+    <VersionPrefix>3.0.0-beta5</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
     <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
