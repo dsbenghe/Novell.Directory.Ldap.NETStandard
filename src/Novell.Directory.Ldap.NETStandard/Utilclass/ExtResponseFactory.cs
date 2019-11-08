@@ -1,5 +1,7 @@
 using System;
 using System.Reflection;
+using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -17,6 +19,8 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class ExtResponseFactory
     {
+        private static readonly ILog Logger = LogProvider.For<ExtResponseFactory>();
+        
         /// <summary>
         ///     Used to Convert an RfcLdapMessage object to the appropriate
         ///     LdapExtendedResponse object depending on the operation being performed.
@@ -87,7 +91,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (FieldAccessException ex)
             {
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
 
             // If we get here we did not have a registered extendedresponse

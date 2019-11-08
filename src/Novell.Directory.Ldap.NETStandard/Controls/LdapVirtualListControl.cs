@@ -32,6 +32,7 @@
 
 using System;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Logging;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -61,6 +62,8 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapVirtualListControl : LdapControl
     {
+        private static readonly ILog Logger = LogProvider.For<LdapVirtualListControl>();
+        
         /* The ASN.1 for the VLV Request has CHOICE field. These private
         * variables represent differnt ids for these different options
         */
@@ -109,7 +112,7 @@ namespace Novell.Directory.Ldap.Controls
                 }
                 catch (Exception e)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", e);
+                    Logger.Warn("Exception swallowed", e);
                 }
             }
         }

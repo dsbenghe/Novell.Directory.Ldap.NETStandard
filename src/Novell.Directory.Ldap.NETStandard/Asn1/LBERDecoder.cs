@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Text;
+using Novell.Directory.Ldap.Logging;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -66,6 +67,8 @@ namespace Novell.Directory.Ldap.Asn1
     /// </summary>
     public class LberDecoder : IAsn1Decoder
     {
+        private static readonly ILog Logger = LogProvider.For<LberDecoder>(); 
+        
         // used to speed up decode, so it doesn't need to recreate an identifier every time
         // instead just reset is called CANNOT be static for multiple connections
         private Asn1Identifier _asn1Id = new Asn1Identifier();
@@ -86,7 +89,7 @@ namespace Novell.Directory.Ldap.Asn1
             }
             catch (IOException ioe)
             {
-                Logger.Log.LogWarning("Exception swallowed", ioe);
+                Logger.Warn("Exception swallowed", ioe);
             }
 
             return asn1;

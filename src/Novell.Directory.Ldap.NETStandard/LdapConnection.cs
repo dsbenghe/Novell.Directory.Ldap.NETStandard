@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
@@ -152,6 +153,8 @@ namespace Novell.Directory.Ldap
 
         /// <summary> The OID string that identifies a StartTLS request and response.</summary>
         private const string StartTlsOid = "1.3.6.1.4.1.1466.20037";
+        
+        private static readonly ILog Logger = LogProvider.For<LdapConnection>();
 
         public virtual DebugId DebugId { get; } = DebugId.ForType<LdapConnection>();
 
@@ -1112,7 +1115,7 @@ namespace Novell.Directory.Ldap
             }
             catch (FieldAccessException fae)
             {
-                Logger.Log.LogWarning("Exception swallowed", fae);
+                Logger.Warn("Exception swallowed", fae);
             }
         }
 
@@ -2476,7 +2479,7 @@ namespace Novell.Directory.Ldap
                             }
                             catch (LdapException ldapException)
                             {
-                                Logger.Log.LogWarning("Exception swallowed", ldapException);
+                                Logger.Warn("Exception swallowed", ldapException);
                             }
                         }
                     }
@@ -2511,7 +2514,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Log.LogWarning("Exception swallowed", e);
+                            Logger.Warn("Exception swallowed", e);
                         }
                     }
 
@@ -2838,11 +2841,11 @@ namespace Novell.Directory.Ldap
                 }
                 catch (IndexOutOfRangeException ex)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", ex);
+                    Logger.Warn("Exception swallowed", ex);
                 }
                 catch (LdapException lex)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", lex);
+                    Logger.Warn("Exception swallowed", lex);
                 }
             }
         }
