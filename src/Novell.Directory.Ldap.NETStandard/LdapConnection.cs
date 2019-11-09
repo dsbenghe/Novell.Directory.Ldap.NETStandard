@@ -384,23 +384,10 @@ namespace Novell.Directory.Ldap
             set => Connection.ConnectionTimeout = value;
         }
 
-        /// <summary>
-        ///     Indicates whether the object has authenticated to the connected Ldap
-        ///     server.
-        /// </summary>
-        /// <returns>
-        ///     True if the object has authenticated; false if it has not
-        ///     authenticated.
-        /// </returns>
+        /// <inheritdoc/>
         public bool Bound => Connection.Bound;
 
-        /// <summary>
-        ///     Indicates whether the connection represented by this object is open
-        ///     at this time.
-        /// </summary>
-        /// <returns>
-        ///     True if connection is open; false if the connection is closed.
-        /// </returns>
+        /// <inheritdoc/>
         public bool Connected => Connection.Connected;
 
         /// <summary>

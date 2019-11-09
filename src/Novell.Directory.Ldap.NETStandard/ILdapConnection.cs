@@ -808,5 +808,24 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         bool Compare(string dn, LdapAttribute attr, LdapConstraints cons);
+
+        /// <summary>
+        ///     Indicates whether the object has authenticated to the connected Ldap
+        ///     server.
+        /// </summary>
+        /// <returns>
+        ///     True if the object has authenticated; false if it has not
+        ///     authenticated.
+        /// </returns>
+        bool Bound { get; }
+
+        /// <summary>
+        ///     Indicates whether the connection represented by this object is open
+        ///     at this time.
+        /// </summary>
+        /// <returns>
+        ///     True if connection is open; false if the connection is closed.
+        /// </returns>
+        bool Connected { get; }
     }
 }
