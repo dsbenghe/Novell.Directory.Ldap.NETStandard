@@ -7,6 +7,8 @@
 * SASL support - thanks to Michael Stum - https://github.com/mstum
 * Support for ReferralFollowing - thanks to Joseph Petersen - https://github.com/casz
 * Add LocalCertificateSelectionCallback - thanks to bmoore - https://github.com/barry-r-moore
+* Fix issue in message timeout - thanks to martindrlik https://github.com/martindrlik
+* Remove dependency of Microsoft.Extensions.Logging - use LibLog
 
 ### 2.3.8
 * Added connect timeout
