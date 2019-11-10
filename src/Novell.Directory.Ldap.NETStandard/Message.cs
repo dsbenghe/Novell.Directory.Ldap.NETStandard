@@ -491,7 +491,16 @@ namespace Novell.Directory.Ldap
             /// </summary>
             public override void Run()
             {
-                Thread.Sleep(TimeSpan.FromMilliseconds(_timeToWait));
+                for (var i = 0; i < 10000; i++)
+                {
+                    if (IsStopping)
+                    {
+                        return;
+                    }
+
+                    Thread.Sleep(new TimeSpan(_timeToWait));
+                }
+
                 _message._acceptReplies = false;
 
                 // Note: Abandon clears the bind semaphore after failed bind.
