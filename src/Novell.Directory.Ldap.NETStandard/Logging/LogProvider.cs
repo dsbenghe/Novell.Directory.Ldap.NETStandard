@@ -49,9 +49,11 @@ using global::System.Diagnostics.CodeAnalysis;
 namespace Novell.Directory.Ldap.Logging
 {
     using global::System.Collections.Generic;
+    using global::System.Diagnostics;
     using global::System.Diagnostics.CodeAnalysis;
     using global::Novell.Directory.Ldap.Logging.LogProviders;
     using global::System;
+    using global::System.Reflection;
 #if !LIBLOG_PROVIDERS_ONLY
     using global::System.Diagnostics;
     using global::System.Runtime.CompilerServices;
@@ -135,21 +137,6 @@ namespace Novell.Directory.Ldap.Logging
             return GetLogger(typeof(T));
         }
 
-        /// <summary>
-        /// Gets a logger for the current class.
-        /// </summary>
-        /// <returns>An instance of <see cref="ILog"/></returns>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-#if LIBLOG_PUBLIC
-        public
-#else
-        internal
-#endif
-        static ILog GetCurrentClassLogger()
-        {
-            var stackFrame = new StackFrame(1, false);
-            return GetLogger(stackFrame.GetMethod().DeclaringType);
-        }
 
         /// <summary>
         /// Gets a logger for the specified type.
@@ -290,7 +277,7 @@ namespace Novell.Directory.Ldap.Logging
             {
                 Console.WriteLine(
                     "Exception occurred resolving a log provider. Logging for this assembly {0} is disabled. {1}",
-                    typeof(LogProvider).Assembly.FullName,
+                    typeof(LogProvider).GetTypeInfo().FullName,
                     ex);
             }
             return null;

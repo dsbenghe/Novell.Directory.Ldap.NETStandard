@@ -4,7 +4,7 @@
     <Summary>.NET Standard LDAP client library</Summary>
     <VersionPrefix>3.0.0-beta5</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>
@@ -30,15 +30,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
+    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Reflection.TypeExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Threading.Thread" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="ExtensionMethods.*.cs">
       <DependentUpon>ExtensionMethods.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibLog" Version="5.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    <Folder Include="Logging\" />
   </ItemGroup>
 </Project>

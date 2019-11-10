@@ -109,7 +109,7 @@ namespace Novell.Directory.Ldap.Logging.LogProviders
         private static Func<string, object> GetGetLoggerMethodCall()
         {
             var logManagerType = GetLogManagerType();
-            var log4netAssembly = Assembly.GetAssembly(logManagerType);
+            var log4netAssembly = logManagerType.GetTypeInfo().Assembly;
             var method = logManagerType.GetMethod("GetLogger", typeof(Assembly), typeof(string));
             var repositoryAssemblyParam = Expression.Parameter(typeof(Assembly), "repositoryAssembly");
             var nameParam = Expression.Parameter(typeof(string), "name");
@@ -315,7 +315,7 @@ namespace Novell.Directory.Ldap.Logging.LogProviders
 
                 var callerStackBoundaryType = typeof(Log4NetLogger);
                 // Callsite HACK - Extract the callsite-logger-type from the messageFunc
-                var methodType = messageFunc.Method.DeclaringType;
+                var methodType = messageFunc.GetMethodInfo().DeclaringType;
                 if (methodType == typeof(LogExtensions) ||
                     methodType != null && methodType.DeclaringType == typeof(LogExtensions))
                     callerStackBoundaryType = typeof(LogExtensions);
