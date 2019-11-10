@@ -32,7 +32,7 @@
 
 using System;
 using System.Threading;
-using Microsoft.Extensions.Logging;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -41,6 +41,8 @@ namespace Novell.Directory.Ldap
     /// <summary> Encapsulates an Ldap message, its state, and its replies.</summary>
     internal class Message
     {
+        private static readonly ILog Logger = LogProvider.For<Message>();
+        
         private readonly string _stackTraceCreation;
         private bool _acceptReplies = true; // false if no longer accepting replies
         private BindProperties _bindprops; // Bind properties if a bind request
@@ -312,7 +314,7 @@ namespace Novell.Directory.Ldap
                 }
                 catch (LdapException ex)
                 {
-                    Logger.Log.LogWarning("Exception swallowed", ex);
+                    Logger.Warn("Exception swallowed", ex);
                 }
 
                 // If not informing user, remove message from agent
@@ -358,7 +360,7 @@ namespace Novell.Directory.Ldap
             }
             catch (Exception ex)
             {
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
 
             _stackTraceCleanup = Environment.StackTrace;
@@ -408,8 +410,7 @@ namespace Novell.Directory.Ldap
                         {
                             if (_conn == null)
                             {
-                                var logger = Logger.Factory.CreateLogger<Message>();
-                                logger.LogError(
+                                Logger.Error(
                                     "Null connection; creation stack {0}, cleanup stack {1}",
                                     _stackTraceCreation, _stackTraceCleanup);
                             }

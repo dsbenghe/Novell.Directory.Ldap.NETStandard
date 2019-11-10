@@ -32,12 +32,15 @@
 
 using System;
 using System.Threading;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
     internal sealed class MessageAgent
     {
+        private static readonly ILog Logger = LogProvider.For<MessageAgent>();
+        
         public DebugId DebugId { get; } = DebugId.ForType<MessageAgent>();
         private int _indexLastRead;
         private readonly MessageVector _messages = new MessageVector(5);
@@ -198,7 +201,7 @@ namespace Novell.Directory.Ldap
             }
             catch (FieldAccessException ex)
             {
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
         }
 
@@ -236,7 +239,7 @@ namespace Novell.Directory.Ldap
             catch (FieldAccessException ex)
             {
                 // return true, if no message, it must be complete
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
 
             return true;

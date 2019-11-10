@@ -755,5 +755,77 @@ namespace Novell.Directory.Ldap
         /// </exception>
         ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchConstraints cons);
+
+        /// <summary>
+        ///     Synchronously checks to see if an entry contains an attribute
+        ///     with a specified value.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        bool Compare(string dn, LdapAttribute attr);
+
+        /// <summary>
+        ///     Synchronously checks to see if an entry contains an attribute with a
+        ///     specified value, using the specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        bool Compare(string dn, LdapAttribute attr, LdapConstraints cons);
+
+        /// <summary>
+        ///     Indicates whether the object has authenticated to the connected Ldap
+        ///     server.
+        /// </summary>
+        /// <returns>
+        ///     True if the object has authenticated; false if it has not
+        ///     authenticated.
+        /// </returns>
+        bool Bound { get; }
+
+        /// <summary>
+        ///     Indicates whether the connection represented by this object is open
+        ///     at this time.
+        /// </summary>
+        /// <returns>
+        ///     True if connection is open; false if the connection is closed.
+        /// </returns>
+        bool Connected { get; }
     }
 }

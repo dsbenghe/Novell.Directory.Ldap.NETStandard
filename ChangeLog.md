@@ -5,6 +5,8 @@
 * changes to the public api of the library to improve usability and make it more .net style
 * IPv6 support
 * SASL support - thanks to Michael Stum - https://github.com/mstum
+* Support for ReferralFollowing - thanks to Joseph Petersen - https://github.com/casz
+* Add LocalCertificateSelectionCallback - thanks to bmoore - https://github.com/barry-r-moore
 
 ### 2.3.8
 * Added connect timeout

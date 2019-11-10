@@ -32,6 +32,8 @@
 
 using System;
 using System.Reflection;
+using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -47,6 +49,8 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class IntermediateResponseFactory
     {
+        private static readonly ILog Logger = LogProvider.For<IntermediateResponseFactory>();
+        
         /**
              * Used to Convert an RfcLDAPMessage object to the appropriate
              * LDAPIntermediateResponse object depending on the operation being performed.
@@ -113,7 +117,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 // No match with the OID
                 // Do nothing. Fall through and construct a default LDAPControl object.
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
 
             // If we get here we did not have a registered extendedresponse

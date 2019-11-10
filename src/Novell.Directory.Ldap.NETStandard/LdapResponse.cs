@@ -32,6 +32,7 @@
 
 using System;
 using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -51,6 +52,8 @@ namespace Novell.Directory.Ldap
         */
     public class LdapResponse : LdapMessage
     {
+        private static readonly ILog Logger = LogProvider.For<LberDecoder>();
+        
         public override DebugId DebugId { get; } = DebugId.ForType<LdapResponse>();
         private readonly InterThreadException _exception;
 
@@ -234,7 +237,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (UriFormatException mex)
                         {
-                            Logger.Log.LogWarning("Exception swallowed", mex);
+                            Logger.Warn("Exception swallowed", mex);
                         }
                         finally
                         {

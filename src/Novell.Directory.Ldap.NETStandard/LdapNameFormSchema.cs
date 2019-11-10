@@ -33,6 +33,8 @@
 using System.Collections;
 using System.IO;
 using System.Text;
+using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -49,6 +51,8 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapNameFormSchema : LdapSchemaElement
     {
+        private static readonly ILog Logger = LogProvider.For<LdapNameFormSchema>();
+        
         /// <summary>
         ///     Constructs a name form for adding to or deleting from the schema.
         /// </summary>
@@ -164,7 +168,7 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ex)
             {
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                Logger.Warn("Exception swallowed", ex);
             }
         }
 

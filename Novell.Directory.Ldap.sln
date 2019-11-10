@@ -1,11 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEE82E9C-181C-443E-A9CC-26D2D432FD56}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A16475B-0D8E-4316-86D5-F7D37EEE802D}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		ChangeLog.md = ChangeLog.md
+		configure-openldap.sh = configure-openldap.sh
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6E28F0DF-400F-4A78-8DD0-B8D843F96010}"
 EndProject
@@ -15,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETSt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{0ABBF187-A48E-42BB-83F0-96C2E1011C25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "test\Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "test\Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,9 +52,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{87646BB4-7F55-49EF-9FE7-49AEE6378453} = {BEE82E9C-181C-443E-A9CC-26D2D432FD56}
-		{C6A40F5E-22FE-4A74-9021-70C3C96AF105} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{332F0714-7ABB-4451-92A1-B656AC26C8AD} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
+		{C6A40F5E-22FE-4A74-9021-70C3C96AF105} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B780926-24FB-4213-9233-C3B61F2209BA}
