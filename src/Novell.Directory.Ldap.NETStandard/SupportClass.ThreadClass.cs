@@ -173,25 +173,25 @@ namespace Novell.Directory.Ldap
             /// <summary>
             ///     Blocks the calling thread until a thread terminates or the specified time elapses.
             /// </summary>
-            /// <param name="miliSeconds">Time of wait in milliseconds.</param>
-            public void Join(int miliSeconds)
+            /// <param name="milliseconds">Time of wait in milliseconds.</param>
+            public void Join(int milliseconds)
             {
                 lock (this)
                 {
-                    _threadField.Join(miliSeconds * 10000);
+                    _threadField.Join(milliseconds);
                 }
             }
 
             /// <summary>
             ///     Blocks the calling thread until a thread terminates or the specified time elapses.
             /// </summary>
-            /// <param name="miliSeconds">Time of wait in milliseconds.</param>
+            /// <param name="milliseconds">Time of wait in milliseconds.</param>
             /// <param name="nanoSeconds">Time of wait in nanoseconds.</param>
-            public void Join(int miliSeconds, int nanoSeconds)
+            public void Join(int milliseconds, int nanoSeconds)
             {
                 lock (this)
                 {
-                    _threadField.Join(miliSeconds * 10000 + nanoSeconds * 100);
+                    _threadField.Join(milliseconds + nanoSeconds / 1000);
                 }
             }
 
