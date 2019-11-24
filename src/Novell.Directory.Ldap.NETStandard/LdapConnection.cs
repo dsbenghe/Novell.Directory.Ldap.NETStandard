@@ -611,7 +611,7 @@ namespace Novell.Directory.Ldap
             // connect doesn't affect other clones
             // If not a clone, destroys old connection.
             // Step through the space-delimited list
-            var hostList = new SupportClass.Tokenizer(host, " ");
+            var hostList = new Tokenizer(host, " ");
             while (hostList.HasMoreTokens())
             {
                 try

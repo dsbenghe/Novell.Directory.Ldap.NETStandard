@@ -41,181 +41,60 @@ using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
-
-    public partial class SupportClass
+    /// <summary>
+    ///     Support class used to handle threads.
+    /// </summary>
+    internal class ThreadClass
     {
-        /*******************************/
+        /// <summary>
+        ///     The instance of System.Threading.Thread.
+        /// </summary>
+        private Thread _threadField;
 
         /// <summary>
-        ///     Support class used to handle threads.
+        ///     Initializes a new instance of the ThreadClass class.
         /// </summary>
-        public class ThreadClass : IThreadRunnable
+        internal ThreadClass()
         {
-            /// <summary>
-            ///     The instance of System.Threading.Thread.
-            /// </summary>
-            private Thread _threadField;
+            _threadField = new Thread(Run);
+        }
+        
+        /// <summary>
+        ///     Gets or sets a value indicating whether or not a thread is a background thread.
+        /// </summary>
+        public bool IsBackground
+        {
+            set => _threadField.IsBackground = value;
+        }
 
-            /// <summary>
-            ///     Initializes a new instance of the ThreadClass class.
-            /// </summary>
-            public ThreadClass()
-            {
-                _threadField = new Thread(Run);
-            }
+        protected bool IsStopping { get; private set; }
 
-            /// <summary>
-            ///     Initializes a new instance of the Thread class.
-            /// </summary>
-            /// <param name="name">The name of the thread.</param>
-            public ThreadClass(string name)
-            {
-                _threadField = new Thread(Run);
-                Name = name;
-            }
+        /// <summary>
+        ///     This method has no functionality unless the method is overridden.
+        /// </summary>
+        protected virtual void Run()
+        {
+        }
 
-            /// <summary>
-            ///     Initializes a new instance of the Thread class.
-            /// </summary>
-            /// <param name="start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing.</param>
-            public ThreadClass(ThreadStart start)
-            {
-                _threadField = new Thread(start);
-            }
+        /// <summary>
+        ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running.
+        /// </summary>
+        public void Start()
+        {
+            _threadField.Start();
+        }
 
-            /// <summary>
-            ///     Initializes a new instance of the Thread class.
-            /// </summary>
-            /// <param name="start">A ThreadStart delegate that references the methods to be invoked when this thread begins executing.</param>
-            /// <param name="name">The name of the thread.</param>
-            public ThreadClass(ThreadStart start, string name)
-            {
-                _threadField = new Thread(start);
-                Name = name;
-            }
+        ///// <summary>
+        ///// Interrupts a thread that is in the WaitSleepJoin thread state
+        ///// </summary>
+        // public virtual void Interrupt()
+        // {
+        // threadField.Interrupt();
+        // }
 
-            /// <summary>
-            ///     Gets the current thread instance.
-            /// </summary>
-            public Thread Instance
-            {
-                get => _threadField;
-                set => _threadField = value;
-            }
-
-            /// <summary>
-            ///     Gets or sets the name of the thread.
-            /// </summary>
-            public string Name
-            {
-                get => _threadField.Name;
-                set
-                {
-                    if (_threadField.Name == null)
-                    {
-                        _threadField.Name = value;
-                    }
-                }
-            }
-
-            /// <summary>
-            ///     Gets a value indicating the execution status of the current thread.
-            /// </summary>
-            public bool IsAlive => _threadField.IsAlive;
-
-            /// <summary>
-            ///     Gets or sets a value indicating whether or not a thread is a background thread.
-            /// </summary>
-            public bool IsBackground
-            {
-                get => _threadField.IsBackground;
-                set => _threadField.IsBackground = value;
-            }
-
-            public bool IsStopping { get; private set; }
-
-            /// <summary>
-            ///     This method has no functionality unless the method is overridden.
-            /// </summary>
-            public virtual void Run()
-            {
-            }
-
-            /// <summary>
-            ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running.
-            /// </summary>
-            public void Start()
-            {
-                _threadField.Start();
-            }
-
-            ///// <summary>
-            ///// Interrupts a thread that is in the WaitSleepJoin thread state
-            ///// </summary>
-            // public virtual void Interrupt()
-            // {
-            // threadField.Interrupt();
-            // }
-
-            public void Stop()
-            {
-                IsStopping = true;
-            }
-
-            /// <summary>
-            ///     Blocks the calling thread until a thread terminates.
-            /// </summary>
-            public void Join()
-            {
-                _threadField.Join();
-            }
-
-            /// <summary>
-            ///     Blocks the calling thread until a thread terminates or the specified time elapses.
-            /// </summary>
-            /// <param name="milliseconds">Time of wait in milliseconds.</param>
-            public void Join(int milliseconds)
-            {
-                lock (this)
-                {
-                    _threadField.Join(milliseconds);
-                }
-            }
-
-            /// <summary>
-            ///     Blocks the calling thread until a thread terminates or the specified time elapses.
-            /// </summary>
-            /// <param name="milliseconds">Time of wait in milliseconds.</param>
-            /// <param name="nanoSeconds">Time of wait in nanoseconds.</param>
-            public void Join(int milliseconds, int nanoSeconds)
-            {
-                lock (this)
-                {
-                    _threadField.Join(milliseconds + nanoSeconds / 1000);
-                }
-            }
-
-            /// <summary>
-            ///     Obtain a String that represents the current Object.
-            /// </summary>
-            /// <returns>A String that represents the current Object.</returns>
-            public override string ToString()
-            {
-                return "Thread[" + Name + "]";
-            }
-
-            /// <summary>
-            ///     Gets the currently running thread.
-            /// </summary>
-            /// <returns>The currently running thread.</returns>
-            public static ThreadClass Current()
-            {
-                var currentThread = new ThreadClass
-                {
-                    Instance = Thread.CurrentThread
-                };
-                return currentThread;
-            }
-        }        
+        public void Stop()
+        {
+            IsStopping = true;
+        }
     }
 }

@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
         private readonly StreamReader _reader;
         private readonly StringReader _sreader;
         private char[] _buf;
-        private bool _cidtolower;
+        private bool _cidtolower = false;
         private byte[] _ctype;
         private double _numberValue;
         private int _peekchar;

@@ -222,7 +222,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     iterator over the attributes in this set.
         /// </returns>
-        public IEnumerator<LdapAttribute> GetEnumerator()
+        public new IEnumerator<LdapAttribute> GetEnumerator()
         {
             return Values.GetEnumerator();
         }

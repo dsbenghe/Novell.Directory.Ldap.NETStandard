@@ -55,7 +55,6 @@ namespace Novell.Directory.Ldap.Logging
     using global::System;
     using global::System.Reflection;
 #if !LIBLOG_PROVIDERS_ONLY
-    using global::System.Diagnostics;
     using global::System.Runtime.CompilerServices;
 #endif
 

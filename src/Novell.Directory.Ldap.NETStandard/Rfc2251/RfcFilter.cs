@@ -289,7 +289,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             {
                                 // substrings parse:
                                 //    [initial], *any*, [final] into an Asn1SequenceOf
-                                var sub = new SupportClass.Tokenizer(valueRenamed, "*", true);
+                                var sub = new Tokenizer(valueRenamed, "*", true);
 
 // SupportClass.Tokenizer sub = new SupportClass.Tokenizer(value_Renamed, "*");//, true);
                                 var seq = new Asn1SequenceOf(5);
@@ -368,7 +368,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             var dnAttributes = false;
 
 // SupportClass.Tokenizer st = new StringTokenizer(ft.Attr, ":", true);
-                            var st = new SupportClass.Tokenizer(_ft.Attr, ":"); // , true);
+                            var st = new Tokenizer(_ft.Attr, ":"); // , true);
 
                             var first = true;
                             while (st.HasMoreTokens())

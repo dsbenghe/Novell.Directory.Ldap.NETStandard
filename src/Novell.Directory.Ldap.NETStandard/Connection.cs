@@ -1311,7 +1311,7 @@ namespace Novell.Directory.Ldap
         ///     notification.  We use this class to spawn off the unsolicited
         ///     notification as a separate thread.
         /// </summary>
-        private class UnsolicitedListenerThread : SupportClass.ThreadClass
+        private class UnsolicitedListenerThread : ThreadClass
         {
             private readonly ILdapUnsolicitedNotificationListener _listenerObj;
             private readonly LdapExtendedResponse _unsolicitedMsg;
@@ -1326,7 +1326,7 @@ namespace Novell.Directory.Ldap
 
             private Connection EnclosingInstance { get; }
 
-            public override void Run()
+            protected override void Run()
             {
                 _listenerObj.MessageReceived(_unsolicitedMsg);
             }

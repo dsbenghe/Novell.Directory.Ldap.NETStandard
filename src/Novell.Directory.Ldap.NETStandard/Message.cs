@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
         // Note: MessageVector is synchronized
         private readonly MessageVector _replies; // place to store replies
         private string _stackTraceCleanup;
-        private SupportClass.ThreadClass _timer; // Timeout thread
+        private ThreadClass _timer; // Timeout thread
         private bool _waitForReplyRenamedField = true; // true if wait for reply
 
         internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, BindProperties bindprops)
@@ -473,7 +473,7 @@ namespace Novell.Directory.Ldap
         ///     Timer class to provide timing for messages.  Only called
         ///     if time to wait is non zero.
         /// </summary>
-        private class Timeout : SupportClass.ThreadClass
+        private class Timeout : ThreadClass
         {
             private readonly Message _message;
 
@@ -489,7 +489,7 @@ namespace Novell.Directory.Ldap
             ///     The timeout thread.  If it wakes from the sleep, future input
             ///     is stopped and the request is timed out.
             /// </summary>
-            public override void Run()
+            protected override void Run()
             {
                 for (var i = 0; i < 10000; i++)
                 {

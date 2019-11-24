@@ -704,7 +704,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute name cannot be null");
             }
 
-            var st = new SupportClass.Tokenizer(attrName, ";");
+            var st = new Tokenizer(attrName, ";");
             string[] subTypes = null;
             var cnt = st.Count;
             if (cnt > 0)
