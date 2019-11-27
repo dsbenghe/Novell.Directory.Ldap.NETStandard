@@ -495,7 +495,7 @@ namespace Novell.Directory.Ldap
                 {
                     if (IsStopping)
                     {
-                        return;
+                        break;
                     }
 
                     Thread.Sleep(new TimeSpan(_timeToWait));
