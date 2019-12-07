@@ -472,29 +472,18 @@ namespace Novell.Directory.Ldap
                 remoteCertificate, acceptableIssuers);
         }
 
-        public bool DefaultCertificateValidationHandler(X509Certificate certificate, X509Chain chain,
+        private bool DefaultCertificateValidationHandler(
+            X509Certificate certificate, 
+            X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
-            var retFlag = false;
-            if (sslPolicyErrors != SslPolicyErrors.None)
+            if (sslPolicyErrors == SslPolicyErrors.None)
             {
-                if (sslPolicyErrors == SslPolicyErrors.RemoteCertificateNameMismatch)
-                {
-                    retFlag = true;
-                }
-                else
-                {
-                    _handshakeChainStatus = chain.ChainStatus;
-                    _handshakePolicyErrors = sslPolicyErrors;
-                }
+                return true;
             }
-            else
-            {
-                retFlag = true;
-            }
-
-            // Skip the server cert errors.
-            return retFlag;
+            _handshakeChainStatus = chain.ChainStatus;
+            _handshakePolicyErrors = sslPolicyErrors;
+            return false;
         }
 
         /***********************************************************************/
