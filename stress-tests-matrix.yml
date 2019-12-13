@@ -1,0 +1,14 @@
+jobs:
+  - ${{ each image in parameters.image }}:
+    - ${{ each concurrency_level in parameters.concurrency_level }}:
+      - ${{ each transport_security in parameters.security }}:
+        - ${{ each netfx in parameters.netfx }}:
+          - job: 
+            displayName: ${{ netfx }}_${{ image }}_${{ concurrency_level }}_${{ transport_security }}
+            pool:
+              vmImage: ${{ image }}
+            steps:
+              - task: PowerShell@2
+                inputs:
+                  filePath: 'build.ps1'
+                  arguments: 'test-stress -Fx ${{ netfx }} -ConcurrencyLevel ${{ concurrency_level }} -TransportSecurity ${{ transport_security }}'
