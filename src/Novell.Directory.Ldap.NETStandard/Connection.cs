@@ -530,10 +530,14 @@ namespace Novell.Directory.Ldap
                     {
                         Host = host;
                         Port = port;
-                        var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
-                        var ipAddress = ipAddresses.First(ip =>
-                            ip.AddressFamily == AddressFamily.InterNetwork ||
-                            ip.AddressFamily == AddressFamily.InterNetworkV6);
+
+                        if (!IPAddress.TryParse(host, out IPAddress ipAddress))
+                        {
+                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                            ipAddress = ipAddresses.First(ip =>
+                                ip.AddressFamily == AddressFamily.InterNetwork ||
+                                ip.AddressFamily == AddressFamily.InterNetworkV6);
+                        }
 
                         if (Ssl)
                         {
