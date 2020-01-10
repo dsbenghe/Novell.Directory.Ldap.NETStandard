@@ -868,14 +868,8 @@ namespace Novell.Directory.Ldap
                     {
                         _inStream?.Dispose();
                         _outStream?.Dispose();
-                        if (Ssl)
-                        {
-                            _sock.Dispose();
-                        }
-                        else
-                        {
-                            _socket.Dispose();
-                        }
+                        _sock?.Dispose();
+                        _socket?.Dispose();
                     }
                     catch (IOException)
                     {
