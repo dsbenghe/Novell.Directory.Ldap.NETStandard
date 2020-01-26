@@ -1,6 +1,6 @@
 # Changelog
 
-### 3.0.0 - pre release
+### 3.0.0
 * change ILdapConnection interface to improve testability & mockability
 * changes to the public api of the library to improve usability and make it more .net style
 * IPv6 support
