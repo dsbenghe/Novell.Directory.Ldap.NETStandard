@@ -1,6 +1,7 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -108,6 +109,37 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) as an Ldapv3 bind, using the specified name and
+        ///     password.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        ///     Note: the application should use care in the use
+        ///     of String password objects.  These are long lived
+        ///     objects, and may expose a security risk, especially
+        ///     in objects that are serialized.  The LdapConnection
+        ///     keeps no long lived instances of these objects.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(string dn, string passwd);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password,
         ///     and Ldap version.
         ///     If the object has been disconnected from an Ldap server,
@@ -143,6 +175,41 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password,
+        ///     and Ldap version.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        ///     Note: the application should use care in the use
+        ///     of String password objects.  These are long lived
+        ///     objects, and may expose a security risk, especially
+        ///     in objects that are serialized.  The LdapConnection
+        ///     keeps no long lived instances of these objects.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(int version, string dn, string passwd);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) as an Ldapv3 bind, using the specified name,
         ///     password, and constraints.
         ///     If the object has been disconnected from an Ldap server,
@@ -174,6 +241,40 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Bind(string dn, string passwd, LdapConstraints cons);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) as an Ldapv3 bind, using the specified name,
+        ///     password, and constraints.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        ///     Note: the application should use care in the use
+        ///     of String password objects.  These are long lived
+        ///     objects, and may expose a security risk, especially
+        ///     in objects that are serialized.  The LdapConnection
+        ///     keeps no long lived instances of these objects.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(string dn, string passwd, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -215,6 +316,44 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap version,
+        ///     and constraints.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        ///     Note: the application should use care in the use
+        ///     of String password objects.  These are long lived
+        ///     objects, and may expose a security risk, especially
+        ///     in objects that are serialized.  The LdapConnection
+        ///     keeps no long lived instances of these objects.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(int version, string dn, string passwd, LdapConstraints cons);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password,
         ///     and Ldap version.
         ///     If the object has been disconnected from an Ldap server,
@@ -242,6 +381,36 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Bind(int version, string dn, byte[] passwd);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password,
+        ///     and Ldap version.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The version of the Ldap protocol to use
+        ///     in the bind, use Ldap_V3.  Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(int version, string dn, byte[] passwd);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -275,6 +444,39 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
+
+        /// <summary>
+        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap version,
+        ///     and constraints.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task BindAsync(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
         /// Bind via a SASL Mechanism
@@ -314,6 +516,33 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Connect(string host, int port);
+
+        /// <summary>
+        ///     Connects to the specified host and port.
+        ///     If this LdapConnection object represents an open connection, the
+        ///     connection is closed first before the new connection is opened.
+        ///     At this point, there is no authentication, and any operations are
+        ///     conducted as an anonymous client.
+        ///     When more than one host name is specified, each host is contacted
+        ///     in turn until a connection can be established.
+        /// </summary>
+        /// <param name="host">
+        ///     A host name or a dotted string representing the IP address
+        ///     of a host running an Ldap server. It may also
+        ///     contain a list of host names, space-delimited. Each host
+        ///     name can include a trailing colon and port number.
+        /// </param>
+        /// <param name="port">
+        ///     The TCP or UDP port number to connect to or contact.
+        ///     The default Ldap port is 389. The port parameter is
+        ///     ignored for any host hame which includes a colon and
+        ///     port number.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task ConnectAsync(string host, int port);
 
         /// <summary>
         ///     Synchronously deletes the entry with the specified distinguished name

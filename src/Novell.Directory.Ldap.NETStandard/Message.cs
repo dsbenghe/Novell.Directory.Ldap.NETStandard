@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -241,9 +242,9 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal void SendMessage()
+        internal async Task SendMessage()
         {
-            _conn.WriteMessage(this);
+            await _conn.WriteMessage(this);
 
             // Start the timer thread
             if (_mslimit != 0)
@@ -267,7 +268,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal void Abandon(LdapConstraints cons, InterThreadException informUserEx)
+        internal async Task Abandon(LdapConstraints cons, InterThreadException informUserEx)
         {
             if (!_waitForReplyRenamedField)
             {
@@ -310,7 +311,7 @@ namespace Novell.Directory.Ldap
                     LdapMessage msg = new LdapAbandonRequest(MessageId, cont);
 
                     // Send abandon message to server
-                    _conn.WriteMessage(msg);
+                    await _conn.WriteMessage(msg);
                 }
                 catch (LdapException ex)
                 {
@@ -507,7 +508,7 @@ namespace Novell.Directory.Ldap
                 _message.Abandon(
                     null,
                     new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
-                        _message));
+                        _message)).ResultAndUnwrap();
             }
         }
     }

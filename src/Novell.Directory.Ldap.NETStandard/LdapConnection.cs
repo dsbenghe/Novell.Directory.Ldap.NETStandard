@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
@@ -555,23 +556,47 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void Bind(string dn, string passwd)
         {
-            Bind(LdapV3, dn, passwd, _defSearchCons);
+            BindAsync(LdapV3, dn, passwd).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task BindAsync(string dn, string passwd)
+        {
+            await BindAsync(LdapV3, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Bind(int version, string dn, string passwd)
         {
-            Bind(version, dn, passwd, _defSearchCons);
+            BindAsync(version, dn, passwd).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task BindAsync(int version, string dn, string passwd)
+        {
+            await BindAsync(version, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Bind(string dn, string passwd, LdapConstraints cons)
         {
-            Bind(LdapV3, dn, passwd, cons);
+            BindAsync(dn, passwd, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task BindAsync(string dn, string passwd, LdapConstraints cons)
+        {
+            await BindAsync(LdapV3, dn, passwd, cons);
         }
 
         /// <inheritdoc />
         public void Bind(int version, string dn, string passwd, LdapConstraints cons)
+        {
+            BindAsync(version, dn, passwd, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task BindAsync(int version, string dn, string passwd, LdapConstraints cons)
         {
             byte[] pw = null;
             if (passwd != null)
@@ -579,19 +604,31 @@ namespace Novell.Directory.Ldap
                 pw = passwd.ToUtf8Bytes();
             }
 
-            Bind(version, dn, pw, cons);
+            await BindAsync(version, dn, pw, cons);
         }
 
         /// <inheritdoc />
         public void Bind(int version, string dn, byte[] passwd)
         {
-            Bind(version, dn, passwd, _defSearchCons);
+            BindAsync(version, dn, passwd).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task BindAsync(int version, string dn, byte[] passwd)
+        {
+            await BindAsync(version, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Bind(int version, string dn, byte[] passwd, LdapConstraints cons)
         {
-            var queue = Bind(version, dn, passwd, null, cons);
+            BindAsync(version, dn, passwd, cons).ResultAndUnwrap();
+        }
+
+        public async Task BindAsync(int version, string dn, byte[] passwd,
+            LdapConstraints cons)
+        {
+            var queue = await BindAsync(version, dn, passwd, null, cons);
             var res = (LdapResponse)queue.GetResponse();
             if (res != null)
             {
@@ -607,6 +644,12 @@ namespace Novell.Directory.Ldap
 
         /// <inheritdoc />
         public void Connect(string host, int port)
+        {
+            ConnectAsync(host, port).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task ConnectAsync(string host, int port)
         {
             // connect doesn't affect other clones
             // If not a clone, destroys old connection.
@@ -636,7 +679,7 @@ namespace Novell.Directory.Ldap
                     // This may return a different conn object
                     // Disassociate this clone with the underlying connection.
                     Connection = Connection.DestroyClone();
-                    Connection.Connect(address, specifiedPort);
+                    await Connection.Connect(address, specifiedPort);
                     break;
                 }
                 catch (LdapException)
@@ -1263,7 +1306,46 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue)
         {
-            return Bind(version, dn, passwd, queue, _defSearchCons);
+            return BindAsync(version, dn, passwd, queue, _defSearchCons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap
+        ///     version, and queue.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     has already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> BindAsync(int version, string dn,
+            byte[] passwd, LdapResponseQueue queue)
+        {
+            return await BindAsync(version, dn, passwd, queue, _defSearchCons);
         }
 
         /// <summary>
@@ -1305,6 +1387,48 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Bind(int version, string dn, byte[] passwd, LdapResponseQueue queue,
             LdapConstraints cons)
         {
+            return BindAsync(version, dn, passwd, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously authenticates to the Ldap server (that the object is
+        ///     currently connected to) using the specified name, password, Ldap
+        ///     version, queue, and constraints.
+        ///     If the object has been disconnected from an Ldap server,
+        ///     this method attempts to reconnect to the server. If the object
+        ///     had already authenticated, the old authentication is discarded.
+        /// </summary>
+        /// <param name="version">
+        ///     The Ldap protocol version, use Ldap_V3.
+        ///     Ldap_V2 is not supported.
+        /// </param>
+        /// <param name="dn">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name.
+        /// </param>
+        /// <param name="passwd">
+        ///     If non-null and non-empty, specifies that the
+        ///     connection and all operations through it should
+        ///     be authenticated with dn as the distinguished
+        ///     name and passwd as password.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> BindAsync(int version, string dn, byte[] passwd, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
             if (cons == null)
             {
                 cons = _defSearchCons;
@@ -1341,7 +1465,7 @@ namespace Novell.Directory.Ldap
             {
                 if (Connection.Host != null)
                 {
-                    Connection.Connect(Connection.Host, Connection.Port);
+                    await Connection.Connect(Connection.Host, Connection.Port);
                 }
                 else
                 {

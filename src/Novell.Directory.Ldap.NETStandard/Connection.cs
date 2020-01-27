@@ -41,6 +41,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -103,9 +104,9 @@ namespace Novell.Directory.Ldap
         private int _cloneCount;
         private Thread _deadReader; // Identity of last reader thread
         private Exception _deadReaderException; // Last exception of reader
-        private LberDecoder _decoder;
+        private readonly LberDecoder _decoder;
 
-        private LberEncoder _encoder;
+        private readonly LberEncoder _encoder;
 
         // We need a message number for disconnect to grab the semaphore,
         // but may not have one, so we invent a unique one.
@@ -447,9 +448,9 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal void Connect(string host, int port)
+        internal async Task Connect(string host, int port)
         {
-            Connect(host, port, 0);
+            await Connect(host, port, 0);
         }
 
         /****************************************************************************/
@@ -501,7 +502,7 @@ namespace Novell.Directory.Ldap
         /// <param name="semaphoreId">
         ///     The write semaphore ID to use for the connect.
         /// </param>
-        private void Connect(string host, int port, int semaphoreId)
+        private async Task Connect(string host, int port, int semaphoreId)
         {
             /* Synchronized so all variables are in a consistant state and
             * so that another thread isn't doing a connect, disconnect, or clone
@@ -533,7 +534,7 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out IPAddress ipAddress))
                         {
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                            var ipAddresses = await Dns.GetHostAddressesAsync(host);
                             ipAddress = ipAddresses.First(ip =>
                                 ip.AddressFamily == AddressFamily.InterNetwork ||
                                 ip.AddressFamily == AddressFamily.InterNetworkV6);
@@ -543,7 +544,7 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            _sock.Connect(ipEndPoint);
+                            await _sock.ConnectAsync(ipEndPoint);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
@@ -704,20 +705,20 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        internal void WriteMessage(Message info)
+        internal async Task WriteMessage(Message info)
         {
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
             if (info.BindRequest && Connected == false && Host != null)
             {
-                Connect(Host, Port, info.MessageId);
+                await Connect(Host, Port, info.MessageId);
             }
 
             if (Connected)
             {
                 var msg = info.Request;
-                WriteMessage(msg);
+                await WriteMessage(msg);
             }
             else
             {
@@ -732,7 +733,7 @@ namespace Novell.Directory.Ldap
         /// <param name="msg">
         ///     the message to write.
         /// </param>
-        internal void WriteMessage(LdapMessage msg)
+        internal async Task WriteMessage(LdapMessage msg)
         {
             int id;
 
@@ -764,16 +765,16 @@ namespace Novell.Directory.Ldap
                 }
 
                 var ber = msg.Asn1Object.GetEncoding(_encoder);
-                myOut.Write(ber, 0, ber.Length);
-                myOut.Flush();
+                await myOut.WriteAsync(ber, 0, ber.Length);
+                await myOut.FlushAsync();
             }
             catch (IOException ioe)
             {
                 if (msg.Type == LdapMessage.BindRequest && Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
-                    throw new LdapException(strMsg, new object[] { Host, Port }, LdapException.SslHandshakeFailed, null,
-                        ioe);
+                    throw new LdapException(strMsg, new object[] { Host, Port },
+                        LdapException.SslHandshakeFailed, null, ioe);
                 }
 
                 /*
@@ -1091,7 +1092,7 @@ namespace Novell.Directory.Ldap
                 // what kind of processing the notification listener class will
                 // do.  We do not want our deamon thread to block waiting for
                 // the notification listener method to return.
-                var u = new UnsolicitedListenerThread(this, listener, tempLdapMessage);
+                var u = new UnsolicitedListenerThread(listener, tempLdapMessage);
                 u.Start();
             }
         }
@@ -1303,15 +1304,12 @@ namespace Novell.Directory.Ldap
             private readonly ILdapUnsolicitedNotificationListener _listenerObj;
             private readonly LdapExtendedResponse _unsolicitedMsg;
 
-            internal UnsolicitedListenerThread(Connection enclosingInstance, ILdapUnsolicitedNotificationListener l,
+            internal UnsolicitedListenerThread(ILdapUnsolicitedNotificationListener l,
                 LdapExtendedResponse m)
             {
-                EnclosingInstance = enclosingInstance;
                 _listenerObj = l;
                 _unsolicitedMsg = m;
             }
-
-            private Connection EnclosingInstance { get; }
 
             protected override void Run()
             {
