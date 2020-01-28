@@ -25,6 +25,20 @@ namespace Novell.Directory.Ldap
         void StartTls();
 
         /// <summary>
+        ///     Starts Transport Layer Security (TLS) protocol on this connection
+        ///     to enable session privacy.
+        ///     This affects the LdapConnection object and all cloned objects. A
+        ///     socket factory that implements LdapTLSSocketFactory must be set on the
+        ///     connection.
+        /// </summary>
+        /// <exception>
+        ///     LdapException Thrown if TLS cannot be started.  If a
+        ///     SocketFactory has been specified that does not implement
+        ///     LdapTLSSocketFactory an LdapException is thrown.
+        /// </exception>
+        Task StartTlsAsync();
+
+        /// <summary>
         ///     Stops Transport Layer Security(TLS) on the LDAPConnection and reverts
         ///     back to an anonymous state.
         ///     @throws LDAPException This can occur for the following reasons:.
@@ -60,6 +74,19 @@ namespace Novell.Directory.Ldap
         void Add(LdapEntry entry);
 
         /// <summary>
+        ///     Asynchronously adds an entry to the directory.
+        /// </summary>
+        /// <param name="entry">
+        ///     LdapEntry object specifying the distinguished
+        ///     name and attributes of the new entry.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task AddAsync(LdapEntry entry);
+
+        /// <summary>
         ///     Synchronously adds an entry to the directory, using the specified
         ///     constraints.
         /// </summary>
@@ -75,6 +102,23 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Add(LdapEntry entry, LdapConstraints cons);
+
+        /// <summary>
+        ///     Asynchronously adds an entry to the directory, using the specified
+        ///     constraints.
+        /// </summary>
+        /// <param name="entry">
+        ///     LdapEntry object specifying the distinguished
+        ///     name and attributes of the new entry.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task AddAsync(LdapEntry entry, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -108,7 +152,7 @@ namespace Novell.Directory.Ldap
         void Bind(string dn, string passwd);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) as an Ldapv3 bind, using the specified name and
         ///     password.
         ///     If the object has been disconnected from an Ldap server,
@@ -174,7 +218,7 @@ namespace Novell.Directory.Ldap
         void Bind(int version, string dn, string passwd);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password,
         ///     and Ldap version.
         ///     If the object has been disconnected from an Ldap server,
@@ -243,7 +287,7 @@ namespace Novell.Directory.Ldap
         void Bind(string dn, string passwd, LdapConstraints cons);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) as an Ldapv3 bind, using the specified name,
         ///     password, and constraints.
         ///     If the object has been disconnected from an Ldap server,
@@ -315,7 +359,7 @@ namespace Novell.Directory.Ldap
         void Bind(int version, string dn, string passwd, LdapConstraints cons);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password, Ldap version,
         ///     and constraints.
         ///     If the object has been disconnected from an Ldap server,
@@ -383,7 +427,7 @@ namespace Novell.Directory.Ldap
         void Bind(int version, string dn, byte[] passwd);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password,
         ///     and Ldap version.
         ///     If the object has been disconnected from an Ldap server,
@@ -446,7 +490,7 @@ namespace Novell.Directory.Ldap
         void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
-        ///     Synchronously authenticates to the Ldap server (that the object is
+        ///     Asynchronously authenticates to the Ldap server (that the object is
         ///     currently connected to) using the specified name, password, Ldap version,
         ///     and constraints.
         ///     If the object has been disconnected from an Ldap server,
@@ -483,6 +527,12 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="saslRequest"></param>
         void Bind(SaslRequest saslRequest);
+
+        /// <summary>
+        /// Bind via a SASL Mechanism
+        /// </summary>
+        /// <param name="saslRequest"></param>
+        Task BindAsync(SaslRequest saslRequest);
 
         IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories();
 
@@ -560,6 +610,21 @@ namespace Novell.Directory.Ldap
         void Delete(string dn);
 
         /// <summary>
+        ///     A synchronously deletes the entry with the specified distinguished name
+        ///     from the directory.
+        ///     Note: A Delete operation will not remove an entry that contains
+        ///     subordinate entries, nor will it dereference alias entries.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to delete.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task DeleteAsync(string dn);
+
+        /// <summary>
         ///     Synchronously deletes the entry with the specified distinguished name
         ///     from the directory, using the specified constraints.
         ///     Note: A Delete operation will not remove an entry that contains
@@ -576,6 +641,24 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Delete(string dn, LdapConstraints cons);
+
+        /// <summary>
+        ///     Asynchronously deletes the entry with the specified distinguished name
+        ///     from the directory, using the specified constraints.
+        ///     Note: A Delete operation will not remove an entry that contains
+        ///     subordinate entries, nor will it dereference alias entries.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to delete.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task DeleteAsync(string dn, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously disconnects from the Ldap server.
@@ -612,6 +695,27 @@ namespace Novell.Directory.Ldap
         LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op);
 
         /// <summary>
+        ///     Provides an asynchronous means to access extended, non-mandatory
+        ///     operations offered by a particular Ldapv3 compliant server.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to and (2)
+        ///     an operation-specific sequence of octet strings
+        ///     or BER-encoded values.
+        /// </param>
+        /// <returns>
+        ///     An operation-specific object, containing an ID and either an octet
+        ///     string or BER-encoded values.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op);
+
+        /// <summary>
         ///     Provides a synchronous means to access extended, non-mandatory
         ///     operations offered by a particular Ldapv3 compliant server.
         /// </summary>
@@ -636,6 +740,30 @@ namespace Novell.Directory.Ldap
         LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons);
 
         /// <summary>
+        ///     Provides an asynchronous means to access extended, non-mandatory
+        ///     operations offered by a particular Ldapv3 compliant server.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to and (2) an
+        ///     operation-specific sequence of octet strings
+        ///     or BER-encoded values.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     An operation-specific object, containing an ID and either an
+        ///     octet string or BER-encoded values.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op, LdapConstraints cons);
+
+        /// <summary>
         ///     Synchronously makes a single change to an existing entry in the
         ///     directory.
         ///     For example, this modify method changes the value of an attribute,
@@ -656,6 +784,28 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Modify(string dn, LdapModification mod);
+
+        /// <summary>
+        ///     Asynchronously makes a single change to an existing entry in the
+        ///     directory.
+        ///     For example, this modify method changes the value of an attribute,
+        ///     adds a new attribute value, or removes an existing attribute value.
+        ///     The LdapModification object specifies both the change to be made and
+        ///     the LdapAttribute value to be changed.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modification.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mod">
+        ///     A single change to be made to the entry.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task ModifyAsync(string dn, LdapModification mod);
 
         /// <summary>
         ///     Synchronously makes a single change to an existing entry in the
@@ -683,6 +833,31 @@ namespace Novell.Directory.Ldap
         void Modify(string dn, LdapModification mod, LdapConstraints cons);
 
         /// <summary>
+        ///     Asynchronously makes a single change to an existing entry in the
+        ///     directory, using the specified constraints.
+        ///     For example, this modify method changes the value of an attribute,
+        ///     adds a new attribute value, or removes an existing attribute value.
+        ///     The LdapModification object specifies both the change to be
+        ///     made and the LdapAttribute value to be changed.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modification.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mod">
+        ///     A single change to be made to the entry.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task ModifyAsync(string dn, LdapModification mod, LdapConstraints cons);
+
+        /// <summary>
         ///     Synchronously makes a set of changes to an existing entry in the
         ///     directory.
         ///     For example, this modify method changes attribute values, adds
@@ -704,6 +879,29 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Modify(string dn, LdapModification[] mods);
+
+        /// <summary>
+        ///     Asynchronously makes a set of changes to an existing entry in the
+        ///     directory.
+        ///     For example, this modify method changes attribute values, adds
+        ///     new attribute values, or removes existing attribute values.
+        ///     Because the server applies all changes in an LdapModification array
+        ///     atomically, the application can expect that no changes
+        ///     have been performed if an error is returned.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modifications.
+        /// </summary>
+        /// <param name="dn">
+        ///     Distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mods">
+        ///     The changes to be made to the entry.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task ModifyAsync(string dn, LdapModification[] mods);
 
         /// <summary>
         ///     Synchronously makes a set of changes to an existing entry in the
@@ -732,6 +930,32 @@ namespace Novell.Directory.Ldap
         void Modify(string dn, LdapModification[] mods, LdapConstraints cons);
 
         /// <summary>
+        ///     Asynchronously makes a set of changes to an existing entry in the
+        ///     directory, using the specified constraints.
+        ///     For example, this modify method changes attribute values, adds new
+        ///     attribute values, or removes existing attribute values.
+        ///     Because the server applies all changes in an LdapModification array
+        ///     atomically, the application can expect that no changes
+        ///     have been performed if an error is returned.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modifications.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mods">
+        ///     The changes to be made to the entry.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an
+        ///     error message and an Ldap error code.
+        /// </exception>
+        Task ModifyAsync(string dn, LdapModification[] mods, LdapConstraints cons);
+
+        /// <summary>
         ///     Synchronously reads the entry for the specified distiguished name (DN)
         ///     and retrieves all attributes for the entry.
         /// </summary>
@@ -745,6 +969,21 @@ namespace Novell.Directory.Ldap
         ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn);
+
+        /// <summary>
+        ///     Asynchronously reads the entry for the specified distiguished name (DN)
+        ///     and retrieves all attributes for the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server.
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found.
+        /// </exception>
+        Task<LdapEntry> ReadAsync(string dn);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distiguished name (DN),
@@ -766,6 +1005,25 @@ namespace Novell.Directory.Ldap
         LdapEntry Read(string dn, LdapSearchConstraints cons);
 
         /// <summary>
+        ///     Asynchronously reads the entry for the specified distiguished name (DN),
+        ///     using the specified constraints, and retrieves all attributes for the
+        ///     entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server.
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found.
+        /// </exception>
+        Task<LdapEntry> ReadAsync(string dn, LdapSearchConstraints cons);
+
+        /// <summary>
         ///     Synchronously reads the entry for the specified distinguished name (DN)
         ///     and retrieves only the specified attributes from the entry.
         /// </summary>
@@ -782,6 +1040,24 @@ namespace Novell.Directory.Ldap
         ///     LdapException if the object was not found.
         /// </exception>
         LdapEntry Read(string dn, string[] attrs);
+
+        /// <summary>
+        ///     Asynchronously reads the entry for the specified distinguished name (DN)
+        ///     and retrieves only the specified attributes from the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of the attributes to retrieve.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server.
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found.
+        /// </exception>
+        Task<LdapEntry> ReadAsync(string dn, string[] attrs);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distinguished name (DN),
@@ -806,6 +1082,28 @@ namespace Novell.Directory.Ldap
         LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons);
 
         /// <summary>
+        ///     Asynchronously reads the entry for the specified distinguished name (DN),
+        ///     using the specified constraints, and retrieves only the specified
+        ///     attributes from the entry.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to retrieve.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of the attributes to retrieve.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     the LdapEntry read from the server.
+        /// </returns>
+        /// <exception>
+        ///     LdapException if the object was not found.
+        /// </exception>
+        Task<LdapEntry> ReadAsync(string dn, string[] attrs, LdapSearchConstraints cons);
+
+        /// <summary>
         ///     Synchronously renames an existing entry in the directory.
         /// </summary>
         /// <param name="dn">
@@ -824,6 +1122,26 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Rename(string dn, string newRdn, bool deleteOldRdn);
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task RenameAsync(string dn, string newRdn, bool deleteOldRdn);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory, using the
@@ -850,6 +1168,30 @@ namespace Novell.Directory.Ldap
         void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons);
 
         /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, using the
+        ///     specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons);
+
+        /// <summary>
         ///     Synchronously renames an existing entry in the directory, possibly
         ///     repositioning the entry in the directory tree.
         /// </summary>
@@ -873,6 +1215,31 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn);
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, possibly
+        ///     repositioning the entry in the directory tree.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory, using the
@@ -902,6 +1269,35 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons);
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, using the
+        ///     specified constraints and possibly repositioning the entry in the
+        ///     directory tree.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously performs the search specified by the parameters.
@@ -937,6 +1333,41 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly);
+
+        /// <summary>
+        ///     Asynchronously performs the search specified by the parameters.
+        /// </summary>
+        /// <param name="base">
+        ///     The base distinguished name to search from.
+        /// </param>
+        /// <param name="scope">
+        ///     The scope of the entries to search. The following
+        ///     are the valid options:.
+        ///     <ul>
+        ///         <li>SCOPE_BASE - searches only the base DN</li>
+        ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
+        ///         <li>
+        ///             SCOPE_SUB - searches the base DN and all entries
+        ///             within its subtree
+        ///         </li>
+        ///     </ul>
+        /// </param>
+        /// <param name="filter">
+        ///     Search filter specifying the search criteria.
+        /// </param>
+        /// <param name="attrs">
+        ///     Names of attributes to retrieve.
+        /// </param>
+        /// <param name="typesOnly">
+        ///     If true, returns the names but not the values of
+        ///     the attributes found. If false, returns the
+        ///     names and values for attributes found.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly);
 
         /// <summary>
         ///     Synchronously performs the search specified by the parameters,
@@ -986,6 +1417,53 @@ namespace Novell.Directory.Ldap
             LdapSearchConstraints cons);
 
         /// <summary>
+        ///     Asynchronously performs the search specified by the parameters,
+        ///     using the specified search constraints (such as the
+        ///     maximum number of entries to find or the maximum time to wait for
+        ///     search results).
+        ///     As part of the search constraints, the method allows specifying
+        ///     whether or not the results are to be delivered all at once or in
+        ///     smaller batches. If specified that the results are to be delivered in
+        ///     smaller batches, each iteration blocks only until the next batch of
+        ///     results is returned.
+        /// </summary>
+        /// <param name="base">
+        ///     The base distinguished name to search from.
+        /// </param>
+        /// <param name="scope">
+        ///     The scope of the entries to search. The following
+        ///     are the valid options:.
+        ///     <ul>
+        ///         <li>SCOPE_BASE - searches only the base DN</li>
+        ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
+        ///         <li>
+        ///             SCOPE_SUB - searches the base DN and all entries
+        ///             within its subtree
+        ///         </li>
+        ///     </ul>
+        /// </param>
+        /// <param name="filter">
+        ///     The search filter specifying the search criteria.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of attributes to retrieve.
+        /// </param>
+        /// <param name="typesOnly">
+        ///     If true, returns the names but not the values of
+        ///     the attributes found.  If false, returns the
+        ///     names and values for attributes found.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the search.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            LdapSearchConstraints cons);
+
+        /// <summary>
         ///     Synchronously checks to see if an entry contains an attribute
         ///     with a specified value.
         /// </summary>
@@ -1009,6 +1487,31 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         bool Compare(string dn, LdapAttribute attr);
+
+        /// <summary>
+        ///     Asynchronously checks to see if an entry contains an attribute
+        ///     with a specified value.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<bool> CompareAsync(string dn, LdapAttribute attr);
 
         /// <summary>
         ///     Synchronously checks to see if an entry contains an attribute with a
@@ -1037,6 +1540,34 @@ namespace Novell.Directory.Ldap
         ///     message and an Ldap error code.
         /// </exception>
         bool Compare(string dn, LdapAttribute attr, LdapConstraints cons);
+
+        /// <summary>
+        ///     Asynchronously checks to see if an entry contains an attribute with a
+        ///     specified value, using the specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        Task<bool> CompareAsync(string dn, LdapAttribute attr, LdapConstraints cons);
 
         /// <summary>
         ///     Indicates whether the object has authenticated to the connected Ldap

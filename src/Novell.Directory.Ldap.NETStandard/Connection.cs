@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,7 +38,6 @@ using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Novell.Directory.Ldap.Asn1;
@@ -663,7 +661,7 @@ namespace Novell.Directory.Ldap
                             LdapException.ConnectError, null, null);
 
                         // Destroy old connection
-                        Destroy("destroy clone", 0, notify);
+                        Destroy("destroy clone", 0, notify).ResultAndUnwrap();
                     }
                 }
 
@@ -826,7 +824,7 @@ namespace Novell.Directory.Ldap
             SupportClass.VectorRemoveElement(_messages, info);
         }
 
-        private void Destroy(string reason, int semaphoreId, InterThreadException notifyUser)
+        private async Task Destroy(string reason, int semaphoreId, InterThreadException notifyUser)
         {
             if (!_clientActive)
             {
@@ -834,7 +832,7 @@ namespace Novell.Directory.Ldap
             }
 
             _clientActive = false;
-            AbandonMessages(notifyUser);
+            await AbandonMessages(notifyUser);
 
             var semId = AcquireWriteSemaphore(semaphoreId);
             try
@@ -846,8 +844,8 @@ namespace Novell.Directory.Ldap
                     {
                         var msg = new LdapUnbindRequest(null);
                         var ber = msg.Asn1Object.GetEncoding(_encoder);
-                        _outStream.Write(ber, 0, ber.Length);
-                        _outStream.Flush();
+                        await _outStream.WriteAsync(ber, 0, ber.Length);
+                        await _outStream.FlushAsync();
                     }
                     catch (Exception)
                     {
@@ -889,13 +887,13 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private void AbandonMessages(InterThreadException notifyUser)
+        private async Task AbandonMessages(InterThreadException notifyUser)
         {
             // remove messages from connection list and send abandon
             var leftMessages = _messages.RemoveAll();
             foreach (Message message in leftMessages)
             {
-                message.Abandon(null, notifyUser); // also notifies the application
+                await message.Abandon(null, notifyUser); // also notifies the application
             }
         }
 
@@ -1275,7 +1273,7 @@ namespace Novell.Directory.Ldap
                     if (!_enclosingInstance._clientActive || notify != null)
                     {
                         // #3 & 4
-                        _enclosingInstance.Destroy(reason, 0, notify);
+                        _enclosingInstance.Destroy(reason, 0, notify).ResultAndUnwrap();
                     }
                     else
                     {

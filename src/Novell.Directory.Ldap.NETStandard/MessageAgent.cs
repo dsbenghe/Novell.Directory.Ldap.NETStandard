@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -190,14 +191,14 @@ namespace Novell.Directory.Ldap
         /// <param name="cons">
         ///     constraints associated with this request.
         /// </param>
-        internal void Abandon(int msgId, LdapConstraints cons)
+        internal async Task Abandon(int msgId, LdapConstraints cons)
         {
             try
             {
                 // Send abandon request and remove from connection list
                 var info = _messages.FindMessageById(msgId);
                 SupportClass.VectorRemoveElement(_messages, info); // This message is now dead
-                info.Abandon(cons, null);
+                await info.Abandon(cons, null);
             }
             catch (FieldAccessException ex)
             {
@@ -206,7 +207,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Abandon all requests on this MessageAgent.</summary>
-        internal void AbandonAll()
+        internal async Task AbandonAll()
         {
             var size = _messages.Count;
 
@@ -216,7 +217,7 @@ namespace Novell.Directory.Ldap
 
                 // Message complete and no more replies, remove from id list
                 SupportClass.VectorRemoveElement(_messages, info);
-                info.Abandon(null, null);
+                await info.Abandon(null, null);
             }
         }
 
@@ -261,19 +262,19 @@ namespace Novell.Directory.Ldap
         ///     the interval to wait for the message to complete or.
         ///     <code>null</code> if infinite.
         /// </param>
-        internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
+        internal async Task SendMessage(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
         {
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, bindProps);
             _messages.Add(message);
-            message.SendMessage(); // Now send message to server
+            await message.SendMessage(); // Now send message to server
         }
 
         /// <summary>
         ///     Returns a response queued, or waits if none queued.
         /// </summary>
-        internal object GetLdapMessage(int? msgId)
+        internal async Task<object> GetLdapMessage(int? msgId)
         {
             object rfcMsg;
 
@@ -295,7 +296,7 @@ namespace Novell.Directory.Ldap
                     {
                         // Message complete and no more replies, remove from id list
                         SupportClass.VectorRemoveElement(_messages, info);
-                        info.Abandon(null, null); // Get rid of resources
+                        await info.Abandon(null, null); // Get rid of resources
                     }
 
                     return rfcMsg;
@@ -329,7 +330,7 @@ namespace Novell.Directory.Ldap
                         {
                             // Message complete & no more replies, remove from id list
                             SupportClass.VectorRemoveElement(_messages, info); // remove from list
-                            info.Abandon(null, null); // Get rid of resources
+                            info.Abandon(null, null).ResultAndUnwrap(); // Get rid of resources
 
                             // Start loop at next message that is now moved
                             // to the current position in the Vector.

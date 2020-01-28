@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -142,7 +143,7 @@ namespace Novell.Directory.Ldap
 
                                 if (_cons.ReferralFollowing)
                                 {
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, msg, refs, 0, true, _referralConn);
+                                    _referralConn = _conn.ChaseReferral(_queue, _cons, msg, refs, 0, true, _referralConn).ResultAndUnwrap();
                                 }
                                 else
                                 {
@@ -166,7 +167,7 @@ namespace Novell.Directory.Ldap
                                 if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn);
+                                    _referralConn = _conn.ChaseReferral(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn).ResultAndUnwrap();
                                 }
                                 else if (resultCode != LdapException.Success)
                                 {
@@ -382,10 +383,10 @@ namespace Novell.Directory.Ldap
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
         /*package*/
-        internal void Abandon()
+        internal async Task Abandon()
         {
             // first, remove message ID and timer and any responses in the queue
-            _queue.MessageAgent.AbandonAll();
+            await _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
             ResetVectors();

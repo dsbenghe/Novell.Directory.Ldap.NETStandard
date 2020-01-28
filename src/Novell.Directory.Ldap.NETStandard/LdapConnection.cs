@@ -466,6 +466,12 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void StartTls()
         {
+            StartTlsAsync().ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task StartTlsAsync()
+        {
             var startTls = MakeExtendedOperation(new LdapExtendedOperation(StartTlsOid, null), null);
 
             var tlsId = startTls.MessageId;
@@ -484,7 +490,7 @@ namespace Novell.Directory.Ldap
                 Connection.StopReaderOnReply(tlsId);
 
                 // send tls message
-                var queue = SendRequestToServer(startTls, _defSearchCons.TimeLimit, null, null);
+                var queue = await SendRequestToServer(startTls, _defSearchCons.TimeLimit, null, null);
 
                 var response = (LdapExtendedResponse)queue.GetResponse();
                 response.ChkResultCode();
@@ -533,13 +539,25 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void Add(LdapEntry entry)
         {
-            Add(entry, _defSearchCons);
+            AddAsync(entry).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task AddAsync(LdapEntry entry)
+        {
+            await AddAsync(entry, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Add(LdapEntry entry, LdapConstraints cons)
         {
-            var queue = Add(entry, null, cons);
+            AddAsync(entry, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task AddAsync(LdapEntry entry, LdapConstraints cons)
+        {
+            var queue = await AddAsync(entry, null, cons);
 
             // Get a handle to the add response
             var addResponse = (LdapResponse)queue.GetResponse();
@@ -550,7 +568,7 @@ namespace Novell.Directory.Ldap
                 _responseCtls = addResponse.Controls;
             }
 
-            ChkResultCode(queue, cons, addResponse);
+            await ChkResultCode(queue, cons, addResponse);
         }
 
         /// <inheritdoc />
@@ -638,7 +656,7 @@ namespace Novell.Directory.Ldap
                     _responseCtls = res.Controls;
                 }
 
-                ChkResultCode(queue, cons, res);
+                await ChkResultCode(queue, cons, res);
             }
         }
 
@@ -695,11 +713,23 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void Delete(string dn)
         {
-            Delete(dn, _defSearchCons);
+            DeleteAsync(dn).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(string dn)
+        {
+            await DeleteAsync(dn, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Delete(string dn, LdapConstraints cons)
+        {
+            DeleteAsync(dn, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task DeleteAsync(string dn, LdapConstraints cons)
         {
             var queue = Delete(dn, null, cons);
 
@@ -712,7 +742,7 @@ namespace Novell.Directory.Ldap
                 _responseCtls = deleteResponse.Controls;
             }
 
-            ChkResultCode(queue, cons, deleteResponse);
+            await ChkResultCode(queue, cons, deleteResponse);
         }
 
         /// <inheritdoc />
@@ -725,14 +755,26 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op)
         {
-            return ExtendedOperation(op, _defSearchCons);
+            return ExtendedOperationAsync(op).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op)
+        {
+            return await ExtendedOperationAsync(op, _defSearchCons);
         }
 
         /// <inheritdoc />
         public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
         {
+            return ExtendedOperationAsync(op, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op, LdapConstraints cons)
+        {
             // Call asynchronous API and get back handler to reponse queue
-            var queue = ExtendedOperation(op, cons, null);
+            var queue = await ExtendedOperationAsync(op, cons, null);
             var queueResponse = queue.GetResponse();
             var response = (LdapExtendedResponse)queueResponse;
 
@@ -742,34 +784,58 @@ namespace Novell.Directory.Ldap
                 _responseCtls = response.Controls;
             }
 
-            ChkResultCode(queue, cons, response);
+            await ChkResultCode(queue, cons, response);
             return response;
         }
 
         /// <inheritdoc />
         public void Modify(string dn, LdapModification mod)
         {
-            Modify(dn, mod, _defSearchCons);
+            ModifyAsync(dn, mod).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task ModifyAsync(string dn, LdapModification mod)
+        {
+            await ModifyAsync(dn, mod, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Modify(string dn, LdapModification mod, LdapConstraints cons)
         {
+            ModifyAsync(dn, mod, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task ModifyAsync(string dn, LdapModification mod, LdapConstraints cons)
+        {
             var mods = new LdapModification[1];
             mods[0] = mod;
-            Modify(dn, mods, cons);
+            await ModifyAsync(dn, mods, cons);
         }
 
         /// <inheritdoc />
         public void Modify(string dn, LdapModification[] mods)
         {
-            Modify(dn, mods, _defSearchCons);
+            ModifyAsync(dn, mods).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task ModifyAsync(string dn, LdapModification[] mods)
+        {
+            await ModifyAsync(dn, mods, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Modify(string dn, LdapModification[] mods, LdapConstraints cons)
         {
-            var queue = Modify(dn, mods, null, cons);
+            ModifyAsync(dn, mods, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task ModifyAsync(string dn, LdapModification[] mods, LdapConstraints cons)
+        {
+            var queue = await ModifyAsync(dn, mods, null, cons);
 
             // Get a handle to the modify response
             var modifyResponse = (LdapResponse)queue.GetResponse();
@@ -780,31 +846,55 @@ namespace Novell.Directory.Ldap
                 _responseCtls = modifyResponse.Controls;
             }
 
-            ChkResultCode(queue, cons, modifyResponse);
+            await ChkResultCode(queue, cons, modifyResponse);
         }
 
         /// <inheritdoc />
         public LdapEntry Read(string dn)
         {
-            return Read(dn, _defSearchCons);
+            return ReadAsync(dn).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapEntry> ReadAsync(string dn)
+        {
+            return await ReadAsync(dn, _defSearchCons);
         }
 
         /// <inheritdoc />
         public LdapEntry Read(string dn, LdapSearchConstraints cons)
         {
-            return Read(dn, null, cons);
+            return ReadAsync(dn, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapEntry> ReadAsync(string dn, LdapSearchConstraints cons)
+        {
+            return await ReadAsync(dn, null, cons);
         }
 
         /// <inheritdoc />
         public LdapEntry Read(string dn, string[] attrs)
         {
-            return Read(dn, attrs, _defSearchCons);
+            return ReadAsync(dn, attrs).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapEntry> ReadAsync(string dn, string[] attrs)
+        {
+            return await ReadAsync(dn, attrs, _defSearchCons);
         }
 
         /// <inheritdoc />
         public LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons)
         {
-            var sr = Search(dn, ScopeBase, null, attrs, false, cons);
+            return ReadAsync(dn, attrs, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<LdapEntry> ReadAsync(string dn, string[] attrs, LdapSearchConstraints cons)
+        {
+            var sr = await SearchAsync(dn, ScopeBase, null, attrs, false, cons);
 
             if (!sr.HasMore())
             {
@@ -824,26 +914,50 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void Rename(string dn, string newRdn, bool deleteOldRdn)
         {
-            Rename(dn, newRdn, deleteOldRdn, _defSearchCons);
+            RenameAsync(dn, newRdn, deleteOldRdn).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task RenameAsync(string dn, string newRdn, bool deleteOldRdn)
+        {
+            await RenameAsync(dn, newRdn, deleteOldRdn, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
         {
+            RenameAsync(dn, newRdn, deleteOldRdn, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
+        {
             // null for newParentdn means that this is originating as an Ldapv2 call
-            Rename(dn, newRdn, null, deleteOldRdn, cons);
+            await RenameAsync(dn, newRdn, null, deleteOldRdn, cons);
         }
 
         /// <inheritdoc />
         public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
         {
-            Rename(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
+            RenameAsync(dn, newRdn, newParentdn, deleteOldRdn).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
+        {
+            await RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
         }
 
         /// <inheritdoc />
         public void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
         {
-            var queue = Rename(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
+            RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons)
+        {
+            var queue = await RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, null, cons);
 
             // Get a handle to the rename response
             var renameResponse = (LdapResponse)queue.GetResponse();
@@ -854,20 +968,33 @@ namespace Novell.Directory.Ldap
                 _responseCtls = renameResponse.Controls;
             }
 
-            ChkResultCode(queue, cons, renameResponse);
+            await ChkResultCode(queue, cons, renameResponse);
         }
 
         /// <inheritdoc />
         public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly)
         {
-            return Search(@base, scope, filter, attrs, typesOnly, _defSearchCons);
+            return SearchAsync(@base, scope, filter, attrs, typesOnly).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly)
+        {
+            return await SearchAsync(@base, scope, filter, attrs, typesOnly, _defSearchCons);
         }
 
         /// <inheritdoc />
         public ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchConstraints cons)
         {
-            var queue = Search(@base, scope, filter, attrs, typesOnly, null, cons);
+            return SearchAsync(@base, scope, filter, attrs, typesOnly, cons).ResultAndUnwrap();
+        }
+
+        /// <inheritdoc />
+        public async Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            LdapSearchConstraints cons)
+        {
+            var queue = await SearchAsync(@base, scope, filter, attrs, typesOnly, null, cons);
 
             if (cons == null)
             {
@@ -1078,7 +1205,24 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(LdapSearchResults results)
         {
-            Abandon(results, _defSearchCons);
+            AbandonAsync(results).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Notifies the server not to send additional results associated with
+        ///     this LdapSearchResults object, and discards any results already
+        ///     received.
+        /// </summary>
+        /// <param name="results">
+        ///     An object returned from a search.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(LdapSearchResults results)
+        {
+            await AbandonAsync(results, _defSearchCons);
         }
 
         /// <summary>
@@ -1098,7 +1242,27 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(LdapSearchResults results, LdapConstraints cons)
         {
-            results.Abandon();
+            AbandonAsync(results, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Notifies the server not to send additional results associated with
+        ///     this LdapSearchResults object, and discards any results already
+        ///     received.
+        /// </summary>
+        /// <param name="results">
+        ///     An object returned from a search.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(LdapSearchResults results, LdapConstraints cons)
+        {
+            await results.Abandon();
         }
 
         /// <summary>
@@ -1115,7 +1279,24 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(int id)
         {
-            Abandon(id, _defSearchCons);
+            AbandonAsync(id).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Abandons an asynchronous operation.
+        /// </summary>
+        /// <param name="id">
+        ///     The ID of the asynchronous operation to abandon. The ID
+        ///     can be obtained from the response queue for the
+        ///     operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(int id)
+        {
+            await AbandonAsync(id, _defSearchCons);
         }
 
         /// <summary>
@@ -1136,12 +1317,33 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(int id, LdapConstraints cons)
         {
+            AbandonAsync(id, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Abandons an asynchronous operation, using the specified
+        ///     constraints.
+        /// </summary>
+        /// <param name="id">
+        ///     The ID of the asynchronous operation to abandon.
+        ///     The ID can be obtained from the search
+        ///     queue for the operation.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(int id, LdapConstraints cons)
+        {
             // We need to inform the Message Agent which owns this messageID to
             // remove it from the queue.
             try
             {
                 var agent = Connection.GetMessageAgent(id);
-                agent.Abandon(id, cons);
+                await agent.Abandon(id, cons);
             }
             catch (FieldAccessException fae)
             {
@@ -1165,7 +1367,26 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(LdapMessageQueue queue)
         {
-            Abandon(queue, _defSearchCons);
+            AbandonAsync(queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Abandons all outstanding operations managed by the queue.
+        ///     All operations in progress, which are managed by the specified queue,
+        ///     are abandoned.
+        /// </summary>
+        /// <param name="queue">
+        ///     The queue returned from an asynchronous request.
+        ///     All outstanding operations managed by the queue
+        ///     are abandoned, and the queue is emptied.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(LdapMessageQueue queue)
+        {
+            await AbandonAsync(queue, _defSearchCons);
         }
 
         /// <summary>
@@ -1187,6 +1408,28 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(LdapMessageQueue queue, LdapConstraints cons)
         {
+            AbandonAsync(queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Abandons all outstanding operations managed by the queue.
+        ///     All operations in progress, which are managed by the specified
+        ///     queue, are abandoned.
+        /// </summary>
+        /// <param name="queue">
+        ///     The queue returned from an asynchronous request.
+        ///     All outstanding operations managed by the queue
+        ///     are abandoned, and the queue is emptied.
+        /// </param>
+        /// <param name="cons">
+        ///     The contraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task AbandonAsync(LdapMessageQueue queue, LdapConstraints cons)
+        {
             if (queue != null)
             {
                 MessageAgent agent;
@@ -1202,7 +1445,7 @@ namespace Novell.Directory.Ldap
                 var msgIds = agent.MessageIDs;
                 for (var i = 0; i < msgIds.Length; i++)
                 {
-                    agent.Abandon(msgIds[i], cons);
+                    await agent.Abandon(msgIds[i], cons);
                 }
             }
         }
@@ -1250,6 +1493,31 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Add(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
         {
+            return AddAsync(entry, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously adds an entry to the directory, using the specified
+        ///     constraints.
+        /// </summary>
+        /// <param name="entry">
+        ///     LdapEntry object specifying the distinguished
+        ///     name and attributes of the new entry.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> AddAsync(LdapEntry entry, LdapResponseQueue queue, LdapConstraints cons)
+        {
             if (cons == null)
             {
                 cons = _defSearchCons;
@@ -1268,7 +1536,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapAddRequest(entry, cons.GetControls());
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -1476,7 +1744,7 @@ namespace Novell.Directory.Ldap
             // The semaphore is released when the bind response is queued.
             Connection.AcquireWriteSemaphore(msgId);
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, bindProps);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, bindProps);
         }
 
         // *************************************************************************
@@ -1508,7 +1776,35 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public bool Compare(string dn, LdapAttribute attr)
         {
-            return Compare(dn, attr, _defSearchCons);
+            return CompareAsync(dn, attr).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously checks to see if an entry contains an attribute
+        ///     with a specified value.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<bool> CompareAsync(string dn, LdapAttribute attr)
+        {
+            return await CompareAsync(dn, attr, _defSearchCons);
         }
 
         /// <summary>
@@ -1539,9 +1835,40 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
         {
+            return CompareAsync(dn, attr, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously checks to see if an entry contains an attribute with a
+        ///     specified value, using the specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to use in the
+        ///     comparison.
+        /// </param>
+        /// <param name="attr">
+        ///     The attribute to compare against the entry. The
+        ///     method checks to see if the entry has an
+        ///     attribute with the same name and value as this
+        ///     attribute.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <returns>
+        ///     True if the entry has the value,
+        ///     and false if the entry does not
+        ///     have the value or the attribute.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<bool> CompareAsync(string dn, LdapAttribute attr, LdapConstraints cons)
+        {
             var ret = false;
 
-            var queue = Compare(dn, attr, null, cons);
+            var queue = await CompareAsync(dn, attr, null, cons);
 
             var res = (LdapResponse)queue.GetResponse();
 
@@ -1561,7 +1888,7 @@ namespace Novell.Directory.Ldap
             }
             else
             {
-                ChkResultCode(queue, cons, res);
+                await ChkResultCode(queue, cons, res);
             }
 
             return ret;
@@ -1597,7 +1924,40 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
         {
-            return Compare(dn, attr, queue, _defSearchCons);
+            return CompareAsync(dn, attr, queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously compares an attribute value with one in the directory,
+        ///     using the specified queue.
+        ///     Please note that a successful completion of this command results in
+        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
+        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     does not have the value or the attribute.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry containing an
+        ///     attribute to compare.
+        /// </param>
+        /// <param name="attr">
+        ///     An attribute to compare.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <seealso cref="LdapException.CompareTrue">
+        /// </seealso>
+        /// <seealso cref="LdapException.CompareFalse">
+        /// </seealso>
+        public async Task<LdapResponseQueue> CompareAsync(string dn, LdapAttribute attr, LdapResponseQueue queue)
+        {
+            return await CompareAsync(dn, attr, queue, _defSearchCons);
         }
 
         /// <summary>
@@ -1634,6 +1994,43 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
             LdapConstraints cons)
         {
+            return CompareAsync(dn, attr, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously compares an attribute value with one in the directory,
+        ///     using the specified queue and contraints.
+        ///     Please note that a successful completion of this command results in
+        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
+        ///     has the value, and LdapException.COMPARE_FALSE if the entry
+        ///     does not have the value or the attribute.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry containing an
+        ///     attribute to compare.
+        /// </param>
+        /// <param name="attr">
+        ///     An attribute to compare.
+        /// </param>
+        /// <param name="queue">
+        ///     Handler for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <seealso cref="LdapException.CompareTrue">
+        /// </seealso>
+        /// <seealso cref="LdapException.CompareFalse">
+        /// </seealso>
+        public async Task<LdapResponseQueue> CompareAsync(string dn, LdapAttribute attr, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
             if (attr.Size() != 1)
             {
                 throw new ArgumentException("compare: Exactly one value " + "must be present in the LdapAttribute");
@@ -1652,7 +2049,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapCompareRequest(dn, attr.Name, attr.ByteValue, cons.GetControls());
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -1701,6 +2098,32 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Delete(string dn, LdapResponseQueue queue, LdapConstraints cons)
         {
+            return DeleteAsync(dn, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously deletes the entry with the specified distinguished name
+        ///     from the directory, using the specified contraints and queue.
+        ///     Note: A Delete operation will not remove an entry that contains
+        ///     subordinate entries, nor will it dereference alias entries.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to delete.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> DeleteAsync(string dn, LdapResponseQueue queue, LdapConstraints cons)
+        {
             if (dn == null)
             {
                 // Invalid DN parameter
@@ -1714,7 +2137,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapDeleteRequest(dn, cons.GetControls());
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -1796,6 +2219,38 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
             LdapResponseQueue queue)
         {
+            return ExtendedOperationAsync(op, cons, queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Provides an asynchronous means to access extended, non-mandatory
+        ///     operations offered by a particular Ldapv3 compliant server.
+        /// </summary>
+        /// <param name="op">
+        ///     The object which contains (1) an identifier of an extended
+        ///     operation which should be recognized by the particular Ldap
+        ///     server this client is connected to and (2) an operation-
+        ///     specific sequence of octet strings or BER-encoded values.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a queue
+        ///     object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to this operation.
+        /// </param>
+        /// <returns>
+        ///     An operation-specific object, containing an ID and either an
+        ///     octet string or BER-encoded values.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> ExtendedOperationAsync(LdapExtendedOperation op, LdapConstraints cons,
+            LdapResponseQueue queue)
+        {
             // Use default constraints if none-specified
             if (cons == null)
             {
@@ -1803,7 +2258,7 @@ namespace Novell.Directory.Ldap
             }
 
             var msg = MakeExtendedOperation(op, cons);
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -1924,7 +2379,38 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue)
         {
-            return Modify(dn, mods, queue, _defSearchCons);
+            return ModifyAsync(dn, mods, queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously makes a set of changes to an existing entry in the
+        ///     directory.
+        ///     For example, this modify method can change attribute values, add new
+        ///     attribute values, or remove existing attribute values.
+        ///     Because the server applies all changes in an LdapModification array
+        ///     atomically, the application can expect that no changes
+        ///     have been performed if an error is returned.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modifications.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mods">
+        ///     The changes to be made to the entry.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> ModifyAsync(string dn, LdapModification[] mods, LdapResponseQueue queue)
+        {
+            return await ModifyAsync(dn, mods, queue, _defSearchCons);
         }
 
         /// <summary>
@@ -1959,6 +2445,41 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Modify(string dn, LdapModification[] mods, LdapResponseQueue queue,
             LdapConstraints cons)
         {
+            return ModifyAsync(dn, mods, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously makes a set of changes to an existing entry in the
+        ///     directory, using the specified constraints and queue.
+        ///     For example, this modify method can change attribute values, add new
+        ///     attribute values, or remove existing attribute values.
+        ///     Because the server applies all changes in an LdapModification array
+        ///     atomically, the application can expect that no changes
+        ///     have been performed if an error is returned.
+        ///     If the request fails with {@link LdapException.CONNECT_ERROR},
+        ///     it is indeterminate whether or not the server made the modifications.
+        /// </summary>
+        /// <param name="dn">
+        ///     The distinguished name of the entry to modify.
+        /// </param>
+        /// <param name="mods">
+        ///     The changes to be made to the entry.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     Constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> ModifyAsync(string dn, LdapModification[] mods, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
             if (dn == null)
             {
                 // Invalid DN parameter
@@ -1972,7 +2493,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapModifyRequest(dn, mods, cons.GetControls());
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -2063,7 +2584,35 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue)
         {
-            return Rename(dn, newRdn, deleteOldRdn, queue, _defSearchCons);
+            return RenameAsync(dn, newRdn, deleteOldRdn, queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue)
+        {
+            return await RenameAsync(dn, newRdn, deleteOldRdn, queue, _defSearchCons);
         }
 
         /// <summary>
@@ -2096,7 +2645,40 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Rename(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue,
             LdapConstraints cons)
         {
-            return Rename(dn, newRdn, null, deleteOldRdn, queue, cons);
+            return RenameAsync(dn, newRdn, deleteOldRdn, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, using the
+        ///     specified constraints.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapResponseQueue queue,
+            LdapConstraints cons)
+        {
+            return await RenameAsync(dn, newRdn, null, deleteOldRdn, queue, cons);
         }
 
         /// <summary>
@@ -2130,7 +2712,41 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
             LdapResponseQueue queue)
         {
-            return Rename(dn, newRdn, newParentdn, deleteOldRdn, queue, _defSearchCons);
+            return RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, queue).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, possibly
+        ///     repositioning the entry in the directory.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
+            LdapResponseQueue queue)
+        {
+            return await RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, queue, _defSearchCons);
         }
 
         /// <summary>
@@ -2168,6 +2784,44 @@ namespace Novell.Directory.Ldap
         public LdapResponseQueue Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
             LdapResponseQueue queue, LdapConstraints cons)
         {
+            return RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously renames an existing entry in the directory, using the
+        ///     specified constraints and possibly repositioning the entry in the
+        ///     directory.
+        /// </summary>
+        /// <param name="dn">
+        ///     The current distinguished name of the entry.
+        /// </param>
+        /// <param name="newRdn">
+        ///     The new relative distinguished name for the entry.
+        /// </param>
+        /// <param name="newParentdn">
+        ///     The distinguished name of an existing entry which
+        ///     is to be the new parent of the entry.
+        /// </param>
+        /// <param name="deleteOldRdn">
+        ///     If true, the old name is not retained as an
+        ///     attribute value. If false, the old name is
+        ///     retained as an attribute value.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the operation.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapResponseQueue> RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn,
+            LdapResponseQueue queue, LdapConstraints cons)
+        {
             if (dn == null || newRdn == null)
             {
                 // Invalid DN or RDN parameter
@@ -2181,7 +2835,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapModifyDnRequest(dn, newRdn, newParentdn, deleteOldRdn, cons.GetControls());
 
-            return SendRequestToServer(msg, cons.TimeLimit, queue, null);
+            return await SendRequestToServer(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -2275,6 +2929,57 @@ namespace Novell.Directory.Ldap
         public LdapSearchQueue Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchQueue queue, LdapSearchConstraints cons)
         {
+            return SearchAsync(@base, scope, filter, attrs, typesOnly, queue, cons)
+                .ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Asynchronously performs the search specified by the parameters,
+        ///     also allowing specification of constraints for the search (such
+        ///     as the maximum number of entries to find or the maximum time to
+        ///     wait for search results).
+        /// </summary>
+        /// <param name="base">
+        ///     The base distinguished name to search from.
+        /// </param>
+        /// <param name="scope">
+        ///     The scope of the entries to search. The following
+        ///     are the valid options:.
+        ///     <ul>
+        ///         <li>SCOPE_BASE - searches only the base DN</li>
+        ///         <li>SCOPE_ONE - searches only entries under the base DN</li>
+        ///         <li>
+        ///             SCOPE_SUB - searches the base DN and all entries
+        ///             within its subtree
+        ///         </li>
+        ///     </ul>
+        /// </param>
+        /// <param name="filter">
+        ///     The search filter specifying the search criteria.
+        /// </param>
+        /// <param name="attrs">
+        ///     The names of attributes to retrieve.
+        /// </param>
+        /// <param name="typesOnly">
+        ///     If true, returns the names but not the values of
+        ///     the attributes found.  If false, returns the
+        ///     names and values for attributes found.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints specific to the search.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapSearchQueue> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            LdapSearchQueue queue, LdapSearchConstraints cons)
+        {
             if (filter == null)
             {
                 filter = "objectclass=*";
@@ -2299,7 +3004,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(Connection, msg, cons.TimeLimit, null);
+            await agent.SendMessage(Connection, msg, cons.TimeLimit, null);
             return myqueue;
         }
 
@@ -2439,6 +3144,41 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public LdapMessageQueue SendRequest(LdapMessage request, LdapMessageQueue queue, LdapConstraints cons)
         {
+            return SendRequestAsync(request, queue, cons).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Sends an Ldap request to a directory server.
+        ///     The specified the Ldap request is sent to the directory server
+        ///     associated with this connection. An Ldap request object is an
+        ///     {@link LdapMessage} with the operation type set to one of the request
+        ///     types. You can build a request by using the request classes found in this
+        ///     package
+        ///     You should note that, since Ldap requests sent to the server
+        ///     using sendRequest are asynchronous, automatic referral following
+        ///     does not apply to these requests.
+        /// </summary>
+        /// <param name="request">
+        ///     The Ldap request to send to the directory server.
+        /// </param>
+        /// <param name="queue">
+        ///     The queue for messages returned from a server in
+        ///     response to this request. If it is null, a
+        ///     queue object is created internally.
+        /// </param>
+        /// <param name="cons">
+        ///     The constraints that apply to this request.
+        /// </param>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <seealso cref="LdapMessage.Type">
+        /// </seealso>
+        /// <seealso cref="RfcLdapMessage.IsRequest">
+        /// </seealso>
+        public async Task<LdapMessageQueue> SendRequestAsync(LdapMessage request, LdapMessageQueue queue, LdapConstraints cons)
+        {
             if (!request.Request)
             {
                 throw new Exception("Object is not a request message");
@@ -2476,7 +3216,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            agent.SendMessage(Connection, request, cons.TimeLimit, null);
+            await agent.SendMessage(Connection, request, cons.TimeLimit, null);
 
             return myqueue;
         }
@@ -2505,7 +3245,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        private LdapResponseQueue SendRequestToServer(LdapMessage msg, int timeout, LdapResponseQueue queue,
+        private async Task<LdapResponseQueue> SendRequestToServer(LdapMessage msg, int timeout, LdapResponseQueue queue,
             BindProperties bindProps)
         {
             MessageAgent agent;
@@ -2519,7 +3259,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            agent.SendMessage(Connection, msg, timeout, bindProps);
+            await agent.SendMessage(Connection, msg, timeout, bindProps);
             return queue;
         }
 
@@ -2691,7 +3431,7 @@ namespace Novell.Directory.Ldap
         /// <param name="response">
         ///     - the LdapResponse to check.
         /// </param>
-        private void ChkResultCode(LdapMessageQueue queue, LdapConstraints cons, LdapResponse response)
+        private async Task ChkResultCode(LdapMessageQueue queue, LdapConstraints cons, LdapResponse response)
         {
             if (response.ResultCode == LdapException.Referral && cons.ReferralFollowing)
             {
@@ -2702,7 +3442,7 @@ namespace Novell.Directory.Ldap
                 ArrayList refConn = null;
                 try
                 {
-                    ChaseReferral(queue, cons, response, response.Referrals, 0, false, null);
+                    await ChaseReferral(queue, cons, response, response.Referrals, 0, false, null);
                 }
                 finally
                 {
@@ -2759,7 +3499,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal ArrayList ChaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
+        internal async Task<ArrayList> ChaseReferral(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
             string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
         {
             var connList = connectionList;
@@ -2827,7 +3567,7 @@ namespace Novell.Directory.Ldap
                         agent = queue.MessageAgent;
                     }
 
-                    agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, null);
+                    await agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, null);
                 }
                 catch (InterThreadException ex)
                 {
@@ -2846,7 +3586,7 @@ namespace Novell.Directory.Ldap
                     // the stack unwinds back to the original and returns
                     // to the application.
                     // An exception is thrown for an error
-                    connList = ChaseReferral(queue, cons, null, null, hopCount, false, connList);
+                    connList = await ChaseReferral(queue, cons, null, null, hopCount, false, connList);
                 }
                 else
                 {

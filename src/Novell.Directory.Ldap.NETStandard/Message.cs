@@ -321,7 +321,7 @@ namespace Novell.Directory.Ldap
                 // If not informing user, remove message from agent
                 if (informUserEx == null)
                 {
-                    MessageAgent.Abandon(MessageId, null);
+                    await MessageAgent.Abandon(MessageId, null);
                 }
 
                 _conn.RemoveMessage(this);
