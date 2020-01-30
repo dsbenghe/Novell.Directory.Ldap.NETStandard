@@ -32,6 +32,7 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -101,7 +102,33 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapMessage GetResponse()
         {
-            return GetResponse(null);
+            return GetResponseAsync().ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Returns the response from an Ldap request.
+        ///     The getResponse method blocks until a response is available, or until
+        ///     all operations associated with the object have completed or been
+        ///     canceled, and then returns the response.
+        ///     The application is responsible to determine the type of message
+        ///     returned.
+        /// </summary>
+        /// <returns>
+        ///     The response.
+        /// </returns>
+        /// <seealso cref="LdapResponse">
+        /// </seealso>
+        /// <seealso cref="LdapSearchResult">
+        /// </seealso>
+        /// <seealso cref="LdapSearchResultReference">
+        /// </seealso>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapMessage> GetResponseAsync()
+        {
+            return await GetResponse(null);
         }
 
         /// <summary>
@@ -133,7 +160,39 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public LdapMessage GetResponse(int msgid)
         {
-            return GetResponse((int?)msgid);
+            return GetResponseAsync(msgid).ResultAndUnwrap();
+        }
+
+        /// <summary>
+        ///     Returns the response from an Ldap request for a particular message ID.
+        ///     The getResponse method blocks until a response is available
+        ///     for a particular message ID, or until all operations associated
+        ///     with the object have completed or been canceled, and
+        ///     then returns the response.  If there is no outstanding operation for
+        ///     the message ID (or if it is zero or a negative number),
+        ///     IllegalArgumentException is thrown.
+        ///     The application is responsible to determine the type of message
+        ///     returned.
+        /// </summary>
+        /// <param name="msgid">
+        ///     query for responses for a specific message request.
+        /// </param>
+        /// <returns>
+        ///     The response from the server.
+        /// </returns>
+        /// <seealso cref="LdapResponse">
+        /// </seealso>
+        /// <seealso cref="LdapSearchResult">
+        /// </seealso>
+        /// <seealso cref="LdapSearchResultReference">
+        /// </seealso>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        public async Task<LdapMessage> GetResponseAsync(int msgid)
+        {
+            return await GetResponse((int?)msgid);
         }
 
         /// <summary>
@@ -141,11 +200,11 @@ namespace Novell.Directory.Ldap
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case.
         /// </summary>
-        private LdapMessage GetResponse(int? msgid)
+        private async Task<LdapMessage> GetResponse(int? msgid)
         {
             object resp;
             LdapMessage response;
-            if ((resp = Agent.GetLdapMessage(msgid)) == null)
+            if ((resp = await Agent.GetLdapMessage(msgid)) == null)
             {
                 // blocks
                 return null; // no messages from this agent
