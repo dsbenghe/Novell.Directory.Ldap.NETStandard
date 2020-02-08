@@ -697,7 +697,7 @@ namespace Novell.Directory.Ldap
                     // This may return a different conn object
                     // Disassociate this clone with the underlying connection.
                     Connection = Connection.DestroyClone();
-                    await Connection.Connect(address, specifiedPort);
+                    await Connection.ConnectAsync(address, specifiedPort);
                     break;
                 }
                 catch (LdapException)
@@ -1262,7 +1262,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public async Task AbandonAsync(LdapSearchResults results, LdapConstraints cons)
         {
-            await results.Abandon();
+            await results.AbandonAsync();
         }
 
         /// <summary>
@@ -1343,7 +1343,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 var agent = Connection.GetMessageAgent(id);
-                await agent.Abandon(id, cons);
+                await agent.AbandonAsync(id, cons);
             }
             catch (FieldAccessException fae)
             {
@@ -1445,7 +1445,7 @@ namespace Novell.Directory.Ldap
                 var msgIds = agent.MessageIDs;
                 for (var i = 0; i < msgIds.Length; i++)
                 {
-                    await agent.Abandon(msgIds[i], cons);
+                    await agent.AbandonAsync(msgIds[i], cons);
                 }
             }
         }
@@ -1733,7 +1733,7 @@ namespace Novell.Directory.Ldap
             {
                 if (Connection.Host != null)
                 {
-                    await Connection.Connect(Connection.Host, Connection.Port);
+                    await Connection.ConnectAsync(Connection.Host, Connection.Port);
                 }
                 else
                 {
@@ -3004,7 +3004,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            await agent.SendMessage(Connection, msg, cons.TimeLimit, null);
+            await agent.SendMessageAsync(Connection, msg, cons.TimeLimit, null);
             return myqueue;
         }
 
@@ -3216,7 +3216,7 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            await agent.SendMessage(Connection, request, cons.TimeLimit, null);
+            await agent.SendMessageAsync(Connection, request, cons.TimeLimit, null);
 
             return myqueue;
         }
@@ -3259,7 +3259,7 @@ namespace Novell.Directory.Ldap
                 agent = queue.MessageAgent;
             }
 
-            await agent.SendMessage(Connection, msg, timeout, bindProps);
+            await agent.SendMessageAsync(Connection, msg, timeout, bindProps);
             return queue;
         }
 
@@ -3567,7 +3567,7 @@ namespace Novell.Directory.Ldap
                         agent = queue.MessageAgent;
                     }
 
-                    await agent.SendMessage(rconn.Connection, newMsg, _defSearchCons.TimeLimit, null);
+                    await agent.SendMessageAsync(rconn.Connection, newMsg, _defSearchCons.TimeLimit, null);
                 }
                 catch (InterThreadException ex)
                 {

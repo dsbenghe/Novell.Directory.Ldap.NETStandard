@@ -242,9 +242,9 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal async Task SendMessage()
+        internal async Task SendMessageAsync()
         {
-            await _conn.WriteMessage(this);
+            await _conn.WriteMessageAsync(this);
 
             // Start the timer thread
             if (_mslimit != 0)
@@ -268,7 +268,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal async Task Abandon(LdapConstraints cons, InterThreadException informUserEx)
+        internal async Task AbandonAsync(LdapConstraints cons, InterThreadException informUserEx)
         {
             if (!_waitForReplyRenamedField)
             {
@@ -311,7 +311,7 @@ namespace Novell.Directory.Ldap
                     LdapMessage msg = new LdapAbandonRequest(MessageId, cont);
 
                     // Send abandon message to server
-                    await _conn.WriteMessage(msg);
+                    await _conn.WriteMessageAsync(msg);
                 }
                 catch (LdapException ex)
                 {
@@ -321,7 +321,7 @@ namespace Novell.Directory.Ldap
                 // If not informing user, remove message from agent
                 if (informUserEx == null)
                 {
-                    await MessageAgent.Abandon(MessageId, null);
+                    await MessageAgent.AbandonAsync(MessageId, null);
                 }
 
                 _conn.RemoveMessage(this);
@@ -505,7 +505,7 @@ namespace Novell.Directory.Ldap
                 _message._acceptReplies = false;
 
                 // Note: Abandon clears the bind semaphore after failed bind.
-                _message.Abandon(
+                _message.AbandonAsync(
                     null,
                     new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
                         _message)).ResultAndUnwrap();

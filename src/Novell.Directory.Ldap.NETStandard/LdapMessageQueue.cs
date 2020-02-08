@@ -204,7 +204,7 @@ namespace Novell.Directory.Ldap
         {
             object resp;
             LdapMessage response;
-            if ((resp = await Agent.GetLdapMessage(msgid)) == null)
+            if ((resp = await Agent.GetLdapMessageAsync(msgid)) == null)
             {
                 // blocks
                 return null; // no messages from this agent

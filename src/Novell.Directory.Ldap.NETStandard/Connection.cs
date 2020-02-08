@@ -446,9 +446,9 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal async Task Connect(string host, int port)
+        internal async Task ConnectAsync(string host, int port)
         {
-            await Connect(host, port, 0);
+            await ConnectAsync(host, port, 0);
         }
 
         /****************************************************************************/
@@ -500,7 +500,7 @@ namespace Novell.Directory.Ldap
         /// <param name="semaphoreId">
         ///     The write semaphore ID to use for the connect.
         /// </param>
-        private async Task Connect(string host, int port, int semaphoreId)
+        private async Task ConnectAsync(string host, int port, int semaphoreId)
         {
             /* Synchronized so all variables are in a consistant state and
             * so that another thread isn't doing a connect, disconnect, or clone
@@ -661,7 +661,7 @@ namespace Novell.Directory.Ldap
                             LdapException.ConnectError, null, null);
 
                         // Destroy old connection
-                        Destroy("destroy clone", 0, notify).ResultAndUnwrap();
+                        DestroyAsync("destroy clone", 0, notify).ResultAndUnwrap();
                     }
                 }
 
@@ -703,20 +703,20 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        internal async Task WriteMessage(Message info)
+        internal async Task WriteMessageAsync(Message info)
         {
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
             if (info.BindRequest && Connected == false && Host != null)
             {
-                await Connect(Host, Port, info.MessageId);
+                await ConnectAsync(Host, Port, info.MessageId);
             }
 
             if (Connected)
             {
                 var msg = info.Request;
-                await WriteMessage(msg);
+                await WriteMessageAsync(msg);
             }
             else
             {
@@ -731,7 +731,7 @@ namespace Novell.Directory.Ldap
         /// <param name="msg">
         ///     the message to write.
         /// </param>
-        internal async Task WriteMessage(LdapMessage msg)
+        internal async Task WriteMessageAsync(LdapMessage msg)
         {
             int id;
 
@@ -824,7 +824,7 @@ namespace Novell.Directory.Ldap
             SupportClass.VectorRemoveElement(_messages, info);
         }
 
-        private async Task Destroy(string reason, int semaphoreId, InterThreadException notifyUser)
+        private async Task DestroyAsync(string reason, int semaphoreId, InterThreadException notifyUser)
         {
             if (!_clientActive)
             {
@@ -832,7 +832,7 @@ namespace Novell.Directory.Ldap
             }
 
             _clientActive = false;
-            await AbandonMessages(notifyUser);
+            await AbandonMessagesAsync(notifyUser);
 
             var semId = AcquireWriteSemaphore(semaphoreId);
             try
@@ -887,13 +887,13 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private async Task AbandonMessages(InterThreadException notifyUser)
+        private async Task AbandonMessagesAsync(InterThreadException notifyUser)
         {
             // remove messages from connection list and send abandon
             var leftMessages = _messages.RemoveAll();
             foreach (Message message in leftMessages)
             {
-                await message.Abandon(null, notifyUser); // also notifies the application
+                await message.AbandonAsync(null, notifyUser); // also notifies the application
             }
         }
 
@@ -1273,7 +1273,7 @@ namespace Novell.Directory.Ldap
                     if (!_enclosingInstance._clientActive || notify != null)
                     {
                         // #3 & 4
-                        _enclosingInstance.Destroy(reason, 0, notify).ResultAndUnwrap();
+                        _enclosingInstance.DestroyAsync(reason, 0, notify).ResultAndUnwrap();
                     }
                     else
                     {

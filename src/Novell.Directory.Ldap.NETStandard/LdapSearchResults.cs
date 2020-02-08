@@ -383,10 +383,10 @@ namespace Novell.Directory.Ldap
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
         /*package*/
-        internal async Task Abandon()
+        internal async Task AbandonAsync()
         {
             // first, remove message ID and timer and any responses in the queue
-            await _queue.MessageAgent.AbandonAll();
+            await _queue.MessageAgent.AbandonAllAsync();
 
             // next, clear out enumeration
             ResetVectors();
