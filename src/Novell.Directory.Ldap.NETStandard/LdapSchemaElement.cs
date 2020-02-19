@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapSchema">
     /// </seealso>
-    /// <seealso cref="LdapConnection.FetchSchema">
+    /// <seealso cref="LdapConnection.FetchSchemaAsync">
     /// </seealso>
     public abstract class LdapSchemaElement : LdapAttribute
     {

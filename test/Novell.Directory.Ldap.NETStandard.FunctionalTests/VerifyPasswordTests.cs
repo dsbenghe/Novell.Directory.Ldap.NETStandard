@@ -1,4 +1,5 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -6,23 +7,25 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class VerifyPasswordTests
     {
         [Fact]
-        public void Bind_ForExistingEntry_ShouldWork()
+        public async Task Bind_ForExistingEntry_ShouldWork()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.BindAsync(
+                        TestsConfig.LdapServer.RootUserDn,
+                        TestsConfig.LdapServer.RootUserPassword);
                 });
         }
 
         [Fact]
-        public void Bind_WithWrongPassword_ShouldThrowInvalidCredentials()
+        public async Task Bind_WithWrongPassword_ShouldThrowInvalidCredentials()
         {
-            var ldapException = Assert.Throws<LdapException>(() =>
-                TestHelper.WithLdapConnection(
-                    ldapConnection =>
+            var ldapException = await Assert.ThrowsAsync<LdapException>(async () =>
+                await TestHelper.WithLdapConnectionAsync(
+                    async ldapConnection =>
                     {
-                        ldapConnection.Bind(
+                        await ldapConnection.BindAsync(
                             TestsConfig.LdapServer.RootUserDn,
                             TestsConfig.LdapServer.RootUserPassword + "1");
                     }));

@@ -31,6 +31,7 @@
 //
 
 using System;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.Events
@@ -206,9 +207,9 @@ namespace Novell.Directory.Ldap.Events
             StartEventPolling(_mQueue, _mConnection, ids[0]);
         }
 
-        protected override void StopSearchAndPolling()
+        protected override async Task StopSearchAndPollingAsync()
         {
-            _mConnection.Abandon(_mQueue);
+            await _mConnection.AbandonAsync(_mQueue);
             StopEventPolling();
         }
 

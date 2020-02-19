@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Events
 {
@@ -140,14 +141,14 @@ namespace Novell.Directory.Ldap.Events
             {
                 case ListenersCount.Zero:
                     // stop search and polling if not already stopped
-                    StopSearchAndPolling();
+                    StopSearchAndPollingAsync().ResultAndUnwrap();
                     break;
             }
         }
 
         protected abstract void StartSearchAndPolling();
 
-        protected abstract void StopSearchAndPolling();
+        protected abstract Task StopSearchAndPollingAsync();
 
         /// <summary>
         ///     DirectoryEvent represents a generic Directory event.
@@ -298,7 +299,7 @@ namespace Novell.Directory.Ldap.Events
 
                         if (_isrunning)
                         {
-                            response = _searchqueue.GetResponse(_messageid);
+                            response = _searchqueue.GetResponseAsync(_messageid).ResultAndUnwrap();
                         }
 
                         if (response != null)

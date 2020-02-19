@@ -1,4 +1,5 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -6,61 +7,61 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class ConnectTests
     {
         [Fact]
-        public void Connect_Works()
+        public async Task Connect_Works()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 });
         }
 
         [Fact]
-        public void Connect_WithSsl_Works()
+        public async Task Connect_WithSsl_Works()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 }, true, true);
         }
 
         [Fact]
-        public void Connect_WithStartTls_Works()
+        public async Task Connect_WithStartTls_Works()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.StartTls();
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                    ldapConnection.StopTls();
+                    await ldapConnection.StartTlsAsync();
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.StopTlsAsync();
                 }, false, true);
         }
 
         [Fact]
-        public void Connect_WithStartTlsAfterBindWithNonTls_Works()
+        public async Task Connect_WithStartTlsAfterBindWithNonTls_Works()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                    ldapConnection.StartTls();
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                    ldapConnection.StopTls();
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.StartTlsAsync();
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.StopTlsAsync();
                 }, false, true);
         }
 
         [Fact(Skip = "This randomly fails")]
-        public void Connect_WithBindAfterStartTlsAndRestoreNonTls_Works()
+        public async Task Connect_WithBindAfterStartTlsAndRestoreNonTls_Works()
         {
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                    ldapConnection.StartTls();
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                    ldapConnection.StopTls();
-                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.StartTlsAsync();
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                    await ldapConnection.StopTlsAsync();
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 }, false, true);
         }
     }

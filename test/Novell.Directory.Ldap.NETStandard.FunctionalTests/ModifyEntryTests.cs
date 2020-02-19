@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
@@ -7,52 +8,52 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class ModifyEntryTests
     {
         [Fact]
-        public void AddNewAttribute_ToExistingEntry_ShouldWork()
+        public async Task AddNewAttribute_ToExistingEntry_ShouldWork()
         {
-            var existingEntry = LdapOps.AddEntry();
+            var existingEntry = await LdapOps.AddEntryAsync();
             var value = Guid.NewGuid().ToString();
             const string attrName = "description";
 
-            TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
                 var newAttribute = new LdapAttribute(attrName, value);
                 var modification = new LdapModification(LdapModification.Add, newAttribute);
-                ldapConnection.Modify(existingEntry.Dn, modification);
+                await ldapConnection.ModifyAsync(existingEntry.Dn, modification);
             });
 
-            var modifiedEntry = LdapOps.GetEntry(existingEntry.Dn);
+            var modifiedEntry = await LdapOps.GetEntryAsync(existingEntry.Dn);
             Assert.Equal(value, modifiedEntry.GetAttribute(attrName).StringValue);
         }
 
         [Fact]
-        public void ModifyAttributeValue_OfExistingEntry_ShouldWork()
+        public async Task ModifyAttributeValue_OfExistingEntry_ShouldWork()
         {
-            var existingEntry = LdapOps.AddEntry();
+            var existingEntry = await LdapOps.AddEntryAsync();
             var value = Guid.NewGuid().ToString();
             const string attrName = "givenName";
 
-            TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
                 var modifiedAttribute = new LdapAttribute(attrName, value);
                 var modification = new LdapModification(LdapModification.Replace, modifiedAttribute);
-                ldapConnection.Modify(existingEntry.Dn, modification);
+                await ldapConnection.ModifyAsync(existingEntry.Dn, modification);
             });
 
-            var modifiedEntry = LdapOps.GetEntry(existingEntry.Dn);
+            var modifiedEntry = await LdapOps.GetEntryAsync(existingEntry.Dn);
             Assert.Equal(value, modifiedEntry.GetAttribute(attrName).StringValue);
         }
 
         [Fact]
-        public void Modify_OfNotExistingEntry_ShouldThrowNoSuchObject()
+        public async Task Modify_OfNotExistingEntry_ShouldThrowNoSuchObject()
         {
             var ldapEntry = LdapEntryHelper.NewLdapEntry();
 
-            var ldapException = Assert.Throws<LdapException>(
-                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+            var ldapException = await Assert.ThrowsAsync<LdapException>(
+                async () => await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
                 {
                     var newAttribute = new LdapAttribute("givenName", "blah");
                     var modification = new LdapModification(LdapModification.Replace, newAttribute);
-                    ldapConnection.Modify(ldapEntry.Dn, modification);
+                    await ldapConnection.ModifyAsync(ldapEntry.Dn, modification);
                 }));
 
             Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);

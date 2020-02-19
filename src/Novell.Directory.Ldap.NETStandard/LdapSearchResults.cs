@@ -119,7 +119,7 @@ namespace Novell.Directory.Ldap
                 {
                     try
                     {
-                        if ((msg = _queue.GetResponse()) != null)
+                        if ((msg = _queue.GetResponseAsync().ResultAndUnwrap()) != null)
                         {
                             // Only save controls if there are some
                             var ctls = msg.Controls;
@@ -143,7 +143,7 @@ namespace Novell.Directory.Ldap
 
                                 if (_cons.ReferralFollowing)
                                 {
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, msg, refs, 0, true, _referralConn).ResultAndUnwrap();
+                                    _referralConn = _conn.ChaseReferralAsync(_queue, _cons, msg, refs, 0, true, _referralConn).ResultAndUnwrap();
                                 }
                                 else
                                 {
@@ -167,7 +167,7 @@ namespace Novell.Directory.Ldap
                                 if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                                 {
                                     // Following referrals
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn).ResultAndUnwrap();
+                                    _referralConn = _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn).ResultAndUnwrap();
                                 }
                                 else if (resultCode != LdapException.Success)
                                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
@@ -7,22 +8,22 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class ModifyPasswordTests
     {
         [Fact]
-        public void ModifyPassword_OfExistingEntry_ShouldWork()
+        public async Task ModifyPassword_OfExistingEntry_ShouldWork()
         {
-            var existingEntry = LdapOps.AddEntry();
+            var existingEntry = await LdapOps.AddEntryAsync();
             var newPassword = "password" + new Random().Next();
 
-            TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
                 var newAttribute = new LdapAttribute("userPassword", newPassword);
                 var modification = new LdapModification(LdapModification.Replace, newAttribute);
-                ldapConnection.Modify(existingEntry.Dn, modification);
+                await ldapConnection.ModifyAsync(existingEntry.Dn, modification);
             });
 
-            TestHelper.WithLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    ldapConnection.Bind(existingEntry.Dn, newPassword);
+                    await ldapConnection.BindAsync(existingEntry.Dn, newPassword);
                 });
         }
     }
