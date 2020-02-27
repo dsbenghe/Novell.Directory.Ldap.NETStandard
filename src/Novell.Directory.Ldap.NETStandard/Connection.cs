@@ -543,7 +543,7 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            _sock.Connect(ipEndPoint);
+                            _sock.ConnectAsync(ipEndPoint).WaitAndUnwrap(ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
