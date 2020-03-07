@@ -542,14 +542,16 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            await _sock.ConnectAsync(ipEndPoint);
+                            await _sock.ConnectAsync(ipEndPoint)
+                                .TimeoutAfter(ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
+                            await sslstream.AuthenticateAsClientAsync(host)
+                                .TimeoutAfter(ConnectionTimeout);
 
                             _inStream = sslstream;
                             _outStream = sslstream;
@@ -557,7 +559,8 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             _socket = new TcpClient(ipAddress.AddressFamily);
-                            _socket.ConnectAsync(host, port).WaitAndUnwrap(ConnectionTimeout);
+                            await _socket.ConnectAsync(host, port)
+                                .TimeoutAfter(ConnectionTimeout);
 
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
@@ -972,7 +975,7 @@ namespace Novell.Directory.Ldap
         ///     stop and start the reader thread.  Connection.StopTLS will stop
         ///     and start the reader thread.
         /// </summary>
-        internal void StartTls()
+        internal async Task StartTlsAsync()
         {
             try
             {
@@ -983,7 +986,8 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
-                sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
+                await sslstream.AuthenticateAsClientAsync(Host)
+                    .TimeoutAfter(ConnectionTimeout);
                 _inStream = sslstream;
                 _outStream = sslstream;
                 StartReader();

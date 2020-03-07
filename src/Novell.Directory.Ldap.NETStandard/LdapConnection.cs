@@ -489,7 +489,7 @@ namespace Novell.Directory.Ldap
                 var response = (LdapExtendedResponse)await queue.GetResponseAsync();
                 response.ChkResultCode();
 
-                Connection.StartTls();
+                await Connection.StartTlsAsync();
             }
             finally
             {
