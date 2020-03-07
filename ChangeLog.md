@@ -1,5 +1,8 @@
 # Changelog
 
+### 3.0.2
+* Fix not using timeout when connecting via SSL - thanks to 
+
 ### 3.0.0
 * change ILdapConnection interface to improve testability & mockability
 * changes to the public api of the library to improve usability and make it more .net style
@@ -9,6 +12,7 @@
 * Add LocalCertificateSelectionCallback - thanks to bmoore - https://github.com/barry-r-moore
 * Fix issue in message timeout - thanks to martindrlik https://github.com/martindrlik
 * Remove dependency of Microsoft.Extensions.Logging - use LibLog
+* Prevents dns lookup if IP is passed to Connect
 
 ### 2.3.8
 * Added connect timeout
