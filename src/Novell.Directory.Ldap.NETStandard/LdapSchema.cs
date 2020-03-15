@@ -126,14 +126,14 @@ namespace Novell.Directory.Ldap
         ///     The idTable hash on the oid (or integer ID for DITStructureRule) and
         ///     is used for retrieving enumerations.
         /// </summary>
-        private readonly List<Dictionary<string, LdapSchemaElement>> _idTable;
+        private readonly Dictionary<int, Dictionary<string, LdapSchemaElement>> _idTable;
 
         /// <summary>
         ///     The nameTable will hash on the names (if available). To insure
         ///     case-insensibility, the Keys for this table will be a String cast to
         ///     Uppercase.
         /// </summary>
-        private readonly List<Dictionary<string, LdapSchemaElement>> _nameTable;
+        private readonly Dictionary<int, Dictionary<string, LdapSchemaElement>> _nameTable;
 
         /// <summary>
         ///     Constructs an LdapSchema object from attributes of an LdapEntry.
@@ -153,8 +153,8 @@ namespace Novell.Directory.Ldap
         public LdapSchema(LdapEntry ent)
             : base(ent.Dn, ent.GetAttributeSet())
         {
-            _nameTable = new List<Dictionary<string, LdapSchemaElement>>(8);
-            _idTable = new List<Dictionary<string, LdapSchemaElement>>(8);
+            _nameTable = new Dictionary<int, Dictionary<string, LdapSchemaElement>>();
+            _idTable = new Dictionary<int, Dictionary<string, LdapSchemaElement>>();
 
             // reset all definitions
             for (var i = 0; i < SchemaTypeNames.Length; i++)
