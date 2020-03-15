@@ -1,7 +1,10 @@
 # Changelog
 
+### 3.0.3
+* Fix FetchSchema
+
 ### 3.0.2
-* Fix not using timeout when connecting via SSL - thanks to 
+* Fix not using timeout when connecting via SSL
 
 ### 3.0.0
 * change ILdapConnection interface to improve testability & mockability
