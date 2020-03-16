@@ -595,7 +595,7 @@ namespace Novell.Directory.Ldap
                 var webRequest = WebRequest.Create(url);
                 var inRenamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
 
-                // Read the bytes into buffers and store the them in an arraylist
+                // Read the bytes into buffers and store the them in a list
                 var bufs = new List<UrlData>();
                 var buf = new byte[4096];
                 int len, totalLength = 0;

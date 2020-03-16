@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
@@ -681,21 +682,9 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op)
-        {
-            return ExtendedOperationAsync(op).ResultAndUnwrap();
-        }
-
-        /// <inheritdoc />
         public async Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op)
         {
             return await ExtendedOperationAsync(op, _defSearchCons);
-        }
-
-        /// <inheritdoc />
-        public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
-        {
-            return ExtendedOperationAsync(op, cons).ResultAndUnwrap();
         }
 
         /// <inheritdoc />
@@ -1387,34 +1376,6 @@ namespace Novell.Directory.Ldap
         // *************************************************************************
 
         /// <summary>
-        ///     Synchronously checks to see if an entry contains an attribute
-        ///     with a specified value.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to use in the
-        ///     comparison.
-        /// </param>
-        /// <param name="attr">
-        ///     The attribute to compare against the entry. The
-        ///     method checks to see if the entry has an
-        ///     attribute with the same name and value as this
-        ///     attribute.
-        /// </param>
-        /// <returns>
-        ///     True if the entry has the value,
-        ///     and false if the entry does not
-        ///     have the value or the attribute.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public bool Compare(string dn, LdapAttribute attr)
-        {
-            return CompareAsync(dn, attr).ResultAndUnwrap();
-        }
-
-        /// <summary>
         ///     Asynchronously checks to see if an entry contains an attribute
         ///     with a specified value.
         /// </summary>
@@ -1440,37 +1401,6 @@ namespace Novell.Directory.Ldap
         public async Task<bool> CompareAsync(string dn, LdapAttribute attr)
         {
             return await CompareAsync(dn, attr, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Synchronously checks to see if an entry contains an attribute with a
-        ///     specified value, using the specified constraints.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry to use in the
-        ///     comparison.
-        /// </param>
-        /// <param name="attr">
-        ///     The attribute to compare against the entry. The
-        ///     method checks to see if the entry has an
-        ///     attribute with the same name and value as this
-        ///     attribute.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <returns>
-        ///     True if the entry has the value,
-        ///     and false if the entry does not
-        ///     have the value or the attribute.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public bool Compare(string dn, LdapAttribute attr, LdapConstraints cons)
-        {
-            return CompareAsync(dn, attr, cons).ResultAndUnwrap();
         }
 
         /// <summary>
@@ -1557,79 +1487,9 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.CompareFalse">
         /// </seealso>
-        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue)
-        {
-            return CompareAsync(dn, attr, queue).ResultAndUnwrap();
-        }
-
-        /// <summary>
-        ///     Asynchronously compares an attribute value with one in the directory,
-        ///     using the specified queue.
-        ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
-        ///     does not have the value or the attribute.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry containing an
-        ///     attribute to compare.
-        /// </param>
-        /// <param name="attr">
-        ///     An attribute to compare.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
-        /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
-        /// </seealso>
         public async Task<LdapResponseQueue> CompareAsync(string dn, LdapAttribute attr, LdapResponseQueue queue)
         {
             return await CompareAsync(dn, attr, queue, _defSearchCons);
-        }
-
-        /// <summary>
-        ///     Asynchronously compares an attribute value with one in the directory,
-        ///     using the specified queue and contraints.
-        ///     Please note that a successful completion of this command results in
-        ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
-        ///     has the value, and LdapException.COMPARE_FALSE if the entry
-        ///     does not have the value or the attribute.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry containing an
-        ///     attribute to compare.
-        /// </param>
-        /// <param name="attr">
-        ///     An attribute to compare.
-        /// </param>
-        /// <param name="queue">
-        ///     Handler for messages returned from a server in
-        ///     response to this request. If it is null, a
-        ///     queue object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     Constraints specific to the operation.
-        /// </param>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        /// <seealso cref="LdapException.CompareTrue">
-        /// </seealso>
-        /// <seealso cref="LdapException.CompareFalse">
-        /// </seealso>
-        public LdapResponseQueue Compare(string dn, LdapAttribute attr, LdapResponseQueue queue,
-            LdapConstraints cons)
-        {
-            return CompareAsync(dn, attr, queue, cons).ResultAndUnwrap();
         }
 
         /// <summary>
@@ -1790,46 +1650,14 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
+        public async Task<LdapResponseQueue> ExtendedOperation(LdapExtendedOperation op, LdapResponseQueue queue)
         {
-            return ExtendedOperation(op, _defSearchCons, queue);
+            return await ExtendedOperationAsync(op, _defSearchCons, queue);
         }
 
         /*
         *  Asynchronous Ldap extended request with SearchConstraints
         */
-
-        /// <summary>
-        ///     Provides an asynchronous means to access extended, non-mandatory
-        ///     operations offered by a particular Ldapv3 compliant server.
-        /// </summary>
-        /// <param name="op">
-        ///     The object which contains (1) an identifier of an extended
-        ///     operation which should be recognized by the particular Ldap
-        ///     server this client is connected to and (2) an operation-
-        ///     specific sequence of octet strings or BER-encoded values.
-        /// </param>
-        /// <param name="queue">
-        ///     The queue for messages returned from a server in
-        ///     response to this request. If it is null, a queue
-        ///     object is created internally.
-        /// </param>
-        /// <param name="cons">
-        ///     The constraints specific to this operation.
-        /// </param>
-        /// <returns>
-        ///     An operation-specific object, containing an ID and either an
-        ///     octet string or BER-encoded values.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        public LdapResponseQueue ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons,
-            LdapResponseQueue queue)
-        {
-            return ExtendedOperationAsync(op, cons, queue).ResultAndUnwrap();
-        }
 
         /// <summary>
         ///     Provides an asynchronous means to access extended, non-mandatory
@@ -3048,7 +2876,7 @@ namespace Novell.Directory.Ldap
                 // Pretty sure that the last argument to ChaseReferral should be refConn instead of null
 
                 // Perform referral following and return
-                ArrayList refConn = null;
+                List<object> refConn = null;
                 try
                 {
                     await ChaseReferralAsync(queue, cons, response, response.Referrals, 0, false, null);
@@ -3108,8 +2936,8 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal async Task<ArrayList> ChaseReferralAsync(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
-            string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
+        internal async Task<List<object>> ChaseReferralAsync(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
+            string[] initialReferrals, int hopCount, bool searchReference, List<object> connectionList)
         {
             var connList = connectionList;
             ReferralInfo rinfo = null; // referral info
@@ -3118,7 +2946,7 @@ namespace Novell.Directory.Ldap
             // Get a place to store new connections
             if (connList == null)
             {
-                connList = new ArrayList(cons.HopLimit);
+                connList = new List<object>(cons.HopLimit);
             }
 
             // Following referrals or search reference
@@ -3283,7 +3111,7 @@ namespace Novell.Directory.Ldap
         * @param list the list of the connections
         */
 
-        internal void ReleaseReferralConnections(ArrayList list)
+        internal void ReleaseReferralConnections(List<object> list)
         {
             if (list == null)
             {

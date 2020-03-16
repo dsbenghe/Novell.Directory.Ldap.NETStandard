@@ -27,13 +27,13 @@ Sample usage
 using (var cn = new LdapConnection())
 {
 	// connect
-	cn.Connect("<<hostname>>", 389);
+	await cn.ConnectAsync("<<hostname>>", 389);
 	// bind with an username and password
-	// this how you can verify the password of an user
-	cn.Bind("<<userdn>>", "<<userpassword>>");
+	// this is how you can verify the password of an user
+	await cn.BindAsync("<<userdn>>", "<<userpassword>>");
 	// call ldap op
-	// cn.Delete("<<userdn>>")
-	// cn.Add(<<ldapEntryInstance>>)
+	// await cn.DeleteAsync("<<userdn>>")
+	// await cn.AddAsync(<<ldapEntryInstance>>)
 }
 
 ```

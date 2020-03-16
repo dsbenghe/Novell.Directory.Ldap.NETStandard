@@ -37,8 +37,7 @@
 // the architecture of the resulting solution may differ somewhat.
 //
 
-using System.Collections;
-using System.Globalization;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Novell.Directory.Ldap
@@ -118,13 +117,13 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Removes the first occurrence of an specific object from an ArrayList instance.
         /// </summary>
-        /// <param name="arrayList">The ArrayList instance.</param>
+        /// <param name="list">The ArrayList instance.</param>
         /// <param name="element">The element to remove.</param>
         /// <returns>True if item is found in the ArrayList; otherwise, false.</returns>
-        public static bool VectorRemoveElement(ArrayList arrayList, object element)
+        public static bool VectorRemoveElement(List<object> list, object element)
         {
-            var containsItem = arrayList.Contains(element);
-            arrayList.Remove(element);
+            var containsItem = list.Contains(element);
+            list.Remove(element);
             return containsItem;
         }
 

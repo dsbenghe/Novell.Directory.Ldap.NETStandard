@@ -1183,7 +1183,7 @@ namespace Novell.Directory.Ldap
                         try
                         {
                             info = _enclosingInstance._messages.FindMessageById(msgId);
-                            info.PutReply(msg); // queue & wake up waiting thread
+                            info.PutReplyAsync(msg).ResultAndUnwrap(); // queue & wake up waiting thread
                         }
                         catch (FieldAccessException)
                         {

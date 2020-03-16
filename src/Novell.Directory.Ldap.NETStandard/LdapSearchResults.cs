@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         private int _referenceCount; // # Search Result Reference in vector
 
         private int _referenceIndex; // Current position in vector
-        private ArrayList _referralConn; // Referral Connections
+        private List<object> _referralConn; // Referral Connections
 
         /// <summary>
         ///     Constructs a queue object for search results.
@@ -397,7 +397,7 @@ namespace Novell.Directory.Ldap
         /// Get referral connections
         /// </summary>
         /// <returns></returns>
-        public ArrayList GetReferralConnections()
+        public List<object> GetReferralConnections()
         {
             return _referralConn;
         }

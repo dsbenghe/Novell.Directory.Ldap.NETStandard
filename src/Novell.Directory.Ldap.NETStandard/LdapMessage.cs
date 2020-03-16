@@ -32,7 +32,6 @@
 
 using System;
 using System.Reflection;
-using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
