@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
@@ -9,12 +9,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class FetchSchemaTests
     {
         [Fact]
-        public void FetchSchema_returns_the_default_schema()
+        public async Task FetchSchema_returns_the_default_schema()
         {
-            var schema = TestHelper.WithAuthenticatedLdapConnection((ldapConnection) =>
+            var schema = await TestHelper.WithAuthenticatedLdapConnectionAsync(async (ldapConnection) =>
             {
                 var ldapConnectionImpl = (LdapConnection) ldapConnection;
-                return ldapConnectionImpl.FetchSchema(ldapConnectionImpl.GetSchemaDn());
+                return await ldapConnectionImpl.FetchSchemaAsync(await ldapConnectionImpl.GetSchemaDnAsync());
             });
             
             Assert.NotNull(schema);
