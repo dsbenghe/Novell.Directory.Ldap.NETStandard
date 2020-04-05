@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -39,7 +38,6 @@ using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Novell.Directory.Ldap.Asn1;
@@ -104,9 +102,9 @@ namespace Novell.Directory.Ldap
         private int _cloneCount;
         private Thread _deadReader; // Identity of last reader thread
         private Exception _deadReaderException; // Last exception of reader
-        private LberDecoder _decoder;
+        private readonly LberDecoder _decoder;
 
-        private LberEncoder _encoder;
+        private readonly LberEncoder _encoder;
 
         // We need a message number for disconnect to grab the semaphore,
         // but may not have one, so we invent a unique one.
@@ -117,7 +115,7 @@ namespace Novell.Directory.Ldap
         private Stream _inStream;
 
         // Place to save message information classes
-        private MessageVector _messages;
+        private readonly MessageVector _messages;
         private TcpClient _nonTlsBackup;
         private Stream _outStream;
         private Thread _reader; // New thread that reads data from the server.
@@ -140,7 +138,7 @@ namespace Novell.Directory.Ldap
         // Connection created to follow referral
 
         // Place to save unsolicited message listeners
-        private IList<ILdapUnsolicitedNotificationListener> _unsolicitedListeners;
+        private readonly IList<ILdapUnsolicitedNotificationListener> _unsolicitedListeners;
 
         // Indicates we have received a server shutdown unsolicited notification
         private bool _unsolSvrShutDnNotification;
@@ -1092,7 +1090,7 @@ namespace Novell.Directory.Ldap
                 // what kind of processing the notification listener class will
                 // do.  We do not want our deamon thread to block waiting for
                 // the notification listener method to return.
-                var u = new UnsolicitedListenerThread(this, listener, tempLdapMessage);
+                var u = new UnsolicitedListenerThread(listener, tempLdapMessage);
                 u.Start();
             }
         }
@@ -1118,13 +1116,13 @@ namespace Novell.Directory.Ldap
                 _isStopping = true;
 
                 // This is quite silly as we want to stop the thread gracefully but is not always possible as the Read on socket is blocking
-                // Using ReadAdync will not do any good as the method taking the CancellationToken as parameter is not implemented
+                // Using ReadAsync will not do any good as the method taking the CancellationToken as parameter is not implemented
                 // Dispose will break forcefully the Read.
                 // We could use a ReadTimeout for socket - but this will only make stopping the thread take longer
                 // And we don't care if we just kill the socket stream as we don't plan to reuse the stream after stop
                 // the stream Dispose used to be called from Connection dispose but only when a Bind is succesful which was causing
                 // the Dispose to hang un unsuccesful bind
-                // So, yeah isStopping flag is pretty much useless as there are very small chances that it will bit hit
+                // So, yeah isStopping flag is pretty much useless as there are very small chances that it will be hit
                 var socketStream = _enclosingInstance._inStream;
                 socketStream?.Dispose();
                 _enclosedThread.Join();
@@ -1304,15 +1302,12 @@ namespace Novell.Directory.Ldap
             private readonly ILdapUnsolicitedNotificationListener _listenerObj;
             private readonly LdapExtendedResponse _unsolicitedMsg;
 
-            internal UnsolicitedListenerThread(Connection enclosingInstance, ILdapUnsolicitedNotificationListener l,
+            internal UnsolicitedListenerThread(ILdapUnsolicitedNotificationListener l,
                 LdapExtendedResponse m)
             {
-                EnclosingInstance = enclosingInstance;
                 _listenerObj = l;
                 _unsolicitedMsg = m;
             }
-
-            private Connection EnclosingInstance { get; }
 
             protected override void Run()
             {

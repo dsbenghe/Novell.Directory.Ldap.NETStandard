@@ -31,7 +31,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -40,9 +40,9 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     existing Vector class so that it can be used to maintain a
     ///     list of currently registered control responses.
     /// </summary>
-    public class RespControlVector : ArrayList
+    public class RespControlVector : List<object>
     {
-        public RespControlVector(int cap, int incr)
+        public RespControlVector(int cap)
             : base(cap)
         {
         }

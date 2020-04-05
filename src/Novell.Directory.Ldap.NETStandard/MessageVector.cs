@@ -31,7 +31,7 @@
 //
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Novell.Directory.Ldap
@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap
     ///     The. <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
-    internal class MessageVector : ArrayList
+    internal class MessageVector : List<object>
     {
         internal MessageVector(int cap)
             : base(cap)

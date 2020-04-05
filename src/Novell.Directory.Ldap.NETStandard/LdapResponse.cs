@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapMessage">
         /// </seealso>
         public LdapResponse(int type)
-            : this(type, LdapException.Success, null, null, null, null)
+            : this(type, LdapException.Success, null, null)
         {
         }
 
@@ -124,21 +124,12 @@ namespace Novell.Directory.Ldap
         ///     A diagnostic message returned by the server,
         ///     an empty string or. <code>null</code> if none.
         /// </param>
-        /// <param name="referrals">
-        ///     The referral URLs returned for a REFERRAL result
-        ///     code or. <code>null</code> if none.
-        /// </param>
-        /// <param name="controls">
-        ///     Any controls returned by the server or.
-        ///     <code>null</code> if none.
-        /// </param>
         /// <seealso cref="LdapMessage">
         /// </seealso>
         /// <seealso cref="LdapException">
         /// </seealso>
-        public LdapResponse(int type, int resultCode, string matchedDn, string serverMessage, string[] referrals,
-            LdapControl[] controls)
-            : base(new RfcLdapMessage(RfcResultFactory(type, resultCode, matchedDn, serverMessage, referrals)))
+        public LdapResponse(int type, int resultCode, string matchedDn, string serverMessage)
+            : base(new RfcLdapMessage(RfcResultFactory(type, resultCode, matchedDn, serverMessage)))
         {
         }
 
@@ -202,7 +193,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                string[] referrals = null;
+                string[] referrals;
                 var refRenamed = ((IRfcResponse)Message.Response).GetReferral();
 
                 if (refRenamed == null)
@@ -384,8 +375,7 @@ namespace Novell.Directory.Ldap
             get;
         }
 
-        private static Asn1Sequence RfcResultFactory(int type, int resultCode, string matchedDn, string serverMessage,
-            string[] referrals)
+        private static Asn1Sequence RfcResultFactory(int type, int resultCode, string matchedDn, string serverMessage)
         {
             Asn1Sequence ret;
 

@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     empty and return all messages owned by this agent.
+        ///     Empty and return all messages owned by this agent.
         /// </summary>
         private object[] RemoveAll()
         {
@@ -92,7 +92,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     merges two message agents.
+        ///     Merges two message agents.
         /// </summary>
         /// <param name="fromAgent">
         ///     the agent to be merged into this one.

@@ -31,8 +31,8 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
@@ -623,7 +623,7 @@ namespace Novell.Directory.Ldap
                         try
                         {
                             specifiedPort = int.Parse(address.Substring(colonIndex + 1));
-                            address = address.Substring(0, colonIndex - 0);
+                            address = address.Substring(0, colonIndex);
                         }
                         catch (Exception e)
                         {
@@ -2571,7 +2571,7 @@ namespace Novell.Directory.Ldap
                 // Pretty sure that the last argument to ChaseReferral should be refConn instead of null
 
                 // Perform referral following and return
-                ArrayList refConn = null;
+                List<object> refConn = null;
                 try
                 {
                     await ChaseReferralAsync(queue, cons, response, response.Referrals, 0, false, null);
@@ -2631,8 +2631,8 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        internal async Task<ArrayList> ChaseReferralAsync(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
-            string[] initialReferrals, int hopCount, bool searchReference, ArrayList connectionList)
+        internal async Task<List<object>> ChaseReferralAsync(LdapMessageQueue queue, LdapConstraints cons, LdapMessage msg,
+            string[] initialReferrals, int hopCount, bool searchReference, List<object> connectionList)
         {
             var connList = connectionList;
             ReferralInfo rinfo = null; // referral info
@@ -2641,7 +2641,7 @@ namespace Novell.Directory.Ldap
             // Get a place to store new connections
             if (connList == null)
             {
-                connList = new ArrayList(cons.HopLimit);
+                connList = new List<object>(cons.HopLimit);
             }
 
             // Following referrals or search reference
@@ -2806,7 +2806,7 @@ namespace Novell.Directory.Ldap
         * @param list the list of the connections
         */
 
-        internal void ReleaseReferralConnections(ArrayList list)
+        internal void ReleaseReferralConnections(List<object> list)
         {
             if (list == null)
             {
