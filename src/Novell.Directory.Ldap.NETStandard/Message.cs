@@ -31,6 +31,7 @@
 //
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -49,8 +50,7 @@ namespace Novell.Directory.Ldap
 
         private int _mslimit; // client time limit in milliseconds
 
-        // Note: MessageVector is synchronized
-        private readonly MessageVector _replies; // place to store replies
+        private readonly Queue<object> _replies; // place to store replies
         private string _stackTraceCleanup;
         private ThreadClass _timer; // Timeout thread
         private bool _waitForReplyRenamedField = true; // true if wait for reply
@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap
             _conn = conn ?? throw new ArgumentNullException(nameof(conn));
 
             _stackTraceCreation = Environment.StackTrace;
-            _replies = new MessageVector(5);
+            _replies = new Queue<object>();
             Request = msg;
             MessageAgent = agent;
             _mslimit = mslimit;
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
         internal int MessageId { get; }
 
         /// <summary>
-        ///     gets the operation complete status for this message.
+        ///     Gets the operation complete status for this message.
         /// </summary>
         /// <returns>
         ///     the true if the operation is complete, i.e.
@@ -140,8 +140,7 @@ namespace Novell.Directory.Ldap
                         return null; // No data
                     }
 
-                    var tempObject = _replies[0];
-                    _replies.RemoveAt(0);
+                    var tempObject = _replies.Dequeue();
                     msg = tempObject; // Atomic get and remove
                 }
 
@@ -213,8 +212,7 @@ namespace Novell.Directory.Ldap
                         break;
                     }
 
-                    var tempObject = _replies[0];
-                    _replies.RemoveAt(0);
+                    var tempObject = _replies.Dequeue();
                     var msg = tempObject;
                     if ((Complete || !_acceptReplies) && _replies.Count == 0)
                     {
@@ -328,7 +326,7 @@ namespace Novell.Directory.Ldap
             // Get rid of all replies queued
             if (informUserEx != null)
             {
-                _replies.Add(new LdapResponse(informUserEx, _conn.ActiveReferral));
+                _replies.Enqueue(new LdapResponse(informUserEx, _conn.ActiveReferral));
                 StopTimer();
 
                 // wake up waiting threads to receive exception
@@ -383,7 +381,7 @@ namespace Novell.Directory.Ldap
 
             lock (_replies)
             {
-                _replies.Add(message);
+                _replies.Enqueue(message);
             }
 
             message.RequestingMessage = Request; // Save request message info
