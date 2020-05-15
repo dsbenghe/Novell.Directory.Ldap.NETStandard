@@ -30,11 +30,6 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             });
         }
 
-        private static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false)
-        {
-            return WithLdapConnectionImpl(funcOnConnectedLdapConnection);
-        }
-
         public static T WithAuthenticatedLdapConnection<T>(Func<ILdapConnection, T> funcOnAuthenticatedLdapConnection)
         {
             return WithLdapConnection(ldapConnection =>
@@ -42,6 +37,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 return funcOnAuthenticatedLdapConnection(ldapConnection);
             });
+        }
+
+        private static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection)
+        {
+            return WithLdapConnectionImpl(funcOnConnectedLdapConnection);
         }
 
         private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)

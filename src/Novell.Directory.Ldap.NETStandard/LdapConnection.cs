@@ -452,7 +452,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     the Connection object.
         /// </returns>
-        internal Connection Connection { get; private set; }
+        private Connection Connection { get; set; }
 
         public void Dispose()
         {
@@ -1599,7 +1599,7 @@ namespace Novell.Directory.Ldap
         private void DisconnectImpl()
         {
             // disconnect doesn't affect other clones
-            // If not a clone, distroys connection
+            // If not a clone, destroys connection
             Connection = Connection.DestroyClone();
         }
 

@@ -230,7 +230,7 @@ namespace Novell.Directory.Ldap
         internal ReferralInfo ActiveReferral { get; set; }
 
         /// <summary>
-        ///     Indicates if the conenction is using TLS protection
+        ///     Indicates if the connection is using TLS protection
         ///     Return true if using TLS protection.
         /// </summary>
         internal bool Tls => _nonTlsBackup != null;
