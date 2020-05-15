@@ -1,5 +1,13 @@
 # Changelog
 
+### 3.2.0
+* Deprecate LibLog. Add back Microsoft.Logging with different versions for the three .net standard version: 1.3, 2.0, 2.1
+* Fix GetAttribute documentation
+
+### 3.1.0
+* Build nuget package for .net standard 2.1 too. Tests are now running on net core 3.1.
+* The build is running on Ubuntu Xenial
+
 ### 3.0.3
 * Fix FetchSchema
 
