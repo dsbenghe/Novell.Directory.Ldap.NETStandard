@@ -78,9 +78,9 @@ namespace Novell.Directory.Ldap
         ///     "cn;binary" are valid attribute names.
         /// </param>
         /// <returns>
-        ///     The attribute matching the specified attrName, or. <code>null</code>
-        ///     if there is no exact match.
+        ///     The attribute matching the specified attrName.
         /// </returns>
+        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found</exception>
         public LdapAttribute GetAttribute(string attrName)
         {
             return this[attrName];
@@ -145,9 +145,9 @@ namespace Novell.Directory.Ldap
         ///     "lang-ja", and "lang-ja-JP-kanji" are valid language specification.
         /// </param>
         /// <returns>
-        ///     A single best-match. <code>LdapAttribute</code>, or. <code>null</code>
-        ///     if no match is found in the entry.
+        ///     A single best-match. <code>LdapAttribute</code>
         /// </returns>
+        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found</exception>
         public LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;
