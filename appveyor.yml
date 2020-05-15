@@ -2,7 +2,7 @@ version: '3.0.3.{build}'
 configuration:
 - Release
 image:
-- Visual Studio 2017
+- Visual Studio 2019
 platform: Any CPU
 init:
 - ps: $Env:LABEL = $Env:APPVEYOR_BUILD_NUMBER.PadLeft(5, "0")

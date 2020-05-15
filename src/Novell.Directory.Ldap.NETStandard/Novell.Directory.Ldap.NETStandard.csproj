@@ -6,7 +6,7 @@
     <Summary>.NET Standard LDAP client library</Summary>
     <VersionPrefix>3.0.3</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
-    <TargetFrameworks>netstandard1.3;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>
