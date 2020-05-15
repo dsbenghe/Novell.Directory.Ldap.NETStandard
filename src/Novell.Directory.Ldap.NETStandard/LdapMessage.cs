@@ -32,8 +32,6 @@
 
 using System;
 using System.Reflection;
-using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap
@@ -180,9 +178,6 @@ namespace Novell.Directory.Ldap
         /*
         private static int msgNum = 0; // Ldap Request counter
         */
-        
-        private static readonly ILog Logger = LogProvider.For<LdapMessage>();
-        
         private int _imsgNum = -1; // This instance LdapMessage number
 
         private int _messageType = -1;
@@ -629,7 +624,7 @@ namespace Novell.Directory.Ldap
             {
                 // No match with the OID
                 // Do nothing. Fall through and construct a default LDAPControl object.
-                Logger.Warn("Exception swallowed", ex);
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
 
             // If we get here we did not have a registered response control

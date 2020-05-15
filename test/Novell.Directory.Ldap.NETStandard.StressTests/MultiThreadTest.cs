@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Novell.Directory.Ldap.NETStandard.StressTests.Logging;
 
 namespace Novell.Directory.Ldap.NETStandard.StressTests
 {
@@ -14,18 +13,21 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
     {
         private const double PercentOfAcceptedLdapExceptions = 0.02;
         private static readonly TimeSpan DefaultTestingThreadReportingPeriod = TimeSpan.FromMinutes(1);
-        private static readonly ILog Logger = LogProvider.For<MultiThreadTest>();
 
         private readonly int _noOfThreads;
         private readonly TimeSpan _timeToRun;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ILogger<MultiThreadTest> _logger;
         private readonly TimeSpan _monitoringThreadReportingPeriod = TimeSpan.FromSeconds(300);
 
         private static readonly List<ExceptionInfo> Exceptions = new List<ExceptionInfo>();
 
-        public MultiThreadTest(int noOfThreads, TimeSpan timeToRun)
+        public MultiThreadTest(int noOfThreads, TimeSpan timeToRun, ILoggerFactory loggerFactory)
         {
             _noOfThreads = noOfThreads;
             _timeToRun = timeToRun;
+            _loggerFactory = loggerFactory;
+            _logger = loggerFactory.CreateLogger<MultiThreadTest>();
         }
 
         public int Run()
@@ -34,7 +36,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var threadDatas = new ThreadRunner[_noOfThreads];
             for (var i = 0; i < _noOfThreads; i++)
             {
-                var threadRunner = new ThreadRunner(DefaultTestingThreadReportingPeriod);
+                var threadRunner = new ThreadRunner(DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
                 threads[i] = new Thread(threadRunner.RunLoop);
                 threadDatas[i] = threadRunner;
                 threads[i].Start();
@@ -45,7 +47,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             monitoringThread.Start(monitoringThreadData);
 
             Thread.Sleep(_timeToRun);
-            Logger.Info("Exiting worker threads");
+            _logger.LogInformation("Exiting worker threads");
             foreach (var threadData in threadDatas)
             {
                 threadData.ShouldStop = true;
@@ -64,7 +66,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
             }
 
-            Logger.Info("Exiting monitoring thread");
+            _logger.LogInformation("Exiting monitoring thread");
             monitoringThreadData.WaitHandle.Set();
             monitoringThread.Join();
 
@@ -80,7 +82,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
             var percentOfLdapExceptions = (float) noOfLdapExceptions * 100 / noOfRuns;
             var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
-            Logger.Info(
+            _logger.LogInformation(
                 $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
             return failRun;
         }
@@ -116,17 +118,17 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
             }
 
-            Logger.Info(logMessage.ToString());
+            _logger.LogInformation(logMessage.ToString());
         }
 
         private class ThreadRunner
         {
-            private static readonly ILog Logger = LogProvider.For<ThreadRunner>();
             public int ThreadId;
 
-            public ThreadRunner(TimeSpan testingThreadReportingPeriod)
+            public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
                 _testingThreadReportingPeriod = testingThreadReportingPeriod;
+                _logger = logger;                
                 Count = 0;
                 ShouldStop = false;
                 LastPingDate = DateTime.Now;
@@ -136,6 +138,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public int Count;
             public bool ShouldStop;
             private readonly TimeSpan _testingThreadReportingPeriod;
+            private readonly ILogger<ThreadRunner> _logger;
 
             public void RunLoop()
             {
@@ -178,7 +181,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
             private void ReportException(Exception ex)
             {
-                Logger.Error("Error in runner thread - {0}", ex);
+                _logger.LogError("Error in runner thread - {0}", ex);
                 if (ex is TargetInvocationException && ex.InnerException != null)
                 {
                     ex = ex.InnerException;

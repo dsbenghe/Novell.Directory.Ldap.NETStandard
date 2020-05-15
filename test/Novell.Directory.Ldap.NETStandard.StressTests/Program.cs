@@ -17,6 +17,8 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 .Enrich.WithThreadId()
                 .WriteTo.LiterateConsole(LogEventLevel.Verbose, "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
+            var loggerFactory = new LoggerFactory().AddSerilog();
+            Logger.Factory = loggerFactory;
 
             var testsToBeRun = TestsToRun.GetMethods();
             Log.Logger.Information("----Run stress test using the following tests");
@@ -38,7 +40,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             }
 
             Log.Logger.Information("----Running stress test with {0} threads for {1} minutes", noOfThreads, (int)timeToRun.TotalMinutes);
-            var noOfExceptions = new MultiThreadTest(noOfThreads, timeToRun).Run();
+            var noOfExceptions = new MultiThreadTest(noOfThreads, timeToRun, loggerFactory).Run();
             return noOfExceptions;
         }
     }

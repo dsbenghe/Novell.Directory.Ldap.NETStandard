@@ -32,7 +32,6 @@
 
 using System;
 using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Logging;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -47,8 +46,6 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapSortControl : LdapControl
     {
-        private static readonly ILog Logger = LogProvider.For<LdapSortControl>();
-        
         private static readonly int OrderingRule = 0;
         private static readonly int ReverseOrder = 1;
 
@@ -74,7 +71,7 @@ namespace Novell.Directory.Ldap.Controls
                 }
                 catch (Exception e)
                 {
-                    Logger.Warn("Exception swallowed", e);
+                    Logger.Log.LogWarning("Exception swallowed", e);
                 }
             }
         }

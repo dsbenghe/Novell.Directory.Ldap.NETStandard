@@ -33,8 +33,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Logging;
 
 namespace Novell.Directory.Ldap
 {
@@ -107,8 +105,6 @@ namespace Novell.Directory.Ldap
         /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>
         /*package*/
         internal const int MatchingUse = 7;
-        
-        private static readonly ILog Logger = LogProvider.For<LdapSchema>();
 
         /*package*/
 
@@ -182,7 +178,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Warn("Exception swallowed", e);
+                            Logger.Log.LogWarning("Exception swallowed", e);
                             continue; // Error parsing: do not add this definition
                         }
 
@@ -201,7 +197,7 @@ namespace Novell.Directory.Ldap
                         }
                         catch (Exception e)
                         {
-                            Logger.Warn("Exception swallowed", e);
+                            Logger.Log.LogWarning("Exception swallowed", e);
                             continue; // Error parsing: do not add this definition
                         }
 

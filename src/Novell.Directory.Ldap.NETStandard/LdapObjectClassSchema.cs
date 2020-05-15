@@ -33,7 +33,6 @@
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Logging;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -65,8 +64,6 @@ namespace Novell.Directory.Ldap
 
         /// <summary> This class definition defines an auxiliary schema class.</summary>
         public const int Auxiliary = 2;
-        
-        private static readonly ILog Logger = LogProvider.For<LdapObjectClassSchema>();
 
         /// <summary>
         ///     Constructs an object class definition for adding to or deleting from
@@ -194,7 +191,7 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ex)
             {
-                Logger.Warn("Exception swallowed", ex);
+                Logger.Log.LogWarning("Exception swallowed", ex);
             }
         }
 
