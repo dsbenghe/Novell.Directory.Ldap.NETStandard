@@ -2,5 +2,5 @@ ADD_BASE_ENTRY
 PORT=1389
 LDAPS_PORT=1636
 BASE_DN=dc=example,dc=com
-ROOT_USER_DN=cn=root,dc=example,dc=com
+ROOT_USER_DN=cn=admin,dc=example,dc=com
 ROOT_PASSWORD=password

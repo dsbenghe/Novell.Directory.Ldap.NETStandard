@@ -1,1 +1,1 @@
-docker run -h ldap-01.example.com -p 4389:1389 -p 4636:1636 -p 4444:4444 --name ldap-01 --env-file docker-env.props openidentityplatform/opendj
+docker run -h ldap-01.example.com -p 4389:1389 -p 4636:1636 -p 4444:4444 --name opendj --env-file opendj-docker-env.props openidentityplatform/opendj

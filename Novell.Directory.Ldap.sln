@@ -9,9 +9,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
+		test\conf\baseDn.ldif = test\conf\baseDn.ldif
+		test\conf\cert_template.conf = test\conf\cert_template.conf
 		ChangeLog.md = ChangeLog.md
 		configure-openldap.sh = configure-openldap.sh
 		README.md = README.md
+		test\conf\slapd.conf = test\conf\slapd.conf
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6E28F0DF-400F-4A78-8DD0-B8D843F96010}"
@@ -23,6 +26,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.StressTests", "test\Novell.Directory.Ldap.NETStandard.StressTests\Novell.Directory.Ldap.NETStandard.StressTests.csproj", "{0ABBF187-A48E-42BB-83F0-96C2E1011C25}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Novell.Directory.Ldap.NETStandard.UnitTests", "test\Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj", "{C6A40F5E-22FE-4A74-9021-70C3C96AF105}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{A481A956-8420-4B4A-BCBB-DE966E767A27}"
+	ProjectSection(SolutionItems) = preProject
+		opendj-docker-env.props = opendj-docker-env.props
+		openldap-docker-env.props = openldap-docker-env.props
+		run-opendj.bat = run-opendj.bat
+		run-openldap.bat = run-openldap.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +66,7 @@ Global
 		{332F0714-7ABB-4451-92A1-B656AC26C8AD} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{0ABBF187-A48E-42BB-83F0-96C2E1011C25} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
 		{C6A40F5E-22FE-4A74-9021-70C3C96AF105} = {6E28F0DF-400F-4A78-8DD0-B8D843F96010}
+		{A481A956-8420-4B4A-BCBB-DE966E767A27} = {3A16475B-0D8E-4316-86D5-F7D37EEE802D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3B780926-24FB-4213-9233-C3B61F2209BA}

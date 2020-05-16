@@ -20,4 +20,4 @@ slapd -f test/conf/slapd.conf -h "ldap://localhost:4389 ldaps://localhost:4636" 
 sleep 5
 # test to see that is running
 ldapwhoami -H ldap://localhost:4389 -D "cn=root,dc=example,dc=com" -w password 
-ldapadd -h localhost:4389 -D cn=root,dc=example,dc=com -w password -f test/conf/baseDn.ldif
+ldapadd -h localhost:4389 -D cn=admin,dc=example,dc=com -w password -f test/conf/baseDn.ldif
