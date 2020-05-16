@@ -1,1 +1,0 @@
-docker run -h ldap-01.domain.com -p 1389:1389 -p 1636:1636 -p 4444:4444 --name ldap-01 openidentityplatform/opendj
