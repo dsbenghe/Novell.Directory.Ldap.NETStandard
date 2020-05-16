@@ -6,11 +6,6 @@ namespace Novell.Directory.Ldap
 {
     public static class AsyncExtensions
     {
-        public static T ResultAndUnwrap<T>(this Task<T> task)
-        {
-            return task.GetAwaiter().GetResult();
-        }
-
         public static void WaitAndUnwrap(this Task task, int timeout)
         {
             try
