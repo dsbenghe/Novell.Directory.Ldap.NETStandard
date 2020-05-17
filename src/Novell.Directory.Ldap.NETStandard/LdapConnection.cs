@@ -2855,9 +2855,9 @@ namespace Novell.Directory.Ldap
         ///     LDAPException     This exception occurs if the schema entry
         ///     cannot be retrieved with this connection.
         /// </exception>
-        /// <seealso cref="GetSchemaDn">
+        /// <seealso cref="GetSchemaDnAsync">
         /// </seealso>
-        /// <seealso cref="GetSchemaDn(string)">
+        /// <seealso cref="GetSchemaDnAsync(string)">
         /// </seealso>
         public async Task<LdapSchema> FetchSchemaAsync(string schemaDn)
         {

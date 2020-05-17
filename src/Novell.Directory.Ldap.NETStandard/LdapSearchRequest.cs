@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap Search request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequest">
+    /// <seealso cref="LdapConnection.SendRequestAsync">
     /// </seealso>
     /*
      *       SearchRequest ::= [APPLICATION 3] SEQUENCE {

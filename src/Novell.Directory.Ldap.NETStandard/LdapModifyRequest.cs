@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Modification Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequest">
+    /// <seealso cref="LdapConnection.SendRequestAsync">
     /// </seealso>
     /*
      *       ModifyRequest ::= [APPLICATION 6] SEQUENCE {
