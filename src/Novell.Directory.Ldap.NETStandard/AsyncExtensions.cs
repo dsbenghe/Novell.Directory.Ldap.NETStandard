@@ -6,7 +6,7 @@ namespace Novell.Directory.Ldap
 {
     public static class AsyncExtensions
     {
-        public static async Task TimeoutAfter(this Task task, int timeout)
+        public static async Task TimeoutAfterAsync(this Task task, int timeout)
         {
             try
             {
