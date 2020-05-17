@@ -2752,7 +2752,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Builds a new request replacing dn, scope, and filter where approprate.
+        ///     Builds a new request replacing dn, scope, and filter where appropriate.
         /// </summary>
         /// <param name="msg">
         ///     the original LdapMessage to build the new request from.
@@ -2857,7 +2857,7 @@ namespace Novell.Directory.Ldap
         /// </exception>
         /// <seealso cref="GetSchemaDnAsync">
         /// </seealso>
-        /// <seealso cref="GetSchemaDnAsync(string)">
+        /// <seealso cref="GetSchemaDnAsync">
         /// </seealso>
         public async Task<LdapSchema> FetchSchemaAsync(string schemaDn)
         {
@@ -2883,9 +2883,9 @@ namespace Novell.Directory.Ldap
         ///     cannot be retrieved, or if the subschemaSubentry attribute associated
         ///     with the root DSE contains multiple values.
         /// </exception>
-        /// <seealso cref="FetchSchema">
+        /// <seealso cref="FetchSchemaAsync">
         /// </seealso>
-        /// <seealso cref="Modify">
+        /// <seealso cref="ModifyAsync">
         /// </seealso>
         public Task<string> GetSchemaDnAsync()
         {
@@ -2912,9 +2912,9 @@ namespace Novell.Directory.Ldap
         ///     value is passed as dn, if the subschemasubentry attribute cannot
         ///     be retrieved, or the subschemasubentry contains multiple values.
         /// </exception>
-        /// <seealso cref="FetchSchema">
+        /// <seealso cref="FetchSchemaAsync">
         /// </seealso>
-        /// <seealso cref="Modify">
+        /// <seealso cref="ModifyAsync">
         /// </seealso>
         public async Task<string> GetSchemaDnAsync(string dn)
         {

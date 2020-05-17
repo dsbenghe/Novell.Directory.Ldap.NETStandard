@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap
     ///     Additional information on Ldap modifications is available in section 4.6
     ///     of. <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
     /// </summary>
-    /// <seealso cref="LdapConnection.Modify">
+    /// <seealso cref="LdapConnection.ModifyAsync">
     /// </seealso>
     /// <seealso cref="LdapAttribute">
     /// </seealso>
