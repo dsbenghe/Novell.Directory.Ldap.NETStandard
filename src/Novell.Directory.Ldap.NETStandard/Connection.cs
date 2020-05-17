@@ -534,7 +534,7 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out IPAddress ipAddress))
                         {
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                            var ipAddresses = await Dns.GetHostAddressesAsync(host);
                             ipAddress = ipAddresses.First(ip =>
                                 ip.AddressFamily == AddressFamily.InterNetwork ||
                                 ip.AddressFamily == AddressFamily.InterNetworkV6);
@@ -544,14 +544,14 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfter(ConnectionTimeout);
+                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            await sslstream.AuthenticateAsClientAsync(host).TimeoutAfter(ConnectionTimeout);
+                            await sslstream.AuthenticateAsClientAsync(host).TimeoutAfterAsync(ConnectionTimeout);
 
                             _inStream = sslstream;
                             _outStream = sslstream;
@@ -559,7 +559,7 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             _socket = new TcpClient(ipAddress.AddressFamily);
-                            await _socket.ConnectAsync(host, port).TimeoutAfter(ConnectionTimeout);
+                            await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout);
 
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
@@ -985,7 +985,7 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
-                await sslstream.AuthenticateAsClientAsync(Host).TimeoutAfter(ConnectionTimeout);
+                await sslstream.AuthenticateAsClientAsync(Host).TimeoutAfterAsync(ConnectionTimeout);
                 _inStream = sslstream;
                 _outStream = sslstream;
                 StartReader();
