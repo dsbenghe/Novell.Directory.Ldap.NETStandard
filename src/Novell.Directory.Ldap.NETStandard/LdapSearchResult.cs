@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap
     ///     Encapsulates a single search result that is in response to an asynchronous
     ///     search operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.Search">
+    /// <seealso cref="LdapConnection.SearchAsync">
     /// </seealso>
     public class LdapSearchResult : LdapMessage
     {

@@ -5,7 +5,7 @@ using System.Linq;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfo(ILdapConnection)"/>
+    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfoAsync(ILdapConnection)"/>
     /// </summary>
     public class RootDseInfo
     {

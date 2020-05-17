@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     ///     operation, known to a particular server, and the data associated
     ///     with that extended operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.ExtendedOperation">
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync">
     /// </seealso>
     public class LdapExtendedOperation
     {

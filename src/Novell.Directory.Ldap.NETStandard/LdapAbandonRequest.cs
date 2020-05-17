@@ -37,7 +37,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap Abandon Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequest">
+    /// <seealso cref="LdapConnection.SendRequestAsync">
     /// </seealso>
     /*
      *       AbandonRequest ::= [APPLICATION 16] MessageID

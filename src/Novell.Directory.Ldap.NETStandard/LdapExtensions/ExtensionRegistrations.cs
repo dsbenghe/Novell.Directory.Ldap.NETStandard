@@ -1,4 +1,6 @@
-﻿namespace Novell.Directory.Ldap
+﻿using System.Threading.Tasks;
+
+namespace Novell.Directory.Ldap
 {
     public static class ExtensionRegistrations
     {
@@ -7,9 +9,9 @@
             LdapExtendedResponse.Register(LdapKnownOids.Extensions.WhoAmI, typeof(LdapWhoAmIResponse));
         }
 
-        public static LdapWhoAmIResponse WhoAmI(this LdapConnection conn, LdapConstraints cons = null)
+        public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons = null)
         {
-            var result = conn.ExtendedOperation(new LdapWhoAmIOperation(), cons);
+            var result = await conn.ExtendedOperationAsync(new LdapWhoAmIOperation(), cons);
             if (result is LdapWhoAmIResponse whoami)
             {
                 return whoami;

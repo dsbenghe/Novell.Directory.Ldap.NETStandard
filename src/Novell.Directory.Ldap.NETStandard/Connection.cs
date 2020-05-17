@@ -41,6 +41,7 @@ using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -447,9 +448,9 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal void Connect(string host, int port)
+        internal Task ConnectAsync(string host, int port)
         {
-            Connect(host, port, 0);
+            return ConnectAsync(host, port, 0);
         }
 
         /****************************************************************************/
@@ -501,7 +502,7 @@ namespace Novell.Directory.Ldap
         /// <param name="semaphoreId">
         ///     The write semaphore ID to use for the connect.
         /// </param>
-        private void Connect(string host, int port, int semaphoreId)
+        private async Task ConnectAsync(string host, int port, int semaphoreId)
         {
             /* Synchronized so all variables are in a consistant state and
             * so that another thread isn't doing a connect, disconnect, or clone
@@ -533,7 +534,7 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out IPAddress ipAddress))
                         {
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                            var ipAddresses = await Dns.GetHostAddressesAsync(host);
                             ipAddress = ipAddresses.First(ip =>
                                 ip.AddressFamily == AddressFamily.InterNetwork ||
                                 ip.AddressFamily == AddressFamily.InterNetworkV6);
@@ -543,14 +544,14 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            _sock.ConnectAsync(ipEndPoint).WaitAndUnwrap(ConnectionTimeout);
+                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
+                            await sslstream.AuthenticateAsClientAsync(host).TimeoutAfterAsync(ConnectionTimeout);
 
                             _inStream = sslstream;
                             _outStream = sslstream;
@@ -558,7 +559,7 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             _socket = new TcpClient(ipAddress.AddressFamily);
-                            _socket.ConnectAsync(host, port).WaitAndUnwrap(ConnectionTimeout);
+                            await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout);
 
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
@@ -704,14 +705,14 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        internal void WriteMessage(Message info)
+        internal async Task WriteMessageAsync(Message info)
         {
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
             if (info.BindRequest && Connected == false && Host != null)
             {
-                Connect(Host, Port, info.MessageId);
+                await ConnectAsync(Host, Port, info.MessageId);
             }
 
             if (Connected)
@@ -973,7 +974,7 @@ namespace Novell.Directory.Ldap
         ///     stop and start the reader thread.  Connection.StopTLS will stop
         ///     and start the reader thread.
         /// </summary>
-        internal void StartTls()
+        internal async Task StartTlsAsync()
         {
             try
             {
@@ -984,7 +985,7 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
-                sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
+                await sslstream.AuthenticateAsClientAsync(Host).TimeoutAfterAsync(ConnectionTimeout);
                 _inStream = sslstream;
                 _outStream = sslstream;
                 StartReader();

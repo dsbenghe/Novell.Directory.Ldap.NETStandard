@@ -184,14 +184,14 @@ namespace Novell.Directory.Ldap.Events
         {
             // perform the search with no attributes returned
             _mQueue =
-                _mConnection.Search(
+                _mConnection.SearchAsync(
                     _mSearchBase, // container to search
                     _mScope, // search container's subtree
                     _mFilter, // search filter, all objects
                     _mAttrs, // don't return attributes
                     _mTypesOnly, // return attrs and values or attrs only.
                     null, // use default search queue
-                    _mSearchConstraints); // use default search constraints
+                    _mSearchConstraints).GetAwaiter().GetResult(); // use default search constraints
 
             var ids = _mQueue.MessageIDs;
 

@@ -1,6 +1,7 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -21,7 +22,7 @@ namespace Novell.Directory.Ldap
         ///     SocketFactory has been specified that does not implement
         ///     LdapTLSSocketFactory an LdapException is thrown.
         /// </exception>
-        void StartTls();
+        Task StartTlsAsync();
 
         /// <summary>
         ///     Stops Transport Layer Security(TLS) on the LDAPConnection and reverts
@@ -43,7 +44,7 @@ namespace Novell.Directory.Ldap
         ///         by StopTLS
         ///     </p>
         /// </summary>
-        void StopTls();
+        Task StopTlsAsync();
 
         /// <summary>
         ///     Synchronously adds an entry to the directory.
@@ -56,7 +57,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Add(LdapEntry entry);
+        Task AddAsync(LdapEntry entry);
 
         /// <summary>
         ///     Synchronously adds an entry to the directory, using the specified
@@ -73,7 +74,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Add(LdapEntry entry, LdapConstraints cons);
+        Task AddAsync(LdapEntry entry, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -104,7 +105,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(string dn, string passwd);
+        Task BindAsync(string dn, string passwd);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -139,7 +140,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, string passwd);
+        Task BindAsync(int version, string dn, string passwd);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -173,7 +174,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(string dn, string passwd, LdapConstraints cons);
+        Task BindAsync(string dn, string passwd, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -211,7 +212,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, string passwd, LdapConstraints cons);
+        Task BindAsync(int version, string dn, string passwd, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -241,7 +242,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, byte[] passwd);
+        Task BindAsync(int version, string dn, byte[] passwd);
 
         /// <summary>
         ///     Synchronously authenticates to the Ldap server (that the object is
@@ -274,13 +275,13 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
+        Task BindAsync(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
         /// Bind via a SASL Mechanism
         /// </summary>
         /// <param name="saslRequest"></param>
-        void Bind(SaslRequest saslRequest);
+        Task BindAsync(SaslRequest saslRequest);
 
         IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories();
 
@@ -313,7 +314,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Connect(string host, int port);
+        Task ConnectAsync(string host, int port);
 
         /// <summary>
         ///     Synchronously deletes the entry with the specified distinguished name
@@ -328,7 +329,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Delete(string dn);
+        Task DeleteAsync(string dn);
 
         /// <summary>
         ///     Synchronously deletes the entry with the specified distinguished name
@@ -346,7 +347,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Delete(string dn, LdapConstraints cons);
+        Task DeleteAsync(string dn, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously disconnects from the Ldap server.
@@ -380,7 +381,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op);
+        Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op);
 
         /// <summary>
         ///     Provides a synchronous means to access extended, non-mandatory
@@ -404,7 +405,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons);
+        Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously makes a single change to an existing entry in the
@@ -426,7 +427,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Modify(string dn, LdapModification mod);
+        Task ModifyAsync(string dn, LdapModification mod);
 
         /// <summary>
         ///     Synchronously makes a single change to an existing entry in the
@@ -451,7 +452,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Modify(string dn, LdapModification mod, LdapConstraints cons);
+        Task ModifyAsync(string dn, LdapModification mod, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously makes a set of changes to an existing entry in the
@@ -474,7 +475,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Modify(string dn, LdapModification[] mods);
+        Task ModifyAsync(string dn, LdapModification[] mods);
 
         /// <summary>
         ///     Synchronously makes a set of changes to an existing entry in the
@@ -500,7 +501,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an
         ///     error message and an Ldap error code.
         /// </exception>
-        void Modify(string dn, LdapModification[] mods, LdapConstraints cons);
+        Task ModifyAsync(string dn, LdapModification[] mods, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distiguished name (DN)
@@ -515,7 +516,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found.
         /// </exception>
-        LdapEntry Read(string dn);
+        Task<LdapEntry> ReadAsync(string dn);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distiguished name (DN),
@@ -534,7 +535,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found.
         /// </exception>
-        LdapEntry Read(string dn, LdapSearchConstraints cons);
+        Task<LdapEntry> ReadAsync(string dn, LdapSearchConstraints cons);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distinguished name (DN)
@@ -552,7 +553,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found.
         /// </exception>
-        LdapEntry Read(string dn, string[] attrs);
+        Task<LdapEntry> ReadAsync(string dn, string[] attrs);
 
         /// <summary>
         ///     Synchronously reads the entry for the specified distinguished name (DN),
@@ -574,7 +575,7 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found.
         /// </exception>
-        LdapEntry Read(string dn, string[] attrs, LdapSearchConstraints cons);
+        Task<LdapEntry> ReadAsync(string dn, string[] attrs, LdapSearchConstraints cons);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory.
@@ -594,7 +595,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Rename(string dn, string newRdn, bool deleteOldRdn);
+        Task RenameAsync(string dn, string newRdn, bool deleteOldRdn);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory, using the
@@ -618,7 +619,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Rename(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons);
+        Task RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory, possibly
@@ -643,7 +644,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn);
+        Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn);
 
         /// <summary>
         ///     Synchronously renames an existing entry in the directory, using the
@@ -672,7 +673,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        void Rename(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons);
+        Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn, LdapConstraints cons);
 
         /// <summary>
         ///     Synchronously performs the search specified by the parameters.
@@ -707,7 +708,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly);
+        Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly);
 
         /// <summary>
         ///     Synchronously performs the search specified by the parameters,
@@ -753,7 +754,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        ILdapSearchResults Search(string @base, int scope, string filter, string[] attrs, bool typesOnly,
+        Task<ILdapSearchResults> SearchAsync(string @base, int scope, string filter, string[] attrs, bool typesOnly,
             LdapSearchConstraints cons);
 
         /// <summary>
@@ -779,7 +780,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        bool Compare(string dn, LdapAttribute attr);
+        Task<bool> CompareAsync(string dn, LdapAttribute attr);
 
         /// <summary>
         ///     Synchronously checks to see if an entry contains an attribute with a
@@ -807,7 +808,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        bool Compare(string dn, LdapAttribute attr, LdapConstraints cons);
+        Task<bool> CompareAsync(string dn, LdapAttribute attr, LdapConstraints cons);
 
         /// <summary>
         ///     Indicates whether the object has authenticated to the connected Ldap
