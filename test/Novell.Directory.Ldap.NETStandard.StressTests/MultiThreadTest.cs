@@ -52,23 +52,20 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             {
                 threadData.ShouldStop = true;
             }
-            Thread.Sleep(TimeSpan.FromSeconds(60));
-            foreach (var thread in threads)
-            {
-                thread.Join(TimeSpan.FromSeconds(1));
-            }
+
+            _logger.LogInformation("Exiting monitoring thread");
+            monitoringThreadData.WaitHandle.Set();
+            monitoringThread.Join();
+
+            Thread.Sleep(DefaultTestingThreadReportingPeriod.Multiply(2));
 
             foreach (var thread in threads)
             {
                 if (thread.IsAlive)
                 {
-                    thread.Abort();
+                    _logger.LogWarning($"Worker thread {thread.ManagedThreadId} still alive");
                 }
             }
-
-            _logger.LogInformation("Exiting monitoring thread");
-            monitoringThreadData.WaitHandle.Set();
-            monitoringThread.Join();
 
             var failRun = ReportRunResult(threadDatas);
 
@@ -90,10 +87,12 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         private void MonitoringThread(object param)
         {
             var monitoringThreadData = (MonitoringThreadData)param;
+            
             do
             {
                 DumpStats(monitoringThreadData);
             } while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
+
             DumpStats(monitoringThreadData);
         }
 
@@ -114,7 +113,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
 
                 var lastUpdateSecondsAgo = (int)(DateTime.Now - lastDate).TotalSeconds;
-                var possibleHanging = (lastUpdateSecondsAgo - 2 * DefaultTestingThreadReportingPeriod.TotalSeconds) > 0;
+                var possibleHanging = (lastUpdateSecondsAgo - 3 * DefaultTestingThreadReportingPeriod.TotalSeconds) > 0;
                 logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
             }
 
@@ -197,7 +196,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
             }
         }
-
+        
         private class MonitoringThreadData
         {
             public MonitoringThreadData(ThreadRunner[] threadRunners)
