@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
@@ -8,18 +9,18 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class RenameEntryTests
     {
         [Fact]
-        public void Rename_ExistingEntry_ShouldWork()
+        public async Task Rename_ExistingEntry_ShouldWork()
         {
-            var entry = LdapOps.AddEntry();
+            var entry = await LdapOps.AddEntryAsync();
             var newCn = Guid.NewGuid().ToString();
 
-            TestHelper.WithAuthenticatedLdapConnection((ldapConnection) =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
-                ldapConnection.Rename(entry.Dn, "cn=" + newCn, true);
+                await ldapConnection.RenameAsync(entry.Dn, "cn=" + newCn, true);
             });
 
-            Assert.Null(LdapOps.GetEntry(entry.Dn));
-            var renamedEntry = LdapOps.GetEntry(TestHelper.BuildDn(newCn));
+            Assert.Null(await LdapOps.GetEntryAsync(entry.Dn));
+            var renamedEntry = await LdapOps.GetEntryAsync(TestHelper.BuildDn(newCn));
             Assert.NotNull(renamedEntry);
             entry.GetAttributeSet().AssertSameAs(renamedEntry.GetAttributeSet(), new List<string> {"cn" });
         }

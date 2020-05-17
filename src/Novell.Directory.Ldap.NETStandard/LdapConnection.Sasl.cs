@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -79,7 +80,7 @@ namespace Novell.Directory.Ldap
         public virtual IDictionary SaslBindProperties
             => Connection?.BindProperties?.SaslBindProperties;
 
-        public virtual void Bind(SaslRequest saslRequest)
+        public virtual async Task BindAsync(SaslRequest saslRequest)
         {
             if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
 
@@ -110,7 +111,7 @@ namespace Novell.Directory.Ldap
                     {
                         try
                         {
-                            var replyBuf = SendLdapSaslBindRequest(clientResponse, saslClient.MechanismName, bindProps, constraints);
+                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints);
 
                             if (replyBuf != null)
                             {
@@ -134,12 +135,12 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private byte[] SendLdapSaslBindRequest(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
+        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
         {
             constraints = constraints ?? _defSearchCons;
             var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
 
-            var queue = SendRequestToServer(msg, constraints.TimeLimit, null, bindProps);
+            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps);
             if (!(queue.GetResponse() is LdapResponse ldapResponse))
             {
                 throw new LdapException("Bind failure, no response received.");

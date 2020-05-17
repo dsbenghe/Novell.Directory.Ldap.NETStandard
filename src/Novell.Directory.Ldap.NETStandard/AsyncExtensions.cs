@@ -6,17 +6,24 @@ namespace Novell.Directory.Ldap
 {
     public static class AsyncExtensions
     {
-        public static void WaitAndUnwrap(this Task task, int timeout)
+        public static async Task TimeoutAfter(this Task task, int timeout)
         {
             try
             {
                 if (timeout == 0)
                 {
-                    task.Wait();
+                    await task;
                 }
-                else if (!task.Wait(timeout))
+                else
                 {
-                    throw new SocketException(258); // WAIT_TIMEOUT
+                    if (task == await Task.WhenAny(task, Task.Delay(timeout)))
+                    {
+                        await task;
+                    }
+                    else
+                    {
+                        throw new SocketException(258); // WAIT_TIMEOUT
+                    }
                 }
             }
             catch (AggregateException exception)

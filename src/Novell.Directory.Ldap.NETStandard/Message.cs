@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -239,9 +240,9 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal void SendMessage()
+        internal async Task SendMessageAsync()
         {
-            _conn.WriteMessage(this);
+            await _conn.WriteMessageAsync(this);
 
             // Start the timer thread
             if (_mslimit != 0)
