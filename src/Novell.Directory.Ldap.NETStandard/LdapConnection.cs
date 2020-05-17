@@ -496,7 +496,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task StopTlsAsync()
+        public Task StopTlsAsync()
         {
             if (!Tls)
             {
@@ -524,13 +524,13 @@ namespace Novell.Directory.Ldap
             /* Now that the TLS socket is closed, reset everything.  This next
             line is temporary until JSSE is fixed to properly handle TLS stop */
             /* After stopTls the stream is very likely unusable */
-            await ConnectAsync(Host, Port);
+            return ConnectAsync(Host, Port);
         }
 
         /// <inheritdoc />
-        public async Task AddAsync(LdapEntry entry)
+        public Task AddAsync(LdapEntry entry)
         {
-            await AddAsync(entry, _defSearchCons);
+            return AddAsync(entry, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -551,25 +551,25 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task BindAsync(string dn, string passwd)
+        public Task BindAsync(string dn, string passwd)
         {
-            await BindAsync(LdapV3, dn, passwd, _defSearchCons);
+            return BindAsync(LdapV3, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
-        public async Task BindAsync(int version, string dn, string passwd)
+        public Task BindAsync(int version, string dn, string passwd)
         {
-            await BindAsync(version, dn, passwd, _defSearchCons);
+            return BindAsync(version, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
-        public async Task BindAsync(string dn, string passwd, LdapConstraints cons)
+        public Task BindAsync(string dn, string passwd, LdapConstraints cons)
         {
-            await BindAsync(LdapV3, dn, passwd, cons);
+            return BindAsync(LdapV3, dn, passwd, cons);
         }
 
         /// <inheritdoc />
-        public async Task BindAsync(int version, string dn, string passwd, LdapConstraints cons)
+        public Task BindAsync(int version, string dn, string passwd, LdapConstraints cons)
         {
             byte[] pw = null;
             if (passwd != null)
@@ -577,13 +577,13 @@ namespace Novell.Directory.Ldap
                 pw = passwd.ToUtf8Bytes();
             }
 
-            await BindAsync(version, dn, pw, cons);
+            return BindAsync(version, dn, pw, cons);
         }
 
         /// <inheritdoc />
-        public async Task BindAsync(int version, string dn, byte[] passwd)
+        public Task BindAsync(int version, string dn, byte[] passwd)
         {
-            await BindAsync(version, dn, passwd, _defSearchCons);
+            return BindAsync(version, dn, passwd, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -648,9 +648,9 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task DeleteAsync(string dn)
+        public Task DeleteAsync(string dn)
         {
-            await DeleteAsync(dn, _defSearchCons);
+            return DeleteAsync(dn, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -678,9 +678,9 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op)
+        public Task<LdapExtendedResponse> ExtendedOperationAsync(LdapExtendedOperation op)
         {
-            return await ExtendedOperationAsync(op, _defSearchCons);
+            return ExtendedOperationAsync(op, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -702,23 +702,23 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task ModifyAsync(string dn, LdapModification mod)
+        public Task ModifyAsync(string dn, LdapModification mod)
         {
-            await ModifyAsync(dn, mod, _defSearchCons);
+            return ModifyAsync(dn, mod, _defSearchCons);
         }
 
         /// <inheritdoc />
-        public async Task ModifyAsync(string dn, LdapModification mod, LdapConstraints cons)
+        public Task ModifyAsync(string dn, LdapModification mod, LdapConstraints cons)
         {
             var mods = new LdapModification[1];
             mods[0] = mod;
-            await ModifyAsync(dn, mods, cons);
+            return ModifyAsync(dn, mods, cons);
         }
 
         /// <inheritdoc />
-        public async Task ModifyAsync(string dn, LdapModification[] mods)
+        public Task ModifyAsync(string dn, LdapModification[] mods)
         {
-            await ModifyAsync(dn, mods, _defSearchCons);
+            return ModifyAsync(dn, mods, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -777,22 +777,22 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task RenameAsync(string dn, string newRdn, bool deleteOldRdn)
+        public Task RenameAsync(string dn, string newRdn, bool deleteOldRdn)
         {
-            await RenameAsync(dn, newRdn, deleteOldRdn, _defSearchCons);
+            return RenameAsync(dn, newRdn, deleteOldRdn, _defSearchCons);
         }
 
         /// <inheritdoc />
-        public async Task RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
+        public Task RenameAsync(string dn, string newRdn, bool deleteOldRdn, LdapConstraints cons)
         {
             // null for newParentdn means that this is originating as an Ldapv2 call
-            await RenameAsync(dn, newRdn, null, deleteOldRdn, cons);
+            return RenameAsync(dn, newRdn, null, deleteOldRdn, cons);
         }
 
         /// <inheritdoc />
-        public async Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
+        public Task RenameAsync(string dn, string newRdn, string newParentdn, bool deleteOldRdn)
         {
-            await RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
+            return RenameAsync(dn, newRdn, newParentdn, deleteOldRdn, _defSearchCons);
         }
 
         /// <inheritdoc />
@@ -1051,9 +1051,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public async Task AbandonAsync(LdapSearchResults results, LdapConstraints cons)
+        public Task AbandonAsync(LdapSearchResults results, LdapConstraints cons)
         {
-            await results.AbandonAsync();
+            return results.AbandonAsync();
         }
 
         /// <summary>
@@ -1380,9 +1380,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public async Task<bool> CompareAsync(string dn, LdapAttribute attr)
+        public Task<bool> CompareAsync(string dn, LdapAttribute attr)
         {
-            return await CompareAsync(dn, attr, _defSearchCons);
+            return CompareAsync(dn, attr, _defSearchCons);
         }
 
         /// <summary>
@@ -1505,7 +1505,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapException.CompareFalse">
         /// </seealso>
-        public async Task<LdapResponseQueue> CompareAsync(string dn, LdapAttribute attr, LdapResponseQueue queue,
+        public Task<LdapResponseQueue> CompareAsync(string dn, LdapAttribute attr, LdapResponseQueue queue,
             LdapConstraints cons)
         {
             if (attr.Size() != 1)
@@ -1526,7 +1526,7 @@ namespace Novell.Directory.Ldap
 
             LdapMessage msg = new LdapCompareRequest(dn, attr.Name, attr.ByteValue, cons.GetControls());
 
-            return await SendRequestToServerAsync(msg, cons.TimeLimit, queue, null);
+            return SendRequestToServerAsync(msg, cons.TimeLimit, queue, null);
         }
 
         /// <summary>
@@ -1869,9 +1869,9 @@ namespace Novell.Directory.Ldap
         /// <exception>
         ///     LdapException if the object was not found.
         /// </exception>
-        public static async Task<LdapEntry> ReadAsync(LdapUrl toGet)
+        public static Task<LdapEntry> ReadAsync(LdapUrl toGet)
         {
-            return await ReadAsync(toGet, null);
+            return ReadAsync(toGet, null);
         }
 
         /// <summary>
@@ -2191,10 +2191,10 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public static async Task<ILdapSearchResults> SearchAsync(LdapUrl toGet)
+        public static Task<ILdapSearchResults> SearchAsync(LdapUrl toGet)
         {
             // Get a clone of default search constraints, method alters batchSize
-            return await SearchAsync(toGet, null);
+            return SearchAsync(toGet, null);
         }
 
         /*

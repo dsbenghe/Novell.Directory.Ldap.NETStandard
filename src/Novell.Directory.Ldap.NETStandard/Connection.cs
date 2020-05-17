@@ -448,9 +448,9 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal async Task ConnectAsync(string host, int port)
+        internal Task ConnectAsync(string host, int port)
         {
-            await ConnectAsync(host, port, 0);
+            return ConnectAsync(host, port, 0);
         }
 
         /****************************************************************************/
