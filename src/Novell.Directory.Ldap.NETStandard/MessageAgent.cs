@@ -32,6 +32,7 @@
 
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -258,13 +259,13 @@ namespace Novell.Directory.Ldap
         ///     the interval to wait for the message to complete or.
         ///     <code>null</code> if infinite.
         /// </param>
-        internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
+        internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
         {
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, bindProps);
             _messages.Add(message);
-            message.SendMessage(); // Now send message to server
+            return message.SendMessageAsync(); // Now send message to server
         }
 
         /// <summary>

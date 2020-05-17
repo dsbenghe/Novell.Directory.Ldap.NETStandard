@@ -1,22 +1,25 @@
-﻿namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
+﻿using System.Threading.Tasks;
+
+namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class LdapOps
     {
-        public static LdapEntry AddEntry()
+        public static async Task<LdapEntry> AddEntryAsync()
         {
-            return TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
+            return await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
                 var ldapEntry = LdapEntryHelper.NewLdapEntry();
-                ldapConnection.Add(ldapEntry);
+                await ldapConnection.AddAsync(ldapEntry);
                 return ldapEntry;
             });
         }
 
-        public static LdapEntry GetEntry(string dn)
+        public static async Task<LdapEntry> GetEntryAsync(string dn)
         {
             try
             {
-                return TestHelper.WithAuthenticatedLdapConnection(ldapConnection => ldapConnection.Read(dn));
+                return await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
+                    await ldapConnection.ReadAsync(dn));
             }
             catch (LdapException ldapException) when (ldapException.ResultCode == LdapException.NoSuchObject /* not found */)
             {

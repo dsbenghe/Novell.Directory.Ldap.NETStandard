@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
@@ -7,21 +8,21 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
     public class DeleteEntryTests
     {
         [Fact]
-        public void Delete_OfExistingEntry_ShouldWork()
+        public async Task Delete_OfExistingEntry_ShouldWork()
         {
-            var existingEntry = LdapOps.AddEntry();
+            var existingEntry = await LdapOps.AddEntryAsync();
 
-            TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(existingEntry.Dn); });
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.DeleteAsync(existingEntry.Dn); });
 
-            var retrivedEntry = LdapOps.GetEntry(existingEntry.Dn);
-            Assert.Null(retrivedEntry);
+            var retrievedEntry = await LdapOps.GetEntryAsync(existingEntry.Dn);
+            Assert.Null(retrievedEntry);
         }
 
         [Fact]
-        public void Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
+        public async Task  Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
         {
-            var ldapException = Assert.Throws<LdapException>(
-                () => TestHelper.WithAuthenticatedLdapConnection(ldapConnection => { ldapConnection.Delete(TestHelper.BuildDn(Guid.NewGuid().ToString())); }));
+            var ldapException = await Assert.ThrowsAsync<LdapException>(
+                () => TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.DeleteAsync(TestHelper.BuildDn(Guid.NewGuid().ToString())); }));
             Assert.Equal(LdapException.NoSuchObject, ldapException.ResultCode);
         }
     }

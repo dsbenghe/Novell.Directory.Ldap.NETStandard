@@ -37,7 +37,7 @@ using Novell.Directory.Ldap.Utilclass;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    ///     A utility class to facilitate composition and deomposition
+    ///     A utility class to facilitate composition and decomposition
     ///     of distinguished names DNs.
     ///     Specifies methods for manipulating a distinguished name DN
     ///     and a relative distinguished name RDN.
@@ -47,8 +47,8 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Compares the two strings per the distinguishedNameMatch equality matching
         ///     (using case-ignore matching).  IllegalArgumentException is thrown if one
-        ///     or both DNs are invalid.  UnsupportedOpersationException is thrown if the
-        ///     API implementation is not able to detemine if the DNs match or not.
+        ///     or both DNs are invalid.  UnsupportedOperationException is thrown if the
+        ///     API implementation is not able to determine if the DNs match or not.
         /// </summary>
         /// <param name="dn1">
         ///     String form of the first DN to compare.

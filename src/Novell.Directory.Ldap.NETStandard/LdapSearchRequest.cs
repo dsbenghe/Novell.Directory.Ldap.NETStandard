@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap Search request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequest">
+    /// <seealso cref="LdapConnection.SendRequestAsync">
     /// </seealso>
     /*
      *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
@@ -168,9 +168,9 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="Novell.Directory.Ldap.LdapConnection.Search">
+        /// <seealso cref="LdapConnection.SearchAsync">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints">
+        /// <seealso cref="LdapSearchConstraints">
         /// </seealso>
         public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
@@ -235,9 +235,9 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="Novell.Directory.Ldap.LdapConnection.Search">
+        /// <seealso cref="LdapConnection.SearchAsync">
         /// </seealso>
-        /// <seealso cref="Novell.Directory.Ldap.LdapSearchConstraints">
+        /// <seealso cref="LdapSearchConstraints">
         /// </seealso>
         public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)

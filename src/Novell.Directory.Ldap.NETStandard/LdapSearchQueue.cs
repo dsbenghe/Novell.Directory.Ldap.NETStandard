@@ -36,7 +36,7 @@ namespace Novell.Directory.Ldap
     ///     A mechanism for queuing asynchronous search results
     ///     received from a server.
     /// </summary>
-    /// <seealso cref="LdapConnection.Search">
+    /// <seealso cref="LdapConnection.SearchAsync">
     /// </seealso>
     /// <seealso cref="LdapResponseQueue">
     /// </seealso>

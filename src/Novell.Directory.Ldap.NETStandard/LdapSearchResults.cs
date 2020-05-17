@@ -33,6 +33,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
@@ -107,104 +108,101 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if all search results have been placed in the vector.
         /// </returns>
-        private bool BatchOfResults
+        private async Task<bool> GetBatchOfResultsAsync()
         {
-            get
+            LdapMessage msg;
+
+            // <=batchSize so that we can pick up the result-done message
+            for (var i = 0; i < _batchSize;)
             {
-                LdapMessage msg;
-
-                // <=batchSize so that we can pick up the result-done message
-                for (var i = 0; i < _batchSize;)
+                try
                 {
-                    try
+                    if ((msg = _queue.GetResponse()) != null)
                     {
-                        if ((msg = _queue.GetResponse()) != null)
+                        // Only save controls if there are some
+                        var ctls = msg.Controls;
+                        if (ctls != null)
                         {
-                            // Only save controls if there are some
-                            var ctls = msg.Controls;
-                            if (ctls != null)
-                            {
-                                ResponseControls = ctls;
-                            }
+                            ResponseControls = ctls;
+                        }
 
-                            if (msg is LdapSearchResult)
-                            {
-                                // Search Entry
-                                object entry = ((LdapSearchResult)msg).Entry;
-                                _entries.Add(entry);
-                                i++;
-                                _entryCount++;
-                            }
-                            else if (msg is LdapSearchResultReference)
-                            {
-                                // Search Ref
-                                var refs = ((LdapSearchResultReference)msg).Referrals;
+                        if (msg is LdapSearchResult)
+                        {
+                            // Search Entry
+                            object entry = ((LdapSearchResult)msg).Entry;
+                            _entries.Add(entry);
+                            i++;
+                            _entryCount++;
+                        }
+                        else if (msg is LdapSearchResultReference)
+                        {
+                            // Search Ref
+                            var refs = ((LdapSearchResultReference)msg).Referrals;
 
-                                if (_cons.ReferralFollowing)
-                                {
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, msg, refs, 0, true, _referralConn);
-                                }
-                                else
-                                {
-                                    _references.Add(refs);
-                                    _referenceCount++;
-                                }
+                            if (_cons.ReferralFollowing)
+                            {
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, msg, refs, 0, true, _referralConn);
                             }
                             else
                             {
-                                // LdapResponse
-                                var resp = (LdapResponse)msg;
-                                var resultCode = resp.ResultCode;
-
-                                // Check for an embedded exception
-                                if (resp.HasException())
-                                {
-                                    // Fake it, results in an exception when msg read
-                                    resultCode = LdapException.ConnectError;
-                                }
-
-                                if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
-                                {
-                                    // Following referrals
-                                    _referralConn = _conn.ChaseReferral(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn);
-                                }
-                                else if (resultCode != LdapException.Success)
-                                {
-                                    // Results in an exception when message read
-                                    _entries.Add(resp);
-                                    _entryCount++;
-                                }
-
-                                // We are done only when we have read all messages
-                                // including those received from following referrals
-                                var msgIDs = _queue.MessageIDs;
-                                var controls = _cons.GetControls();
-                                if (msgIDs.Length == 0 && (controls == null || controls.Length == 0))
-                                {
-                                    // Release referral exceptions
-                                    _conn.ReleaseReferralConnections(_referralConn);
-                                    return true; // search completed
-                                }
+                                _references.Add(refs);
+                                _referenceCount++;
                             }
                         }
                         else
                         {
-                            // We get here if the connection timed out
-                            // we have no responses, no message IDs and no exceptions
-                            var e = new LdapException(null, LdapException.LdapTimeout, null);
-                            _entries.Add(e);
-                            break;
+                            // LdapResponse
+                            var resp = (LdapResponse)msg;
+                            var resultCode = resp.ResultCode;
+
+                            // Check for an embedded exception
+                            if (resp.HasException())
+                            {
+                                // Fake it, results in an exception when msg read
+                                resultCode = LdapException.ConnectError;
+                            }
+
+                            if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
+                            {
+                                // Following referrals
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn);
+                            }
+                            else if (resultCode != LdapException.Success)
+                            {
+                                // Results in an exception when message read
+                                _entries.Add(resp);
+                                _entryCount++;
+                            }
+
+                            // We are done only when we have read all messages
+                            // including those received from following referrals
+                            var msgIDs = _queue.MessageIDs;
+                            var controls = _cons.GetControls();
+                            if (msgIDs.Length == 0 && (controls == null || controls.Length == 0))
+                            {
+                                // Release referral exceptions
+                                _conn.ReleaseReferralConnections(_referralConn);
+                                return true; // search completed
+                            }
                         }
                     }
-                    catch (LdapException e)
+                    else
                     {
-                        // Hand exception off to user
+                        // We get here if the connection timed out
+                        // we have no responses, no message IDs and no exceptions
+                        var e = new LdapException(null, LdapException.LdapTimeout, null);
                         _entries.Add(e);
+                        break;
                     }
                 }
-
-                return false; // search not completed
+                catch (LdapException e)
+                {
+                    // Hand exception off to user
+                    _entries.Add(e);
+                }
             }
+
+            return false; // search not completed
         }
 
         /// <summary>
@@ -245,7 +243,7 @@ namespace Novell.Directory.Ldap
             else if (_completed == false)
             {
                 // reload the Vector by getting more results
-                ResetVectors();
+                ResetVectorsAsync().GetAwaiter().GetResult();
                 ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
 
@@ -277,7 +275,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Check if the enumeration is empty and must be reloaded
-            ResetVectors();
+            ResetVectorsAsync().GetAwaiter().GetResult();
 
             object element = null;
 
@@ -349,7 +347,7 @@ namespace Novell.Directory.Ldap
         /*
         * If both of the vectors are empty, get more data for them.
         */
-        private void ResetVectors()
+        private async Task ResetVectorsAsync()
         {
             // If we're done, no further checking needed
             if (_completed)
@@ -376,19 +374,19 @@ namespace Novell.Directory.Ldap
             // If no data at all, must reload enumeration
             if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
             {
-                _completed = BatchOfResults;
+                _completed = await GetBatchOfResultsAsync();
             }
         }
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
         /*package*/
-        internal void Abandon()
+        internal async Task AbandonAsync()
         {
             // first, remove message ID and timer and any responses in the queue
             _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
-            ResetVectors();
+            await ResetVectorsAsync();
             _completed = true;
         }
         

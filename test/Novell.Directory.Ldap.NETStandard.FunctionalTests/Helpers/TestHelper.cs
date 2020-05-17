@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
@@ -11,40 +12,40 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             Tls
         }
 
-        public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
+        public static async Task WithLdapConnectionAsync(Func<ILdapConnection, Task> actionOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
-            WithLdapConnectionImpl<object>(
-                (ldapConnection) =>
+            await WithLdapConnectionImplAsync<object>(
+                async (ldapConnection) =>
             {
-                actionOnConnectedLdapConnection(ldapConnection);
+                await actionOnConnectedLdapConnection(ldapConnection);
                 return null;
             }, useSsl, disableEnvTransportSecurity);
         }
 
-        public static void WithAuthenticatedLdapConnection(Action<ILdapConnection> actionOnAuthenticatedLdapConnection)
+        public static async Task WithAuthenticatedLdapConnectionAsync(Func<ILdapConnection, Task> actionOnAuthenticatedLdapConnection)
         {
-            WithLdapConnection(ldapConnection =>
+            await WithLdapConnectionAsync(async ldapConnection =>
             {
-                ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                actionOnAuthenticatedLdapConnection(ldapConnection);
+                await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                await actionOnAuthenticatedLdapConnection(ldapConnection);
             });
         }
 
-        public static T WithAuthenticatedLdapConnection<T>(Func<ILdapConnection, T> funcOnAuthenticatedLdapConnection)
+        private static async Task<T> WithLdapConnectionAsync<T>(Func<ILdapConnection, Task<T>> funcOnConnectedLdapConnection)
         {
-            return WithLdapConnection(ldapConnection =>
+            return await WithLdapConnectionImplAsync(funcOnConnectedLdapConnection);
+        }
+
+        public static async Task<T> WithAuthenticatedLdapConnectionAsync<T>(Func<ILdapConnection, Task<T>> funcOnAuthenticatedLdapConnection)
+        {
+            return await WithLdapConnectionAsync(async ldapConnection =>
             {
-                ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
-                return funcOnAuthenticatedLdapConnection(ldapConnection);
+                await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                return await funcOnAuthenticatedLdapConnection(ldapConnection);
             });
         }
 
-        private static T WithLdapConnection<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection)
-        {
-            return WithLdapConnectionImpl(funcOnConnectedLdapConnection);
-        }
-
-        private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
+        private static async Task<T> WithLdapConnectionImplAsync<T>(Func<ILdapConnection, Task<T>> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             using (var ldapConnection = new LdapConnection())
             {
@@ -57,24 +58,24 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                     ldapPort = TestsConfig.LdapServer.ServerPortSsl;
                 }
 
-                ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, ldapPort);
+                await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, ldapPort);
 
                 T retValue;
                 if (transportSecurity == TransportSecurity.Tls)
                 {
                     try
                     {
-                        ldapConnection.StartTls();
-                        retValue = funcOnConnectedLdapConnection(ldapConnection);
+                        await ldapConnection.StartTlsAsync();
+                        retValue = await funcOnConnectedLdapConnection(ldapConnection);
                     }
                     finally
                     {
-                        ldapConnection.StopTls();
+                        await ldapConnection.StopTlsAsync();
                     }
                 }
                 else
                 {
-                    retValue = funcOnConnectedLdapConnection(ldapConnection);
+                    retValue = await funcOnConnectedLdapConnection(ldapConnection);
                 }
 
                 return retValue;
@@ -92,8 +93,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             var envValue = Environment.GetEnvironmentVariable("TRANSPORT_SECURITY");
             if (!string.IsNullOrWhiteSpace(envValue))
             {
-                TransportSecurity parsedValue;
-                if (Enum.TryParse(envValue, true, out parsedValue))
+                if (Enum.TryParse(envValue, true, out TransportSecurity parsedValue))
                 {
                     transportSecurity = parsedValue;
                 }

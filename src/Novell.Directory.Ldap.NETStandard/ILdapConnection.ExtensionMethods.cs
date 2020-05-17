@@ -1,4 +1,6 @@
-﻿namespace Novell.Directory.Ldap
+﻿using System.Threading.Tasks;
+
+namespace Novell.Directory.Ldap
 {
     /// <summary>
     /// Extension Methods for <see cref="ILdapConnection"/> to
@@ -11,9 +13,9 @@
         /// This is really just a specialized <see cref="LdapSearchRequest"/>
         /// to handle getting some commonly requested information.
         /// </summary>
-        public static RootDseInfo GetRootDseInfo(this ILdapConnection conn)
+        public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn)
         {
-            var searchResults = conn.Search("", LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false);
+            var searchResults = await conn.SearchAsync("", LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false);
             if (searchResults.HasMore())
             {
                 var sr = searchResults.Next();

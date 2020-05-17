@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
     ///     An LdapUrl object can be passed to LdapConnection.search to retrieve
     ///     search results.
     /// </summary>
-    /// <seealso cref="LdapConnection.Search">
+    /// <seealso cref="LdapConnection.SearchAsync">
     /// </seealso>
     public class LdapUrl
     {

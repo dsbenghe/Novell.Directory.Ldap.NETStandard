@@ -39,7 +39,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents a simple bind request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequest">
+    /// <seealso cref="LdapConnection.SendRequestAsync">
     /// </seealso>
     /*
      *       BindRequest ::= [APPLICATION 0] SEQUENCE {
