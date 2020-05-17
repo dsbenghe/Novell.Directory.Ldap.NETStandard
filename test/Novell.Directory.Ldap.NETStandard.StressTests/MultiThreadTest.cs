@@ -52,11 +52,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             {
                 threadData.ShouldStop = true;
             }
-            Thread.Sleep(TimeSpan.FromSeconds(60));
-            foreach (var thread in threads)
-            {
-                thread.Join(TimeSpan.FromSeconds(1));
-            }
+            Thread.Sleep(DefaultTestingThreadReportingPeriod.Multiply(3));
 
             foreach (var thread in threads)
             {
@@ -90,10 +86,12 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         private void MonitoringThread(object param)
         {
             var monitoringThreadData = (MonitoringThreadData)param;
+            
             do
             {
                 DumpStats(monitoringThreadData);
             } while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
+
             DumpStats(monitoringThreadData);
         }
 
