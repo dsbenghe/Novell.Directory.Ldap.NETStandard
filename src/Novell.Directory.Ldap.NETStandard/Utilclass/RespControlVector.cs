@@ -42,6 +42,8 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class RespControlVector : ArrayList
     {
+        private readonly object _lockObject = new object();
+
         public RespControlVector(int cap, int incr)
             : base(cap)
         {
@@ -53,7 +55,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void RegisterResponseControl(string oid, Type controlClass)
         {
-            lock (this)
+            lock (_lockObject)
             {
                 Add(new RegisteredControl(this, oid, controlClass));
             }
@@ -66,7 +68,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public Type FindResponseControl(string searchOid)
         {
-            lock (this)
+            lock (_lockObject)
             {
                 RegisteredControl ctl = null;
 
