@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap
     ///     Specifies methods for manipulating a distinguished name DN
     ///     and a relative distinguished name RDN.
     /// </summary>
-    public class LdapDn
+    public static class LdapDn
     {
         /// <summary>
         ///     Compares the two strings per the distinguishedNameMatch equality matching

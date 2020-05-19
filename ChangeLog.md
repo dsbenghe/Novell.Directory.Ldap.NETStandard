@@ -1,5 +1,8 @@
 # Changelog
 
+### 4.0.0
+* Change all the apis to be async
+
 ### 3.2.0
 * Deprecate LibLog. Add back Microsoft.Logging with different versions for the three .net standard version: 1.3, 2.0, 2.1
 * Fix GetAttribute documentation
