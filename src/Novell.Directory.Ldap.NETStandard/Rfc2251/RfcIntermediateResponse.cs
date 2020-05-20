@@ -30,7 +30,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
 
@@ -99,11 +98,11 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         // throws IOException
         {
-            // super(dec, in, len);
-
-            var i = 0;
             _mResponseNameIndex = _mResponseValueIndex = 0;
 
+            // super(dec, in, len);
+
+            int i;
             // decode optional tagged elements. The parent class constructor will
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.

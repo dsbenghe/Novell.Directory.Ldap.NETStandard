@@ -119,9 +119,9 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             //
             // add the pad bytes.
             //
-            Update((byte)128);
+            Update(128);
 
-            while (xBufOff != 0) Update((byte)0);
+            while (xBufOff != 0) Update(0);
             ProcessLength(bitLength);
             ProcessBlock();
         }
@@ -209,7 +209,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
         internal static uint LE_To_UInt32(byte[] bs, int off)
         {
-            return (uint)bs[off]
+            return bs[off]
                 | (uint)bs[off + 1] << 8
                 | (uint)bs[off + 2] << 16
                 | (uint)bs[off + 3] << 24;

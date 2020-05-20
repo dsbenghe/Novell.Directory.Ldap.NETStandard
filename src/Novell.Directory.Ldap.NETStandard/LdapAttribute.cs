@@ -33,7 +33,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -740,15 +739,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            try
-            {
-                RemoveValue(attrString.ToUtf8Bytes());
-            }
-            catch (IOException uee)
-            {
-                // This should NEVER happen but just in case ...
-                throw new Exception(uee.ToString());
-            }
+            RemoveValue(attrString.ToUtf8Bytes());
         }
 
         /// <summary>
@@ -799,7 +790,6 @@ namespace Novell.Directory.Ldap
                         }
 
                         _values = tmp;
-                        tmp = null;
                     }
 
                     break;
@@ -848,7 +838,6 @@ namespace Novell.Directory.Ldap
                 Array.Copy(_values, 0, tmp, 0, _values.Length);
                 tmp[_values.Length] = bytes;
                 _values = tmp;
-                tmp = null;
             }
         }
 
@@ -908,83 +897,50 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             var result = new StringBuilder("LdapAttribute: ");
-            try
+
+            result.Append("{type='" + Name + "'");
+            if (_values != null)
             {
-                result.Append("{type='" + Name + "'");
-                if (_values != null)
+                result.Append(", ");
+                if (_values.Length == 1)
                 {
-                    result.Append(", ");
-                    if (_values.Length == 1)
-                    {
-                        result.Append("value='");
-                    }
-                    else
-                    {
-                        result.Append("values='");
-                    }
-
-                    for (var i = 0; i < _values.Length; i++)
-                    {
-                        if (i != 0)
-                        {
-                            result.Append("','");
-                        }
-
-                        var valueBytes = (byte[])_values[i];
-
-                        if (valueBytes.Length == 0)
-                        {
-                            continue;
-                        }
-
-                        var sval = valueBytes.ToUtf8String();
-                        if (sval.Length == 0)
-                        {
-                            // didn't decode well, must be binary
-                            result.Append("<binary value, length:" + sval.Length);
-                            continue;
-                        }
-
-                        result.Append(sval);
-                    }
-
-                    result.Append("'");
+                    result.Append("value='");
+                }
+                else
+                {
+                    result.Append("values='");
                 }
 
-                result.Append("}");
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.ToString());
+                for (var i = 0; i < _values.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        result.Append("','");
+                    }
+
+                    var valueBytes = (byte[])_values[i];
+
+                    if (valueBytes.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    var sval = valueBytes.ToUtf8String();
+                    if (sval.Length == 0)
+                    {
+                        // didn't decode well, must be binary
+                        result.Append("<binary value, length:" + sval.Length);
+                        continue;
+                    }
+
+                    result.Append(sval);
+                }
+
+                result.Append("'");
             }
 
+            result.Append("}");
             return result.ToString();
-        }
-
-        private class UrlData
-        {
-            private readonly byte[] _data;
-
-            private readonly int _length;
-
-            public UrlData(LdapAttribute enclosingInstance, byte[] data, int length)
-            {
-                EnclosingInstance = enclosingInstance;
-                _length = length;
-                _data = data;
-            }
-
-            public LdapAttribute EnclosingInstance { get; }
-
-            public int GetLength()
-            {
-                return _length;
-            }
-
-            public byte[] GetData()
-            {
-                return _data;
-            }
         }
     }
 }

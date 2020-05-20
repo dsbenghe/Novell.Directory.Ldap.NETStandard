@@ -2338,14 +2338,7 @@ namespace Novell.Directory.Ldap
             }
             else
             {
-                if (request.Type == LdapMessage.SearchRequest)
-                {
-                    agent = queue.MessageAgent;
-                }
-                else
-                {
-                    agent = queue.MessageAgent;
-                }
+                agent = queue.MessageAgent;
             }
 
             await agent.SendMessageAsync(Connection, request, cons.TimeLimit, null);
@@ -2509,7 +2502,6 @@ namespace Novell.Directory.Ldap
                 }
                 catch (Exception lex)
                 {
-                    rconn = null;
                     ex = lex;
                 }
             }

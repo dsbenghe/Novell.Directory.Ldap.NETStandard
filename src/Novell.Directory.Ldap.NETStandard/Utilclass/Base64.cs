@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.IO;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Utilclass

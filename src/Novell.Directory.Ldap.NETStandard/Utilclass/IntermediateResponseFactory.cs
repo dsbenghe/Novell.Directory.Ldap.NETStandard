@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     depend on the child class. All child classes inherit from the
     ///     LdapIntermediateResponse.
     /// </summary>
-    public class IntermediateResponseFactory
+    public static class IntermediateResponseFactory
     {
         /**
              * Used to Convert an RfcLDAPMessage object to the appropriate

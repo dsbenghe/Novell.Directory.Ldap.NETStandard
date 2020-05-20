@@ -31,9 +31,7 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -722,10 +720,9 @@ namespace Novell.Directory.Ldap
 
             // Check for IPV6 "[ipaddress]:port"
             int portStart;
-            var hostEnd = hostPortEnd;
             if (url[scanStart] == '[')
             {
-                hostEnd = url.IndexOf(']', scanStart + 1);
+                int hostEnd = url.IndexOf(']', scanStart + 1);
                 if (hostEnd >= hostPortEnd || hostEnd == -1)
                 {
                     throw new UriFormatException("LdapUrl: \"]\" is missing on IPV6 host name");

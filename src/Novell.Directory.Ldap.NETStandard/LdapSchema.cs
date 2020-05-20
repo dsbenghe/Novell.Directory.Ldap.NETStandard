@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
@@ -162,7 +161,7 @@ namespace Novell.Directory.Ldap
             var itr = GetAttributeSet().GetEnumerator();
             while (itr.MoveNext())
             {
-                var attr = (LdapAttribute)itr.Current;
+                var attr = itr.Current;
                 string valueRenamed, attrName = attr.Name;
                 var enumString = attr.StringValues;
 

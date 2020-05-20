@@ -119,64 +119,58 @@ namespace Novell.Directory.Ldap
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
         {
             Obsolete = false;
-            try
+            var parser = new SchemaParser(raw);
+
+            if (parser.Names != null)
             {
-                var parser = new SchemaParser(raw);
-
-                if (parser.Names != null)
-                {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
-                }
-
-                if (parser.Id != null)
-                {
-                    Oid = parser.Id;
-                }
-
-                if (parser.Description != null)
-                {
-                    Description = parser.Description;
-                }
-
-                if (parser.Auxiliary != null)
-                {
-                    AuxiliaryClasses = new string[parser.Auxiliary.Length];
-                    parser.Auxiliary.CopyTo(AuxiliaryClasses, 0);
-                }
-
-                if (parser.Required != null)
-                {
-                    RequiredAttributes = new string[parser.Required.Length];
-                    parser.Required.CopyTo(RequiredAttributes, 0);
-                }
-
-                if (parser.Optional != null)
-                {
-                    OptionalAttributes = new string[parser.Optional.Length];
-                    parser.Optional.CopyTo(OptionalAttributes, 0);
-                }
-
-                if (parser.Precluded != null)
-                {
-                    PrecludedAttributes = new string[parser.Precluded.Length];
-                    parser.Precluded.CopyTo(PrecludedAttributes, 0);
-                }
-
-                Obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
-                {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
-                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
-                }
-
-                Value = FormatString();
+                names = new string[parser.Names.Length];
+                parser.Names.CopyTo(names, 0);
             }
-            catch (IOException)
+
+            if (parser.Id != null)
             {
+                Oid = parser.Id;
             }
+
+            if (parser.Description != null)
+            {
+                Description = parser.Description;
+            }
+
+            if (parser.Auxiliary != null)
+            {
+                AuxiliaryClasses = new string[parser.Auxiliary.Length];
+                parser.Auxiliary.CopyTo(AuxiliaryClasses, 0);
+            }
+
+            if (parser.Required != null)
+            {
+                RequiredAttributes = new string[parser.Required.Length];
+                parser.Required.CopyTo(RequiredAttributes, 0);
+            }
+
+            if (parser.Optional != null)
+            {
+                OptionalAttributes = new string[parser.Optional.Length];
+                parser.Optional.CopyTo(OptionalAttributes, 0);
+            }
+
+            if (parser.Precluded != null)
+            {
+                PrecludedAttributes = new string[parser.Precluded.Length];
+                parser.Precluded.CopyTo(PrecludedAttributes, 0);
+            }
+
+            Obsolete = parser.Obsolete;
+            var qualifiers = parser.Qualifiers;
+            AttributeQualifier attrQualifier;
+            while (qualifiers.MoveNext())
+            {
+                attrQualifier = qualifiers.Current;
+                SetQualifier(attrQualifier.Name, attrQualifier.Values);
+            }
+
+            Value = FormatString();
         }
 
         /// <summary>

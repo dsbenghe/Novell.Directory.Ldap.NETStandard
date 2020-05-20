@@ -156,7 +156,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 

@@ -106,7 +106,6 @@ namespace Novell.Directory.Ldap.Utilclass
 
             if (locale == null)
             {
-                locale = _defaultLocale;
             }
 
             if (messageOrKey == null)

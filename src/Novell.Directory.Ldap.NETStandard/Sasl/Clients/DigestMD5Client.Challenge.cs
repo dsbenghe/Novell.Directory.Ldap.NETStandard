@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http.Headers;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Sasl.Clients

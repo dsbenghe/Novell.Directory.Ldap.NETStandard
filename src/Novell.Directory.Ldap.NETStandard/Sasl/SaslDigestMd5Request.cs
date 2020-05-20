@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Novell.Directory.Ldap.Sasl
+﻿namespace Novell.Directory.Ldap.Sasl
 {
     public class SaslDigestMd5Request : SaslRequest
     {

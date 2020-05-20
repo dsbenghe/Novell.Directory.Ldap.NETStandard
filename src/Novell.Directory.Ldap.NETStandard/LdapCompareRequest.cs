@@ -30,7 +30,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap

@@ -108,8 +108,6 @@ namespace Novell.Directory.Ldap.Utilclass
             var tokenBuf = new char[dnString.Length];
             var trailingSpaceCount = 0;
             var attrType = string.Empty;
-            var attrValue = string.Empty;
-            var rawValue = string.Empty;
             var hexDigitCount = 0;
             var currRdn = new Rdn();
 
@@ -120,6 +118,8 @@ namespace Novell.Directory.Ldap.Utilclass
             var valueStart = 0;
             var state = LookForRdnAttrType;
             var lastIndex = dnString.Length - 1;
+            string attrValue;
+            string rawValue;
             while (currIndex <= lastIndex)
             {
                 var currChar = dnString[currIndex];
@@ -691,13 +691,12 @@ namespace Novell.Directory.Ldap.Utilclass
         public override string ToString()
         {
             var length = _rdnList.Count;
-            var dn = string.Empty;
             if (length < 1)
             {
                 return null;
             }
 
-            dn = _rdnList[0].ToString();
+            string dn = _rdnList[0].ToString();
             for (var i = 1; i < length; i++)
             {
                 dn += "," + _rdnList[i];

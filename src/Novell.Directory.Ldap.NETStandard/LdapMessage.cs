@@ -564,7 +564,6 @@ namespace Novell.Directory.Ldap
         /// </summary>
         private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
         {
-// throw new NotImplementedException();
             var regControls = LdapControl.RegisteredControls;
             try
             {
@@ -591,10 +590,7 @@ namespace Novell.Directory.Ldap
                     try
                     {
                         /* Call the control constructor for a registered Class*/
-                        object ctl = null;
-
-// ctl = ctlConstructor.newInstance(args);
-                        ctl = ctlConstructor.Invoke(args);
+                        object ctl = ctlConstructor.Invoke(args);
                         return (LdapControl)ctl;
                     }
                     catch (UnauthorizedAccessException e)

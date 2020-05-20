@@ -40,7 +40,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     Two entries are made for each message, a String identifier, and the
     ///     actual error string.  Parameters are identified as {0}, {1}, etc.
     /// </summary>
-    public class ExceptionMessages // : System.Resources.ResourceManager
+    public static class ExceptionMessages // : System.Resources.ResourceManager
     {
         // static strings to aide lookup and guarantee accuracy:
         // DO NOT include these strings in other Locales

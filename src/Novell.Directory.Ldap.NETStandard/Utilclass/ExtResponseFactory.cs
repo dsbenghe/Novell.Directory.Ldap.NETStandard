@@ -15,7 +15,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///         ParsedExtendedResponse.
     ///     </p>
     /// </summary>
-    public class ExtResponseFactory
+    public static class ExtResponseFactory
     {
         /// <summary>
         ///     Used to Convert an RfcLdapMessage object to the appropriate

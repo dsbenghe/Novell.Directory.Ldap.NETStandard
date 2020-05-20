@@ -32,7 +32,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -139,7 +138,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Returns the content of this Asn1OctetString as a String.</summary>
         public string StringValue()
         {
-            string s = null;
+            string s;
             try
             {
                 s = _content.ToUtf8String();

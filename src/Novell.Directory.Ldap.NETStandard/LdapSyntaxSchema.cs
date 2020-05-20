@@ -99,7 +99,7 @@ namespace Novell.Directory.Ldap
                 var qualifiers = parser.Qualifiers;
                 while (qualifiers.MoveNext())
                 {
-                    var attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    var attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 

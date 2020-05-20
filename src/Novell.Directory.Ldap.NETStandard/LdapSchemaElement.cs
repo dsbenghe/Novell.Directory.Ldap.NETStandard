@@ -212,7 +212,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public override void AddValue(string valueRenamed)
+        public override void AddValue(string attrString)
         {
             throw new NotSupportedException("addValue is not supported by LdapSchemaElement");
         }
@@ -223,7 +223,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public override void AddValue(byte[] valueRenamed)
+        public override void AddValue(byte[] attrBytes)
         {
             throw new NotSupportedException("addValue is not supported by LdapSchemaElement");
         }

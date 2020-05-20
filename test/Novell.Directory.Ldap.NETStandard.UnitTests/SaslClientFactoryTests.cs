@@ -1,6 +1,5 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Sasl.Clients;
-using System.Collections;
 using System.Linq;
 using Xunit;
 

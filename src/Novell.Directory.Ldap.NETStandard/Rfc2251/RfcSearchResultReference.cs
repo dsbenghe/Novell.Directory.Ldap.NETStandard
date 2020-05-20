@@ -30,7 +30,6 @@
 // (C) 2003 Novell, Inc (http://www.novell.com)
 //
 
-using System;
 using System.IO;
 using Novell.Directory.Ldap.Asn1;
 

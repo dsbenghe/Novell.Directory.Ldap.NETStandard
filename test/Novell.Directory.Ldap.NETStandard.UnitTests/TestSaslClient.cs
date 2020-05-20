@@ -1,5 +1,4 @@
 ﻿using Novell.Directory.Ldap.Sasl;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
