@@ -68,8 +68,8 @@ namespace Novell.Directory.Ldap.Asn1
     {
         // used to speed up decode, so it doesn't need to recreate an identifier every time
         // instead just reset is called CANNOT be static for multiple connections
-        private Asn1Identifier _asn1Id = new Asn1Identifier();
-        private Asn1Length _asn1Len = new Asn1Length();
+        private readonly Asn1Identifier _asn1Id = new Asn1Identifier();
+        private readonly Asn1Length _asn1Len = new Asn1Length();
 
         /* Generic decode routines
         */
@@ -197,7 +197,7 @@ namespace Novell.Directory.Ldap.Asn1
         public object DecodeNumeric(Stream inRenamed, int len)
         {
             long l = 0;
-            var r = inRenamed.ReadByte();
+            var r = (long)inRenamed.ReadByte();
 
             if (r < 0)
             {

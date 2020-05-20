@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
         private readonly int _batchSize; // Application specified batch size
         private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
 
-        private readonly ArrayList _entries; // Search entries // TODO: Can't make Generic, holds different types
+        private readonly List<object> _entries; // Search entries // TODO: Can't make Generic, holds different types
         private readonly LdapSearchQueue _queue;
         private readonly List<string[]> _references; // Search Result References
         private readonly LdapConnection _conn;
@@ -54,7 +54,7 @@ namespace Novell.Directory.Ldap
         private int _referenceCount; // # Search Result Reference in vector
 
         private int _referenceIndex; // Current position in vector
-        private ArrayList _referralConn; // Referral Connections
+        private List<object> _referralConn; // Referral Connections
 
         /// <summary>
         ///     Constructs a queue object for search results.
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap
             _conn = conn;
             _cons = cons;
             var requestedBatchSize = cons.BatchSize;
-            _entries = new ArrayList(requestedBatchSize == 0 ? 64 : requestedBatchSize);
+            _entries = new List<object>(requestedBatchSize == 0 ? 64 : requestedBatchSize);
             _entryCount = 0;
             _entryIndex = 0;
 
@@ -277,7 +277,6 @@ namespace Novell.Directory.Ldap
             // Check if the enumeration is empty and must be reloaded
             ResetVectorsAsync().GetAwaiter().GetResult();
 
-            object element = null;
 
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
@@ -289,6 +288,7 @@ namespace Novell.Directory.Ldap
                 throw rex;
             }
 
+            object element;
             if (_entryIndex < _entryCount)
             {
                 // Check for Search Entries and the Search Result
@@ -324,7 +324,7 @@ namespace Novell.Directory.Ldap
                 // If not a Search Entry, Search Result, or search continuation
                 // we are very confused.
                 // LdapSearchResults.next(): No entry found & request is not complete
-                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next" },
+                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] { "next" },
                     LdapException.LocalError, null);
             }
 
@@ -394,7 +394,7 @@ namespace Novell.Directory.Ldap
         /// Get referral connections
         /// </summary>
         /// <returns></returns>
-        public ArrayList GetReferralConnections()
+        public List<object> GetReferralConnections()
         {
             return _referralConn;
         }

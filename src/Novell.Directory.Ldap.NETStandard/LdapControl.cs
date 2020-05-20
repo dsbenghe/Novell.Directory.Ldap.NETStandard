@@ -31,7 +31,6 @@
 //
 
 using System;
-using System.Text;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -55,7 +54,7 @@ namespace Novell.Directory.Ldap
     {
         static LdapControl()
         {
-            RegisteredControls = new RespControlVector(5, 5);
+            RegisteredControls = new RespControlVector(5);
         }
 
         /// <summary>
@@ -143,14 +142,13 @@ namespace Novell.Directory.Ldap
             }
 
             var vals = GetValue();
-            byte[] twin = null;
             if (vals != null)
             {
                 // is this necessary?
                 // Yes even though the contructor above allocates a
                 // new Asn1OctetString, vals in that constuctor
                 // is only copied by reference
-                twin = new byte[vals.Length];
+                byte[] twin = new byte[vals.Length];
                 for (var i = 0; i < vals.Length; i++)
                 {
                     twin[i] = vals[i];
