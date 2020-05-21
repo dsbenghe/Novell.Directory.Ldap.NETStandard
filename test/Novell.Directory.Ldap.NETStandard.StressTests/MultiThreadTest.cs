@@ -67,9 +67,10 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
             }
 
+            var aliveThreads = threads.Any(x => x.IsAlive);
             var failRun = ReportRunResult(threadDatas);
 
-            return failRun ? 1 : 0;
+            return failRun || aliveThreads ? 1 : 0;
         }
 
         private bool ReportRunResult(ThreadRunner[] threadDatas)
