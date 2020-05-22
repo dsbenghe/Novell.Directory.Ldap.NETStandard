@@ -7,9 +7,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class LdapEntryHelper
     {
-        public static LdapEntry NewLdapEntry()
+        public static LdapEntry NewLdapEntry(string cnPrefix = null)
         {
             var cn = Guid.NewGuid().ToString();
+            if (cnPrefix != null)
+            {
+                cn = cnPrefix + "_" + cn;
+            }
             var attributeSet = new LdapAttributeSet
             {
                 new LdapAttribute("cn", cn),

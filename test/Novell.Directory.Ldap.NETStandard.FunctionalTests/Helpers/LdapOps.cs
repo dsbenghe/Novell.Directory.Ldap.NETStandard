@@ -4,11 +4,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class LdapOps
     {
-        public static async Task<LdapEntry> AddEntryAsync()
+        public static async Task<LdapEntry> AddEntryAsync(string cnPrefix = null)
         {
             return await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
-                var ldapEntry = LdapEntryHelper.NewLdapEntry();
+                var ldapEntry = LdapEntryHelper.NewLdapEntry(cnPrefix);
                 await ldapConnection.AddAsync(ldapEntry);
                 return ldapEntry;
             });
