@@ -133,7 +133,7 @@ namespace Novell.Directory.Ldap
                 }
                 else
                 {
-                    Logger.Log.LogInformation($"Can not parse matching rule schema {rawMatchingRule}");
+                    Logger.Log.LogDebug($"Can not parse matching rule schema {rawMatchingRule}");
                 }
             }
             catch (IOException ex)

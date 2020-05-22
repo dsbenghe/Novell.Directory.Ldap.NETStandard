@@ -3,21 +3,23 @@ language: csharp
 dist: xenial
 dotnet: 3.1
 mono: none
+services:
+  - docker
 
 stages:
   - compile & unit test
   - test
 
 env:
-  - CONFIGURATION=Release NOTHREADS=10 SECURITY=OFF
-  - CONFIGURATION=Release NOTHREADS=10 SECURITY=SSL
-  - CONFIGURATION=Release NOTHREADS=10 SECURITY=TLS
+  - CONFIGURATION=Release NOTHREADS=30 SECURITY=OFF
+  - CONFIGURATION=Release NOTHREADS=30 SECURITY=SSL
+  - CONFIGURATION=Release NOTHREADS=30 SECURITY=TLS
   - CONFIGURATION=Release NOTHREADS=20 SECURITY=OFF
   - CONFIGURATION=Release NOTHREADS=20 SECURITY=SSL
   - CONFIGURATION=Release NOTHREADS=20 SECURITY=TLS
-  - CONFIGURATION=Release NOTHREADS=50 SECURITY=OFF
-  - CONFIGURATION=Release NOTHREADS=50 SECURITY=SSL
-  - CONFIGURATION=Release NOTHREADS=50 SECURITY=TLS
+  - CONFIGURATION=Release NOTHREADS=10 SECURITY=OFF
+  - CONFIGURATION=Release NOTHREADS=10 SECURITY=SSL
+  - CONFIGURATION=Release NOTHREADS=10 SECURITY=TLS
 
 addons:
   apt:
@@ -28,7 +30,9 @@ addons:
     - slapd
 
 before_script:
+  - chmod ugo+x configure-opendj.sh
   - chmod ugo+x configure-openldap.sh
+  - ./configure-opendj.sh
   - ./configure-openldap.sh
 
 jobs:

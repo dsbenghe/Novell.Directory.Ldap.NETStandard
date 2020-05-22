@@ -181,11 +181,11 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
             private void ReportException(Exception ex)
             {
-                _logger.LogError("Error in runner thread - {0}", ex);
                 if (ex is TargetInvocationException && ex.InnerException != null)
                 {
                     ex = ex.InnerException;
                 }
+                _logger.LogError("Error in runner thread - {0}", ex);
 
                 lock (Exceptions)
                 {

@@ -30,15 +30,15 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         [LongRunning]
         public void Search_when_paging_using_VirtualListViewControl_returns_expected_results()
         {
-            const int pages = 5;
-            const int pageSize = 5;
+            const int pages = 10;
+            const int pageSize = 50;
             var cnPrefix = new Random().Next().ToString();
             var expectedEntries = Enumerable.Range(1, pages * pageSize).Select(x => LdapOps.AddEntry(cnPrefix)).ToList();
 
             var searchConstraints = new LdapSearchConstraints
             {
-                BatchSize = 1,
-                MaxResults = 10
+                BatchSize = 0,
+                MaxResults = 1000
             };
 
             var entries = new List<LdapEntry>();
