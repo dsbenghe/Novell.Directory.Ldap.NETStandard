@@ -12,6 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		test\conf\baseDn.ldif = test\conf\baseDn.ldif
 		test\conf\cert_template.conf = test\conf\cert_template.conf
 		ChangeLog.md = ChangeLog.md
+		configure-opendj.sh = configure-opendj.sh
 		configure-openldap.sh = configure-openldap.sh
 		README.md = README.md
 		test\conf\slapd.conf = test\conf\slapd.conf

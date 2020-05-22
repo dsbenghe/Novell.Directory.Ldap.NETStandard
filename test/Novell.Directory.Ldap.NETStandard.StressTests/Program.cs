@@ -13,7 +13,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         public static int Main(string[] args)
         {
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
+                .MinimumLevel.Information()
                 .Enrich.WithThreadId()
                 .WriteTo.LiterateConsole(LogEventLevel.Verbose, "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
