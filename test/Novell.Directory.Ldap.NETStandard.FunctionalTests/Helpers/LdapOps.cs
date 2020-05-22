@@ -2,11 +2,11 @@
 {
     public static class LdapOps
     {
-        public static LdapEntry AddEntry()
+        public static LdapEntry AddEntry(string cnPrefix = null)
         {
             return TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
             {
-                var ldapEntry = LdapEntryHelper.NewLdapEntry();
+                var ldapEntry = LdapEntryHelper.NewLdapEntry(cnPrefix);
                 ldapConnection.Add(ldapEntry);
                 return ldapEntry;
             });
