@@ -28,6 +28,8 @@
   </PropertyGroup>
   <PropertyGroup>
     <CodeAnalysisRuleSet>Novell.Directory.Ldap.NETStandard.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>sign.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
