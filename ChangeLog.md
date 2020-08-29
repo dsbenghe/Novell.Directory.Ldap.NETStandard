@@ -3,6 +3,11 @@
 ### 4.0.0
 * Change all the apis to be async
 
+### 3.3.0
+* Simplify ILogger dependencies - thanks to Thomas Ibel - https://github.com/tibel
+* Add strong name - thanks to Thomas Ibel - https://github.com/tibel
+* Add ExtendedDnControl - thanks to Miroslav Adamec - https://github.com/mirecad
+
 ### 3.2.0
 * Deprecate LibLog. Add back Microsoft.Logging with different versions for the three .net standard version: 1.3, 2.0, 2.1
 * Fix GetAttribute documentation
@@ -15,7 +20,7 @@
 * Fix FetchSchema
 
 ### 3.0.2
-* Fix not using timeout when connecting via SSL
+* Fix not using timeout when connecting via SSL - thanks to Konrad Kruczyński - https://github.com/konrad-kruczynski 
 
 ### 3.0.0
 * change ILdapConnection interface to improve testability & mockability
@@ -26,7 +31,7 @@
 * Add LocalCertificateSelectionCallback - thanks to bmoore - https://github.com/barry-r-moore
 * Fix issue in message timeout - thanks to martindrlik https://github.com/martindrlik
 * Remove dependency of Microsoft.Extensions.Logging - use LibLog
-* Prevents dns lookup if IP is passed to Connect
+* Prevents dns lookup if IP is passed to Connect - thanks to mjrist - https://github.com/mjrist
 
 ### 2.3.8
 * Added connect timeout

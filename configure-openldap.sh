@@ -15,9 +15,9 @@ sudo chown travis:ssl-cert /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_
 sudo chmod 640 /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 # end setup ssl
 # start ssl
-slapd -f test/conf/slapd.conf -h "ldap://localhost:4389 ldaps://localhost:4636" &
+slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" &
 # give openldap enough time to start
 sleep 5
 # test to see that is running
-ldapwhoami -H ldap://localhost:4389 -D "cn=root,dc=example,dc=com" -w password 
-ldapadd -h localhost:4389 -D cn=admin,dc=example,dc=com -w password -f test/conf/baseDn.ldif
+ldapwhoami -H ldap://localhost:5389 -D "cn=admin,dc=example,dc=com" -w password 
+ldapadd -h localhost:5389 -D cn=admin,dc=example,dc=com -w password -f test/conf/baseDn.ldif

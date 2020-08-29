@@ -9,7 +9,7 @@ namespace Novell.Directory.Ldap
 
         static Logger()
         {
-            Factory = new LoggerFactory();
+            Log = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
         }
 
         public static ILoggerFactory Factory

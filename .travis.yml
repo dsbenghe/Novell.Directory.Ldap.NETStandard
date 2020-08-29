@@ -32,6 +32,7 @@ addons:
 before_script:
   - chmod ugo+x configure-opendj.sh
   - ./configure-opendj.sh
+  - ./configure-opendj.sh
 
 jobs:
   include:

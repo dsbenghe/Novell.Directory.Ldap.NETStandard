@@ -34,6 +34,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                     .Where(m => m.IsPublic)
                     .Where(m => m.CustomAttributes.Any(attr => attr.AttributeType.Name == typeof(FactAttribute).Name
                         && attr.NamedArguments.Count(na => na.MemberName == "Skip") == 0))
+                    .Where(m => m.CustomAttributes.All(attr => attr.AttributeType.Name != typeof(LongRunningAttribute).Name))
                     .ToList();
         }
 
