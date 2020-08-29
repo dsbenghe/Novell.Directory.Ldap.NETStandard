@@ -31,8 +31,9 @@ addons:
 
 before_script:
   - chmod ugo+x configure-opendj.sh
+  - chmod ugo+x configure-openldap.sh
   - ./configure-opendj.sh
-  - ./configure-opendj.sh
+  - ./configure-openldap.sh
 
 jobs:
   include:
