@@ -1,6 +1,6 @@
 # Changelog
 
-### 3.3.0
+### 3.3.x
 * Simplify ILogger dependencies - thanks to Thomas Ibel - https://github.com/tibel
 * Add strong name - thanks to Thomas Ibel - https://github.com/tibel
 * Add ExtendedDnControl - thanks to Miroslav Adamec - https://github.com/mirecad
