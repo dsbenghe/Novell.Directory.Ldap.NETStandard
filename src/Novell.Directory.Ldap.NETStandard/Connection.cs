@@ -533,7 +533,7 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out IPAddress ipAddress))
                         {
-                            var ipAddresses = Dns.GetHostAddressesAsync(host).Result;
+                            var ipAddresses = Dns.GetHostAddressesAsync(host).ResultAndUnwrap();
                             ipAddress = ipAddresses.First(ip =>
                                 ip.AddressFamily == AddressFamily.InterNetwork ||
                                 ip.AddressFamily == AddressFamily.InterNetworkV6);
@@ -544,12 +544,7 @@ namespace Novell.Directory.Ldap
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
 
-                            //WaitAndUnwrap creates unnecessary threads if ConnectionTimeout is zero which
-                            //can impact performance.  Prefer the sync method call to avoid the overhead
-                            if (ConnectionTimeout != 0)
-                                _sock.ConnectAsync(ipEndPoint).WaitAndUnwrap(ConnectionTimeout);
-                            else
-                                _sock.Connect(ipEndPoint);
+                            _sock.Connect(ipEndPoint, ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
