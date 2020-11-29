@@ -270,16 +270,8 @@ namespace Novell.Directory.Ldap
                 var sva = new string[size];
                 for (var j = 0; j < size; j++)
                 {
-                    try
-                    {
-                        var valueBytes = (byte[])_values[j];
-                        sva[j] = valueBytes.ToUtf8String();
-                    }
-                    catch (IOException uee)
-                    {
-                        // Exception should NEVER get thrown but just in case it does ...
-                        throw new Exception(uee.ToString());
-                    }
+                    var valueBytes = (byte[])_values[j];
+                    sva[j] = valueBytes.ToUtf8String();
                 }
 
                 return sva;
@@ -308,17 +300,9 @@ namespace Novell.Directory.Ldap
                 string rval = null;
                 if (_values != null)
                 {
-                    try
-                    {
-                        var valueBytes = (byte[])_values[0];
-                        rval = valueBytes.ToUtf8String();
-                    }
-                    catch (IOException use)
-                    {
-                        throw new Exception(use.ToString());
-                    }
+                    var valueBytes = (byte[])_values[0];
+                    rval = valueBytes.ToUtf8String();
                 }
-
                 return rval;
             }
         }
@@ -460,14 +444,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            try
-            {
-                Add(attrString.ToUtf8Bytes());
-            }
-            catch (IOException ue)
-            {
-                throw new Exception(ue.ToString());
-            }
+            Add(attrString.ToUtf8Bytes());
         }
 
         /// <summary>
@@ -552,7 +529,6 @@ namespace Novell.Directory.Ldap
             Add(Base64.Decode(attrChars));
         }
 
-        /// <summary>
         ///     Returns the base name of the attribute.
         ///     For example, if the attribute name is cn;lang-ja;phonetic,
         ///     this method returns cn.
