@@ -545,7 +545,6 @@ namespace Novell.Directory.Ldap
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
                             await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout);
-                            _sock.Connect(ipEndPoint, ConnectionTimeout);
 
                             var sslstream = new SslStream(
                                 new NetworkStream(_sock, true),
