@@ -91,6 +91,8 @@ namespace Novell.Directory.Ldap
 
         internal static string Security = "simple";
 
+        private readonly object _lock = new object();
+
         // When set to true the client connection is up and running
         private bool _clientActive = true;
 
@@ -425,9 +427,9 @@ namespace Novell.Directory.Ldap
                         readerException);
                 }
 
-                lock (this)
+                lock (_lock)
                 {
-                    Monitor.Wait(this, TimeSpan.FromMilliseconds(5));
+                    Monitor.Wait(_lock, TimeSpan.FromMilliseconds(5));
                 }
 
                 rInst = _reader;
@@ -603,7 +605,7 @@ namespace Novell.Directory.Ldap
         /// <summary>  Increments the count of cloned connections.</summary>
         internal void IncrCloneCount()
         {
-            lock (this)
+            lock (_lock)
             {
                 _cloneCount++;
             }
@@ -637,7 +639,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         internal Connection DestroyClone()
         {
-            lock (this)
+            lock (_lock)
             {
                 var conn = this;
 
