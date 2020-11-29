@@ -475,11 +475,11 @@ namespace Novell.Directory.Ldap
         {
             private readonly Message _message;
 
-            private readonly int _timeToWait;
+            private readonly int _timeToWaitInMilliseconds;
 
             internal Timeout(int interval, Message msg)
             {
-                _timeToWait = interval;
+                _timeToWaitInMilliseconds = interval;
                 _message = msg;
             }
 
@@ -489,14 +489,16 @@ namespace Novell.Directory.Ldap
             /// </summary>
             protected override void Run()
             {
-                for (var i = 0; i < 10000; i++)
+                var ticksMultiplier = 100;
+                var timeToWaitInMultiplierOfTicks = _timeToWaitInMilliseconds * ticksMultiplier;
+                for (var i = 0; i < TimeSpan.TicksPerMillisecond / ticksMultiplier; i++)
                 {
                     if (IsStopping)
                     {
                         return;
                     }
 
-                    Thread.Sleep(new TimeSpan(_timeToWait));
+                    Thread.Sleep(new TimeSpan(timeToWaitInMultiplierOfTicks));
                 }
 
                 _message._acceptReplies = false;
