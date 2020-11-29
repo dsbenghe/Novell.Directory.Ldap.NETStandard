@@ -6,7 +6,7 @@
     <Summary>.NET Standard LDAP client library</Summary>
     <VersionPrefix>3.3.1</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
-    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3;netstandard2.0;netstandard2.1;net5</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>
@@ -54,6 +54,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5'">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
