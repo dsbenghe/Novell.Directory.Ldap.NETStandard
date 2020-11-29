@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.4.x
+* net5 package
+* Avoid unnecessary async calls - thanks to Steve Greatrex - https://github.com/stevegreatrex
+
 ### 3.3.x
 * Simplify ILogger dependencies - thanks to Thomas Ibel - https://github.com/tibel
 * Add strong name - thanks to Thomas Ibel - https://github.com/tibel
