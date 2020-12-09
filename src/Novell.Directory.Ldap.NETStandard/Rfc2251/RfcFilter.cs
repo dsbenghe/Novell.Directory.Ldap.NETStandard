@@ -1306,13 +1306,13 @@ namespace Novell.Directory.Ldap.Rfc2251
                     }
                     else
                     {
-                        if (_filter.Substring(_offset).StartsWith(":="))
+                        if (_filter.StartsWithStringAtOffset(":=", _offset))
                         {
                             throw new LdapLocalException(ExceptionMessages.NoMatchingRule, LdapException.FilterError);
                         }
 
-                        if (_filter.Substring(_offset).StartsWith("::=") ||
-                            _filter.Substring(_offset).StartsWith(":::="))
+                        if (_filter.StartsWithStringAtOffset("::=", _offset) ||
+                            _filter.StartsWithStringAtOffset(":::=", _offset))
                         {
                             throw new LdapLocalException(
                                 ExceptionMessages.NoDnNorMatchingRule,
@@ -1324,7 +1324,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         var sb = new StringBuilder();
 
                         while (delims.IndexOf(_filter[_offset]) == -1 &&
-                               _filter.Substring(_offset).StartsWith(":=") == false)
+                               _filter.StartsWithStringAtOffset(":=", _offset) == false)
                         {
                             sb.Append(_filter[_offset++]);
                         }
@@ -1386,22 +1386,22 @@ namespace Novell.Directory.Ldap.Rfc2251
                     }
 
                     int ret;
-                    if (_filter.Substring(_offset).StartsWith(">="))
+                    if (_filter.StartsWithStringAtOffset(">=", _offset))
                     {
                         _offset += 2;
                         ret = GreaterOrEqual;
                     }
-                    else if (_filter.Substring(_offset).StartsWith("<="))
+                    else if (_filter.StartsWithStringAtOffset("<=", _offset))
                     {
                         _offset += 2;
                         ret = LessOrEqual;
                     }
-                    else if (_filter.Substring(_offset).StartsWith("~="))
+                    else if (_filter.StartsWithStringAtOffset("~=", _offset))
                     {
                         _offset += 2;
                         ret = ApproxMatch;
                     }
-                    else if (_filter.Substring(_offset).StartsWith(":="))
+                    else if (_filter.StartsWithStringAtOffset(":=", _offset))
                     {
                         _offset += 2;
                         ret = ExtensibleMatch;
