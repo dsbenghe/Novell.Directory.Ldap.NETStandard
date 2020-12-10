@@ -1,6 +1,5 @@
 ﻿using Novell.Directory.Ldap.Utilclass;
 using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
@@ -14,36 +13,41 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             Assert.Equal(baseString.StartsWithStringAtOffset(searchString, offset), baseString.Substring(offset).StartsWith(searchString));
         }
 
-        public static IEnumerable<object[]> DataSuccess =>
-        new List<object[]>
+        public static TheoryData<string, string, int> DataSuccess
         {
-            // Empty strings
-            new object[] { "", "", 0 },
-            new object[] { "", "test", 0 },
-            new object[] { "test", "", 0 }, 
-            new object[] { "test", "", 4 }, 
+            get
+            {
+                return new TheoryData<string, string, int>
+                {
+                    // Empty strings
+                    { "", "", 0 },
+                    { "", "test", 0 },
+                    { "test", "", 0 },
+                    { "test", "", 4 },
 
-            // Complete valid range
-            new object[] { "abcd", "ab", 0 },
-            new object[] { "abcd", "ab", 1 },
-            new object[] { "abcd", "ab", 2 },
-            new object[] { "abcd", "ab", 4 },
+                    // Complete valid range
+                    { "abcd", "ab", 0 },
+                    { "abcd", "ab", 1 },
+                    { "abcd", "ab", 2 },
+                    { "abcd", "ab", 4 },
 
-            // same length
-            new object[] { "abcd", "abcd", 0 }, 
-            new object[] { "abcd", "abcd", 1 },
+                    // same length
+                    { "abcd", "abcd", 0 },
+                    { "abcd", "abcd", 1 },
 
-            // Searchstring longer than baseString
-            new object[] { "ab", "abcd", 0 }, 
+                    // Searchstring longer than baseString
+                    { "ab", "abcd", 0 },
 
-            // Unicode
-            new object[] { "大象牙膏", "象牙", 0 },
-            new object[] { "大象牙膏", "象牙", 1 },
-            new object[] { "大象牙膏", "象牙", 2 },
-            new object[] { "大象牙膏", "象牙", 3 },
-            new object[] { "大象牙膏", "象牙", 4 },
-            new object[] { "зубная паста слона", "аста", 8 }
-        };
+                    // Unicode
+                    { "大象牙膏", "象牙", 0 },
+                    { "大象牙膏", "象牙", 1 },
+                    { "大象牙膏", "象牙", 2 },
+                    { "大象牙膏", "象牙", 3 },
+                    { "大象牙膏", "象牙", 4 },
+                    { "зубная паста слона", "аста", 8 }
+                };
+            }
+        }
 
         [Theory]
         [MemberData(nameof(DataException))]
@@ -55,18 +59,23 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             Assert.IsType(substringStartsWithException.GetType(), startsWithStringAtOffsetException);
         }
 
-        public static IEnumerable<object[]> DataException =>
-        new List<object[]>
+        public static TheoryData<string, string, int> DataException
         {
-            // Null Argument
-            new object[] {"abcd", null, 0},
-            
-            // Invalid offset
-            new object[] { "abcd", "abcd", 5 },
-            new object[] { "", "abcd", 1 },
-            new object[] { "abcd", "ab", 5 },
-            new object[] { "abcd", "ab", -1 },
-            new object[] { "大象牙膏", "象牙", 5 },
-        };
+            get
+            {
+                return new TheoryData<string, string, int>
+                {
+                    // Null Argument
+                    { "abcd", null, 0 },
+
+                    // Invalid offset
+                    { "abcd", "abcd", 5 },
+                    { "", "abcd", 1 },
+                    { "abcd", "ab", 5 },
+                    { "abcd", "ab", -1 },
+                    { "大象牙膏", "象牙", 5 },
+                };
+            }
+        }
     }
 }
