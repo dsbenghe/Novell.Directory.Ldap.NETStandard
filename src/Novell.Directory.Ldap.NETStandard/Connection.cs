@@ -1120,15 +1120,16 @@ namespace Novell.Directory.Ldap
                 _isStopping = true;
 
                 // This is quite silly as we want to stop the thread gracefully but is not always possible as the Read on socket is blocking
-                // Using ReadAdync will not do any good as the method taking the CancellationToken as parameter is not implemented
+                // Using ReadAsync will not do any good as the method taking the CancellationToken as parameter is not implemented
                 // Dispose will break forcefully the Read.
                 // We could use a ReadTimeout for socket - but this will only make stopping the thread take longer
                 // And we don't care if we just kill the socket stream as we don't plan to reuse the stream after stop
-                // the stream Dispose used to be called from Connection dispose but only when a Bind is succesful which was causing
-                // the Dispose to hang un unsuccesful bind
-                // So, yeah isStopping flag is pretty much useless as there are very small chances that it will bit hit
+                // the stream Dispose used to be called from Connection dispose but only when a Bind is successful which was causing
+                // the Dispose to hang un unsuccessful bind
+                // So, yeah isStopping flag is pretty much useless as there are very small chances that it will be hit
                 var socketStream = _enclosingInstance._inStream;
                 socketStream?.Dispose();
+
                 _enclosedThread.Join();
             }
 
