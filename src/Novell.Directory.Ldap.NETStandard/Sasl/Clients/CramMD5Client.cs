@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -37,7 +38,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             _currentState = State.Disposed;
         }
 
-        public override byte[] EvaluateChallenge(byte[] challenge)
+        public async override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)

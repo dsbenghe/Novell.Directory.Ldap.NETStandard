@@ -2,6 +2,7 @@
 using Novell.Directory.Ldap.Sasl.Clients;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
@@ -29,11 +30,11 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         }
 
         [Fact]
-        public void CreatesChallengeProperly()
+        public async Task CreatesChallengeProperly()
         {
             var request = new SaslPlainRequest(AuthId, Password);
             var client = new PlainClient(request);
-            var result = client.EvaluateChallenge(Array.Empty<byte>());
+            var result = await client.EvaluateChallengeAsync(Array.Empty<byte>());
             Assert.Equal(ExpectedResponse, result);
         }
     }

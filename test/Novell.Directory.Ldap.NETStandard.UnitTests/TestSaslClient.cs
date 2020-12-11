@@ -1,5 +1,6 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
@@ -36,7 +37,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
         }
 
-        public byte[] EvaluateChallenge(byte[] challenge)
+        public async Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
             return challenge;
         }
