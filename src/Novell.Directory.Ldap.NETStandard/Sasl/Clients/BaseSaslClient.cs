@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -21,7 +22,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         public abstract string MechanismName { get; }
         public abstract bool HasInitialResponse { get; }
         public abstract bool IsComplete { get; }
-        public abstract byte[] EvaluateChallenge(byte[] challenge);
+        public abstract Task<byte[]> EvaluateChallengeAsync(byte[] challenge);
 
         public void Dispose()
         {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -37,7 +38,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             _password = saslRequest.Credentials;
         }
 
-        public override byte[] EvaluateChallenge(byte[] challenge)
+        public async override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)

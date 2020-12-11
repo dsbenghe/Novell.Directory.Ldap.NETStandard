@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl
 {
@@ -8,7 +9,7 @@ namespace Novell.Directory.Ldap.Sasl
 
         bool HasInitialResponse { get; }
 
-        byte[] EvaluateChallenge(byte[] challenge);
+        Task<byte[]> EvaluateChallengeAsync(byte[] challenge);
 
         bool IsComplete { get; }
     }
