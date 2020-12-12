@@ -1,32 +1,41 @@
 using System;
 using JetBrains.Annotations;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap
 {
 	public class SearchOptions
 	{
-		public readonly string Host;
-		public readonly int Port;
-		public readonly string Login;
-		public readonly string Password;
-		public readonly string SearchBase;
-		public readonly string Filter;
-		public readonly int ProtocolVersion;
-		public readonly int ResultPageSize;
-		public readonly string[] TargetAttributes;
+		public string SearchBase { get; }
+        public int Scope { get; }
+		public string Filter { get; }
+		public string[] TargetAttributes { get; }
+        public bool TypesOnly { get; }
+        public LdapSearchConstraints SearchConstraints { get; }
 
-		public SearchOptions([NotNull] string host, int port, [NotNull] string login, [NotNull] string password, [NotNull] string searchBase,
-			[NotNull] string filter, int protocolVersion, int resultPageSize, [NotNull] string[] targetAttribute)
+        public SearchOptions(
+            [NotNull] string searchBase,
+            int scope,
+            [NotNull] string filter,
+            [NotNull] string[] targetAttributes) :
+            this(searchBase, scope, filter, targetAttributes, false, null)
+        {
+
+        }
+
+        public SearchOptions(
+            [NotNull] string searchBase,
+            int scope,
+			[NotNull] string filter,
+            [NotNull] string[] targetAttributes,
+            bool typesOnly,
+            LdapSearchConstraints searchConstraints)
 		{
-			Host = host ?? throw new ArgumentNullException(nameof(host));
-			Port = port;
-			Login = login ?? throw new ArgumentNullException(nameof(login));
-			Password = password ?? throw new ArgumentNullException(nameof(password));
 			SearchBase = searchBase ?? throw new ArgumentNullException(nameof(searchBase));
+            Scope = scope;
 			Filter = filter ?? throw new ArgumentNullException(nameof(filter));
-			ProtocolVersion = protocolVersion;
-			ResultPageSize = resultPageSize;
-			TargetAttributes = targetAttribute ?? throw new ArgumentNullException(nameof(targetAttribute));
-		}
+            TargetAttributes = targetAttributes;
+            TypesOnly = typesOnly;
+            SearchConstraints = searchConstraints;
+        }
 	}
 }

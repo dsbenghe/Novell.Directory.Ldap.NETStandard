@@ -827,5 +827,21 @@ namespace Novell.Directory.Ldap
         ///     True if connection is open; false if the connection is closed.
         /// </returns>
         bool Connected { get; }
+
+        /// <summary>
+        ///     Returns a copy of the set of search constraints associated with this
+        ///     connection. These constraints apply to search operations performed
+        ///     through this connection (unless a different set of
+        ///     constraints is specified when calling the search operation method).
+        /// </summary>
+        /// <returns>
+        ///     The set of default search constraints that apply to
+        ///     this connection.
+        /// </returns>
+        /// <seealso cref="SearchConstraints">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints">
+        /// </seealso>
+        LdapSearchConstraints SearchConstraints { get; }
     }
 }

@@ -1,123 +1,102 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// Provides utility method to load and map all desired entries via n requests
-    /// with <see cref="LdapPagedResultsControl"/>.
+    /// Provides extensions method to do paged searches
+    /// with <see cref="SimplePagedResultsControl"/>.
     /// </summary>
-    public class PagedResultsControlHandler<T>
+    public static class SimplePagedResultsControlExtension
     {
-        private readonly Func<LdapEntry, T> _converter;
-
-        public PagedResultsControlHandler([NotNull] Func<LdapEntry, T> converter)
-        {
-            _converter = converter ?? throw new ArgumentNullException(nameof(converter));
-        }
-
-        public List<T> LoadAllPagedResults([NotNull] SearchOptions options)
-        {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            using (var ldapConnection = Connect(options))
-            {
-                var searchResult = new List<T>();
-                var isNextPageAvailable = PrepareForNextPage(ldapConnection, null, options.ResultPageSize, true);
-                while (isNextPageAvailable)
-                {
-                    var responseControls = RetrievePage(ldapConnection, options, searchResult);
-                    isNextPageAvailable = PrepareForNextPage(ldapConnection, responseControls, options.ResultPageSize, false);
-                }
-
-                return searchResult;
-            }
-        }
-
-        private static LdapConnection Connect([NotNull] SearchOptions options)
-        {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-
-            var ldapConnection = new LdapConnection {SecureSocketLayer = false};
-            ldapConnection.Connect(options.Host, options.Port);
-            ldapConnection.Bind(options.ProtocolVersion, options.Login, options.Password);
-            Debug.WriteLine($@"Connected to <{options.Host}:{options.Port}> as <{options.Login}>");
-            return ldapConnection;
-        }
-
-        private static bool PrepareForNextPage([NotNull] LdapConnection ldapConnection, [CanBeNull] LdapControl[] pageResponseControls, int pageSize,
-            bool isInitialCall)
+        public static List<LdapEntry> SearchWithSimplePaging([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
         {
             if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
+            if (options == null) throw new ArgumentNullException(nameof(options));
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            var cookie = LdapPagedResultsControl.GetEmptyCookie;
+            return ldapConnection.SearchWithSimplePaging(entry => entry, options, pageSize);
+        }
+
+        public static List<T> SearchWithSimplePaging<T>([NotNull] this ILdapConnection ldapConnection, [NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
+        {
+            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
+            if (converter == null) throw new ArgumentNullException(nameof(converter));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+
+            var searchResult = new List<T>();
+            var searchConstraints = options.SearchConstraints ?? ldapConnection.SearchConstraints;
+            var isNextPageAvailable = PrepareForNextPage(ldapConnection, null, pageSize, true, ref searchConstraints);
+            while (isNextPageAvailable)
+            {
+                var responseControls = RetrievePage(ldapConnection, options, searchConstraints, searchResult, converter);
+                isNextPageAvailable = PrepareForNextPage(ldapConnection, responseControls, pageSize, false, ref searchConstraints);
+            }
+
+            return searchResult;
+        }
+
+        private static bool PrepareForNextPage(
+            [NotNull] ILdapConnection ldapConnection,
+            [CanBeNull] LdapControl[] pageResponseControls, 
+            int pageSize,
+            bool isInitialCall,
+            ref LdapSearchConstraints searchConstraints)
+        {
+            var cookie = SimplePagedResultsControl.GetEmptyCookie;
             if (!isInitialCall)
             {
-                var pagedResultsControl = (LdapPagedResultsControl) pageResponseControls?.FirstOrDefault(x => x is LdapPagedResultsControl);
+                var pagedResultsControl = (SimplePagedResultsControl) pageResponseControls?.SingleOrDefault(x => x is SimplePagedResultsControl);
                 if (pagedResultsControl == null)
                 {
-                    Debug.WriteLine($"Failed to find <{nameof(LdapPagedResultsControl)}>. Searching is abruptly stopped");
-                    return false;
+                    throw new LdapException($"Failed to find <{nameof(SimplePagedResultsControl)}>. Searching is abruptly stopped");
                 }
 
                 // server signaled end of result set
-                if (pagedResultsControl.IsEmptyCookie()) return false;
+                if (pagedResultsControl.IsEmptyCookie())
+                {
+                    return false;
+                }
                 cookie = pagedResultsControl.Cookie;
             }
 
-            ApplyPagedResultsControl(ldapConnection, pageSize, cookie);
+            searchConstraints = ApplyPagedResultsControl(searchConstraints, pageSize, cookie);
             return true;
         }
 
-        private static void ApplyPagedResultsControl([NotNull] LdapConnection connection, int pageSize, [CanBeNull] byte[] cookie)
+        private static LdapSearchConstraints ApplyPagedResultsControl(LdapSearchConstraints searchConstraints, int pageSize, [CanBeNull] byte[] cookie)
         {
-            if (connection == null) throw new ArgumentNullException(nameof(connection));
-
-            var ldapPagedControl = new LdapPagedResultsControl(pageSize, cookie);
-            var searchConstraints = connection.SearchConstraints;
+            var ldapPagedControl = new SimplePagedResultsControl(pageSize, cookie);
             searchConstraints.BatchSize = 0;
             searchConstraints.SetControls(ldapPagedControl);
-            connection.Constraints = searchConstraints;
+            return searchConstraints;
         }
 
-        private LdapControl[] RetrievePage([NotNull] LdapConnection ldapConnection, [NotNull] SearchOptions options,
-            [NotNull] List<T> mappedResultsAccumulator)
+        private static LdapControl[] RetrievePage<T>(
+            [NotNull] ILdapConnection ldapConnection, 
+            [NotNull] SearchOptions options,
+            [NotNull] LdapSearchConstraints searchConstraints,
+            [NotNull] List<T> mappedResultsAccumulator,
+            [NotNull] Func<LdapEntry, T> converter)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (searchConstraints == null) throw new ArgumentNullException(nameof(searchConstraints));
             if (mappedResultsAccumulator == null) throw new ArgumentNullException(nameof(mappedResultsAccumulator));
 
-            var searchResults = ldapConnection.Search
-            (
-                options.SearchBase,
-                LdapConnection.ScopeSub,
-                options.Filter,
-                options.TargetAttributes,
-                false,
-                (LdapSearchConstraints) null
-            );
+            var searchResults = ldapConnection.Search(
+                    options.SearchBase,
+                    LdapConnection.ScopeSub,
+                    options.Filter,
+                    options.TargetAttributes,
+                    false,
+                    searchConstraints
+                );
 
-            while (searchResults.HasMore())
-            {
-                try
-                {
-                    var nextEntry = searchResults.Next();
-                    var mappedEntry = _converter.Invoke(nextEntry);
-                    mappedResultsAccumulator.Add(mappedEntry);
-                }
-                catch (LdapException ex)
-                {
-                    // you may want to turn referral chasing on
-                    if (ex is LdapReferralException) continue;
-                    throw new InvalidOperationException("Failed to proceed to the next search result", ex);
-                }
-            }
+            mappedResultsAccumulator.AddRange(searchResults.Select(converter));
 
-            return ((LdapSearchResults) searchResults).ResponseControls;
+            return searchResults.ResponseControls;
         }
     }
 }

@@ -266,7 +266,7 @@ namespace Novell.Directory.Ldap
         ///     specified when calling an operation method).
         /// </summary>
         /// <returns>
-        ///     The set of default contraints that apply to this connection.
+        ///     The set of default constraints that apply to this connection.
         /// </returns>
         /// <summary>
         ///     Sets the constraints that apply to all operations performed through
@@ -277,7 +277,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="cons">
         ///     An LdapConstraints or LdapSearchConstraints Object
-        ///     containing the contstraint values to set.
+        ///     containing the constraints values to set.
         /// </param>
         /// <seealso cref="Constraints()">
         /// </seealso>
