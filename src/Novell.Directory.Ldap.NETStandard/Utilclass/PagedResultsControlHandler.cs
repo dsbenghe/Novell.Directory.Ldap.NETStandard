@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 
@@ -21,16 +20,16 @@ namespace Novell.Directory.Ldap.Utilclass
             _converter = converter ?? throw new ArgumentNullException(nameof(converter));
         }
 
-        public async Task<List<T>> LoadAllPagedResults([NotNull] SearchOptions options)
+        public List<T> LoadAllPagedResults([NotNull] SearchOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
-            using (var ldapConnection = await ConnectAsync(options))
+            using (var ldapConnection = Connect(options))
             {
                 var searchResult = new List<T>();
                 var isNextPageAvailable = PrepareForNextPage(ldapConnection, null, options.ResultPageSize, true);
                 while (isNextPageAvailable)
                 {
-                    var responseControls = await RetrievePageAsync(ldapConnection, options, searchResult);
+                    var responseControls = RetrievePage(ldapConnection, options, searchResult);
                     isNextPageAvailable = PrepareForNextPage(ldapConnection, responseControls, options.ResultPageSize, false);
                 }
 
@@ -38,13 +37,13 @@ namespace Novell.Directory.Ldap.Utilclass
             }
         }
 
-        private static async Task<LdapConnection> ConnectAsync([NotNull] SearchOptions options)
+        private static LdapConnection Connect([NotNull] SearchOptions options)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
 
             var ldapConnection = new LdapConnection {SecureSocketLayer = false};
-            await ldapConnection.ConnectAsync(options.Host, options.Port);
-            await ldapConnection.BindAsync(options.ProtocolVersion, options.Login, options.Password);
+            ldapConnection.Connect(options.Host, options.Port);
+            ldapConnection.Bind(options.ProtocolVersion, options.Login, options.Password);
             Debug.WriteLine($@"Connected to <{options.Host}:{options.Port}> as <{options.Login}>");
             return ldapConnection;
         }
@@ -85,14 +84,14 @@ namespace Novell.Directory.Ldap.Utilclass
             connection.Constraints = searchConstraints;
         }
 
-        private async Task<LdapControl[]> RetrievePageAsync([NotNull] LdapConnection ldapConnection, [NotNull] SearchOptions options,
+        private LdapControl[] RetrievePage([NotNull] LdapConnection ldapConnection, [NotNull] SearchOptions options,
             [NotNull] List<T> mappedResultsAccumulator)
         {
             if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (mappedResultsAccumulator == null) throw new ArgumentNullException(nameof(mappedResultsAccumulator));
 
-            var searchResults = await ldapConnection.SearchAsync
+            var searchResults = ldapConnection.Search
             (
                 options.SearchBase,
                 LdapConnection.ScopeSub,
