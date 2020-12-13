@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     entries.AddRange(
-                        await ldapConnection.SearchWithSimplePagingAsync(
+                        await ldapConnection.SearchUsingSimplePagingAsync(
                             _searchOptions,
                             PagedSearchTestsAsyncFixture.PageSize
                         ));
@@ -131,7 +131,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     entries.AddRange(
-                        await ldapConnection.SearchWithSimplePagingAsync(
+                        await ldapConnection.SearchUsingSimplePagingAsync(
                             (entry) => new Tuple<LdapEntry>(entry), 
                             _searchOptions,
                             PagedSearchTestsAsyncFixture.PageSize
@@ -150,7 +150,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     entries.AddRange(
-                        await ldapConnection.SearchWithSimplePagingAsync(
+                        await ldapConnection.SearchUsingSimplePagingAsync(
                             _searchOptions,
                             _pagedSearchTestsFixture.Entries.Count
                         ));
@@ -168,7 +168,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     entries.AddRange(
-                        await ldapConnection.SearchWithSimplePagingAsync(
+                        await ldapConnection.SearchUsingSimplePagingAsync(
                             _searchOptionsForZeroResults,
                             PagedSearchTestsAsyncFixture.Pages
                         ));

@@ -12,7 +12,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public static class SimplePagedResultsControlSearchExtensions
     {
-        public static Task<List<LdapEntry>> SearchWithSimplePagingAsync([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
+        public static Task<List<LdapEntry>> SearchUsingSimplePagingAsync([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
         {
             if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -22,7 +22,7 @@ namespace Novell.Directory.Ldap
                 .SearchWithSimplePagingAsync(options, pageSize);
         }
 
-        public static Task<List<T>> SearchWithSimplePagingAsync<T>([NotNull] this ILdapConnection ldapConnection, [NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
+        public static Task<List<T>> SearchUsingSimplePagingAsync<T>([NotNull] this ILdapConnection ldapConnection, [NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
         {
             if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
             if (converter == null) throw new ArgumentNullException(nameof(converter));
