@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Novell.Directory.Ldap.Controls;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Novell.Directory.Ldap.SearchExtensions;
@@ -8,14 +9,14 @@ using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 {
-    public class PagedSearchTests : IClassFixture<PagedSearchTests.PagedSearchTestsFixture>
+    public class PagedSearchTests : IClassFixture<PagedSearchTests.PagedSearchTestsAsyncFixture>
     {
-        private readonly PagedSearchTestsFixture _pagedSearchTestsFixture;
+        private readonly PagedSearchTestsAsyncFixture _pagedSearchTestsFixture;
         private readonly SearchOptions _searchOptions;
         private readonly LdapSortControl _ldapSortControl;
         private readonly SearchOptions _searchOptionsForZeroResults;
 
-        public PagedSearchTests(PagedSearchTestsFixture pagedSearchTestsFixture)
+        public PagedSearchTests(PagedSearchTestsAsyncFixture pagedSearchTestsFixture)
         {
             _pagedSearchTestsFixture = pagedSearchTestsFixture;
             _searchOptions = new SearchOptions(TestsConfig.LdapServer.BaseDn,
@@ -32,16 +33,16 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_VirtualListViewControl_returns_expected_results()
+        public async Task Search_when_paging_using_VirtualListViewControl_returns_expected_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    entries = ldapConnection.SearchUsingVlv(
+                    entries = await ldapConnection.SearchUsingVlvAsync(
                         _ldapSortControl,
                         _searchOptions,
-                        PagedSearchTestsFixture.PageSize
+                        PagedSearchTestsAsyncFixture.PageSize
                     );
                 });
 
@@ -50,17 +51,17 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_VirtualListViewControl_using_converter_returns_expected_results()
+        public async Task Search_when_paging_using_VirtualListViewControl_using_converter_returns_expected_results()
         {
             var entries = new List<Tuple<LdapEntry>>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    entries = ldapConnection.SearchUsingVlv(
+                    entries = await ldapConnection.SearchUsingVlvAsync(
                         _ldapSortControl,
                         (entry) => new Tuple<LdapEntry>(entry), 
                         _searchOptions,
-                        PagedSearchTestsFixture.PageSize
+                        PagedSearchTestsAsyncFixture.PageSize
                     );
                 });
 
@@ -69,13 +70,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_VirtualListViewControl_with_one_page_returns_expected_results()
+        public async Task Search_when_paging_using_VirtualListViewControl_with_one_page_returns_expected_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    entries = ldapConnection.SearchUsingVlv(
+                    entries = await ldapConnection.SearchUsingVlvAsync(
                         _ldapSortControl,
                         _searchOptions,
                         _pagedSearchTestsFixture.Entries.Count
@@ -87,16 +88,16 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_VirtualListViewControl_returns_zero_results()
+        public async Task Search_when_paging_using_VirtualListViewControl_returns_zero_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
-                    entries = ldapConnection.SearchUsingVlv(
+                    entries = await ldapConnection.SearchUsingVlvAsync(
                         _ldapSortControl,
                         _searchOptionsForZeroResults,
-                        PagedSearchTestsFixture.PageSize
+                        PagedSearchTestsAsyncFixture.PageSize
                     );
                 });
 
@@ -105,16 +106,16 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_SimplePagedResultControl_returns_expected_results()
+        public async Task Search_when_paging_using_SimplePagedResultControl_returns_expected_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        await ldapConnection.SearchWithSimplePagingAsync(
                             _searchOptions,
-                            PagedSearchTestsFixture.PageSize
+                            PagedSearchTestsAsyncFixture.PageSize
                         ));
                 });
 
@@ -123,17 +124,17 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_SimplePagedResultControl_using_converter_returns_expected_results()
+        public async Task Search_when_paging_using_SimplePagedResultControl_using_converter_returns_expected_results()
         {
             var entries = new List<Tuple<LdapEntry>>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        await ldapConnection.SearchWithSimplePagingAsync(
                             (entry) => new Tuple<LdapEntry>(entry), 
                             _searchOptions,
-                            PagedSearchTestsFixture.PageSize
+                            PagedSearchTestsAsyncFixture.PageSize
                         ));
                 });
 
@@ -142,14 +143,14 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_SimplePagedResultControl_in_just_one_page_returns_expected_results()
+        public async Task Search_when_paging_using_SimplePagedResultControl_in_just_one_page_returns_expected_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        await ldapConnection.SearchWithSimplePagingAsync(
                             _searchOptions,
                             _pagedSearchTestsFixture.Entries.Count
                         ));
@@ -160,16 +161,16 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 
         [Fact]
         [LongRunning]
-        public void Search_when_paging_using_SimplePagedResultControl_returns_zero_results()
+        public async Task Search_when_paging_using_SimplePagedResultControl_returns_zero_results()
         {
             var entries = new List<LdapEntry>();
-            TestHelper.WithAuthenticatedLdapConnection(
-                ldapConnection =>
+            await TestHelper.WithAuthenticatedLdapConnectionAsync(
+                async ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        await ldapConnection.SearchWithSimplePagingAsync(
                             _searchOptionsForZeroResults,
-                            PagedSearchTestsFixture.Pages
+                            PagedSearchTestsAsyncFixture.Pages
                         ));
                 });
 
@@ -185,22 +186,32 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             }
         }
 
-        public class PagedSearchTestsFixture : IDisposable
+        public class PagedSearchTestsAsyncFixture : IAsyncLifetime
         {
             public const int Pages = 15;
             public const int PageSize = 20;
             private readonly Random _random = new Random();
             public readonly string CnPrefix;
-            public readonly IReadOnlyCollection<LdapEntry> Entries;
+            public IReadOnlyCollection<LdapEntry> Entries  => _entriesTask.Result;
 
-            public PagedSearchTestsFixture()
+            private Task<LdapEntry[]> _entriesTask;
+
+            public PagedSearchTestsAsyncFixture()
             {
                 CnPrefix = _random.Next().ToString();
-                Entries = Enumerable.Range(1, Pages * PageSize + _random.Next() % PageSize).Select(x => LdapOps.AddEntry(CnPrefix)).ToList();
             }
 
-            public void Dispose()
+            public Task InitializeAsync()
             {
+                _entriesTask = Task.WhenAll(
+                    Enumerable.Range(1, Pages * PageSize + _random.Next() % PageSize)
+                        .Select(x => LdapOps.AddEntryAsync(CnPrefix)));
+                return _entriesTask;
+            }
+
+            public Task DisposeAsync()
+            {
+                return Task.CompletedTask;
             }
         }
     }

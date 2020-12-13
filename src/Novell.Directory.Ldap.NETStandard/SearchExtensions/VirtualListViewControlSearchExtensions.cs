@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 
@@ -12,7 +13,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
     /// </summary>
     public static class VirtualListViewControlSearchExtensions
     {
-        public static List<LdapEntry> SearchUsingVlv(
+        public static Task<List<LdapEntry>> SearchUsingVlvAsync(
             [NotNull] this ILdapConnection ldapConnection,
             [NotNull] LdapSortControl sortControl,
             [NotNull] SearchOptions options, 
@@ -24,10 +25,10 @@ namespace Novell.Directory.Ldap.SearchExtensions
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             return new VirtualListViewControlHandler(ldapConnection)
-                .SearchUsingVlv(sortControl, options, pageSize);
+                .SearchUsingVlvAsync(sortControl, options, pageSize);
         }
 
-        public static List<T> SearchUsingVlv<T>(
+        public static Task<List<T>> SearchUsingVlvAsync<T>(
             [NotNull] this ILdapConnection ldapConnection,
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
@@ -40,7 +41,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
             return new VirtualListViewControlHandler(ldapConnection)
-                .SearchUsingVlv<T>(sortControl, converter, options, pageSize);
+                .SearchUsingVlvAsync<T>(sortControl, converter, options, pageSize);
         }
     }
 }

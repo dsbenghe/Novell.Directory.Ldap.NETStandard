@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 
@@ -19,15 +20,15 @@ namespace Novell.Directory.Ldap
             _ldapConnection = ldapConnection ?? throw new ArgumentNullException(nameof(ldapConnection));
         }
 
-        public List<LdapEntry> SearchWithSimplePaging([NotNull] SearchOptions options, int pageSize)
+        public Task<List<LdapEntry>> SearchWithSimplePagingAsync([NotNull] SearchOptions options, int pageSize)
         {
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            return SearchWithSimplePaging(entry => entry, options, pageSize);
+            return SearchWithSimplePagingAsync(entry => entry, options, pageSize);
         }
 
-        public List<T> SearchWithSimplePaging<T>([NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
+        public async Task<List<T>> SearchWithSimplePagingAsync<T>([NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
         {
             if (converter == null) throw new ArgumentNullException(nameof(converter));
             if (options == null) throw new ArgumentNullException(nameof(options));
@@ -37,7 +38,7 @@ namespace Novell.Directory.Ldap
             var isNextPageAvailable = PrepareForNextPage(null, pageSize, true, ref searchConstraints);
             while (isNextPageAvailable)
             {
-                var responseControls = RetrievePage(options, searchConstraints, searchResult, converter);
+                var responseControls = await RetrievePageAsync(options, searchConstraints, searchResult, converter);
                 isNextPageAvailable = PrepareForNextPage(responseControls, pageSize, false, ref searchConstraints);
             }
 
@@ -79,7 +80,7 @@ namespace Novell.Directory.Ldap
             return searchConstraints;
         }
 
-        private LdapControl[] RetrievePage<T>(
+        private async Task<LdapControl[]> RetrievePageAsync<T>(
             [NotNull] SearchOptions options,
             [NotNull] LdapSearchConstraints searchConstraints,
             [NotNull] List<T> mappedResultsAccumulator,
@@ -88,7 +89,7 @@ namespace Novell.Directory.Ldap
             if (searchConstraints == null) throw new ArgumentNullException(nameof(searchConstraints));
             if (mappedResultsAccumulator == null) throw new ArgumentNullException(nameof(mappedResultsAccumulator));
 
-            var searchResults = _ldapConnection.Search(
+            var searchResults = await _ldapConnection.SearchAsync(
                     options.SearchBase,
                     LdapConnection.ScopeSub,
                     options.Filter,

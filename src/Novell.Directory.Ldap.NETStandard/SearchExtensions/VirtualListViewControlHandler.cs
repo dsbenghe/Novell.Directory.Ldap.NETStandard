@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 
@@ -18,7 +19,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             _ldapConnection = ldapConnection ?? throw new ArgumentNullException(nameof(ldapConnection));
         }
 
-        public List<LdapEntry> SearchUsingVlv(
+        public Task<List<LdapEntry>> SearchUsingVlvAsync(
             [NotNull] LdapSortControl sortControl,
             [NotNull] SearchOptions options, 
             int pageSize)
@@ -27,10 +28,10 @@ namespace Novell.Directory.Ldap.SearchExtensions
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            return SearchUsingVlv(sortControl, entry => entry, options, pageSize);
+            return SearchUsingVlvAsync(sortControl, entry => entry, options, pageSize);
         }
 
-        public List<T> SearchUsingVlv<T>(
+        public async Task<List<T>> SearchUsingVlvAsync<T>(
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options, 
@@ -53,13 +54,13 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     sortControl
                 });
 
-                var searchResults = _ldapConnection.Search(
+                var searchResults = (await _ldapConnection.SearchAsync(
                     options.SearchBase,
                     LdapConnection.ScopeSub,
                     options.Filter,
                     options.TargetAttributes,
                     options.TypesOnly,
-                    searchConstraints).ToList();
+                    searchConstraints)).ToList();
 
                 entries.AddRange(searchResults.Select(converter));
 
