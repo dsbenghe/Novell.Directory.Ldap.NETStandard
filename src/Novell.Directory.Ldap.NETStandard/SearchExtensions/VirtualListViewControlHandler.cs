@@ -6,7 +6,7 @@ using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.SearchExtensions
 {
-    public static class VirtualListViewControlSearchExtension
+    public static class VirtualListViewControlHandler
     {
         public static List<LdapEntry> SearchUsingVlv(
             [NotNull] this ILdapConnection ldapConnection,

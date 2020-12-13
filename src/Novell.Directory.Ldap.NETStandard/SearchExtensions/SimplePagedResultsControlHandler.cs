@@ -10,7 +10,7 @@ namespace Novell.Directory.Ldap
     /// Provides extensions method to do paged searches
     /// with <see cref="SimplePagedResultsControl"/>.
     /// </summary>
-    public static class SimplePagedResultsControlExtension
+    public static class SimplePagedResultsControlHandler
     {
         public static List<LdapEntry> SearchWithSimplePaging([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
         {
