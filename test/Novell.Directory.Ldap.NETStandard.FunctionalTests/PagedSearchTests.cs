@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     entries = ldapConnection.SearchUsingVlv(
                         _ldapSortControl,
                         _searchOptionsForZeroResults,
-                        _pagedSearchTestsFixture.Entries.Count
+                        PagedSearchTestsFixture.PageSize
                     );
                 });
 
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        ldapConnection.SearchUsingSimplePaging(
                             _searchOptions,
                             PagedSearchTestsFixture.PageSize
                         ));
@@ -130,7 +130,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        ldapConnection.SearchUsingSimplePaging(
                             (entry) => new Tuple<LdapEntry>(entry), 
                             _searchOptions,
                             PagedSearchTestsFixture.PageSize
@@ -149,7 +149,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        ldapConnection.SearchUsingSimplePaging(
                             _searchOptions,
                             _pagedSearchTestsFixture.Entries.Count
                         ));
@@ -167,7 +167,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 ldapConnection =>
                 {
                     entries.AddRange(
-                        ldapConnection.SearchWithSimplePaging(
+                        ldapConnection.SearchUsingSimplePaging(
                             _searchOptionsForZeroResults,
                             PagedSearchTestsFixture.Pages
                         ));

@@ -6,31 +6,44 @@ using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.SearchExtensions
 {
-    public static class VirtualListViewControlHandler
+    /// <summary>
+    /// Helper class to searches using <see cref="LdapVirtualListControl"/>
+    /// </summary>
+    public class VirtualListViewControlHandler
     {
-        public static List<LdapEntry> SearchUsingVlv(
-            [NotNull] this ILdapConnection ldapConnection,
+        [NotNull] private readonly ILdapConnection _ldapConnection;
+
+        public VirtualListViewControlHandler([NotNull] ILdapConnection ldapConnection)
+        {
+            _ldapConnection = ldapConnection ?? throw new ArgumentNullException(nameof(ldapConnection));
+        }
+
+        public List<LdapEntry> SearchUsingVlv(
             [NotNull] LdapSortControl sortControl,
             [NotNull] SearchOptions options, 
             int pageSize)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
+            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
             if (options == null) throw new ArgumentNullException(nameof(options));
             if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
 
-            return ldapConnection.SearchUsingVlv(sortControl, entry => entry, options, pageSize);
+            return SearchUsingVlv(sortControl, entry => entry, options, pageSize);
         }
 
-        public static List<T> SearchUsingVlv<T>(
-            [NotNull] this ILdapConnection ldapConnection,
+        public List<T> SearchUsingVlv<T>(
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options, 
             int pageSize)
         {
+            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
+            if (converter == null) throw new ArgumentNullException(nameof(converter));
+            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
             var entries = new List<T>();
             var pageCount = 1;
-            var searchConstraints = options.SearchConstraints ?? ldapConnection.SearchConstraints;
+            var searchConstraints = options.SearchConstraints ?? _ldapConnection.SearchConstraints;
 
             while (true)
             {
@@ -40,7 +53,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     sortControl
                 });
 
-                var searchResults = ldapConnection.Search(
+                var searchResults = _ldapConnection.Search(
                     options.SearchBase,
                     LdapConnection.ScopeSub,
                     options.Filter,
