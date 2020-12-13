@@ -6,39 +6,39 @@ namespace Novell.Directory.Ldap.Controls
 {
     /// <summary>
     /// An LDAP client application that needs to control the rate at which results are returned
-    /// MAY specify on the searchRequest a <see cref="LdapPagedResultsControl"/> with size set
+    /// MAY specify on the searchRequest a <see cref="SimplePagedResultsControl"/> with size set
     /// to the desired page size and cookie set to the zero-length string. The page size specified
     /// MAY be greater than zero and less than the sizeLimit value specified in the
     /// searchRequest. [RFC 2696]
     /// </summary>
-	public class LdapPagedResultsControl: LdapControl
+	public class SimplePagedResultsControl: LdapControl
     {
         private const string RequestOid = "1.2.840.113556.1.4.319";
         private const string DecodedNotInteger = "Decoded value is not an integer, but should be";
         private const string DecodedNotOctetString = "Decoded value is not an octet string, but should be";
 
-        private static readonly string DecodedNotSequence = $"Failed to construct {nameof(LdapPagedResultsControl)}: " +
+        private static readonly string DecodedNotSequence = $"Failed to construct {nameof(SimplePagedResultsControl)}: " +
                                                             $"provided values might not be decoded as {nameof(Asn1Sequence)}";
         private Asn1Sequence _request;
         
-        static LdapPagedResultsControl()
+        static SimplePagedResultsControl()
         {
             try
             {
-                Register(RequestOid, typeof(LdapPagedResultsControl));
+                Register(RequestOid, typeof(SimplePagedResultsControl));
             }
             catch (Exception ex)
             {
-                Logger.Log.LogWarning($"Failed to bind oid <{RequestOid}> to control <{nameof(LdapPagedResultsControl)}>", ex);
+                Logger.Log.LogWarning($"Failed to bind oid <{RequestOid}> to control <{nameof(SimplePagedResultsControl)}>", ex);
             }
         }
 
         /// <summary>
-        /// Constructs <see cref="LdapPagedResultsControl"/> control.
+        /// Constructs <see cref="SimplePagedResultsControl"/> control.
         /// </summary>
-        /// <param name="size"><see cref="LdapPagedResultsControl.Size"/></param>
-        /// <param name="cookie"><see cref="LdapPagedResultsControl.Cookie"/></param>
-        public LdapPagedResultsControl(int size, [CanBeNull] byte[] cookie) : base(RequestOid, true, null)
+        /// <param name="size"><see cref="SimplePagedResultsControl.Size"/></param>
+        /// <param name="cookie"><see cref="SimplePagedResultsControl.Cookie"/></param>
+        public SimplePagedResultsControl(int size, [CanBeNull] byte[] cookie) : base(RequestOid, true, null)
         {
             Size = size;
             Cookie = cookie ?? GetEmptyCookie;
@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap.Controls
         }
         
         [UsedImplicitly]
-        public LdapPagedResultsControl(string oid, bool critical, byte[] values) : base(oid, critical, values)
+        public SimplePagedResultsControl(string oid, bool critical, byte[] values) : base(oid, critical, values)
         {
             var lberDecoder = new LberDecoder();
             if (lberDecoder == null) throw new InvalidOperationException($"Failed to build {nameof(LberDecoder)}");
