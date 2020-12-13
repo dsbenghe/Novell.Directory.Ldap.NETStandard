@@ -10,7 +10,7 @@ It works with any LDAP protocol compatible directory server (including Microsoft
 [![NuGet](https://img.shields.io/nuget/vpre/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/absoluteLatest) - Developing version  
 
 
-The library is originaly coming from Novell (https://www.novell.com/developer/ndk/ldap_libraries_for_c_sharp.html) - really old code base - looks like a tool-based conversion from Java - this is the original java code repo http://www.openldap.org/devel/gitweb.cgi?p=openldap-jldap.git;a=summary (first commit in that repo is from 2000 :)) - which explains some of the weirdness of the code base.
+The library is originally coming from Novell (https://www.novell.com/developer/ndk/ldap_libraries_for_c_sharp.html) - really old code base - looks like a tool-based conversion from Java - this is the original java code repo http://www.openldap.org/devel/gitweb.cgi?p=openldap-jldap.git;a=summary (first commit in that repo is from 2000 :)) - which explains some of the weirdness of the code base.
 
 The Novell documentation for the original library:
 * html: https://www.novell.com/documentation/developer/ldapcsharp/?page=/documentation/developer/ldapcsharp/cnet/data/front.html
@@ -20,7 +20,7 @@ First commit in this repo is the original C# source code from Novell. Next aroun
 
 See ChangeLog for summary of changes.
 
-There are a number of basic functional tests which are also run as stress tests (e.g. the functional tests running on multiple threads) running against OpenLDAP on Ubuntu Trusty.
+There are a number of functional tests which are also run as stress tests (e.g. the functional tests running on multiple threads) running against OpenLDAP on Ubuntu.
 
 Sample usage
 

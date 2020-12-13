@@ -1,5 +1,11 @@
 # Changelog
 
+### 3.5.x
+* Add SimplePagedResultsControl & helper class for using it - thanks to Aleksandr Eliseev - https://github.com/metacube
+* Add helper classes & extensions methods to ILdapConnection for using SimplePagedResultsControl & VLVC
+* Add samples via tests of using SimplePagedResultsControl & VLVC for reading large results via paging
+* Increase performance in filter parsing - thanks to https://github.com/isnogud
+
 ### 3.4.x
 * net5 package
 * Avoid unnecessary async calls - thanks to Steve Greatrex - https://github.com/stevegreatrex
