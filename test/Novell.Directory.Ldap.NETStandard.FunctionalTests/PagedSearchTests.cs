@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     entries = ldapConnection.SearchUsingVlv(
                         _ldapSortControl,
                         _searchOptionsForZeroResults,
-                        _pagedSearchTestsFixture.Entries.Count
+                        PagedSearchTestsFixture.PageSize
                     );
                 });
 
