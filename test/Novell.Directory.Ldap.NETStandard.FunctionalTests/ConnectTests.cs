@@ -65,8 +65,19 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     }
                     finally
                     {
-                        //ldapConnection.StopTls();
+                        ldapConnection.StopTls();
                     }
+                }, false, true);
+        }
+
+        [Fact]
+        public void Disconnect_WithStartTls_WithoutStopTls_Works()
+        {
+            TestHelper.WithLdapConnection(
+                ldapConnection =>
+                {
+                    ldapConnection.StartTls();
+                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 }, false, true);
         }
 
