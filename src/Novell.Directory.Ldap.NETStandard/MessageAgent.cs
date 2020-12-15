@@ -193,7 +193,7 @@ namespace Novell.Directory.Ldap
             {
                 // Send abandon request and remove from connection list
                 var info = _messages.FindMessageById(msgId);
-                SupportClass.VectorRemoveElement(_messages, info); // This message is now dead
+                _messages.Remove(info);
                 info.Abandon(cons, null);
             }
             catch (FieldAccessException ex)
@@ -212,7 +212,7 @@ namespace Novell.Directory.Ldap
                 var info = (Message)_messages[i];
 
                 // Message complete and no more replies, remove from id list
-                SupportClass.VectorRemoveElement(_messages, info);
+                _messages.Remove(info);
                 info.Abandon(null, null);
             }
         }
@@ -291,7 +291,7 @@ namespace Novell.Directory.Ldap
                     if (!info.AcceptsReplies() && !info.HasReplies())
                     {
                         // Message complete and no more replies, remove from id list
-                        SupportClass.VectorRemoveElement(_messages, info);
+                        _messages.Remove(info);
                         info.Abandon(null, null); // Get rid of resources
                     }
 
@@ -325,7 +325,7 @@ namespace Novell.Directory.Ldap
                         if (!info.AcceptsReplies() && !info.HasReplies())
                         {
                             // Message complete & no more replies, remove from id list
-                            SupportClass.VectorRemoveElement(_messages, info); // remove from list
+                            _messages.Remove(info); // remove from list
                             info.Abandon(null, null); // Get rid of resources
 
                             // Start loop at next message that is now moved
