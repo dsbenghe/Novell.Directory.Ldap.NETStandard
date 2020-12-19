@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections.Generic;
@@ -538,7 +537,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             if (ch < 91 && ch > 64 || ch < 123 && ch > 96)
 
-                // ASCII A-Z
+            // ASCII A-Z
             {
                 return true;
             }
@@ -561,7 +560,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             if (ch < 58 && ch > 47)
 
-                // ASCII 0-9
+            // ASCII 0-9
             {
                 return true;
             }
@@ -583,7 +582,7 @@ namespace Novell.Directory.Ldap.Utilclass
         {
             if (ch < 58 && ch > 47 || ch < 71 && ch > 64 || ch < 103 && ch > 96)
 
-                // ASCII A-F
+            // ASCII A-F
             {
                 return true;
             }
@@ -633,19 +632,19 @@ namespace Novell.Directory.Ldap.Utilclass
 
             if (hex1 < 58 && hex1 > 47)
 
-                // ASCII 0-9
+            // ASCII 0-9
             {
                 result = (hex1 - 48) * 16;
             }
             else if (hex1 < 71 && hex1 > 64)
 
-                // ASCII a-f
+            // ASCII a-f
             {
                 result = (hex1 - 55) * 16;
             }
             else if (hex1 < 103 && hex1 > 96)
 
-                // ASCII A-F
+            // ASCII A-F
             {
                 result = (hex1 - 87) * 16;
             }
@@ -656,19 +655,19 @@ namespace Novell.Directory.Ldap.Utilclass
 
             if (hex0 < 58 && hex0 > 47)
 
-                // ASCII 0-9
+            // ASCII 0-9
             {
                 result += hex0 - 48;
             }
             else if (hex0 < 71 && hex0 > 64)
 
-                // ASCII a-f
+            // ASCII a-f
             {
                 result += hex0 - 55;
             }
             else if (hex0 < 103 && hex0 > 96)
 
-                // ASCII A-F
+            // ASCII A-F
             {
                 result += hex0 - 87;
             }
@@ -815,7 +814,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             if (j == 0 && i == 0)
 
-                // the DNs are identical and thus not contained
+            // the DNs are identical and thus not contained
             {
                 return false;
             }

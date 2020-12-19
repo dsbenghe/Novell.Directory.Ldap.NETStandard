@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using Novell.Directory.Ldap.Utilclass;
@@ -266,7 +265,7 @@ namespace Novell.Directory.Ldap
             {
                 tmsg = ResourcesHandler.GetMessage(
                     "FAILED_REFERRAL",
-                    new object[] {"LdapReferralException", FailedReferral });
+                    new object[] { "LdapReferralException", FailedReferral });
 
                 // If found no string from resource file, use a default string
                 if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
@@ -284,7 +283,7 @@ namespace Novell.Directory.Ldap
                 {
                     tmsg = ResourcesHandler.GetMessage(
                         "REFERRAL_ITEM",
-                        new object[] {"LdapReferralException", _referrals[i] });
+                        new object[] { "LdapReferralException", _referrals[i] });
 
                     // If found no string from resource file, use a default string
                     if (tmsg.EqualsOrdinalCI("SERVER_MSG"))

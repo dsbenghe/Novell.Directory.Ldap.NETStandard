@@ -28,7 +28,6 @@
 // Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -411,6 +410,7 @@ namespace Novell.Directory.Ldap
                     {
                         buffer.Append("%0" + temp);
                     }
+
                     // if(temp.length()==2) this can only be two or one digit long.
                     else
                     {
@@ -573,6 +573,7 @@ namespace Novell.Directory.Ldap
         }
 
         private string[] ParseList(string listStr, char delimiter, int listStart, int listEnd)
+
         // end of list + 1
         {
             // TODO: This is just string.Split with the given delimiter on a Substring?

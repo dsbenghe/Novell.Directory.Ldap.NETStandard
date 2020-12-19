@@ -141,7 +141,7 @@ namespace Novell.Directory.Ldap
 
             if (_returnDelims)
             {
-// Tokenize();
+                // Tokenize();
                 RemoveEmptyStrings();
                 result = (string)_elements[0];
                 _elements.RemoveAt(0);

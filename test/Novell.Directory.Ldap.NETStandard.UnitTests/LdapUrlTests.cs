@@ -120,6 +120,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void Ctor_ComplexTooManyFields_Exception()
         {
             var urlStr = "ldap://foo.example.com/cn=admin,ou=marketing,o=corporation?attr1,attr2,attr3?sub?(objectclass=*)?ext1,ext2,ext3?";
+
             // LdapUrl: URL has too many ? fields
             Assert.Throws<UriFormatException>(() => new LdapUrl(urlStr));
         }

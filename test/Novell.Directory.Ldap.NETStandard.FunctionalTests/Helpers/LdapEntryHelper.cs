@@ -14,6 +14,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             {
                 cn = cnPrefix + "_" + cn;
             }
+
             var attributeSet = new LdapAttributeSet
             {
                 new LdapAttribute("cn", cn),

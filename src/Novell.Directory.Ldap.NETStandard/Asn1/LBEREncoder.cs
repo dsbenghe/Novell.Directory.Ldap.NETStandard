@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -105,7 +104,7 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte((byte)len); // Length
             for (var i = len - 1; i >= 0; i--)
 
-                // Content
+            // Content
             {
                 outRenamed.WriteByte((byte)octets[i]);
             }

@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -136,19 +135,19 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
 
                 default:
-                {
-                    if (Lastttype < 256 && (_ctype[Lastttype] & (byte)CharacterTypes.Stringquote) != 0)
                     {
-                        strval = StringValue;
+                        if (Lastttype < 256 && (_ctype[Lastttype] & (byte)CharacterTypes.Stringquote) != 0)
+                        {
+                            strval = StringValue;
+                            break;
+                        }
+
+                        var s = new char[3];
+                        s[0] = s[2] = '\'';
+                        s[1] = (char)Lastttype;
+                        strval = new string(s);
                         break;
                     }
-
-                    var s = new char[3];
-                    s[0] = s[2] = '\'';
-                    s[1] = (char)Lastttype;
-                    strval = new string(s);
-                    break;
-                }
             }
 
             return strval;

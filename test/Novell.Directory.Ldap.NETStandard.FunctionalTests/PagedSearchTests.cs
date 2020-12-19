@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     entries = ldapConnection.SearchUsingVlv(
                         _ldapSortControl,
-                        (entry) => new Tuple<LdapEntry>(entry), 
+                        (entry) => new Tuple<LdapEntry>(entry),
                         _searchOptions,
                         PagedSearchTestsFixture.PageSize
                     );
@@ -131,7 +131,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     entries.AddRange(
                         ldapConnection.SearchUsingSimplePaging(
-                            (entry) => new Tuple<LdapEntry>(entry), 
+                            (entry) => new Tuple<LdapEntry>(entry),
                             _searchOptions,
                             PagedSearchTestsFixture.PageSize
                         ));

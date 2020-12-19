@@ -55,6 +55,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             var substringStartsWithException = Assert.ThrowsAny<Exception>(() => baseString.Substring(offset).StartsWith(searchString));
             var startsWithStringAtOffsetException = Assert.ThrowsAny<Exception>(() => baseString.StartsWithStringAtOffset(searchString, offset));
+
             // Same exception type?
             Assert.IsType(substringStartsWithException.GetType(), startsWithStringAtOffsetException);
         }

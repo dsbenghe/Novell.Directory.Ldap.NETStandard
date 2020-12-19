@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.Collections;
 using System.IO;
@@ -185,7 +184,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public string[] AuxiliaryClasses { get; } = {string.Empty };
+        public string[] AuxiliaryClasses { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -194,7 +193,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public string[] RequiredAttributes { get; } = {string.Empty };
+        public string[] RequiredAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -203,7 +202,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public string[] OptionalAttributes { get; } = {string.Empty };
+        public string[] OptionalAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -212,7 +211,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public string[] PrecludedAttributes { get; } = {string.Empty };
+        public string[] PrecludedAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a

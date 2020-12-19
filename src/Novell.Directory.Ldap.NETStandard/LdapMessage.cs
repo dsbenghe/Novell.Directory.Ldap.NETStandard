@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Reflection;
@@ -218,7 +217,7 @@ namespace Novell.Directory.Ldap
                 asn1Ctrls = new RfcControls();
                 for (var i = 0; i < controls.Length; i++)
                 {
-// asn1Ctrls.add(null);
+                    // asn1Ctrls.add(null);
                     asn1Ctrls.Add(controls[i].Asn1Object);
                 }
             }
@@ -247,25 +246,25 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-/*              LdapControl[] controls = null;
-                RfcControls asn1Ctrls = message.Controls;
+                /*              LdapControl[] controls = null;
+                                RfcControls asn1Ctrls = message.Controls;
 
-                if (asn1Ctrls != null)
-                {
-                    controls = new LdapControl[asn1Ctrls.size()];
-                    for (int i = 0; i < asn1Ctrls.size(); i++)
-                    {
-                        RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
-                        System.String oid = rfcCtl.ControlType.stringValue();
-                        byte[] value_Renamed = rfcCtl.ControlValue.byteValue();
-                        bool critical = rfcCtl.Criticality.booleanValue();
+                                if (asn1Ctrls != null)
+                                {
+                                    controls = new LdapControl[asn1Ctrls.size()];
+                                    for (int i = 0; i < asn1Ctrls.size(); i++)
+                                    {
+                                        RfcControl rfcCtl = (RfcControl) asn1Ctrls.get_Renamed(i);
+                                        System.String oid = rfcCtl.ControlType.stringValue();
+                                        byte[] value_Renamed = rfcCtl.ControlValue.byteValue();
+                                        bool critical = rfcCtl.Criticality.booleanValue();
 
-                        controls[i] = controlFactory(oid, critical, value_Renamed);
-                    }
-                }
+                                        controls[i] = controlFactory(oid, critical, value_Renamed);
+                                    }
+                                }
 
-                return controls;
-*/
+                                return controls;
+                */
                 LdapControl[] controls = null;
                 var asn1Ctrls = Message.Controls;
 
@@ -564,7 +563,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
         {
-// throw new NotImplementedException();
+            // throw new NotImplementedException();
             var regControls = LdapControl.RegisteredControls;
             try
             {
@@ -581,8 +580,8 @@ namespace Novell.Directory.Ldap
                 }
 
                 /* If found, get LDAPControl constructor */
-                Type[] argsClass = {typeof(string), typeof(bool), typeof(byte[]) };
-                object[] args = {oid, critical, valueRenamed };
+                Type[] argsClass = { typeof(string), typeof(bool), typeof(byte[]) };
+                object[] args = { oid, critical, valueRenamed };
                 Exception ex = null;
                 try
                 {
@@ -593,7 +592,7 @@ namespace Novell.Directory.Ldap
                         /* Call the control constructor for a registered Class*/
                         object ctl = null;
 
-// ctl = ctlConstructor.newInstance(args);
+                        // ctl = ctlConstructor.newInstance(args);
                         ctl = ctlConstructor.Invoke(args);
                         return (LdapControl)ctl;
                     }

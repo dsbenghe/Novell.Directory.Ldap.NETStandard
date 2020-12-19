@@ -28,7 +28,6 @@
 //   Anil Bhatia (banil@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 namespace Novell.Directory.Ldap.Events
 {

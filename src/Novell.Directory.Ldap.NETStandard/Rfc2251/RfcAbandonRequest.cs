@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
@@ -55,7 +54,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
         {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon" },
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "Abandon" },
                 LdapException.LdapNotSupported, null);
         }
 

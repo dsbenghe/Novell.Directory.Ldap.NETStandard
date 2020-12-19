@@ -20,7 +20,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
 
         public List<LdapEntry> SearchUsingVlv(
             [NotNull] LdapSortControl sortControl,
-            [NotNull] SearchOptions options, 
+            [NotNull] SearchOptions options,
             int pageSize)
         {
             if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
@@ -33,7 +33,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
         public List<T> SearchUsingVlv<T>(
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
-            [NotNull] SearchOptions options, 
+            [NotNull] SearchOptions options,
             int pageSize)
         {
             if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));

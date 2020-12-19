@@ -35,7 +35,6 @@
 // original architecture of the application in the converted project, the user should be aware that
 // the primary goal of these support classes is to replicate functionality, and that at times
 // the architecture of the resulting solution may differ somewhat.
-//
 
 using System.Collections;
 using System.Globalization;

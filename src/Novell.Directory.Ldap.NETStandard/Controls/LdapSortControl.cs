@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using Novell.Directory.Ldap.Asn1;
@@ -88,7 +87,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     server does not support this control.
         /// </param>
         public LdapSortControl(LdapSortKey key, bool critical)
-            : this(new[] {key }, critical)
+            : this(new[] { key }, critical)
         {
         }
 

@@ -2,7 +2,7 @@
 {
     public class SaslCramMd5Request : SaslRequest
     {
-        public SaslCramMd5Request() : base (SaslConstants.Mechanism.CramMd5)
+        public SaslCramMd5Request() : base(SaslConstants.Mechanism.CramMd5)
         {
         }
 

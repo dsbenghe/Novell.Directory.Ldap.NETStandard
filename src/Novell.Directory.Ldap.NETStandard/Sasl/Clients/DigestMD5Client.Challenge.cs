@@ -60,6 +60,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                                         break;
                                 }
                             }
+
                             break;
                         case "stale":
                             Stale = trimmed == "true";
@@ -96,6 +97,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             public byte[] Response { get; set; } // 16 Bytes
             public int? MaxBuf { get; set; }
             public string Charset { get; set; }
+
             //public string Cipher { get; set; } // Not needed for "auth", only "auth-conf" requires it
             //public string AuthzId { get; set; }
 

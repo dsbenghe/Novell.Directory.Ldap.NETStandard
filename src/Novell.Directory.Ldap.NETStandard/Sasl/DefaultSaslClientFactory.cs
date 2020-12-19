@@ -22,6 +22,7 @@ namespace Novell.Directory.Ldap.Sasl
                     return new DigestMD5Client(saslRequest);
                 case SaslConstants.Mechanism.Plain:
                     return new PlainClient(saslRequest);
+
                 //case LdapConstants.SaslMechanism.GssApi:
                 default:
                     return null;

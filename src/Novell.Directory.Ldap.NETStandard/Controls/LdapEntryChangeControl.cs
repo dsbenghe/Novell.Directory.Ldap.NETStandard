@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -104,7 +103,7 @@ namespace Novell.Directory.Ldap.Controls
             // check for optional elements
             if (sequence.Size() > 1 && ChangeType == 8)
 
-                // 8 means modifyDN
+            // 8 means modifyDN
             {
                 // get the previous DN - it is encoded as an octet string
                 asn1Obj = sequence.get_Renamed(1);

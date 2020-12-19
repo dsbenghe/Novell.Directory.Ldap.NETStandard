@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
         }
 
         private static bool PrepareForNextPage(
-            [CanBeNull] LdapControl[] pageResponseControls, 
+            [CanBeNull] LdapControl[] pageResponseControls,
             int pageSize,
             bool isInitialCall,
             ref LdapSearchConstraints searchConstraints)
@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
             var cookie = SimplePagedResultsControl.GetEmptyCookie;
             if (!isInitialCall)
             {
-                var pagedResultsControl = (SimplePagedResultsControl) pageResponseControls?.SingleOrDefault(x => x is SimplePagedResultsControl);
+                var pagedResultsControl = (SimplePagedResultsControl)pageResponseControls?.SingleOrDefault(x => x is SimplePagedResultsControl);
                 if (pagedResultsControl == null)
                 {
                     throw new LdapException($"Failed to find <{nameof(SimplePagedResultsControl)}>. Searching is abruptly stopped");
@@ -64,6 +64,7 @@ namespace Novell.Directory.Ldap
                 {
                     return false;
                 }
+
                 cookie = pagedResultsControl.Cookie;
             }
 

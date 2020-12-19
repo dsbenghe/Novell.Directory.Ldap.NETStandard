@@ -150,6 +150,7 @@ namespace Novell.Directory.Ldap
             {
                 _responseCtls = ldapResponse.Controls;
             }
+
             var serverCreds = bindResponse.ServerSaslCreds;
             var resultCode = ldapResponse.ResultCode;
 
@@ -166,6 +167,7 @@ namespace Novell.Directory.Ldap
                 ldapResponse.ChkResultCode();
                 throw new LdapException("SASL Bind Error.", resultCode, null);
             }
+
             return replyBuf;
         }
     }

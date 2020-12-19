@@ -18,7 +18,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 
             var result = EqualAttrTypeCheck(val1, val2);
 
-            Assert.True(result);            
+            Assert.True(result);
         }
 
         [Fact]

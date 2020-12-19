@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -106,7 +105,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Return a String representation of this Asn1Object.</summary>
         public override string ToString()
         {
-            string[] classTypes = {"[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };
+            string[] classTypes = { "[UNIVERSAL ", "[APPLICATION ", "[", "[PRIVATE " };
 
             var sb = new StringBuilder();
             var id = GetIdentifier(); // could be overridden.

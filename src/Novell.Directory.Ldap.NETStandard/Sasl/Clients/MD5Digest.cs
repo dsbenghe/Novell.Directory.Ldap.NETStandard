@@ -74,9 +74,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         {
             length = Math.Max(0, length);
 
-            //
             // fill the current word
-            //
             int i = 0;
             if (xBufOff != 0)
             {
@@ -92,18 +90,14 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 }
             }
 
-            //
             // process whole words.
-            //
             int limit = ((length - i) & ~3) + i;
             for (; i < limit; i += 4)
             {
                 ProcessWord(input, inOff + i);
             }
 
-            //
             // load in the remainder.
-            //
             while (i < length)
             {
                 xBuf[xBufOff++] = input[inOff + i++];
@@ -116,9 +110,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         {
             long bitLength = (byteCount << 3);
 
-            //
             // add the pad bytes.
-            //
             Update((byte)128);
 
             while (xBufOff != 0) Update((byte)0);
@@ -215,33 +207,25 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 | (uint)bs[off + 3] << 24;
         }
 
-        //
         // round 1 left rotates
-        //
         private const int S11 = 7;
         private const int S12 = 12;
         private const int S13 = 17;
         private const int S14 = 22;
 
-        //
         // round 2 left rotates
-        //
         private const int S21 = 5;
         private const int S22 = 9;
         private const int S23 = 14;
         private const int S24 = 20;
 
-        //
         // round 3 left rotates
-        //
         private const int S31 = 4;
         private const int S32 = 11;
         private const int S33 = 16;
         private const int S34 = 23;
 
-        //
         // round 4 left rotates
-        //
         private const int S41 = 6;
         private const int S42 = 10;
         private const int S43 = 15;
@@ -286,9 +270,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             uint c = H3;
             uint d = H4;
 
-            //
             // Round 1 - F cycle, 16 times.
-            //
             a = RotateLeft((a + F(b, c, d) + X[0] + 0xd76aa478), S11) + b;
             d = RotateLeft((d + F(a, b, c) + X[1] + 0xe8c7b756), S12) + a;
             c = RotateLeft((c + F(d, a, b) + X[2] + 0x242070db), S13) + d;
@@ -306,9 +288,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             c = RotateLeft((c + F(d, a, b) + X[14] + 0xa679438e), S13) + d;
             b = RotateLeft((b + F(c, d, a) + X[15] + 0x49b40821), S14) + c;
 
-            //
             // Round 2 - G cycle, 16 times.
-            //
             a = RotateLeft((a + G(b, c, d) + X[1] + 0xf61e2562), S21) + b;
             d = RotateLeft((d + G(a, b, c) + X[6] + 0xc040b340), S22) + a;
             c = RotateLeft((c + G(d, a, b) + X[11] + 0x265e5a51), S23) + d;
@@ -326,9 +306,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             c = RotateLeft((c + G(d, a, b) + X[7] + 0x676f02d9), S23) + d;
             b = RotateLeft((b + G(c, d, a) + X[12] + 0x8d2a4c8a), S24) + c;
 
-            //
             // Round 3 - H cycle, 16 times.
-            //
             a = RotateLeft((a + H(b, c, d) + X[5] + 0xfffa3942), S31) + b;
             d = RotateLeft((d + H(a, b, c) + X[8] + 0x8771f681), S32) + a;
             c = RotateLeft((c + H(d, a, b) + X[11] + 0x6d9d6122), S33) + d;
@@ -346,9 +324,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             c = RotateLeft((c + H(d, a, b) + X[15] + 0x1fa27cf8), S33) + d;
             b = RotateLeft((b + H(c, d, a) + X[2] + 0xc4ac5665), S34) + c;
 
-            //
             // Round 4 - K cycle, 16 times.
-            //
             a = RotateLeft((a + K(b, c, d) + X[0] + 0xf4292244), S41) + b;
             d = RotateLeft((d + K(a, b, c) + X[7] + 0x432aff97), S42) + a;
             c = RotateLeft((c + K(d, a, b) + X[14] + 0xab9423a7), S43) + d;

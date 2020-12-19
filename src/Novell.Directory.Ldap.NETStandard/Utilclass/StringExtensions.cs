@@ -9,11 +9,11 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         public static bool StartsWithStringAtOffset(this string baseString, string value, int offset)
         {
-            if (value == null) 
+            if (value == null)
                 throw new ArgumentNullException(nameof(value));
-            if (offset < 0) 
+            if (offset < 0)
                 throw new ArgumentOutOfRangeException(nameof(offset));
-            if (offset > baseString.Length) 
+            if (offset > baseString.Length)
                 throw new ArgumentOutOfRangeException(nameof(offset), "offset cannot be larger than length of string");
 
             if (offset + value.Length > baseString.Length)

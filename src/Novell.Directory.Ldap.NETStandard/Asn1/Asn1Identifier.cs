@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -216,7 +215,7 @@ namespace Novell.Directory.Ldap.Asn1
             Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
             if (Tag == 0x1F)
 
-                // if true, its a multiple octet identifier.
+            // if true, its a multiple octet identifier.
             {
                 Tag = DecodeTagNumber(inRenamed);
             }

@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         private static TransportSecurity GetTransportSecurity(bool useSsl, bool disableEnvTransportSecurity)
         {
             var transportSecurity = useSsl ? TransportSecurity.Ssl : TransportSecurity.Off;
-            if(disableEnvTransportSecurity)
+            if (disableEnvTransportSecurity)
             {
                 return transportSecurity;
             }

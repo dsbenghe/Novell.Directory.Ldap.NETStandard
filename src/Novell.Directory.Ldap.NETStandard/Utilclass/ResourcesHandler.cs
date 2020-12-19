@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Globalization;
@@ -172,7 +171,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             catch (ArgumentNullException)
             {
-                result = GetMessage(ExceptionMessages.UnknownResult, new object[] {code }, locale);
+                result = GetMessage(ExceptionMessages.UnknownResult, new object[] { code }, locale);
             }
 
             return result;

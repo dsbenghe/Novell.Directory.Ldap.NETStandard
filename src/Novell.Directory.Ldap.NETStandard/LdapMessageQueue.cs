@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
@@ -43,7 +42,7 @@ namespace Novell.Directory.Ldap
     public abstract class LdapMessageQueue : IDebugIdentifier
     {
         public virtual DebugId DebugId { get; } = DebugId.ForType<LdapMessageQueue>();
-    
+
         /// <summary> The message agent object associated with this queue.</summary>
         internal MessageAgent Agent;
 

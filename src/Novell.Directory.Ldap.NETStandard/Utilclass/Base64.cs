@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -107,7 +106,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private static readonly byte[][] LowerBoundMask =
         {
-            new byte[] {0, 0 }, new[] { (byte)0x1E, (byte)0x00 },
+            new byte[] { 0, 0 }, new[] { (byte)0x1E, (byte)0x00 },
             new[] { (byte)0x0F, (byte)0x20 }, new[] { (byte)0x07, (byte)0x30 }, new[] { (byte)0x02, (byte)0x38 },
             new[] { (byte)0x01, (byte)0x3C }
         };

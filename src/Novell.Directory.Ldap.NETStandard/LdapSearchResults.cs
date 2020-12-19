@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -326,7 +325,7 @@ namespace Novell.Directory.Ldap
                 // If not a Search Entry, Search Result, or search continuation
                 // we are very confused.
                 // LdapSearchResults.next(): No entry found & request is not complete
-                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] {"next" },
+                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] { "next" },
                     LdapException.LocalError, null);
             }
 
@@ -391,7 +390,7 @@ namespace Novell.Directory.Ldap
             ResetVectors();
             _completed = true;
         }
-        
+
         /// <summary>
         /// Get referral connections
         /// </summary>

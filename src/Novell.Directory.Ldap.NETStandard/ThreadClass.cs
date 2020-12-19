@@ -35,7 +35,6 @@
 // original architecture of the application in the converted project, the user should be aware that
 // the primary goal of these support classes is to replicate functionality, and that at times
 // the architecture of the resulting solution may differ somewhat.
-//
 
 using System.Threading;
 
@@ -58,7 +57,7 @@ namespace Novell.Directory.Ldap
         {
             _threadField = new Thread(Run);
         }
-        
+
         /// <summary>
         ///     Gets or sets a value indicating whether or not a thread is a background thread.
         /// </summary>

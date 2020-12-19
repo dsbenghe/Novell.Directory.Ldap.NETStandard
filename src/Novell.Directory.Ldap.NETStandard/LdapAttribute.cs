@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections.Generic;
@@ -304,6 +303,7 @@ namespace Novell.Directory.Ldap
                     var valueBytes = (byte[])_values[0];
                     rval = valueBytes.ToUtf8String();
                 }
+
                 return rval;
             }
         }
@@ -696,7 +696,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 return false;
-                gotSubType: ;
+            gotSubType:;
             }
 
             return true;
@@ -809,7 +809,7 @@ namespace Novell.Directory.Ldap
         {
             if (_values == null)
             {
-                _values = new object[] {bytes };
+                _values = new object[] { bytes };
             }
             else
             {

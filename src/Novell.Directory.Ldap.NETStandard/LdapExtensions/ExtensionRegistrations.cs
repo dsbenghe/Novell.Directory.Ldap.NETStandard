@@ -14,6 +14,7 @@
             {
                 return whoami;
             }
+
             return new LdapWhoAmIResponse(result.Message);
         }
     }

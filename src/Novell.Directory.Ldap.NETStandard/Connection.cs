@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -49,7 +48,7 @@ namespace Novell.Directory.Ldap
 {
     public delegate bool RemoteCertificateValidationCallback(
         object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors);
-    
+
     public delegate X509Certificate LocalCertificateSelectionCallback(
         object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers);
 
@@ -238,7 +237,7 @@ namespace Novell.Directory.Ldap
         internal bool Tls => _nonTlsBackup != null;
 
         public event RemoteCertificateValidationCallback OnRemoteCertificateValidation;
-        
+
         public event LocalCertificateSelectionCallback OnLocalCertificateSelection;
 
         private string GetSslHandshakeErrors()
@@ -475,7 +474,7 @@ namespace Novell.Directory.Ldap
         }
 
         private bool DefaultCertificateValidationHandler(
-            X509Certificate certificate, 
+            X509Certificate certificate,
             X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
@@ -483,6 +482,7 @@ namespace Novell.Directory.Ldap
             {
                 return true;
             }
+
             _handshakeChainStatus = chain.ChainStatus;
             _handshakePolicyErrors = sslPolicyErrors;
             return false;

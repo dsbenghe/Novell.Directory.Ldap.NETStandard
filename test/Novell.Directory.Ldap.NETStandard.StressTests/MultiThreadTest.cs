@@ -52,6 +52,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             {
                 threadData.ShouldStop = true;
             }
+
             Thread.Sleep(TimeSpan.FromSeconds(60));
             foreach (var thread in threads)
             {
@@ -80,7 +81,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var noOfRuns = threadDatas.Sum(x => x.Count);
             var noOfLdapExceptions = Exceptions.Count(x => (x.Ex as LdapException) != null);
             var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
-            var percentOfLdapExceptions = (float) noOfLdapExceptions * 100 / noOfRuns;
+            var percentOfLdapExceptions = (float)noOfLdapExceptions * 100 / noOfRuns;
             var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
             _logger.LogInformation(
                 $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
@@ -128,7 +129,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
                 _testingThreadReportingPeriod = testingThreadReportingPeriod;
-                _logger = logger;                
+                _logger = logger;
                 Count = 0;
                 ShouldStop = false;
                 LastPingDate = DateTime.Now;
@@ -185,6 +186,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 {
                     ex = ex.InnerException;
                 }
+
                 _logger.LogError("Error in runner thread - {0}", ex);
 
                 lock (Exceptions)

@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -106,7 +105,7 @@ namespace Novell.Directory.Ldap
                 return _arrayList.Add(message);
             }
         }
-        
+
         /// <summary>
         ///     Removes the first occurrence of a specific object from the Vector.
         /// </summary>
@@ -156,7 +155,7 @@ namespace Novell.Directory.Ldap
                 _arrayList.RemoveAt(index);
             }
         }
-        
+
         /// <summary>
         ///     Copies the elements to a new array.
         /// </summary>
@@ -166,8 +165,8 @@ namespace Novell.Directory.Ldap
             {
                 return _arrayList.ToArray();
             }
-        }  
-        
+        }
+
         /// <summary>
         ///     Removes all elements.
         /// </summary>

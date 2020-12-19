@@ -15,7 +15,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
         public static List<LdapEntry> SearchUsingVlv(
             [NotNull] this ILdapConnection ldapConnection,
             [NotNull] LdapSortControl sortControl,
-            [NotNull] SearchOptions options, 
+            [NotNull] SearchOptions options,
             int pageSize)
         {
             if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));

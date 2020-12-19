@@ -28,16 +28,13 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Reflection;
 
-//
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-//
 
 [assembly: AssemblyTitle("C# LDAP")]
 [assembly: AssemblyDescription(".NET Standard (1.3 and up) LDAP client library: .NET Core >= 1.0, .NET Framework >= 4.6, Universal Windows Platform, Xamarin (iOS, Android, UWP). Works with any LDAP server (including Microsoft Active Directory - AD)")]
@@ -48,7 +45,6 @@ using System.Reflection;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
-//
 // Version information for an assembly consists of the following four values:
 //
 //      Major Version
@@ -61,7 +57,6 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("3.5.2")]
 
-//
 // In order to sign your assembly you must specify a key to use. Refer to the
 // Microsoft .NET Framework documentation for more information on assembly signing.
 //
@@ -85,7 +80,6 @@ using System.Reflection;
 //       attribute as [assembly: AssemblyKeyFile("..\\..\\mykey.snk")]
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
-//
 
 [assembly: AssemblyDelaySign(false)]
 

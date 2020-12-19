@@ -19,6 +19,7 @@
                 var sr = searchResults.Next();
                 return new RootDseInfo(sr);
             }
+
             return null;
         }
     }

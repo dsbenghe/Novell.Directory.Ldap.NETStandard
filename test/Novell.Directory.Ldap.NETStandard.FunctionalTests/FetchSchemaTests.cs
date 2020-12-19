@@ -13,10 +13,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             var schema = TestHelper.WithAuthenticatedLdapConnection((ldapConnection) =>
             {
-                var ldapConnectionImpl = (LdapConnection) ldapConnection;
+                var ldapConnectionImpl = (LdapConnection)ldapConnection;
                 return ldapConnectionImpl.FetchSchema(ldapConnectionImpl.GetSchemaDn());
             });
-            
+
             Assert.NotNull(schema);
             Assert.True(schema.AttributeNames.ToEnumerable().Any());
             Assert.True(schema.AttributeSchemas.ToEnumerable().Any());

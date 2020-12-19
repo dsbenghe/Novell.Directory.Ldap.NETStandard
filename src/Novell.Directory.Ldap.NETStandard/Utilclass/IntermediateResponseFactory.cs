@@ -28,7 +28,6 @@
 //   Anil Bhatia (banil@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Reflection;
@@ -63,7 +62,7 @@ namespace Novell.Directory.Ldap.Utilclass
              */
         public static LdapIntermediateResponse ConvertToIntermediateResponse(RfcLdapMessage inResponse)
 
-            // throws LDAPException
+        // throws LDAPException
         {
             var tempResponse = new LdapIntermediateResponse(inResponse);
 
@@ -80,8 +79,8 @@ namespace Novell.Directory.Ldap.Utilclass
                     return tempResponse;
                 }
 
-                Type[] argsClass = {typeof(RfcLdapMessage) };
-                object[] args = {inResponse };
+                Type[] argsClass = { typeof(RfcLdapMessage) };
+                object[] args = { inResponse };
                 Exception ex;
                 try
                 {

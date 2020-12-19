@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -291,7 +290,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 //    [initial], *any*, [final] into an Asn1SequenceOf
                                 var sub = new Tokenizer(valueRenamed, "*", true);
 
-// SupportClass.Tokenizer sub = new SupportClass.Tokenizer(value_Renamed, "*");//, true);
+                                // SupportClass.Tokenizer sub = new SupportClass.Tokenizer(value_Renamed, "*");//, true);
                                 var seq = new Asn1SequenceOf(5);
                                 var tokCnt = sub.Count;
                                 var cnt = 0;
@@ -367,7 +366,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             string type = null, matchingRule = null;
                             var dnAttributes = false;
 
-// SupportClass.Tokenizer st = new StringTokenizer(ft.Attr, ":", true);
+                            // SupportClass.Tokenizer st = new StringTokenizer(ft.Attr, ":", true);
                             var st = new Tokenizer(_ft.Attr, ":"); // , true);
 
                             var first = true;
@@ -481,7 +480,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     if ((ival = Hex2Int(ch)) < 0)
                     {
                         // Invalid escape value(not a hex character)
-                        throw new LdapLocalException(ExceptionMessages.InvalidEscape, new object[] {ch },
+                        throw new LdapLocalException(ExceptionMessages.InvalidEscape, new object[] { ch },
                             LdapException.FilterError);
                     }
 
@@ -550,7 +549,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                             throw new LdapLocalException(
                                 ExceptionMessages.InvalidCharInFilter,
-                                new object[] {ch, escString }, LdapException.FilterError);
+                                new object[] { ch, escString }, LdapException.FilterError);
                         }
                     }
                     catch (IOException ue)
@@ -569,7 +568,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             var toReturn = new byte[iOctets];
 
-// Array.Copy((System.Array)SupportClass.ToByteArray(octets), 0, (System.Array)SupportClass.ToByteArray(toReturn), 0, iOctets);
+            // Array.Copy((System.Array)SupportClass.ToByteArray(octets), 0, (System.Array)SupportClass.ToByteArray(toReturn), 0, iOctets);
             Array.Copy(octets, 0, toReturn, 0, iOctets);
 
             octets = null;
@@ -613,7 +612,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     topOfStack.TaggedValue = current;
                     _filterStack.Push(current);
 
-// filterStack.Add(current);
+                    // filterStack.Add(current);
                 }
                 else if (valueRenamed is Asn1SetOf)
                 {
@@ -638,7 +637,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             var type = current.GetIdentifier().Tag;
             if (type == And || type == Or || type == Not)
             {
-// filterStack.Add(current);
+                // filterStack.Add(current);
                 _filterStack.Push(current);
             }
         }
@@ -948,31 +947,31 @@ namespace Novell.Directory.Ldap.Rfc2251
                             break;
 
                         case EqualityMatch:
-                        {
-                            filter.Append((string)itr.Current);
-                            filter.Append('=');
-                            var valueRenamed = (byte[])itr.Current;
-                            filter.Append(ByteString(valueRenamed));
-                            break;
-                        }
+                            {
+                                filter.Append((string)itr.Current);
+                                filter.Append('=');
+                                var valueRenamed = (byte[])itr.Current;
+                                filter.Append(ByteString(valueRenamed));
+                                break;
+                            }
 
                         case GreaterOrEqual:
-                        {
-                            filter.Append((string)itr.Current);
-                            filter.Append(">=");
-                            var valueRenamed = (byte[])itr.Current;
-                            filter.Append(ByteString(valueRenamed));
-                            break;
-                        }
+                            {
+                                filter.Append((string)itr.Current);
+                                filter.Append(">=");
+                                var valueRenamed = (byte[])itr.Current;
+                                filter.Append(ByteString(valueRenamed));
+                                break;
+                            }
 
                         case LessOrEqual:
-                        {
-                            filter.Append((string)itr.Current);
-                            filter.Append("<=");
-                            var valueRenamed = (byte[])itr.Current;
-                            filter.Append(ByteString(valueRenamed));
-                            break;
-                        }
+                            {
+                                filter.Append((string)itr.Current);
+                                filter.Append("<=");
+                                var valueRenamed = (byte[])itr.Current;
+                                filter.Append(ByteString(valueRenamed));
+                                break;
+                            }
 
                         case Present:
                             filter.Append((string)itr.Current);
@@ -997,45 +996,45 @@ namespace Novell.Directory.Ldap.Rfc2251
                             break;
 
                         case Substrings:
-                        {
-                            filter.Append((string)itr.Current);
-                            filter.Append('=');
-                            var noStarLast = false;
-                            while (itr.MoveNext())
                             {
-                                op = (int)itr.Current;
-                                switch (op)
+                                filter.Append((string)itr.Current);
+                                filter.Append('=');
+                                var noStarLast = false;
+                                while (itr.MoveNext())
                                 {
-                                    case Initial:
-                                        filter.Append((string)itr.Current);
-                                        filter.Append('*');
-                                        noStarLast = false;
-                                        break;
-
-                                    case Any:
-                                        if (noStarLast)
-                                        {
+                                    op = (int)itr.Current;
+                                    switch (op)
+                                    {
+                                        case Initial:
+                                            filter.Append((string)itr.Current);
                                             filter.Append('*');
-                                        }
+                                            noStarLast = false;
+                                            break;
 
-                                        filter.Append((string)itr.Current);
-                                        filter.Append('*');
-                                        noStarLast = false;
-                                        break;
+                                        case Any:
+                                            if (noStarLast)
+                                            {
+                                                filter.Append('*');
+                                            }
 
-                                    case Final:
-                                        if (noStarLast)
-                                        {
+                                            filter.Append((string)itr.Current);
                                             filter.Append('*');
-                                        }
+                                            noStarLast = false;
+                                            break;
 
-                                        filter.Append((string)itr.Current);
-                                        break;
+                                        case Final:
+                                            if (noStarLast)
+                                            {
+                                                filter.Append('*');
+                                            }
+
+                                            filter.Append((string)itr.Current);
+                                            break;
+                                    }
                                 }
-                            }
 
-                            break;
-                        }
+                                break;
+                            }
                     }
                 }
                 else if (filterpart is IEnumerator)
@@ -1353,7 +1352,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                                 throw new LdapLocalException(
                                     ExceptionMessages.InvalidCharInDescr,
-                                    new object[] {atIndex }, LdapException.FilterError);
+                                    new object[] { atIndex }, LdapException.FilterError);
                             }
                         }
 
@@ -1473,7 +1472,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     // "Missing left paren",
                     throw new LdapLocalException(
                         ExceptionMessages.ExpectingLeftParen,
-                        new object[] {_filter[_offset -= 1] }, LdapException.FilterError);
+                        new object[] { _filter[_offset -= 1] }, LdapException.FilterError);
                 }
             }
 
@@ -1494,7 +1493,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     // "Missing right paren",
                     throw new LdapLocalException(
                         ExceptionMessages.ExpectingRightParen,
-                        new object[] {_filter[_offset - 1] }, LdapException.FilterError);
+                        new object[] { _filter[_offset - 1] }, LdapException.FilterError);
                 }
             }
 

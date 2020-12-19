@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -2532,7 +2531,7 @@ namespace Novell.Directory.Ldap
                 {
                     ldapex = new LdapLocalException(
                         ExceptionMessages.ServerConnectError,
-                        new object[] {Connection.Host },
+                        new object[] { Connection.Host },
                         LdapException.ConnectError, ex);
                 }
 
@@ -2794,7 +2793,7 @@ namespace Novell.Directory.Ldap
                 case LdapMessage.ModifyRequest:
                     break;
                 default:
-                    throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] {msg.Type },
+                    throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] { msg.Type },
                         LdapException.LocalError);
             }
 
@@ -2919,7 +2918,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public string GetSchemaDn(string dn)
         {
-            string[] attrSubSchema = {"subschemaSubentry" };
+            string[] attrSubSchema = { "subschemaSubentry" };
 
             /* Read the entries subschemaSubentry attribute. Throws an exception if
             * no entries are returned. */
@@ -2929,13 +2928,13 @@ namespace Novell.Directory.Ldap
             var values = attr.StringValueArray;
             if (values == null || values.Length < 1)
             {
-                throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] {dn },
+                throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] { dn },
                     LdapException.NoResultsReturned);
             }
 
             if (values.Length > 1)
             {
-                throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] {dn },
+                throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] { dn },
                     LdapException.ConstraintViolation);
             }
 

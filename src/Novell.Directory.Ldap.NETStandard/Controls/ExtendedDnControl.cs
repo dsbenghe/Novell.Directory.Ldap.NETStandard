@@ -28,7 +28,7 @@ using Novell.Directory.Ldap.Asn1;
 namespace Novell.Directory.Ldap.Controls
 {
     /// <summary>
-    /// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an 
+    /// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an
     /// LDAP server to return an extended form of the objects DN: <GUID=guid_value>;dn.
     /// See https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/57056773-932c-4e55-9491-e13f49ba580c
     /// </summary>

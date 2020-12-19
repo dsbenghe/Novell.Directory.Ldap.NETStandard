@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.Collections;
 using System.Collections.Generic;
@@ -145,7 +144,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                 _result = st2.NextToken();
                                 if (_result == (int)TokenTypes.Word || _result == '\'')
 
-                                    // Test for non-standard schema
+                                // Test for non-standard schema
                                 {
                                     Syntax = st2.StringValue;
                                 }
@@ -529,6 +528,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                 }
             }
+
             return new AttributeQualifier(name, values.ToArray());
         }
     }

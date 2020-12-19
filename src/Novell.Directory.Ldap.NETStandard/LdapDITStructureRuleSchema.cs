@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.Collections;
 using System.IO;
@@ -183,7 +182,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public string[] Superiors { get; } = {string.Empty };
+        public string[] Superiors { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a

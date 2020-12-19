@@ -11,7 +11,7 @@ namespace Novell.Directory.Ldap.Controls
     /// MAY be greater than zero and less than the sizeLimit value specified in the
     /// searchRequest. [RFC 2696]
     /// </summary>
-	public class SimplePagedResultsControl: LdapControl
+	public class SimplePagedResultsControl : LdapControl
     {
         private const string RequestOid = "1.2.840.113556.1.4.319";
         private const string DecodedNotInteger = "Decoded value is not an integer, but should be";
@@ -20,7 +20,7 @@ namespace Novell.Directory.Ldap.Controls
         private static readonly string DecodedNotSequence = $"Failed to construct {nameof(SimplePagedResultsControl)}: " +
                                                             $"provided values might not be decoded as {nameof(Asn1Sequence)}";
         private Asn1Sequence _request;
-        
+
         static SimplePagedResultsControl()
         {
             try
@@ -43,24 +43,25 @@ namespace Novell.Directory.Ldap.Controls
             Size = size;
             Cookie = cookie ?? GetEmptyCookie;
             BuildTypedPagedRequest();
+
             // ReSharper disable once VirtualMemberCallInConstructor
             SetValue(_request.GetEncoding(new LberEncoder()));
         }
-        
+
         [UsedImplicitly]
         public SimplePagedResultsControl(string oid, bool critical, byte[] values) : base(oid, critical, values)
         {
             var lberDecoder = new LberDecoder();
             if (lberDecoder == null) throw new InvalidOperationException($"Failed to build {nameof(LberDecoder)}");
-            
+
             var asn1Object = lberDecoder.Decode(values);
             if (!(asn1Object is Asn1Sequence)) throw new InvalidCastException(DecodedNotSequence);
-            
-            var size = ((Asn1Structured) asn1Object).get_Renamed(0);
+
+            var size = ((Asn1Structured)asn1Object).get_Renamed(0);
             if (!(size is Asn1Integer integerSize)) throw new InvalidOperationException(DecodedNotInteger);
             Size = integerSize.IntValue();
-            
-            var cookie = ((Asn1Structured) asn1Object).get_Renamed(1);
+
+            var cookie = ((Asn1Structured)asn1Object).get_Renamed(1);
             if (!(cookie is Asn1OctetString octetCookie)) throw new InvalidOperationException(DecodedNotOctetString);
             Cookie = octetCookie.ByteValue();
         }

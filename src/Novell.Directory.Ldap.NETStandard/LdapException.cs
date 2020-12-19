@@ -28,7 +28,6 @@
 //   Sunil Kumar (Sunilk@novell.com)
 //
 // (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Globalization;
@@ -1247,7 +1246,7 @@ namespace Novell.Directory.Ldap
             // Craft a string from the resouce file
             var msg = ResourcesHandler.GetMessage(
                 "TOSTRING",
-                new object[] {exception, base.Message, ResultCode, ResultCodeToString() });
+                new object[] { exception, base.Message, ResultCode, ResultCodeToString() });
 
             // If found no string from resource file, use a default string
             if (msg.EqualsOrdinalCI("TOSTRING"))
@@ -1258,7 +1257,7 @@ namespace Novell.Directory.Ldap
             // Add server message
             if (!string.IsNullOrEmpty(_serverMessage))
             {
-                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] {exception, _serverMessage });
+                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] { exception, _serverMessage });
 
                 // If found no string from resource file, use a default string
                 if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
@@ -1272,7 +1271,7 @@ namespace Novell.Directory.Ldap
             // Add Matched DN message
             if (MatchedDn != null)
             {
-                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, MatchedDn });
+                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] { exception, MatchedDn });
 
                 // If found no string from resource file, use a default string
                 if (tmsg.EqualsOrdinalCI("MATCHED_DN"))

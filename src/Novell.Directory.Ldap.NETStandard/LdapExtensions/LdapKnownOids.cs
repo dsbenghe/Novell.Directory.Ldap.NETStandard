@@ -45,6 +45,7 @@ namespace Novell.Directory.Ldap
             {
                 return displayName;
             }
+
             return oid;
         }
     }
