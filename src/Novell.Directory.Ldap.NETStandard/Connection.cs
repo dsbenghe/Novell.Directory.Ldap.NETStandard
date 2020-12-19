@@ -824,7 +824,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal void RemoveMessage(Message info)
         {
-            SupportClass.VectorRemoveElement(_messages, info);
+            _messages.Remove(info);
         }
 
         private void Destroy(string reason, int semaphoreId, InterThreadException notifyUser)

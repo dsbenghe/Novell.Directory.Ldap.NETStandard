@@ -40,11 +40,13 @@ namespace Novell.Directory.Ldap
     ///     The. <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
-    internal class MessageVector : List<object>
+    internal class MessageVector
     {
+        private ArrayList _arrayList;
+
         internal MessageVector(int cap)
-            : base(cap)
         {
+            _arrayList = new ArrayList(cap);
         }
 
         /// <summary>
@@ -59,8 +61,8 @@ namespace Novell.Directory.Ldap
         {
             lock (this)
             {
-                var results = ToArray();
-                Clear();
+                var results = this.ToArray();
+                _arrayList.Clear();
                 return results;
             }
         }
@@ -81,13 +83,99 @@ namespace Novell.Directory.Ldap
         {
             lock (this)
             {
-                var message = this.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
+                var message = _arrayList.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
                 if (message == null)
                 {
                     throw new FieldAccessException();
                 }
 
                 return message;
+            }
+        }
+
+        /// <summary>
+        ///     Adds an object to the end of the Vector
+        /// </summary>
+        /// <returns>
+        ///     The  index at which the message has been added.
+        /// </returns>
+        public int Add(object message)
+        {
+            lock (this)
+            {
+                return _arrayList.Add(message);
+            }
+        }
+        
+        /// <summary>
+        ///     Removes the first occurrence of a specific object from the Vector.
+        /// </summary>
+        public void Remove(object message)
+        {
+            lock (this)
+            {
+                _arrayList.Remove(message);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the number of elements actually contained in the Vector.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _arrayList.Count;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the Message at the specified index.
+        /// </summary>
+        public object this[int index]
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _arrayList[index];
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Removes the element at the specified index.
+        /// </summary>
+        public void RemoveAt(int index)
+        {
+            lock (this)
+            {
+                _arrayList.RemoveAt(index);
+            }
+        }
+        
+        /// <summary>
+        ///     Copies the elements to a new array.
+        /// </summary>
+        public object[] ToArray()
+        {
+            lock (this)
+            {
+                return _arrayList.ToArray();
+            }
+        }  
+        
+        /// <summary>
+        ///     Removes all elements.
+        /// </summary>
+        public void Clear()
+        {
+            lock (this)
+            {
+                _arrayList.Clear();
             }
         }
     }
