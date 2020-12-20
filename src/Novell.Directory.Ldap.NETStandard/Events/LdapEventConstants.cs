@@ -21,14 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Events.LdapEventConstants.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-
 using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.Events

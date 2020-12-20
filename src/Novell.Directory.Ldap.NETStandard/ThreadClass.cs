@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.SupportClass.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 // Support classes replicate the functionality of the original code, but in some cases they are
 // substantially different architecturally. Although every effort is made to preserve the
 // original architecture of the application in the converted project, the user should be aware that

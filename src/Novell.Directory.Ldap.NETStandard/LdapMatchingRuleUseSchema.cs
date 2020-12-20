@@ -21,14 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapMatchingRuleUseSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-
 using System.IO;
 using System.Text;
 using Novell.Directory.Ldap.Utilclass;

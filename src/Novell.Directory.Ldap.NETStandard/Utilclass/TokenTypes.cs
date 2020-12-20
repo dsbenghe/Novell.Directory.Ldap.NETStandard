@@ -21,14 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.TokenType.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-
 namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
