@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,22 +21,14 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapConnection.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
 
 namespace Novell.Directory.Ldap
 {
@@ -912,7 +904,7 @@ namespace Novell.Directory.Ldap
             return newObj;
         }
 
-        private void Dispose(bool isDisposing)
+        protected virtual void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
@@ -2423,7 +2415,7 @@ namespace Novell.Directory.Ldap
                     {
                         rconn = new LdapConnection
                         {
-                            Constraints = _defSearchCons
+                            Constraints = _defSearchCons,
                         };
                         var url = new LdapUrl(referrals[i]);
                         await rconn.ConnectAsync(url.Host, url.Port);
@@ -2523,7 +2515,7 @@ namespace Novell.Directory.Ldap
                 {
                     ldapex = new LdapLocalException(
                         ExceptionMessages.ServerConnectError,
-                        new object[] {Connection.Host },
+                        new object[] { Connection.Host },
                         LdapException.ConnectError, ex);
                 }
 
@@ -2775,7 +2767,6 @@ namespace Novell.Directory.Ldap
                     break;
 
                 // We are allowed to get a referral for the following
-
                 case LdapMessage.AddRequest:
                 case LdapMessage.BindRequest:
                 case LdapMessage.CompareRequest:
@@ -2785,7 +2776,7 @@ namespace Novell.Directory.Ldap
                 case LdapMessage.ModifyRequest:
                     break;
                 default:
-                    throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] {msg.Type },
+                    throw new LdapLocalException(ExceptionMessages.ImproperReferral, new object[] { msg.Type },
                         LdapException.LocalError);
             }
 
@@ -2910,7 +2901,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public async Task<string> GetSchemaDnAsync(string dn)
         {
-            string[] attrSubSchema = {"subschemaSubentry" };
+            string[] attrSubSchema = { "subschemaSubentry" };
 
             /* Read the entries subschemaSubentry attribute. Throws an exception if
             * no entries are returned. */
@@ -2920,13 +2911,13 @@ namespace Novell.Directory.Ldap
             var values = attr.StringValueArray;
             if (values == null || values.Length < 1)
             {
-                throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] {dn },
+                throw new LdapLocalException(ExceptionMessages.NoSchema, new object[] { dn },
                     LdapException.NoResultsReturned);
             }
 
             if (values.Length > 1)
             {
-                throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] {dn },
+                throw new LdapLocalException(ExceptionMessages.MultipleSchema, new object[] { dn },
                     LdapException.ConstraintViolation);
             }
 

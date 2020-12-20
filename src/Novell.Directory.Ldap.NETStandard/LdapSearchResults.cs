@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,20 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapSearchResults.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -389,11 +380,10 @@ namespace Novell.Directory.Ldap
             await ResetVectorsAsync();
             _completed = true;
         }
-        
+
         /// <summary>
-        /// Get referral connections
+        /// Get referral connections.
         /// </summary>
-        /// <returns></returns>
         public List<object> GetReferralConnections()
         {
             return _referralConn;

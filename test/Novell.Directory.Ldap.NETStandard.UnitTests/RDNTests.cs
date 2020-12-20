@@ -7,8 +7,8 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
     public class RDNTests
     {
-        private MethodInfo EqualAttrTypeMethod = typeof(Rdn).GetMethod("EqualAttrType", BindingFlags.Instance | BindingFlags.NonPublic);
-        private bool EqualAttrTypeCheck(string val1, string val2) => (bool)EqualAttrTypeMethod.Invoke(new Rdn(), new object[] { val1, val2 });
+        private readonly MethodInfo _equalAttrTypeMethod = typeof(Rdn).GetMethod("EqualAttrType", BindingFlags.Instance | BindingFlags.NonPublic);
+        private bool EqualAttrTypeCheck(string val1, string val2) => (bool)_equalAttrTypeMethod.Invoke(new Rdn(), new object[] { val1, val2 });
 
         [Fact]
         public void EqualAttrType_OIDs_CompareTrue()
@@ -18,7 +18,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 
             var result = EqualAttrTypeCheck(val1, val2);
 
-            Assert.True(result);            
+            Assert.True(result);
         }
 
         [Fact]
@@ -97,7 +97,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void Ctor_EmptyDn_Exception()
         {
-            Assert.Throws<ArgumentException>(() => new Rdn(""));
+            Assert.Throws<ArgumentException>(() => new Rdn(string.Empty));
         }
 
         [Fact]

@@ -278,7 +278,7 @@ namespace Novell.Directory.Ldap
         Task BindAsync(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
-        /// Bind via a SASL Mechanism
+        /// Bind via a SASL Mechanism.
         /// </summary>
         /// <param name="saslRequest"></param>
         Task BindAsync(SaslRequest saslRequest);

@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -13,10 +13,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             var schema = await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection =>
             {
-                var ldapConnectionImpl = (LdapConnection) ldapConnection;
+                var ldapConnectionImpl = (LdapConnection)ldapConnection;
                 return await ldapConnectionImpl.FetchSchemaAsync(await ldapConnectionImpl.GetSchemaDnAsync());
             });
-            
+
             Assert.NotNull(schema);
             Assert.True(schema.AttributeNames.ToEnumerable().Any());
             Assert.True(schema.AttributeSchemas.ToEnumerable().Any());
@@ -30,7 +30,9 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public static IEnumerable<T> ToEnumerable<T>(this IEnumerator<T> enumerator)
         {
             while (enumerator.MoveNext())
+            {
                 yield return enumerator.Current;
+            }
         }
     }
 }

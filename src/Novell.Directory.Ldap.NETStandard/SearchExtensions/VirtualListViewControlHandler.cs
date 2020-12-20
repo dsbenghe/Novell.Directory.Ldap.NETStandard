@@ -1,18 +1,19 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using Novell.Directory.Ldap.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap.SearchExtensions
 {
     /// <summary>
-    /// Helper class to searches using <see cref="LdapVirtualListControl"/>
+    /// Helper class to searches using <see cref="LdapVirtualListControl"/>.
     /// </summary>
     public class VirtualListViewControlHandler
     {
-        [NotNull] private readonly ILdapConnection _ldapConnection;
+        [NotNull]
+        private readonly ILdapConnection _ldapConnection;
 
         public VirtualListViewControlHandler([NotNull] ILdapConnection ldapConnection)
         {
@@ -21,12 +22,23 @@ namespace Novell.Directory.Ldap.SearchExtensions
 
         public Task<List<LdapEntry>> SearchUsingVlvAsync(
             [NotNull] LdapSortControl sortControl,
-            [NotNull] SearchOptions options, 
+            [NotNull] SearchOptions options,
             int pageSize)
         {
-            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (sortControl == null)
+            {
+                throw new ArgumentNullException(nameof(sortControl));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             return SearchUsingVlvAsync(sortControl, entry => entry, options, pageSize);
         }
@@ -34,13 +46,28 @@ namespace Novell.Directory.Ldap.SearchExtensions
         public async Task<List<T>> SearchUsingVlvAsync<T>(
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
-            [NotNull] SearchOptions options, 
+            [NotNull] SearchOptions options,
             int pageSize)
         {
-            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
-            if (converter == null) throw new ArgumentNullException(nameof(converter));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (sortControl == null)
+            {
+                throw new ArgumentNullException(nameof(sortControl));
+            }
+
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             var entries = new List<T>();
             var pageCount = 1;
@@ -51,7 +78,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
                 searchConstraints.SetControls(new LdapControl[]
                 {
                     BuildLdapVirtualListControl(pageCount, pageSize),
-                    sortControl
+                    sortControl,
                 });
 
                 var searchResults = (await _ldapConnection.SearchAsync(
@@ -77,7 +104,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
 
         private static LdapVirtualListControl BuildLdapVirtualListControl(int page, int pageSize)
         {
-            var startIndex = (page - 1) * pageSize + 1;
+            var startIndex = ((page - 1) * pageSize) + 1;
             var beforeCount = 0;
             var afterCount = pageSize - 1;
             var contentCount = 0;

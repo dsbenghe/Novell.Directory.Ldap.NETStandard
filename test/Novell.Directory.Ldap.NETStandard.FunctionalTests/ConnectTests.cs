@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests

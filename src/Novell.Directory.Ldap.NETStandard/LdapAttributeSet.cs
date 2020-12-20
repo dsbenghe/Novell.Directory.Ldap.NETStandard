@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.LdapAttributeSet.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections.Generic;
@@ -53,7 +44,8 @@ namespace Novell.Directory.Ldap
     public class LdapAttributeSet : Dictionary<string, LdapAttribute>
     {
         /// <summary> Constructs an empty set of attributes.</summary>
-        public LdapAttributeSet() : base(StringComparer.OrdinalIgnoreCase)
+        public LdapAttributeSet()
+            : base(StringComparer.OrdinalIgnoreCase)
         {
         }
 
@@ -80,7 +72,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The attribute matching the specified attrName.
         /// </returns>
-        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found.</exception>
         public LdapAttribute GetAttribute(string attrName)
         {
             return this[attrName];
@@ -147,7 +139,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A single best-match. <code>LdapAttribute</code>
         /// </returns>
-        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found</exception>
+        /// <exception cref="KeyNotFoundException">Thrown when the attribute is not found.</exception>
         public LdapAttribute GetAttribute(string attrName, string lang)
         {
             var key = attrName + ";" + lang;

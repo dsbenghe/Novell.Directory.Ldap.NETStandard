@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Controls.LdapVirtualListControl.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Asn1;
+using System;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -64,16 +55,16 @@ namespace Novell.Directory.Ldap.Controls
         /* The ASN.1 for the VLV Request has CHOICE field. These private
         * variables represent differnt ids for these different options
         */
-        private static readonly int Byoffset = 0;
-        private static readonly int Greaterthanorequal = 1;
+        private const int Byoffset = 0;
+        private const int Greaterthanorequal = 1;
 
         /// <summary> The Request OID for a VLV Request.</summary>
-        private static readonly string RequestOid = "2.16.840.1.113730.3.4.9";
+        private const string RequestOid = "2.16.840.1.113730.3.4.9";
 
         /*
         * The Response stOID for a VLV Response
         */
-        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.10";
+        private const string ResponseOid = "2.16.840.1.113730.3.4.10";
         private int _mAfterCount;
 
         /* Private instance variables go here.
@@ -460,6 +451,7 @@ namespace Novell.Directory.Ldap.Controls
         }
 
         // PROPOSED ADDITION TO NEXT VERSION OF DRAFT (v7)
+
         /// <summary>
         ///     Sets the center or starting list index to return, and the number of
         ///     results before and after.

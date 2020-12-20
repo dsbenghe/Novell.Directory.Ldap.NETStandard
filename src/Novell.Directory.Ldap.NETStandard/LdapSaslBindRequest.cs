@@ -30,15 +30,13 @@ namespace Novell.Directory.Ldap
         ///     or null if none.
         /// </param>
         public LdapSaslBindRequest(int version, string mechanism, LdapControl[] cont)
-            : this (version, mechanism, cont, null)
+            : this(version, mechanism, cont, null)
         {
-
         }
 
         public LdapSaslBindRequest(int version, string mechanism, LdapControl[] cont, byte[] credentials)
-            : base(BindRequest, new RfcBindRequest(version, "", mechanism, credentials), cont)
+            : base(BindRequest, new RfcBindRequest(version, string.Empty, mechanism, credentials), cont)
         {
-
         }
 
         /// <summary>

@@ -15,12 +15,13 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn)
         {
-            var searchResults = await conn.SearchAsync("", LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false);
+            var searchResults = await conn.SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false);
             if (searchResults.HasMore())
             {
                 var sr = searchResults.Next();
                 return new RootDseInfo(sr);
             }
+
             return null;
         }
     }

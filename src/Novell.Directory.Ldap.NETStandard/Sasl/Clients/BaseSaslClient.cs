@@ -13,7 +13,11 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
         protected BaseSaslClient(SaslRequest saslRequest)
         {
-            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (saslRequest == null)
+            {
+                throw new ArgumentNullException(nameof(saslRequest));
+            }
+
             QualityOfProtection = saslRequest.QualityOfProtection;
             ProtectionStrength = saslRequest.ProtectionStrength;
             Props = saslRequest.SaslBindProperties;  // Clone?
@@ -45,7 +49,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 case QualityOfProtection.AuthenticationWithIntegrityAndPrivacyProtection:
                     return "auth-conf";
                 default:
-                    return "";
+                    return string.Empty;
             }
         }
     }

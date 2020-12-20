@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.Utilclass;
+using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -10,10 +11,10 @@ namespace Novell.Directory.Ldap.Sasl.Clients
     /// <para>
     /// Digest Authentication as defined in RFC 2831:
     /// https://tools.ietf.org/html/rfc2831
-    /// 
+    ///
     /// RFC 6331 marks DIGEST-MD5 as obsolete/historic:
     /// https://tools.ietf.org/html/rfc6331
-    /// 
+    ///
     /// However, it is still in use.
     /// </para>
     /// </summary>
@@ -88,6 +89,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                         throw new SaslException("Could not validate response-auth " +
                                                 "value from server");
                     }
+
                     break;
                 case State.ValidServerResponse:
                 case State.InvalidServerResponse:
@@ -115,6 +117,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 RSPAuthValue = str.Substring("rspauth=".Length);
                 return true;
             }
+
             return false;
         }
 
@@ -126,7 +129,6 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             }
 
             // cipher is only used in "auth-conf", which we don't support yet.
-
             if (!challenge.Algorithm.EqualsOrdinalCI("md5-sess"))
             {
                 throw new SaslException($"Invalid DIGEST-MD5 Algorithm: '{challenge.Algorithm}' - must be 'md5-sess'");
@@ -146,12 +148,12 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 NonceCount = 1,
                 MaxBuf = 65536,
                 Nonce = challenge.Nonce,
-                DigestUri = "ldap/" + _host
+                DigestUri = "ldap/" + _host,
             };
 
             var cnonce = new byte[32];
             _rng.GetBytes(cnonce);
-            result.CNonce = Utilclass.Base64.Encode(cnonce);
+            result.CNonce = Base64.Encode(cnonce);
 
             var ha1 = DigestCalcHa1(result);
             result.Response = DigestCalcResponse(result, ha1);
@@ -196,6 +198,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             {
                 md5.BlockUpdate(":00000000000000000000000000000000".ToUtf8Bytes());
             }
+
             md5.DoFinal(ha2, 0);
 
             // The actual Digest Response
@@ -220,7 +223,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             DigestResponseSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }

@@ -9,13 +9,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         {
             Off,
             Ssl,
-            Tls
+            Tls,
         }
 
         public static async Task WithLdapConnectionAsync(Func<ILdapConnection, Task> actionOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             await WithLdapConnectionImplAsync<object>(
-                async (ldapConnection) =>
+                async ldapConnection =>
             {
                 await actionOnConnectedLdapConnection(ldapConnection);
                 return null;
@@ -85,7 +85,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         private static TransportSecurity GetTransportSecurity(bool useSsl, bool disableEnvTransportSecurity)
         {
             var transportSecurity = useSsl ? TransportSecurity.Ssl : TransportSecurity.Off;
-            if(disableEnvTransportSecurity)
+            if (disableEnvTransportSecurity)
             {
                 return transportSecurity;
             }

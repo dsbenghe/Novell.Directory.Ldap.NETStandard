@@ -4,7 +4,7 @@ namespace Novell.Directory.Ldap
 {
     /// <summary>
     /// RFC 4532: LDAP "Who am I?" Operation
-    /// https://tools.ietf.org/html/rfc4532
+    /// https://tools.ietf.org/html/rfc4532.
     /// </summary>
     public class LdapWhoAmIOperation : LdapExtendedOperation
     {
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
             None = 0,
             Unknown,
             User,
-            DistinguishedName
+            DistinguishedName,
         }
     }
 }

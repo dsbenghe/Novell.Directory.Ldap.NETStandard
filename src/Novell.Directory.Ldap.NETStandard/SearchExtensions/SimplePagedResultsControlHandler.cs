@@ -1,9 +1,9 @@
+﻿using JetBrains.Annotations;
+using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap
 {
@@ -13,7 +13,8 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public class SimplePagedResultsControlHandler
     {
-        [NotNull] private readonly ILdapConnection _ldapConnection;
+        [NotNull]
+        private readonly ILdapConnection _ldapConnection;
 
         public SimplePagedResultsControlHandler([NotNull] ILdapConnection ldapConnection)
         {
@@ -22,16 +23,30 @@ namespace Novell.Directory.Ldap
 
         public Task<List<LdapEntry>> SearchWithSimplePagingAsync([NotNull] SearchOptions options, int pageSize)
         {
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             return SearchWithSimplePagingAsync(entry => entry, options, pageSize);
         }
 
         public async Task<List<T>> SearchWithSimplePagingAsync<T>([NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
         {
-            if (converter == null) throw new ArgumentNullException(nameof(converter));
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             var searchResult = new List<T>();
             var searchConstraints = options.SearchConstraints ?? _ldapConnection.SearchConstraints;
@@ -46,7 +61,7 @@ namespace Novell.Directory.Ldap
         }
 
         private static bool PrepareForNextPage(
-            [CanBeNull] LdapControl[] pageResponseControls, 
+            [CanBeNull] LdapControl[] pageResponseControls,
             int pageSize,
             bool isInitialCall,
             ref LdapSearchConstraints searchConstraints)
@@ -54,7 +69,7 @@ namespace Novell.Directory.Ldap
             var cookie = SimplePagedResultsControl.GetEmptyCookie;
             if (!isInitialCall)
             {
-                var pagedResultsControl = (SimplePagedResultsControl) pageResponseControls?.SingleOrDefault(x => x is SimplePagedResultsControl);
+                var pagedResultsControl = (SimplePagedResultsControl)pageResponseControls?.SingleOrDefault(x => x is SimplePagedResultsControl);
                 if (pagedResultsControl == null)
                 {
                     throw new LdapException($"Failed to find <{nameof(SimplePagedResultsControl)}>. Searching is abruptly stopped");
@@ -65,6 +80,7 @@ namespace Novell.Directory.Ldap
                 {
                     return false;
                 }
+
                 cookie = pagedResultsControl.Cookie;
             }
 
@@ -86,8 +102,15 @@ namespace Novell.Directory.Ldap
             [NotNull] List<T> mappedResultsAccumulator,
             [NotNull] Func<LdapEntry, T> converter)
         {
-            if (searchConstraints == null) throw new ArgumentNullException(nameof(searchConstraints));
-            if (mappedResultsAccumulator == null) throw new ArgumentNullException(nameof(mappedResultsAccumulator));
+            if (searchConstraints == null)
+            {
+                throw new ArgumentNullException(nameof(searchConstraints));
+            }
+
+            if (mappedResultsAccumulator == null)
+            {
+                throw new ArgumentNullException(nameof(mappedResultsAccumulator));
+            }
 
             var searchResults = await _ldapConnection.SearchAsync(
                     options.SearchBase,

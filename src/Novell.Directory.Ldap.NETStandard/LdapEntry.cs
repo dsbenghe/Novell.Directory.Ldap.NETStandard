@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapEntry.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
 using System.Text;
 
@@ -49,7 +40,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapEntry : IComparable
     {
-        protected internal LdapAttributeSet Attrs;
+        protected LdapAttributeSet Attrs { get; }
 
         /// <summary> Constructs an empty entry.</summary>
         public LdapEntry()

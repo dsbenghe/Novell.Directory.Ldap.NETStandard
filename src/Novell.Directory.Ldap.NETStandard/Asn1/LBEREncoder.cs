@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Asn1.LBEREncoder.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.IO;
 
@@ -102,9 +93,9 @@ namespace Novell.Directory.Ldap.Asn1
 
             Encode(n.GetIdentifier(), outRenamed);
             outRenamed.WriteByte(len); // Length
-            for (var i = len - 1; i >= 0; i--)
 
-                // Content
+            // Content
+            for (var i = len - 1; i >= 0; i--)
             {
                 outRenamed.WriteByte(octets[i]);
             }

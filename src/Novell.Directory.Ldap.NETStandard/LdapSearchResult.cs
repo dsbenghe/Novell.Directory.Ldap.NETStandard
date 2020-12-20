@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,18 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapSearchResult.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
+using System;
 
 namespace Novell.Directory.Ldap
 {
@@ -70,12 +61,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapSearchResult(LdapEntry entry, LdapControl[] cont)
         {
-            if (entry == null)
-            {
-                throw new ArgumentException("Argument \"entry\" cannot be null");
-            }
-
-            _entry = entry;
+            _entry = entry ?? throw new ArgumentException("Argument \"entry\" cannot be null");
         }
 
         /// <summary>

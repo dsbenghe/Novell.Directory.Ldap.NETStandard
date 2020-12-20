@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Utilclass.RespControlVector.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections.Generic;
@@ -101,9 +92,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private class RegisteredControl
         {
-            public readonly Type MyClass;
+            public Type MyClass { get; }
 
-            public readonly string MyOid;
+            public string MyOid { get; }
 
             public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
             {
@@ -112,7 +103,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 MyClass = controlClass;
             }
 
-            public RespControlVector EnclosingInstance { get; }
+            private RespControlVector EnclosingInstance { get; }
         }
     }
 }

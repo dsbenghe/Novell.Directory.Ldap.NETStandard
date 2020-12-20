@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.SchemaTokenCreator.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
 using System.IO;
 
@@ -45,46 +36,34 @@ namespace Novell.Directory.Ldap.Utilclass
         private readonly StreamReader _reader;
         private readonly StringReader _sreader;
         private char[] _buf;
-        private bool _cidtolower = false;
+        private readonly bool _cidtolower = false;
         private byte[] _ctype;
         private double _numberValue;
         private int _peekchar;
         private bool _pushedback;
-        public int Lastttype;
+        public int LastType { get; set; }
 
-        public string StringValue;
+        public string StringValue { get; set; }
 
         public SchemaTokenCreator(Stream instream)
         {
             Initialise();
-            if (instream == null)
-            {
-                throw new NullReferenceException();
-            }
 
-            _input = instream;
+            _input = instream ?? throw new NullReferenceException();
         }
 
         public SchemaTokenCreator(StreamReader r)
         {
             Initialise();
-            if (r == null)
-            {
-                throw new NullReferenceException();
-            }
 
-            _reader = r;
+            _reader = r ?? throw new NullReferenceException();
         }
 
         public SchemaTokenCreator(StringReader r)
         {
             Initialise();
-            if (r == null)
-            {
-                throw new NullReferenceException();
-            }
 
-            _sreader = r;
+            _sreader = r ?? throw new NullReferenceException();
         }
 
         public int CurrentLine { get; private set; } = 1;
@@ -112,7 +91,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public string ToStringValue()
         {
             string strval;
-            switch (Lastttype)
+            switch (LastType)
             {
                 case (int)TokenTypes.Eof:
                     strval = "EOF";
@@ -136,19 +115,19 @@ namespace Novell.Directory.Ldap.Utilclass
                     break;
 
                 default:
-                {
-                    if (Lastttype < 256 && (_ctype[Lastttype] & (byte)CharacterTypes.Stringquote) != 0)
                     {
-                        strval = StringValue;
+                        if (LastType < 256 && (_ctype[LastType] & (byte)CharacterTypes.Stringquote) != 0)
+                        {
+                            strval = StringValue;
+                            break;
+                        }
+
+                        var s = new char[3];
+                        s[0] = s[2] = '\'';
+                        s[1] = (char)LastType;
+                        strval = new string(s);
                         break;
                     }
-
-                    var s = new char[3];
-                    s[0] = s[2] = '\'';
-                    s[1] = (char)Lastttype;
-                    strval = new string(s);
-                    break;
-                }
             }
 
             return strval;
@@ -276,7 +255,7 @@ namespace Novell.Directory.Ldap.Utilclass
             if (_pushedback)
             {
                 _pushedback = false;
-                return Lastttype;
+                return LastType;
             }
 
             StringValue = null;
@@ -292,7 +271,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 curc = Read();
                 if (curc < 0)
                 {
-                    return Lastttype = (int)TokenTypes.Eof;
+                    return LastType = (int)TokenTypes.Eof;
                 }
 
                 if (curc == '\n')
@@ -306,11 +285,11 @@ namespace Novell.Directory.Ldap.Utilclass
                 curc = Read();
                 if (curc < 0)
                 {
-                    return Lastttype = (int)TokenTypes.Eof;
+                    return LastType = (int)TokenTypes.Eof;
                 }
             }
 
-            Lastttype = curc;
+            LastType = curc;
             _peekchar = int.MaxValue;
 
             int ctype = curc < 256 ? _ctype[curc] : (byte)CharacterTypes.Alphabetic;
@@ -322,7 +301,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     if (_iseolsig)
                     {
                         _peekchar = int.MaxValue - 1;
-                        return Lastttype = (int)TokenTypes.Eol;
+                        return LastType = (int)TokenTypes.Eol;
                     }
 
                     curc = Read();
@@ -338,7 +317,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         CurrentLine++;
                         if (_iseolsig)
                         {
-                            return Lastttype = (int)TokenTypes.Eol;
+                            return LastType = (int)TokenTypes.Eol;
                         }
                     }
 
@@ -347,7 +326,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                 if (curc < 0)
                 {
-                    return Lastttype = (int)TokenTypes.Eof;
+                    return LastType = (int)TokenTypes.Eof;
                 }
 
                 ctype = curc < 256 ? _ctype[curc] : (byte)CharacterTypes.Alphabetic;
@@ -362,7 +341,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     if (curc != '.' && (curc < '0' || curc > '9'))
                     {
                         _peekchar = curc;
-                        return Lastttype = '-';
+                        return LastType = '-';
                     }
 
                     checkb = true;
@@ -379,7 +358,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     }
                     else if (curc >= '0' && curc <= '9')
                     {
-                        dvar = dvar * 10 + (curc - '0');
+                        dvar = (dvar * 10) + (curc - '0');
                         tempvar += checkdec;
                     }
                     else
@@ -405,7 +384,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 _numberValue = checkb ? -dvar : dvar;
-                return Lastttype = (int)TokenTypes.Number;
+                return LastType = (int)TokenTypes.Number;
             }
 
             if ((ctype & (byte)CharacterTypes.Alphabetic) != 0)
@@ -427,7 +406,8 @@ namespace Novell.Directory.Ldap.Utilclass
                         : curc < 256
                             ? _ctype[curc]
                             : (byte)CharacterTypes.Alphabetic;
-                } while ((ctype & ((byte)CharacterTypes.Alphabetic | (byte)CharacterTypes.Numeric)) != 0);
+                }
+                while ((ctype & ((byte)CharacterTypes.Alphabetic | (byte)CharacterTypes.Numeric)) != 0);
 
                 _peekchar = curc;
                 StringValue = new string(_buf, 0, i);
@@ -436,15 +416,15 @@ namespace Novell.Directory.Ldap.Utilclass
                     StringValue = StringValue.ToLower();
                 }
 
-                return Lastttype = (int)TokenTypes.Word;
+                return LastType = (int)TokenTypes.Word;
             }
 
             if ((ctype & (byte)CharacterTypes.Stringquote) != 0)
             {
-                Lastttype = curc;
+                LastType = curc;
                 var i = 0;
                 var rc = Read();
-                while (rc >= 0 && rc != Lastttype && rc != '\n' && rc != '\r')
+                while (rc >= 0 && rc != LastType && rc != '\n' && rc != '\r')
                 {
                     if (rc == '\\')
                     {
@@ -504,9 +484,6 @@ namespace Novell.Directory.Ldap.Utilclass
                                 case 't':
                                     curc = '\t';
                                     break;
-
-                                default:
-                                    break;
                             }
 
                             rc = Read();
@@ -528,10 +505,10 @@ namespace Novell.Directory.Ldap.Utilclass
                     _buf[i++] = (char)curc;
                 }
 
-                _peekchar = rc == Lastttype ? int.MaxValue : rc;
+                _peekchar = rc == LastType ? int.MaxValue : rc;
 
                 StringValue = new string(_buf, 0, i);
-                return Lastttype;
+                return LastType;
             }
 
             if (curc == '/' && (_cppcomments || _ccomments))
@@ -562,7 +539,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                         if (curc < 0)
                         {
-                            return Lastttype = (int)TokenTypes.Eof;
+                            return LastType = (int)TokenTypes.Eof;
                         }
 
                         prevc = curc;
@@ -575,7 +552,6 @@ namespace Novell.Directory.Ldap.Utilclass
                 {
                     while ((curc = Read()) != '\n' && curc != '\r' && curc >= 0)
                     {
-
                     }
 
                     _peekchar = curc;
@@ -593,7 +569,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 _peekchar = curc;
-                return Lastttype = '/';
+                return LastType = '/';
             }
 
             if ((ctype & (byte)CharacterTypes.Commentchar) != 0)
@@ -606,7 +582,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 return NextToken();
             }
 
-            return Lastttype = curc;
+            return LastType = curc;
         }
     }
 }

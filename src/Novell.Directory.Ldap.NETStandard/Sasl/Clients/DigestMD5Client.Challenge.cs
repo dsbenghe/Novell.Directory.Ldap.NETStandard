@@ -19,8 +19,8 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             public string Charset { get; }
 
             // TODO: Move to helper class?
-            private static readonly char[] Comma = new char[] { ',' };
-            private static readonly char[] Quote = new char[] { '"' };
+            private static readonly char[] Comma = { ',' };
+            private static readonly char[] Quote = { '"' };
 
             public ChallengeInfo(byte[] challenge)
             {
@@ -58,6 +58,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                                         break;
                                 }
                             }
+
                             break;
                         case "stale":
                             Stale = trimmed == "true";
@@ -73,9 +74,6 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                             break;
                         case "cipher":
                             Ciphers = trimmed.Split(Comma, StringSplitOptions.RemoveEmptyEntries);
-                            break;
-                        default:
-                            // The client MUST ignore any unrecognized directives.
                             break;
                     }
                 }
@@ -94,8 +92,6 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             public byte[] Response { get; set; } // 16 Bytes
             public int? MaxBuf { get; set; }
             public string Charset { get; set; }
-            //public string Cipher { get; set; } // Not needed for "auth", only "auth-conf" requires it
-            //public string AuthzId { get; set; }
 
             public override string ToString()
                 => $"charset={Charset},username=\"{Username}\",realm=\"{Realm}\",nonce=\"{Nonce}\",nc={NonceCountString()},cnonce=\"{CNonce}\",digest-uri=\"{DigestUri}\",maxbuf={MaxBuf},response={Response.ToHexString()},qop={GetQOPString(QOP)}";

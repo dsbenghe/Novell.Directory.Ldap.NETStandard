@@ -16,6 +16,7 @@ namespace Novell.Directory.Ldap
             {
                 return whoami;
             }
+
             return new LdapWhoAmIResponse(result.Message);
         }
     }

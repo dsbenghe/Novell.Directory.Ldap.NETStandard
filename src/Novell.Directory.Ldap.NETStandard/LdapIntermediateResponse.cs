@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * The MIT License
  * Copyright (c) 2003 Novell Inc.  www.novell.com
  *
@@ -21,28 +21,19 @@
  * SOFTWARE.
  *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapIntermediateResponse.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System;
 
 namespace Novell.Directory.Ldap
 {
     /**
      *
-     *  Encapsulates the response returned by an LDAP server on an
-     *  asynchronous extended operation request.  It extends LdapResponse.
+     * Encapsulates the response returned by an LDAP server on an
+     * asynchronous extended operation request.  It extends LdapResponse.
      *
-     *  The response can contain the OID of the extension, an octet string
-     *  with the operation's data, both, or neither.
+     * The response can contain the OID of the extension, an octet string
+     * with the operation's data, both, or neither.
      */
     public class LdapIntermediateResponse : LdapResponse
     {
@@ -54,7 +45,7 @@ namespace Novell.Directory.Ldap
          * a server response to an asynchronous extended operation request.
          *
          * @param message  The RfcLdapMessage to convert to an
-         *                 LdapIntermediateResponse object.
+         * LdapIntermediateResponse object.
          */
         public LdapIntermediateResponse(RfcLdapMessage message)
             : base(message)

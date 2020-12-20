@@ -8,11 +8,13 @@ namespace Novell.Directory.Ldap.Sasl
         {
         }
 
-        public SaslException(string message) : base(message)
+        public SaslException(string message)
+            : base(message)
         {
         }
 
-        public SaslException(string message, Exception innerException) : base(message, innerException)
+        public SaslException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

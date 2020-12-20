@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Novell.Directory.Ldap.Controls;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Novell.Directory.Ldap.SearchExtensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -19,7 +19,8 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public PagedSearchTests(PagedSearchTestsAsyncFixture pagedSearchTestsFixture)
         {
             _pagedSearchTestsFixture = pagedSearchTestsFixture;
-            _searchOptions = new SearchOptions(TestsConfig.LdapServer.BaseDn,
+            _searchOptions = new SearchOptions(
+                TestsConfig.LdapServer.BaseDn,
                 LdapConnection.ScopeSub,
                 "cn=" + _pagedSearchTestsFixture.CnPrefix + "*",
                 null);
@@ -59,7 +60,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     entries = await ldapConnection.SearchUsingVlvAsync(
                         _ldapSortControl,
-                        (entry) => new Tuple<LdapEntry>(entry), 
+                        entry => new Tuple<LdapEntry>(entry),
                         _searchOptions,
                         PagedSearchTestsAsyncFixture.PageSize
                     );
@@ -132,7 +133,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     entries.AddRange(
                         await ldapConnection.SearchUsingSimplePagingAsync(
-                            (entry) => new Tuple<LdapEntry>(entry), 
+                            entry => new Tuple<LdapEntry>(entry),
                             _searchOptions,
                             PagedSearchTestsAsyncFixture.PageSize
                         ));
@@ -186,12 +187,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             }
         }
 
-        public class PagedSearchTestsAsyncFixture : IAsyncLifetime
+        public sealed class PagedSearchTestsAsyncFixture : IAsyncLifetime
         {
             public const int Pages = 15;
             public const int PageSize = 20;
             private readonly Random _random = new Random();
-            public readonly string CnPrefix;
+            public string CnPrefix { get; }
             public IReadOnlyCollection<LdapEntry> Entries  => _entriesTask.Result;
 
             private Task<LdapEntry[]> _entriesTask;

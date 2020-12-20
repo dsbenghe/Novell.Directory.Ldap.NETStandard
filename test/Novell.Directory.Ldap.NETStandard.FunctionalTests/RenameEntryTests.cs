@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -22,7 +22,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             Assert.Null(await LdapOps.GetEntryAsync(entry.Dn));
             var renamedEntry = await LdapOps.GetEntryAsync(TestHelper.BuildDn(newCn));
             Assert.NotNull(renamedEntry);
-            entry.GetAttributeSet().AssertSameAs(renamedEntry.GetAttributeSet(), new List<string> {"cn" });
+            entry.GetAttributeSet().AssertSameAs(renamedEntry.GetAttributeSet(), new List<string> { "cn" });
         }
     }
 }

@@ -1,3 +1,4 @@
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -5,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 
 namespace Novell.Directory.Ldap.NETStandard.StressTests
 {
@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             var noOfRuns = threadDatas.Sum(x => x.Count);
             var noOfLdapExceptions = Exceptions.Count(x => (x.Ex as LdapException) != null);
             var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
-            var percentOfLdapExceptions = (float) noOfLdapExceptions * 100 / noOfRuns;
+            var percentOfLdapExceptions = (float)noOfLdapExceptions * 100 / noOfRuns;
             var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
             _logger.LogInformation(
                 $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
@@ -92,8 +92,8 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             do
             {
                 DumpStats(monitoringThreadData);
-            } while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
-
+            }
+            while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
             DumpStats(monitoringThreadData);
         }
 
@@ -123,20 +123,20 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
         private class ThreadRunner
         {
-            public int ThreadId;
+            public int ThreadId { get; private set;  }
 
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
                 _testingThreadReportingPeriod = testingThreadReportingPeriod;
-                _logger = logger;                
+                _logger = logger;
                 Count = 0;
                 ShouldStop = false;
                 LastPingDate = DateTime.Now;
             }
 
-            public DateTime LastPingDate;
-            public int Count;
-            public bool ShouldStop;
+            public DateTime LastPingDate { get; private set; }
+            public int Count { get; private set; }
+            public bool ShouldStop { get; set; }
             private readonly TimeSpan _testingThreadReportingPeriod;
             private readonly ILogger<ThreadRunner> _logger;
 
@@ -169,7 +169,9 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 if (stopWatch.Elapsed > _testingThreadReportingPeriod)
                 {
                     stopWatch.Stop();
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
                     lock (this)
+#pragma warning restore CA2002 // Do not lock on objects with weak identity
                     {
                         Count = i;
                         LastPingDate = DateTime.Now;
@@ -185,6 +187,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 {
                     ex = ex.InnerException;
                 }
+
                 _logger.LogError("Error in runner thread - {0}", ex);
 
                 lock (Exceptions)
@@ -192,7 +195,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                     Exceptions.Add(new ExceptionInfo
                     {
                         Ex = ex,
-                        ThreadId = Thread.CurrentThread.ManagedThreadId
+                        ThreadId = Thread.CurrentThread.ManagedThreadId,
                     });
                 }
             }
@@ -206,7 +209,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 WaitHandle = new AutoResetEvent(false);
             }
 
-            public readonly EventWaitHandle WaitHandle;
+            public EventWaitHandle WaitHandle { get; }
 
             public ThreadRunner[] ThreadRunners { get; }
         }

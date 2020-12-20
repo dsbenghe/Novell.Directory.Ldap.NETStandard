@@ -21,22 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.SupportClass.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 // Support classes replicate the functionality of the original code, but in some cases they are
 // substantially different architecturally. Although every effort is made to preserve the
 // original architecture of the application in the converted project, the user should be aware that
 // the primary goal of these support classes is to replicate functionality, and that at times
 // the architecture of the resulting solution may differ somewhat.
-//
-
 using System.Threading;
 
 namespace Novell.Directory.Ldap
@@ -49,7 +38,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     The instance of System.Threading.Thread.
         /// </summary>
-        private Thread _threadField;
+        private readonly Thread _threadField;
 
         /// <summary>
         ///     Initializes a new instance of the ThreadClass class.
@@ -58,7 +47,7 @@ namespace Novell.Directory.Ldap
         {
             _threadField = new Thread(Run);
         }
-        
+
         /// <summary>
         ///     Gets or sets a value indicating whether or not a thread is a background thread.
         /// </summary>
@@ -91,7 +80,6 @@ namespace Novell.Directory.Ldap
         // {
         // threadField.Interrupt();
         // }
-
         public void Stop()
         {
             IsStopping = true;

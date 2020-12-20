@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Rfc2251.RfcUnbindRequest.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -45,7 +36,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     {
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"unbind" },
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "unbind" },
                 LdapException.LdapNotSupported, null);
         }
 

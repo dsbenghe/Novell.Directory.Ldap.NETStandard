@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapSchemaElement.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -59,10 +50,10 @@ namespace Novell.Directory.Ldap
         private readonly Dictionary<string, AttributeQualifier> _hashQualifier = new Dictionary<string, AttributeQualifier>();
 
         /// <summary> The names of the schema element.</summary>
-        protected string[] names = { string.Empty };
+        protected string[] Names { get; set; } = { string.Empty };
 
         /// <summary> The OID for the schema element.</summary>
-        protected string Oid = string.Empty;
+        private string _oid = string.Empty;
 
         /// <summary>
         ///     Creates an LdapSchemaElement by setting the name of the LdapAttribute.
@@ -93,19 +84,16 @@ namespace Novell.Directory.Ldap
         ///     An array of names for the element, or null if none
         ///     is found.
         /// </returns>
-        public string[] Names
+        public string[] GetNames()
         {
-            get
+            if (Names == null)
             {
-                if (names == null)
-                {
-                    return null;
-                }
-
-                var generatedVar = new string[names.Length];
-                names.CopyTo(generatedVar, 0);
-                return generatedVar;
+                return null;
             }
+
+            var generatedVar = new string[Names.Length];
+            Names.CopyTo(generatedVar, 0);
+            return generatedVar;
         }
 
         /// <summary>
@@ -124,7 +112,11 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The OID of the element.
         /// </returns>
-        public string Id => Oid;
+        public string Id
+        {
+            get => _oid;
+            set { _oid = value; }
+        }
 
         /// <summary>
         ///     Returns an enumeration of all qualifiers of the element which are

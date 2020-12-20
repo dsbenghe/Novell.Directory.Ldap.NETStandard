@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,18 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapException.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Globalization;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -855,12 +846,12 @@ namespace Novell.Directory.Ldap
         }
 
         public LdapException(string messageOrKey)
-              : this(messageOrKey, LdapException.Other, "")
+              : this(messageOrKey, Other, string.Empty)
         {
         }
 
         public LdapException(Exception rootException)
-            : this(rootException?.Message ?? "", LdapException.Other, "", rootException)
+            : this(rootException?.Message ?? string.Empty, Other, string.Empty, rootException)
         {
         }
 
@@ -1247,7 +1238,7 @@ namespace Novell.Directory.Ldap
             // Craft a string from the resouce file
             var msg = ResourcesHandler.GetMessage(
                 "TOSTRING",
-                new object[] {exception, base.Message, ResultCode, ResultCodeToString() });
+                new object[] { exception, base.Message, ResultCode, ResultCodeToString() });
 
             // If found no string from resource file, use a default string
             if (msg.EqualsOrdinalCI("TOSTRING"))
@@ -1258,7 +1249,7 @@ namespace Novell.Directory.Ldap
             // Add server message
             if (!string.IsNullOrEmpty(_serverMessage))
             {
-                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] {exception, _serverMessage });
+                tmsg = ResourcesHandler.GetMessage("SERVER_MSG", new object[] { exception, _serverMessage });
 
                 // If found no string from resource file, use a default string
                 if (tmsg.EqualsOrdinalCI("SERVER_MSG"))
@@ -1272,7 +1263,7 @@ namespace Novell.Directory.Ldap
             // Add Matched DN message
             if (MatchedDn != null)
             {
-                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] {exception, MatchedDn });
+                tmsg = ResourcesHandler.GetMessage("MATCHED_DN", new object[] { exception, MatchedDn });
 
                 // If found no string from resource file, use a default string
                 if (tmsg.EqualsOrdinalCI("MATCHED_DN"))

@@ -18,6 +18,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             {
                 throw new SaslException("Authorization ID and password must be specified");
             }
+
             _username = saslRequest.AuthorizationId;
             _password = saslRequest.Credentials; // Clone?
         }
@@ -25,7 +26,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         public override string MechanismName => SaslConstants.Mechanism.CramMd5;
 
         /// <summary>
-        /// No initial response for CRAM-MD5
+        /// No initial response for CRAM-MD5.
         /// </summary>
         public override bool HasInitialResponse => false;
 
@@ -53,6 +54,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                         response = CreateCramMd5Response(challenge).ToUtf8Bytes();
                         _currentState = State.CramMd5ResponseSent;
                     }
+
                     break;
                 case State.CramMd5ResponseSent:
                     if (CheckServerResponseAuth(challenge))
@@ -65,6 +67,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                         throw new SaslException("Could not validate response-auth " +
                                                 "value from server");
                     }
+
                     break;
                 case State.ValidServerResponse:
                 case State.InvalidServerResponse:
@@ -104,7 +107,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             CramMd5ResponseSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }
