@@ -17,6 +17,6 @@ namespace Novell.Directory.Ldap.Sasl
         AuthenticationWithIntegrityProtection = 2,
 
         // "auth-conf"
-        AuthenticationWithIntegrityAndPrivacyProtection = 4
+        AuthenticationWithIntegrityAndPrivacyProtection = 4,
     }
 }

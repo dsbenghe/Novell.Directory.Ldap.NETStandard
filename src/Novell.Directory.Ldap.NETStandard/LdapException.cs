@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Globalization;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -846,12 +846,12 @@ namespace Novell.Directory.Ldap
         }
 
         public LdapException(string messageOrKey)
-              : this(messageOrKey, LdapException.Other, "")
+              : this(messageOrKey, Other, string.Empty)
         {
         }
 
         public LdapException(Exception rootException)
-            : this(rootException?.Message ?? "", LdapException.Other, "", rootException)
+            : this(rootException?.Message ?? string.Empty, Other, string.Empty, rootException)
         {
         }
 

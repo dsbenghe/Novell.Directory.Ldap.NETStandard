@@ -1,5 +1,4 @@
-﻿using System;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests

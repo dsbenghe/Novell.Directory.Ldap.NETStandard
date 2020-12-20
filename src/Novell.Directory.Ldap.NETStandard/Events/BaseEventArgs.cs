@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -33,13 +33,13 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.DirectoryEventArgs' />
     public class BaseEventArgs : EventArgs
     {
-        protected LdapMessage LdapMessage;
+        protected LdapMessage LdapMessage { get; }
 
         public BaseEventArgs(LdapMessage message)
         {
             LdapMessage = message;
         }
 
-        public LdapMessage ContianedEventInformation => LdapMessage;
+        public LdapMessage ContainedEventInformation => LdapMessage;
     }
 }

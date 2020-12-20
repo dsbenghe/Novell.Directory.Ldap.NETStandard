@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,7 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -69,7 +68,7 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            outRenamed.WriteByte((byte)(b.BooleanValue() ? (byte)SupportClass.Identity(0xff) : (byte)0x00));
+            outRenamed.WriteByte(b.BooleanValue() ? (byte)SupportClass.Identity(0xff) : (byte)0x00);
         }
 
         /// <summary>
@@ -93,12 +92,12 @@ namespace Novell.Directory.Ldap.Asn1
             }
 
             Encode(n.GetIdentifier(), outRenamed);
-            outRenamed.WriteByte((byte)len); // Length
-            for (var i = len - 1; i >= 0; i--)
+            outRenamed.WriteByte(len); // Length
 
             // Content
+            for (var i = len - 1; i >= 0; i--)
             {
-                outRenamed.WriteByte((byte)octets[i]);
+                outRenamed.WriteByte(octets[i]);
             }
         }
 

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -30,20 +30,14 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.LdapEventArgs' />
     public class DirectoryEventArgs : BaseEventArgs
     {
-        protected EventClassifiers EClassification;
-
         public DirectoryEventArgs(
             LdapMessage sourceMessage,
             EventClassifiers aClassification)
             : base(sourceMessage)
         {
-            EClassification = aClassification;
+            EventClassification = aClassification;
         }
 
-        public EventClassifiers EventClassification
-        {
-            get => EClassification;
-            set => EClassification = value;
-        }
+        public EventClassifiers EventClassification { get; set; }
     }
 }

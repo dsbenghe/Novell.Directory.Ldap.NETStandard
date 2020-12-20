@@ -26,7 +26,6 @@
 // original architecture of the application in the converted project, the user should be aware that
 // the primary goal of these support classes is to replicate functionality, and that at times
 // the architecture of the resulting solution may differ somewhat.
-
 using System.Threading;
 
 namespace Novell.Directory.Ldap
@@ -39,7 +38,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     The instance of System.Threading.Thread.
         /// </summary>
-        private Thread _threadField;
+        private readonly Thread _threadField;
 
         /// <summary>
         ///     Initializes a new instance of the ThreadClass class.
@@ -81,7 +80,6 @@ namespace Novell.Directory.Ldap
         // {
         // threadField.Interrupt();
         // }
-
         public void Stop()
         {
             IsStopping = true;

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,8 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using Novell.Directory.Ldap.Asn1;
+using System;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -37,14 +37,14 @@ namespace Novell.Directory.Ldap.Controls
     /// </summary>
     public class LdapSortControl : LdapControl
     {
-        private static readonly int OrderingRule = 0;
-        private static readonly int ReverseOrder = 1;
+        private const int OrderingRule = 0;
+        private const int ReverseOrder = 1;
 
         /// <summary> The requestOID of the sort control.</summary>
-        private static readonly string RequestOid = "1.2.840.113556.1.4.473";
+        private const string RequestOid = "1.2.840.113556.1.4.473";
 
         /// <summary> The responseOID of the sort control.</summary>
-        private static readonly string ResponseOid = "1.2.840.113556.1.4.474";
+        private const string ResponseOid = "1.2.840.113556.1.4.474";
 
         static LdapSortControl()
         {

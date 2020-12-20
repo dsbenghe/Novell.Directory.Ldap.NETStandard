@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,12 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -92,12 +91,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapAttribute(string attrName)
         {
-            if (attrName == null)
-            {
-                throw new ArgumentException("Attribute name cannot be null");
-            }
-
-            Name = attrName;
+            Name = attrName ?? throw new ArgumentException("Attribute name cannot be null");
             _baseName = GetBaseName(attrName);
             _subTypes = GetSubtypes(attrName);
         }
@@ -521,7 +515,6 @@ namespace Novell.Directory.Ldap
 
             Add(Base64.Decode(attrChars));
         }
-
 
         /// <summary>
         ///     Returns the base name of the attribute.

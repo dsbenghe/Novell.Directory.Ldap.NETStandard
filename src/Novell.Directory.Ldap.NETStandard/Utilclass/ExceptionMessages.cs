@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -170,7 +170,7 @@ namespace Novell.Directory.Ldap.Utilclass
             { NoSchema, "No schema found when reading the subschemaSubentry for {0}" },
             { ReadMultiple, "Read response is ambiguous, multiple entries returned" },
             { CannotBind, "Cannot bind. Use PoolManager.getBoundConnection()" },
-            { SslProviderMissing, "Please ensure that SSL Provider is properly installed." }
+            { SslProviderMissing, "Please ensure that SSL Provider is properly installed." },
         };
 
         public static string GetErrorMessage(string code)

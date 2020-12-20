@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -26,9 +26,7 @@
 // original architecture of the application in the converted project, the user should be aware that
 // the primary goal of these support classes is to replicate functionality, and that at times
 // the architecture of the resulting solution may differ somewhat.
-
 using System.Collections;
-using System.Globalization;
 using System.IO;
 
 namespace Novell.Directory.Ldap
@@ -36,7 +34,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Contains conversion support elements such as classes, interfaces and static methods.
     /// </summary>
-    public partial class SupportClass
+    public class SupportClass
     {
         /*******************************/
 
@@ -85,7 +83,7 @@ namespace Novell.Directory.Ldap
 
             for (var i = start; i < start + bytesRead; i++)
             {
-                target[i] = (byte)receiver[i];
+                target[i] = receiver[i];
             }
 
             return bytesRead;
@@ -126,7 +124,6 @@ namespace Novell.Directory.Ldap
         /// <param name="sourceEnd">Position of the String to end getting the chars.</param>
         /// <param name="destinationArray">Array to return the chars.</param>
         /// <param name="destinationStart">Position of the destination array of chars to start storing the chars.</param>
-        /// <returns>An array of chars.</returns>
         public static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
             ref char[] destinationArray, int destinationStart)
         {

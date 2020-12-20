@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,12 +21,12 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -107,7 +107,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         // *************************************************************************
         // Private variables for Filter
         // *************************************************************************
-
         private FilterTokenizer _ft;
 
         // *************************************************************************
@@ -498,7 +497,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     try
                     {
                         // place the character into octets.
-                        if (ch >= 0x01 && ch <= 0x27 || ch >= 0x2B && ch <= 0x5B || ch >= 0x5D)
+                        if ((ch >= 0x01 && ch <= 0x27) || (ch >= 0x2B && ch <= 0x5B) || ch >= 0x5D)
                         {
                             // found valid char
                             if (ch <= 0x7f)
@@ -812,8 +811,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
-        public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed,
-            bool useDnMatching)
+        public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed, bool useDnMatching)
         {
             Asn1Object current = new Asn1Tagged(
                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
@@ -1048,28 +1046,26 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 return valueRenamed.ToUtf8String();
             }
-            else
-            {
-                var binary = new StringBuilder();
-                for (var i = 0; i < valueRenamed.Length; i++)
-                {
-                    // TODO repair binary output
-                    // Every octet needs to be escaped
-                    if (valueRenamed[i] >= 0)
-                    {
-                        // one character hex string
-                        binary.Append("\\0");
-                        binary.Append(Convert.ToString(valueRenamed[i], 16));
-                    }
-                    else
-                    {
-                        // negative (eight character) hex string
-                        binary.Append("\\" + Convert.ToString(valueRenamed[i], 16).Substring(6));
-                    }
-                }
 
-                return binary.ToString();
+            var binary = new StringBuilder();
+            for (var i = 0; i < valueRenamed.Length; i++)
+            {
+                // TODO repair binary output
+                // Every octet needs to be escaped
+                if (valueRenamed[i] >= 0)
+                {
+                    // one character hex string
+                    binary.Append("\\0");
+                    binary.Append(Convert.ToString(valueRenamed[i], 16));
+                }
+                else
+                {
+                    // negative (eight character) hex string
+                    binary.Append("\\" + Convert.ToString(valueRenamed[i], 16).Substring(6));
+                }
             }
+
+            return binary.ToString();
         }
 
         /// <summary>
@@ -1081,23 +1077,23 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         private class FilterIterator : IEnumerator
         {
-            internal readonly Asn1Tagged Root;
+            private readonly Asn1Tagged _root;
 
             private bool _hasMore = true;
 
             /// <summary>indexes the several parts a component may have. </summary>
-            internal int Index = -1;
+            private int _index = -1;
 
             /// <summary>indicates if the identifier for a component has been returned yet. </summary>
-            internal bool TagReturned;
+            private bool _tagReturned;
 
             public FilterIterator(RfcFilter enclosingInstance, Asn1Tagged root)
             {
                 EnclosingInstance = enclosingInstance;
-                Root = root;
+                _root = root;
             }
 
-            public RfcFilter EnclosingInstance { get; }
+            private RfcFilter EnclosingInstance { get; }
 
             public void Reset()
             {
@@ -1113,14 +1109,14 @@ namespace Novell.Directory.Ldap.Rfc2251
                 get
                 {
                     object toReturn = null;
-                    if (!TagReturned)
+                    if (!_tagReturned)
                     {
-                        TagReturned = true;
-                        toReturn = Root.GetIdentifier().Tag;
+                        _tagReturned = true;
+                        toReturn = _root.GetIdentifier().Tag;
                     }
                     else
                     {
-                        var asn1 = Root.TaggedValue;
+                        var asn1 = _root.TaggedValue;
 
                         if (asn1 is RfcLdapString)
                         {
@@ -1131,31 +1127,31 @@ namespace Novell.Directory.Ldap.Rfc2251
                         else if (asn1 is RfcSubstringFilter)
                         {
                             var sub = (RfcSubstringFilter)asn1;
-                            if (Index == -1)
+                            if (_index == -1)
                             {
                                 // return attribute name
-                                Index = 0;
+                                _index = 0;
                                 var attr = (RfcAttributeDescription)sub.get_Renamed(0);
                                 toReturn = attr.StringValue();
                             }
-                            else if (Index % 2 == 0)
+                            else if (_index % 2 == 0)
                             {
                                 // return substring identifier
                                 var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                toReturn = ((Asn1Tagged)substrs.get_Renamed(Index / 2)).GetIdentifier().Tag;
-                                Index++;
+                                toReturn = ((Asn1Tagged)substrs.get_Renamed(_index / 2)).GetIdentifier().Tag;
+                                _index++;
                             }
                             else
                             {
                                 // return substring value
                                 var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                var tag = (Asn1Tagged)substrs.get_Renamed(Index / 2);
+                                var tag = (Asn1Tagged)substrs.get_Renamed(_index / 2);
                                 var valueRenamed = (RfcLdapString)tag.TaggedValue;
                                 toReturn = valueRenamed.StringValue();
-                                Index++;
+                                _index++;
                             }
 
-                            if (Index / 2 >= ((Asn1SequenceOf)sub.get_Renamed(1)).Size())
+                            if (_index / 2 >= ((Asn1SequenceOf)sub.get_Renamed(1)).Size())
                             {
                                 _hasMore = false;
                             }
@@ -1165,15 +1161,15 @@ namespace Novell.Directory.Ldap.Rfc2251
                             // components: =,>=,<=,~=
                             var assertion = (RfcAttributeValueAssertion)asn1;
 
-                            if (Index == -1)
+                            if (_index == -1)
                             {
                                 toReturn = assertion.AttributeDescription;
-                                Index = 1;
+                                _index = 1;
                             }
-                            else if (Index == 1)
+                            else if (_index == 1)
                             {
                                 toReturn = assertion.AssertionValue;
-                                Index = 2;
+                                _index = 2;
                                 _hasMore = false;
                             }
                         }
@@ -1181,15 +1177,15 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             // Extensible match
                             var exMatch = (RfcMatchingRuleAssertion)asn1;
-                            if (Index == -1)
+                            if (_index == -1)
                             {
-                                Index = 0;
+                                _index = 0;
                             }
 
                             toReturn =
-                                ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(Index++)).TaggedValue)
+                                ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(_index++)).TaggedValue)
                                 .StringValue();
-                            if (Index > 2)
+                            if (_index > 2)
                             {
                                 _hasMore = false;
                             }
@@ -1198,15 +1194,15 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             // AND and OR nested components
                             var setRenamed = (Asn1SetOf)asn1;
-                            if (Index == -1)
+                            if (_index == -1)
                             {
-                                Index = 0;
+                                _index = 0;
                             }
 
                             toReturn = new FilterIterator(
                                 EnclosingInstance,
-                                (Asn1Tagged)setRenamed.get_Renamed(Index++));
-                            if (Index >= setRenamed.Size())
+                                (Asn1Tagged)setRenamed.get_Renamed(_index++));
+                            if (_index >= setRenamed.Size())
                             {
                                 _hasMore = false;
                             }
@@ -1240,7 +1236,6 @@ namespace Novell.Directory.Ldap.Rfc2251
             // *************************************************************************
             // Private variables
             // *************************************************************************
-
             private readonly string _filter; // The filter string to parse
             private readonly int _filterLength; // Length of the filter string to parse
             private int _offset; // Offset pointer into the filter string

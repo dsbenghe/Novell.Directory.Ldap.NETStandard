@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap
         private void Tokenize()
         {
             var tempstr = _source;
-            var toks = String.Empty;
+            var toks = string.Empty;
             if (tempstr.IndexOfAny(_delimiters.ToCharArray()) < 0 && tempstr.Length > 0)
             {
                 _elements.Add(tempstr);
@@ -93,7 +93,7 @@ namespace Novell.Directory.Ldap
                     }
                     else
                     {
-                        tempstr = String.Empty;
+                        tempstr = string.Empty;
                     }
                 }
                 else
@@ -107,7 +107,7 @@ namespace Novell.Directory.Ldap
                     }
                     else
                     {
-                        tempstr = String.Empty;
+                        tempstr = string.Empty;
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace Novell.Directory.Ldap
         public string NextToken()
         {
             string result;
-            if (_source == String.Empty)
+            if (_source == string.Empty)
             {
                 throw new Exception();
             }
@@ -177,7 +177,7 @@ namespace Novell.Directory.Ldap
         {
             for (var index = 0; index < _elements.Count; index++)
             {
-                if ((string)_elements[index] == String.Empty)
+                if ((string)_elements[index] == string.Empty)
                 {
                     _elements.RemoveAt(index);
                     index--;

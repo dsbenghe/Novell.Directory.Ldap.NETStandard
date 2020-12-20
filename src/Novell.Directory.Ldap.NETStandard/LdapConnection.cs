@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,12 +21,12 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
 
 namespace Novell.Directory.Ldap
 {
@@ -902,7 +902,7 @@ namespace Novell.Directory.Ldap
             return newObj;
         }
 
-        private void Dispose(bool isDisposing)
+        protected virtual void Dispose(bool isDisposing)
         {
             if (isDisposing)
             {
@@ -2422,7 +2422,7 @@ namespace Novell.Directory.Ldap
                     {
                         rconn = new LdapConnection
                         {
-                            Constraints = _defSearchCons
+                            Constraints = _defSearchCons,
                         };
                         var url = new LdapUrl(referrals[i]);
                         rconn.Connect(url.Host, url.Port);
@@ -2775,7 +2775,6 @@ namespace Novell.Directory.Ldap
                     break;
 
                 // We are allowed to get a referral for the following
-
                 case LdapMessage.AddRequest:
                 case LdapMessage.BindRequest:
                 case LdapMessage.CompareRequest:

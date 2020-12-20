@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -33,6 +33,8 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class RespControlVector : ArrayList
     {
+        private readonly object _lock = new object();
+
         public RespControlVector(int cap, int incr)
             : base(cap)
         {
@@ -44,7 +46,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void RegisterResponseControl(string oid, Type controlClass)
         {
-            lock (this)
+            lock (_lock)
             {
                 Add(new RegisteredControl(this, oid, controlClass));
             }
@@ -57,7 +59,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public Type FindResponseControl(string searchOid)
         {
-            lock (this)
+            lock (_lock)
             {
                 RegisteredControl ctl = null;
 
@@ -90,9 +92,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private class RegisteredControl
         {
-            public readonly Type MyClass;
+            public Type MyClass { get; }
 
-            public readonly string MyOid;
+            public string MyOid { get; }
 
             public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
             {
@@ -101,7 +103,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 MyClass = controlClass;
             }
 
-            public RespControlVector EnclosingInstance { get; }
+            private RespControlVector EnclosingInstance { get; }
         }
     }
 }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using System.IO;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -59,8 +57,8 @@ namespace Novell.Directory.Ldap.Asn1
     {
         // used to speed up decode, so it doesn't need to recreate an identifier every time
         // instead just reset is called CANNOT be static for multiple connections
-        private Asn1Identifier _asn1Id = new Asn1Identifier();
-        private Asn1Length _asn1Len = new Asn1Length();
+        private readonly Asn1Identifier _asn1Id = new Asn1Identifier();
+        private readonly Asn1Length _asn1Len = new Asn1Length();
 
         /* Generic decode routines
         */

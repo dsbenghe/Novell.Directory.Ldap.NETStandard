@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.Utilclass;
+using System;
 using System.Linq;
 using System.Security.Cryptography;
 
@@ -127,7 +128,6 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             }
 
             // cipher is only used in "auth-conf", which we don't support yet.
-
             if (!challenge.Algorithm.EqualsOrdinalCI("md5-sess"))
             {
                 throw new SaslException($"Invalid DIGEST-MD5 Algorithm: '{challenge.Algorithm}' - must be 'md5-sess'");
@@ -147,12 +147,12 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 NonceCount = 1,
                 MaxBuf = 65536,
                 Nonce = challenge.Nonce,
-                DigestUri = "ldap/" + _host
+                DigestUri = "ldap/" + _host,
             };
 
             var cnonce = new byte[32];
             _rng.GetBytes(cnonce);
-            result.CNonce = Utilclass.Base64.Encode(cnonce);
+            result.CNonce = Base64.Encode(cnonce);
 
             var ha1 = DigestCalcHa1(result);
             result.Response = DigestCalcResponse(result, ha1);
@@ -222,7 +222,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             DigestResponseSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }

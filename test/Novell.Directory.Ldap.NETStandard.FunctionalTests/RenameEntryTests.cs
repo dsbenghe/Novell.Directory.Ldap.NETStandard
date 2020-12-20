@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System;
 using System.Collections.Generic;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -13,7 +13,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var entry = LdapOps.AddEntry();
             var newCn = Guid.NewGuid().ToString();
 
-            TestHelper.WithAuthenticatedLdapConnection((ldapConnection) =>
+            TestHelper.WithAuthenticatedLdapConnection(ldapConnection =>
             {
                 ldapConnection.Rename(entry.Dn, "cn=" + newCn, true);
             });

@@ -25,7 +25,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         public override string MechanismName => SaslConstants.Mechanism.CramMd5;
 
         /// <summary>
-        /// No initial response for CRAM-MD5
+        /// No initial response for CRAM-MD5.
         /// </summary>
         public override bool HasInitialResponse => false;
 
@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             CramMd5ResponseSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }

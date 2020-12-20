@@ -1,6 +1,6 @@
-using System;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Novell.Directory.Ldap.Asn1;
+using System;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -9,9 +9,9 @@ namespace Novell.Directory.Ldap.Controls
     /// MAY specify on the searchRequest a <see cref="SimplePagedResultsControl"/> with size set
     /// to the desired page size and cookie set to the zero-length string. The page size specified
     /// MAY be greater than zero and less than the sizeLimit value specified in the
-    /// searchRequest. [RFC 2696]
+    /// searchRequest. [RFC 2696].
     /// </summary>
-	public class SimplePagedResultsControl : LdapControl
+    public class SimplePagedResultsControl : LdapControl
     {
         private const string RequestOid = "1.2.840.113556.1.4.319";
         private const string DecodedNotInteger = "Decoded value is not an integer, but should be";
@@ -36,9 +36,10 @@ namespace Novell.Directory.Ldap.Controls
         /// <summary>
         /// Constructs <see cref="SimplePagedResultsControl"/> control.
         /// </summary>
-        /// <param name="size"><see cref="SimplePagedResultsControl.Size"/></param>
-        /// <param name="cookie"><see cref="SimplePagedResultsControl.Cookie"/></param>
-        public SimplePagedResultsControl(int size, [CanBeNull] byte[] cookie) : base(RequestOid, true, null)
+        /// <param name="size"><see cref="SimplePagedResultsControl.Size"/>.</param>
+        /// <param name="cookie"><see cref="SimplePagedResultsControl.Cookie"/>.</param>
+        public SimplePagedResultsControl(int size, [CanBeNull] byte[] cookie)
+            : base(RequestOid, true, null)
         {
             Size = size;
             Cookie = cookie ?? GetEmptyCookie;
@@ -49,20 +50,35 @@ namespace Novell.Directory.Ldap.Controls
         }
 
         [UsedImplicitly]
-        public SimplePagedResultsControl(string oid, bool critical, byte[] values) : base(oid, critical, values)
+        public SimplePagedResultsControl(string oid, bool critical, byte[] values)
+            : base(oid, critical, values)
         {
             var lberDecoder = new LberDecoder();
-            if (lberDecoder == null) throw new InvalidOperationException($"Failed to build {nameof(LberDecoder)}");
+            if (lberDecoder == null)
+            {
+                throw new InvalidOperationException($"Failed to build {nameof(LberDecoder)}");
+            }
 
             var asn1Object = lberDecoder.Decode(values);
-            if (!(asn1Object is Asn1Sequence)) throw new InvalidCastException(DecodedNotSequence);
+            if (!(asn1Object is Asn1Sequence))
+            {
+                throw new InvalidCastException(DecodedNotSequence);
+            }
 
             var size = ((Asn1Structured)asn1Object).get_Renamed(0);
-            if (!(size is Asn1Integer integerSize)) throw new InvalidOperationException(DecodedNotInteger);
+            if (!(size is Asn1Integer integerSize))
+            {
+                throw new InvalidOperationException(DecodedNotInteger);
+            }
+
             Size = integerSize.IntValue();
 
             var cookie = ((Asn1Structured)asn1Object).get_Renamed(1);
-            if (!(cookie is Asn1OctetString octetCookie)) throw new InvalidOperationException(DecodedNotOctetString);
+            if (!(cookie is Asn1OctetString octetCookie))
+            {
+                throw new InvalidOperationException(DecodedNotOctetString);
+            }
+
             Cookie = octetCookie.ByteValue();
         }
 

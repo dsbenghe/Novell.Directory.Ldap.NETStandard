@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -55,7 +55,7 @@ namespace Novell.Directory.Ldap.Events
 
         private int _sleepInterval = DefaultSleepTime;
 
-        protected EventsGenerator MObjEventsGenerator;
+        private EventsGenerator _objEventsGenerator;
 
         /// <summary>
         ///     SleepInterval controls the duration after which event polling is repeated.
@@ -191,23 +191,23 @@ namespace Novell.Directory.Ldap.Events
                 throw new ArgumentException("No parameter can be Null.");
             }
 
-            if (MObjEventsGenerator == null)
+            if (_objEventsGenerator == null)
             {
-                MObjEventsGenerator = new EventsGenerator(this, queue, conn, msgid)
+                _objEventsGenerator = new EventsGenerator(this, queue, conn, msgid)
                 {
-                    SleepTime = _sleepInterval
+                    SleepTime = _sleepInterval,
                 };
 
-                MObjEventsGenerator.StartEventPolling();
+                _objEventsGenerator.StartEventPolling();
             }
         } // end of method StartEventPolling
 
         protected void StopEventPolling()
         {
-            if (MObjEventsGenerator != null)
+            if (_objEventsGenerator != null)
             {
-                MObjEventsGenerator.StopEventPolling();
-                MObjEventsGenerator = null;
+                _objEventsGenerator.StopEventPolling();
+                _objEventsGenerator = null;
             }
         } // end of method StopEventPolling
 
@@ -217,7 +217,6 @@ namespace Novell.Directory.Ldap.Events
         {
             // first let the actual source Notify the listeners with
             // appropriate EventArgs
-
             var bListenersNotified = NotifyEventListeners(sourceMessage, aClassification, nType);
 
             if (!bListenersNotified)
@@ -247,7 +246,7 @@ namespace Novell.Directory.Ldap.Events
         {
             Zero,
             One,
-            MoreThanOne
+            MoreThanOne,
         }
 
         /// <summary>

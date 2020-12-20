@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,12 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Novell.Directory.Ldap.Utilclass;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Novell.Directory.Ldap
-
 {
     /// <summary>
     ///     Encapsulates parameters of an Ldap URL query as defined in RFC2255.
@@ -40,7 +37,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapUrl
     {
-        private static readonly int DefaultScope = LdapConnection.ScopeBase;
+        private const int DefaultScope = LdapConnection.ScopeBase;
         private readonly bool _ipV6 = false; // TCP/IP V6
         private string _dn; // Base DN
         private int _port; // Port
@@ -244,13 +241,10 @@ namespace Novell.Directory.Ldap
         ///     The port number in the URL.
         /// </returns>
         public int Port
-
         {
             get
-
             {
                 if (_port == 0)
-
                 {
                     return LdapConnection.DefaultPort;
                 }
@@ -391,7 +385,7 @@ namespace Novell.Directory.Ldap
             {
                 currChar = toEncode[i];
 
-                if (currChar <= 0x1F || currChar == 0x7F || currChar >= 0x80 && currChar <= 0xFF || currChar == '<' ||
+                if (currChar <= 0x1F || currChar == 0x7F || (currChar >= 0x80 && currChar <= 0xFF) || currChar == '<' ||
                     currChar == '>' || currChar == '\"' || currChar == '#' || currChar == '%' || currChar == '{' ||
                     currChar == '}' || currChar == '|' || currChar == '\\' || currChar == '^' || currChar == '~' ||
                     currChar == '[' || currChar == '\'' || currChar == ';' || currChar == '/' || currChar == '?' ||
@@ -425,14 +419,12 @@ namespace Novell.Directory.Ldap
         ///     The base distinguished name specified in the URL, or null if none.
         /// </returns>
         public string GetDn()
-
         {
             return _dn;
         }
 
         /// <summary> Sets the base distinguished name encapsulated in the URL.</summary>
         internal void SetDn(string dn)
-
         {
             _dn = dn;
         }
@@ -604,7 +596,10 @@ namespace Novell.Directory.Ldap
 
             while (itemStart > 0)
             {
-                if (itemStart >= listStr.Length) break;
+                if (itemStart >= listStr.Length)
+                {
+                    break;
+                }
 
                 itemEnd = listStr.IndexOf(delimiter, itemStart);
 
@@ -641,7 +636,6 @@ namespace Novell.Directory.Ldap
             }
 
             // TODO: There are WAY too many Substring calls here, causing unneccessary garbage
-
             var scanStart = 0;
             var scanEnd = url.Length;
 

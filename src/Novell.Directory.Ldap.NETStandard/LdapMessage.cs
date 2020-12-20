@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Rfc2251;
 using System;
 using System.Reflection;
-using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap
 {
@@ -177,9 +177,9 @@ namespace Novell.Directory.Ldap
         private string _stringTag;
 
         /// <summary> A request or response message for an asynchronous Ldap operation.</summary>
-        protected internal RfcLdapMessage Message;
+        protected internal RfcLdapMessage Message { get; }
 
-        /// <summary> Dummy constuctor.</summary>
+        /// <summary> Dummy constructor.</summary>
         internal LdapMessage()
         {
         }
@@ -200,7 +200,6 @@ namespace Novell.Directory.Ldap
         internal LdapMessage(int type, IRfcRequest op, LdapControl[] controls)
         {
             // Get a unique number for this request message
-
             _messageType = type;
             RfcControls asn1Ctrls = null;
             if (controls != null)

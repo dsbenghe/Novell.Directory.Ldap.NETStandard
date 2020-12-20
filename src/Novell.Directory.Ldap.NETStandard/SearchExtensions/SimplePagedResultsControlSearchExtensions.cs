@@ -1,7 +1,7 @@
+﻿using JetBrains.Annotations;
+using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using Novell.Directory.Ldap.Controls;
 
 namespace Novell.Directory.Ldap
 {
@@ -13,9 +13,20 @@ namespace Novell.Directory.Ldap
     {
         public static List<LdapEntry> SearchUsingSimplePaging([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (ldapConnection == null)
+            {
+                throw new ArgumentNullException(nameof(ldapConnection));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             return new SimplePagedResultsControlHandler(ldapConnection)
                 .SearchWithSimplePaging(options, pageSize);
@@ -23,9 +34,20 @@ namespace Novell.Directory.Ldap
 
         public static List<T> SearchUsingSimplePaging<T>([NotNull] this ILdapConnection ldapConnection, [NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
-            if (converter == null) throw new ArgumentNullException(nameof(converter));
-            if (options == null) throw new ArgumentNullException(nameof(options));
+            if (ldapConnection == null)
+            {
+                throw new ArgumentNullException(nameof(ldapConnection));
+            }
+
+            if (converter == null)
+            {
+                throw new ArgumentNullException(nameof(converter));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             return new SimplePagedResultsControlHandler(ldapConnection)
                 .SearchWithSimplePaging(converter, options, pageSize);

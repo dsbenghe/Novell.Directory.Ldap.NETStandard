@@ -1,6 +1,5 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Sasl.Clients;
-using System.Collections;
 using System.Linq;
 using Xunit;
 
@@ -11,7 +10,6 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [Fact]
         public void CramMd5_CreatesCramMD5Client()
         {
-
             var client = DefaultSaslClientFactory.CreateClient(new SaslCramMd5Request("AuthId", "Password"));
             Assert.NotNull(client);
             Assert.IsType<CramMD5Client>(client);
@@ -119,7 +117,8 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             public const string Mechanism = "7c566abfaae049d893df01cc811d3e17";
 
-            public GibberishSaslRequest() : base(Mechanism)
+            public GibberishSaslRequest()
+                : base(Mechanism)
             {
             }
         }

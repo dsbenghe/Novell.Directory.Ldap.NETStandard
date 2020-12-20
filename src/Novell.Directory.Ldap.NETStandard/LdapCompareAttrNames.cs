@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
 using System.Globalization;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -234,7 +234,8 @@ namespace Novell.Directory.Ldap
                 }
 
                 i++;
-            } while (compare == 0 && i < _sortByNames.Length);
+            }
+            while (compare == 0 && i < _sortByNames.Length);
 
             if (_sortAscending[i - 1])
             {
@@ -291,7 +292,7 @@ namespace Novell.Directory.Ldap
         {
             unchecked
             {
-                var hashCode = (_sortAscending != null ? _sortAscending.GetHashCode() : 0);
+                var hashCode = _sortAscending != null ? _sortAscending.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (_sortByNames != null ? _sortByNames.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (_collator != null ? _collator.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (_location != null ? _location.GetHashCode() : 0);

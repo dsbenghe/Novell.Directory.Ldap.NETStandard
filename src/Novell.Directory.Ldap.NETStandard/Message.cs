@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,11 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -248,7 +248,7 @@ namespace Novell.Directory.Ldap
                     default:
                         _timer = new Timeout(_mslimit, this)
                         {
-                            IsBackground = true // If this is the last thread running, allow exit.
+                            IsBackground = true, // If this is the last thread running, allow exit.
                         };
                         _timer.Start();
                         break;

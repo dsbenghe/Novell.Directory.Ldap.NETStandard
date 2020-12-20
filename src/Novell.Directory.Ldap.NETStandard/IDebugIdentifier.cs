@@ -13,23 +13,20 @@ namespace Novell.Directory.Ldap
         private static int GetNextId()
         {
             // Rollover is OK in case we somehow end up with more than 2147483647 calls to this...
-            unchecked
-            {
-                return Interlocked.Increment(ref _id);
-            }
+            return Interlocked.Increment(ref _id);
         }
 
         /// <summary>
         /// A name that can identify an object instance.
         /// </summary>
-        string Name { get; }
+        private string Name { get; }
 
         /// <summary>
         /// An incrementing Id for every new object.
         /// Note: This Id increments for every newly generated DebugId,
         /// regardless of the Name.
         /// </summary>
-        int Id { get; }
+        private int Id { get; }
 
         public override string ToString()
              => "[#" + Id + "] " + Name;

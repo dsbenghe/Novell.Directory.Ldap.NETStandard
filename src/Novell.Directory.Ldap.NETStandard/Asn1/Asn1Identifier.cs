@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -205,9 +205,9 @@ namespace Novell.Directory.Ldap.Asn1
             Asn1Class = r >> 6;
             Constructed = (r & 0x20) != 0;
             Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (Tag == 0x1F)
 
             // if true, its a multiple octet identifier.
+            if (Tag == 0x1F)
             {
                 Tag = DecodeTagNumber(inRenamed);
             }

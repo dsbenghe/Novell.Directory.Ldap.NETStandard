@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
+using System;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.SearchExtensions
 {
@@ -18,10 +17,25 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] SearchOptions options,
             int pageSize)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
-            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (ldapConnection == null)
+            {
+                throw new ArgumentNullException(nameof(ldapConnection));
+            }
+
+            if (sortControl == null)
+            {
+                throw new ArgumentNullException(nameof(sortControl));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             return new VirtualListViewControlHandler(ldapConnection)
                 .SearchUsingVlv(sortControl, options, pageSize);
@@ -34,13 +48,28 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] SearchOptions options,
             int pageSize)
         {
-            if (ldapConnection == null) throw new ArgumentNullException(nameof(ldapConnection));
-            if (sortControl == null) throw new ArgumentNullException(nameof(sortControl));
-            if (options == null) throw new ArgumentNullException(nameof(options));
-            if (pageSize <= 0) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (ldapConnection == null)
+            {
+                throw new ArgumentNullException(nameof(ldapConnection));
+            }
+
+            if (sortControl == null)
+            {
+                throw new ArgumentNullException(nameof(sortControl));
+            }
+
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            if (pageSize <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(pageSize));
+            }
 
             return new VirtualListViewControlHandler(ldapConnection)
-                .SearchUsingVlv<T>(sortControl, converter, options, pageSize);
+                .SearchUsingVlv(sortControl, converter, options, pageSize);
         }
     }
 }

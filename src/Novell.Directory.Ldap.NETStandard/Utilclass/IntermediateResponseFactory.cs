@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Rfc2251;
 using System;
 using System.Reflection;
-using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Utilclass
              * LDAPIntermediateResponse object depending on the operation being performed.
              *
              * @param inResponse   The LDAPIntermediateResponse object as returned by the
-             *                     extendedOperation method in the LDAPConnection object.
+             * extendedOperation method in the LDAPConnection object.
              * <br><br>
              * @return An object of base class LDAPIntermediateResponse.  The actual child
              *         class of this returned object depends on the operation being

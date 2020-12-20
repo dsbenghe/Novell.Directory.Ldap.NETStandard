@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -93,7 +93,7 @@ namespace Novell.Directory.Ldap.Utilclass
             { "97", "Referral Limit Exceeded" },
             { "112", "TLS not supported" },
             { "113", "SSL handshake failed" },
-            { "114", "SSL Provider not found" }
+            { "114", "SSL Provider not found" },
         };
 
         public static string GetResultCode(string code)

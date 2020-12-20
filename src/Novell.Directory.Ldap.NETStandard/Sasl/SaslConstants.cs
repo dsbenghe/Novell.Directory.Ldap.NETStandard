@@ -21,7 +21,7 @@
             /// https://tools.ietf.org/html/rfc4505
             ///
             /// Obsoletes RFC 2245:
-            /// https://tools.ietf.org/html/rfc2245
+            /// https://tools.ietf.org/html/rfc2245.
             /// </summary>
             public const string Anonymous = "ANONYMOUS";
 
@@ -30,13 +30,13 @@
             /// https://tools.ietf.org/html/rfc2195
             ///
             /// Obsoletes RFC 2095:
-            /// https://tools.ietf.org/html/rfc2195
+            /// https://tools.ietf.org/html/rfc2195.
             /// </summary>
             public const string CramMd5 = "CRAM-MD5";
 
             /// <summary>
             /// RFC 2831:
-            /// https://tools.ietf.org/html/rfc2831
+            /// https://tools.ietf.org/html/rfc2831.
             /// </summary>
             public const string DigestMd5 = "DIGEST-MD5";
 
@@ -45,7 +45,7 @@
             /// https://tools.ietf.org/html/rfc4422
             ///
             /// Obsoletes RFC 2222:
-            /// https://tools.ietf.org/html/rfc2222
+            /// https://tools.ietf.org/html/rfc2222.
             /// </summary>
             public const string External = "EXTERNAL";
 
@@ -74,7 +74,7 @@
             /// https://tools.ietf.org/html/rfc4178
             ///
             /// Obsoletes RFC 2478:
-            /// https://tools.ietf.org/html/rfc2478
+            /// https://tools.ietf.org/html/rfc2478.
             /// </summary>
             public const string GssSPNego = "GSS-SPNEGO";
 
@@ -89,7 +89,7 @@
             /// services.
             ///
             /// RFC 4616:
-            /// https://tools.ietf.org/html/rfc4616
+            /// https://tools.ietf.org/html/rfc4616.
             /// </summary>
             public const string Plain = "PLAIN";
         }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,10 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System.IO;
-using System.Text;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Utilclass;
+using System.IO;
+using System.Text;
 
 namespace Novell.Directory.Ldap
 {
@@ -76,9 +76,9 @@ namespace Novell.Directory.Ldap
             string syntaxString)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Matching])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            Oid = oid;
+            Names = new string[names.Length];
+            names.CopyTo(Names, 0);
+            Id = oid;
             Description = description;
             Obsolete = obsolete;
             Attributes = new string[attributes.Length];
@@ -108,9 +108,9 @@ namespace Novell.Directory.Ldap
                 var matchParser = new SchemaParser(rawMatchingRule);
                 if (matchParser.Names != null)
                 {
-                    names = new string[matchParser.Names.Length];
-                    matchParser.Names.CopyTo(names, 0);
-                    Oid = matchParser.Id;
+                    Names = new string[matchParser.Names.Length];
+                    matchParser.Names.CopyTo(Names, 0);
+                    Id = matchParser.Id;
                     Description = matchParser.Description;
                     Obsolete = matchParser.Obsolete;
                     SyntaxString = matchParser.Syntax;
@@ -166,7 +166,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(token);
             }
 
-            var strArray = Names;
+            var strArray = GetNames();
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

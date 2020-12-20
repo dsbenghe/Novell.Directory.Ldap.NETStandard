@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -56,7 +56,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void Reset()
         {
-            Current = default(T);
+            Current = default;
             _index = 0;
         }
 
@@ -84,6 +84,8 @@ namespace Novell.Directory.Ldap.Utilclass
             return _eArray[_index++];
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

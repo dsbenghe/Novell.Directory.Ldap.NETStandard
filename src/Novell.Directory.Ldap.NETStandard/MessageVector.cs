@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -31,9 +31,11 @@ namespace Novell.Directory.Ldap
     ///     The. <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
+    // TODO - This is locking on this because the same lock is used outside the type - this needs to be improved before removing lock(this)
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
     internal class MessageVector
     {
-        private ArrayList _arrayList;
+        private readonly ArrayList _arrayList;
 
         internal MessageVector(int cap)
         {
@@ -52,7 +54,7 @@ namespace Novell.Directory.Ldap
         {
             lock (this)
             {
-                var results = this.ToArray();
+                var results = ToArray();
                 _arrayList.Clear();
                 return results;
             }
@@ -85,7 +87,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Adds an object to the end of the Vector
+        ///     Adds an object to the end of the Vector.
         /// </summary>
         /// <returns>
         ///     The  index at which the message has been added.
@@ -170,4 +172,5 @@ namespace Novell.Directory.Ldap
             }
         }
     }
+#pragma warning restore CA2002 // Do not lock on objects with weak identity
 }

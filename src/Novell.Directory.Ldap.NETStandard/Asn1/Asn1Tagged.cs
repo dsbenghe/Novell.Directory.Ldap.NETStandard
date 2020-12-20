@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,7 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -93,6 +92,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Sets the Asn1Object tagged value.</summary>
         public Asn1Object TaggedValue
         {
+            get => _content;
             set
             {
                 _content = value;
@@ -102,7 +102,6 @@ namespace Novell.Directory.Ldap.Asn1
                     value.SetIdentifier(GetIdentifier());
                 }
             }
-            get => _content;
         }
 
         /// <summary>

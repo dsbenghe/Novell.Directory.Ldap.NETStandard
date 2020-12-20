@@ -21,13 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using System.Reflection;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-
 [assembly: AssemblyTitle("C# LDAP")]
 [assembly: AssemblyDescription(".NET Standard (1.3 and up) LDAP client library: .NET Core >= 1.0, .NET Framework >= 4.6, Universal Windows Platform, Xamarin (iOS, Android, UWP). Works with any LDAP server (including Microsoft Active Directory - AD)")]
 [assembly: AssemblyConfiguration("")]
@@ -46,7 +44,6 @@ using System.Reflection;
 //
 // You can specify all the values or you can default the Revision and Build Numbers
 // by using the '*' as shown below:
-
 [assembly: AssemblyVersion("3.5.2")]
 
 // In order to sign your assembly you must specify a key to use. Refer to the
@@ -72,7 +69,6 @@ using System.Reflection;
 //       attribute as [assembly: AssemblyKeyFile("..\\..\\mykey.snk")]
 //   (*) Delay Signing is an advanced option - see the Microsoft .NET Framework
 //       documentation for more information on this.
-
 [assembly: AssemblyDelaySign(false)]
 
 // [assembly: AssemblyKeyFile("")]

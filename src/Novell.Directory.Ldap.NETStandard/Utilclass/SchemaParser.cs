@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -31,7 +31,7 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         private readonly int _result;
         private string _objectClass;
-        private List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
+        private readonly List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
 
         public SchemaParser(string aString)
         {
@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap.Utilclass
             string currName;
             if (st2.NextToken() != (int)TokenTypes.Eof)
             {
-                if (st2.Lastttype == '(')
+                if (st2.LastType == '(')
                 {
                     if (st2.NextToken() == (int)TokenTypes.Word)
                     {
@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                     while (st2.NextToken() != (int)TokenTypes.Eof)
                     {
-                        if (st2.Lastttype == (int)TokenTypes.Word)
+                        if (st2.LastType == (int)TokenTypes.Word)
                         {
                             if (st2.StringValue.EqualsOrdinalCI("NAME"))
                             {
@@ -99,7 +99,7 @@ namespace Novell.Directory.Ldap.Utilclass
                                 }
                                 else
                                 {
-                                    if (st2.Lastttype == '(')
+                                    if (st2.LastType == '(')
                                     {
                                         var nameList = new List<string>();
                                         while (st2.NextToken() == '\'')
@@ -133,9 +133,9 @@ namespace Novell.Directory.Ldap.Utilclass
                             if (st2.StringValue.EqualsOrdinalCI("SYNTAX"))
                             {
                                 _result = st2.NextToken();
-                                if (_result == (int)TokenTypes.Word || _result == '\'')
 
                                 // Test for non-standard schema
+                                if (_result == (int)TokenTypes.Word || _result == '\'')
                                 {
                                     Syntax = st2.StringValue;
                                 }
@@ -197,12 +197,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -252,12 +252,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -282,12 +282,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -312,12 +312,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -342,12 +342,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -416,12 +416,12 @@ namespace Novell.Directory.Ldap.Utilclass
                             {
                                 var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.Lastttype == '(')
+                                if (st2.LastType == '(')
                                 {
                                     st2.NextToken();
-                                    while (st2.Lastttype != ')')
+                                    while (st2.LastType != ')')
                                     {
-                                        if (st2.Lastttype != '$')
+                                        if (st2.LastType != '$')
                                         {
                                             values.Add(st2.StringValue);
                                         }
@@ -511,7 +511,7 @@ namespace Novell.Directory.Ldap.Utilclass
             }
             else
             {
-                if (st.Lastttype == '(')
+                if (st.LastType == '(')
                 {
                     while (st.NextToken() == '\'')
                     {

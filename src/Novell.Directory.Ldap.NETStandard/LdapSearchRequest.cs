@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System.Collections;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
+using System.Collections;
 
 namespace Novell.Directory.Ldap
 {

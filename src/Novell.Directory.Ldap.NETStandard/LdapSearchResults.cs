@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,10 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -384,9 +384,8 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        /// Get referral connections
+        /// Get referral connections.
         /// </summary>
-        /// <returns></returns>
         public ArrayList GetReferralConnections()
         {
             return _referralConn;

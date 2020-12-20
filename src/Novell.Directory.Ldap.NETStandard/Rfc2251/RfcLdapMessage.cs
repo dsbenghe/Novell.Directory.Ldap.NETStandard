@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,9 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Asn1;
 using System;
 using System.IO;
-using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -196,7 +196,6 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                 // Asn1Identifier controlsId = protocolOp.getIdentifier();
                 // we could check to make sure we have controls here....
-
                 content = ((Asn1OctetString)controls.TaggedValue).ByteValue();
                 bais = new MemoryStream(content);
                 set_Renamed(2, new RfcControls(dec, bais, content.Length));

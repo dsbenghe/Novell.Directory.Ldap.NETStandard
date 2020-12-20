@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -211,7 +211,7 @@ namespace Novell.Directory.Ldap.Asn1
 
             sb.Append(" }");
 
-            return base.ToString() + sb;
+            return ToString() + sb;
         }
     }
 }

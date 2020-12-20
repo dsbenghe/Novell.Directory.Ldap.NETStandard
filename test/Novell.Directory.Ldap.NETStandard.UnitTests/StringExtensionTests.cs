@@ -20,10 +20,10 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
                 return new TheoryData<string, string, int>
                 {
                     // Empty strings
-                    { "", "", 0 },
-                    { "", "test", 0 },
-                    { "test", "", 0 },
-                    { "test", "", 4 },
+                    { string.Empty, string.Empty, 0 },
+                    { string.Empty, "test", 0 },
+                    { "test", string.Empty, 0 },
+                    { "test", string.Empty, 4 },
 
                     // Complete valid range
                     { "abcd", "ab", 0 },
@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
                     { "大象牙膏", "象牙", 2 },
                     { "大象牙膏", "象牙", 3 },
                     { "大象牙膏", "象牙", 4 },
-                    { "зубная паста слона", "аста", 8 }
+                    { "зубная паста слона", "аста", 8 },
                 };
             }
         }
@@ -71,7 +71,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 
                     // Invalid offset
                     { "abcd", "abcd", 5 },
-                    { "", "abcd", 1 },
+                    { string.Empty, "abcd", 1 },
                     { "abcd", "ab", 5 },
                     { "abcd", "ab", -1 },
                     { "大象牙膏", "象牙", 5 },

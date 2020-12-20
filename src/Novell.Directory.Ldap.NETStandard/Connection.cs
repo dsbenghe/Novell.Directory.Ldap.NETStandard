@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,8 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Asn1;
+using Novell.Directory.Ldap.Rfc2251;
+using Novell.Directory.Ldap.Utilclass;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,11 +32,7 @@ using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
-using Novell.Directory.Ldap.Asn1;
-using Novell.Directory.Ldap.Rfc2251;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -62,7 +60,9 @@ namespace Novell.Directory.Ldap
     ///     operating systems do not time slice.
     /// </summary>
     /*package*/
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable - Disposed via DestroyClone
     internal class Connection : IDebugIdentifier
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         // Ldap message IDs are all positive numbers so we can use negative
         //  numbers as flags.  This are flags assigned to stopReaderMessageID
@@ -75,12 +75,11 @@ namespace Novell.Directory.Ldap
         // method in LdapConnection.  Future releases might require
         // these to be local variables that can be modified using
         // the setProperty method.
+        internal const string Sdk = "2.2.1";
 
-        internal readonly static string Sdk = "2.2.1";
+        internal const int Protocol = 3;
 
-        internal readonly static int Protocol = 3;
-
-        internal static string Security = "simple";
+        internal const string Security = "simple";
 
         private readonly object _lock = new object();
 
@@ -96,9 +95,9 @@ namespace Novell.Directory.Ldap
         private int _cloneCount;
         private Thread _deadReader; // Identity of last reader thread
         private Exception _deadReaderException; // Last exception of reader
-        private LberDecoder _decoder;
+        private readonly LberDecoder _decoder;
 
-        private LberEncoder _encoder;
+        private readonly LberEncoder _encoder;
 
         // We need a message number for disconnect to grab the semaphore,
         // but may not have one, so we invent a unique one.
@@ -109,7 +108,7 @@ namespace Novell.Directory.Ldap
         private Stream _inStream;
 
         // Place to save message information classes
-        private MessageVector _messages;
+        private readonly MessageVector _messages;
         private TcpClient _nonTlsBackup;
         private Stream _outStream;
         private Thread _reader; // New thread that reads data from the server.
@@ -132,7 +131,7 @@ namespace Novell.Directory.Ldap
         // Connection created to follow referral
 
         // Place to save unsolicited message listeners
-        private IList<ILdapUnsolicitedNotificationListener> _unsolicitedListeners;
+        private readonly IList<ILdapUnsolicitedNotificationListener> _unsolicitedListeners;
 
         // Indicates we have received a server shutdown unsolicited notification
         private bool _unsolSvrShutDnNotification;
@@ -271,7 +270,7 @@ namespace Novell.Directory.Ldap
             var c = new Connection
             {
                 Host = Host,
-                Port = Port
+                Port = Port,
             };
             return c;
         }
@@ -403,8 +402,8 @@ namespace Novell.Directory.Ldap
                 */
                 if (thread == _deadReader)
                 {
-                    if (thread == null)
                     /* then we wanted a shutdown */
+                    if (thread == null)
                     {
                         return;
                     }
@@ -571,7 +570,6 @@ namespace Novell.Directory.Ldap
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] { host, port },
                         LdapException.ConnectError, null, se);
                 }
-
                 catch (IOException ioe)
                 {
                     _sock = null;
@@ -674,9 +672,6 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     gets the socket factory used for this connection.
         /// </summary>
-        /// <returns>
-        ///     the default factory for this connection.
-        /// </returns>
         /// <summary> clears the writeSemaphore id used for active bind operation.</summary>
         internal void ClearBindSemId()
         {
@@ -951,7 +946,7 @@ namespace Novell.Directory.Ldap
             // Start Reader Thread
             var r = new Thread(new ReaderThread(this).Run)
             {
-                IsBackground = true // If the last thread running, allow exit.
+                IsBackground = true, // If the last thread running, allow exit.
             };
             r.Start();
             WaitForReader(r);

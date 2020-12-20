@@ -1,5 +1,5 @@
+﻿using JetBrains.Annotations;
 using System;
-using JetBrains.Annotations;
 
 namespace Novell.Directory.Ldap
 {
@@ -16,10 +16,9 @@ namespace Novell.Directory.Ldap
             [NotNull] string searchBase,
             int scope,
             [NotNull] string filter,
-            [NotNull] string[] targetAttributes) :
-            this(searchBase, scope, filter, targetAttributes, false, null)
+            [NotNull] string[] targetAttributes)
+            : this(searchBase, scope, filter, targetAttributes, false, null)
         {
-
         }
 
         public SearchOptions(

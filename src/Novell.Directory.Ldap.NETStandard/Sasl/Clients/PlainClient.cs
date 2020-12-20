@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -15,7 +13,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
     /// services.
     ///
     /// RFC 4616:
-    /// https://tools.ietf.org/html/rfc4616
+    /// https://tools.ietf.org/html/rfc4616.
     /// </summary>
     public class PlainClient : BaseSaslClient
     {
@@ -92,7 +90,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             CredentialsSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }

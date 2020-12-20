@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -45,6 +45,6 @@ namespace Novell.Directory.Ldap.Events
         LdapPsearchDelete = LdapPersistSearchControl.Delete,
         LdapPsearchModify = LdapPersistSearchControl.Modify,
         LdapPsearchModdn = LdapPersistSearchControl.Moddn,
-        LdapPsearchAny = LdapPsearchAdd | LdapPsearchDelete | LdapPsearchModify | LdapPsearchModdn
+        LdapPsearchAny = LdapPsearchAdd | LdapPsearchDelete | LdapPsearchModify | LdapPsearchModdn,
     }
 }

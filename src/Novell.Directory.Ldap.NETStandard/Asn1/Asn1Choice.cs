@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,7 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -69,7 +68,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
-        protected Asn1Object ChoiceValue { set; get; }
+        protected Asn1Object ChoiceValue { get; set; }
 
         /* Asn1Object implementation
         */
