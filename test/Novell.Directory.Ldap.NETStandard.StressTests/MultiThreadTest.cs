@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
         private void MonitoringThread(object param)
         {
             var monitoringThreadData = (MonitoringThreadData)param;
-            
+
             do
             {
                 DumpStats(monitoringThreadData);
@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
 
                 var lastUpdateSecondsAgo = (int)(DateTime.Now - lastDate).TotalSeconds;
-                var possibleHanging = (lastUpdateSecondsAgo - 3 * DefaultTestingThreadReportingPeriod.TotalSeconds) > 0;
+                var possibleHanging = (lastUpdateSecondsAgo - (3 * DefaultTestingThreadReportingPeriod.TotalSeconds)) > 0;
                 logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
             }
 
@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
 
         private class ThreadRunner
         {
-            public int ThreadId { get; private set;  }
+            public int ThreadId { get; private set; }
 
             public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
             {
@@ -200,7 +200,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 }
             }
         }
-        
+
         private class MonitoringThreadData
         {
             public MonitoringThreadData(ThreadRunner[] threadRunners)

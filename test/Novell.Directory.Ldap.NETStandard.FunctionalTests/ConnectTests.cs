@@ -24,7 +24,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     await Assert.ThrowsAsync<LdapException>(
                         async () => await ldapConnection.BindAsync(
-                            string.Empty, 
+                            string.Empty,
                             TestsConfig.LdapServer.RootUserPassword));
                 });
         }
@@ -37,13 +37,13 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     await Assert.ThrowsAsync<LdapException>(
                         async () => await ldapConnection.BindAsync(
-                            TestsConfig.LdapServer.RootUserDn, 
+                            TestsConfig.LdapServer.RootUserDn,
                             TestsConfig.LdapServer.RootUserPassword + "1"));
                 });
         }
 
         [Fact]
-        public async Task  Connect_WithSsl_Works()
+        public async Task Connect_WithSsl_Works()
         {
             await TestHelper.WithLdapConnectionAsync(
                 async ldapConnection =>
@@ -82,7 +82,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
-        public async Task  Connect_WithStartTlsAfterBindWithNonTls_Works()
+        public async Task Connect_WithStartTlsAfterBindWithNonTls_Works()
         {
             await TestHelper.WithLdapConnectionAsync(
                 async ldapConnection =>

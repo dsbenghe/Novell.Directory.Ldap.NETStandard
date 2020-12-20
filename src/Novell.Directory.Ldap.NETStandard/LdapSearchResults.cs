@@ -268,7 +268,6 @@ namespace Novell.Directory.Ldap
             // Check if the enumeration is empty and must be reloaded
             ResetVectorsAsync().GetAwaiter().GetResult();
 
-
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
             if (_referenceIndex < _referenceCount)

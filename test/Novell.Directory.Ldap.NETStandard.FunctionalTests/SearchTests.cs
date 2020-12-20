@@ -24,6 +24,5 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     ldapEntry.AssertSameAs(entries[0]);
                 });
         }
-
     }
 }

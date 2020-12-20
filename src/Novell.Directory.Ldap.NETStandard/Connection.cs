@@ -1294,8 +1294,7 @@ namespace Novell.Directory.Ldap
             private readonly ILdapUnsolicitedNotificationListener _listenerObj;
             private readonly LdapExtendedResponse _unsolicitedMsg;
 
-            internal UnsolicitedListenerThread(ILdapUnsolicitedNotificationListener l,
-                LdapExtendedResponse m)
+            internal UnsolicitedListenerThread(ILdapUnsolicitedNotificationListener l, LdapExtendedResponse m)
             {
                 _listenerObj = l;
                 _unsolicitedMsg = m;

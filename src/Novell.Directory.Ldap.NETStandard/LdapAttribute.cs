@@ -516,6 +516,7 @@ namespace Novell.Directory.Ldap
             Add(Base64.Decode(attrChars));
         }
 
+        /// <summary>
         ///     Returns the base name of the attribute.
         ///     For example, if the attribute name is cn;lang-ja;phonetic,
         ///     this method returns cn.
@@ -680,7 +681,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 return false;
-            gotSubType:;
+gotSubType:;
             }
 
             return true;

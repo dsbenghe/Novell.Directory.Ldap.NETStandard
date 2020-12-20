@@ -1124,96 +1124,100 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 toReturn = ldapString.StringValue();
                                 break;
                             case RfcSubstringFilter filter:
-                            {
-                                var sub = filter;
-                                if (_index == -1)
                                 {
-                                    // return attribute name
-                                    _index = 0;
-                                    var attr = (RfcAttributeDescription)sub.get_Renamed(0);
-                                    toReturn = attr.StringValue();
-                                }
-                                else if (_index % 2 == 0)
-                                {
-                                    // return substring identifier
-                                    var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                    toReturn = ((Asn1Tagged)substrs.get_Renamed(_index / 2)).GetIdentifier().Tag;
-                                    _index++;
-                                }
-                                else
-                                {
-                                    // return substring value
-                                    var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                    var tag = (Asn1Tagged)substrs.get_Renamed(_index / 2);
-                                    var valueRenamed = (RfcLdapString)tag.TaggedValue;
-                                    toReturn = valueRenamed.StringValue();
-                                    _index++;
+                                    var sub = filter;
+                                    if (_index == -1)
+                                    {
+                                        // return attribute name
+                                        _index = 0;
+                                        var attr = (RfcAttributeDescription)sub.get_Renamed(0);
+                                        toReturn = attr.StringValue();
+                                    }
+                                    else if (_index % 2 == 0)
+                                    {
+                                        // return substring identifier
+                                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
+                                        toReturn = ((Asn1Tagged)substrs.get_Renamed(_index / 2)).GetIdentifier().Tag;
+                                        _index++;
+                                    }
+                                    else
+                                    {
+                                        // return substring value
+                                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
+                                        var tag = (Asn1Tagged)substrs.get_Renamed(_index / 2);
+                                        var valueRenamed = (RfcLdapString)tag.TaggedValue;
+                                        toReturn = valueRenamed.StringValue();
+                                        _index++;
+                                    }
+
+                                    if (_index / 2 >= ((Asn1SequenceOf)sub.get_Renamed(1)).Size())
+                                    {
+                                        _hasMore = false;
+                                    }
+
+                                    break;
                                 }
 
-                                if (_index / 2 >= ((Asn1SequenceOf)sub.get_Renamed(1)).Size())
-                                {
-                                    _hasMore = false;
-                                }
-
-                                break;
-                            }
                             case RfcAttributeValueAssertion valueAssertion:
-                            {
-                                // components: =,>=,<=,~=
-                                var assertion = valueAssertion;
-
-                                if (_index == -1)
                                 {
-                                    toReturn = assertion.AttributeDescription;
-                                    _index = 1;
-                                }
-                                else if (_index == 1)
-                                {
-                                    toReturn = assertion.AssertionValue;
-                                    _index = 2;
-                                    _hasMore = false;
+                                    // components: =,>=,<=,~=
+                                    var assertion = valueAssertion;
+
+                                    if (_index == -1)
+                                    {
+                                        toReturn = assertion.AttributeDescription;
+                                        _index = 1;
+                                    }
+                                    else if (_index == 1)
+                                    {
+                                        toReturn = assertion.AssertionValue;
+                                        _index = 2;
+                                        _hasMore = false;
+                                    }
+
+                                    break;
                                 }
 
-                                break;
-                            }
                             case RfcMatchingRuleAssertion assertion:
-                            {
-                                // Extensible match
-                                var exMatch = assertion;
-                                if (_index == -1)
                                 {
-                                    _index = 0;
+                                    // Extensible match
+                                    var exMatch = assertion;
+                                    if (_index == -1)
+                                    {
+                                        _index = 0;
+                                    }
+
+                                    toReturn =
+                                        ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(_index++)).TaggedValue)
+                                        .StringValue();
+                                    if (_index > 2)
+                                    {
+                                        _hasMore = false;
+                                    }
+
+                                    break;
                                 }
 
-                                toReturn =
-                                    ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(_index++)).TaggedValue)
-                                    .StringValue();
-                                if (_index > 2)
-                                {
-                                    _hasMore = false;
-                                }
-
-                                break;
-                            }
                             case Asn1SetOf of:
-                            {
-                                // AND and OR nested components
-                                var setRenamed = of;
-                                if (_index == -1)
                                 {
-                                    _index = 0;
+                                    // AND and OR nested components
+                                    var setRenamed = of;
+                                    if (_index == -1)
+                                    {
+                                        _index = 0;
+                                    }
+
+                                    toReturn = new FilterIterator(
+                                        EnclosingInstance,
+                                        (Asn1Tagged)setRenamed.get_Renamed(_index++));
+                                    if (_index >= setRenamed.Size())
+                                    {
+                                        _hasMore = false;
+                                    }
+
+                                    break;
                                 }
 
-                                toReturn = new FilterIterator(
-                                    EnclosingInstance,
-                                   (Asn1Tagged)setRenamed.get_Renamed(_index++));
-                                if (_index >= setRenamed.Size())
-                                {
-                                    _hasMore = false;
-                                }
-
-                                break;
-                            }
                             case Asn1Tagged tagged:
                                 // NOT nested component.
                                 toReturn = new FilterIterator(EnclosingInstance, tagged);

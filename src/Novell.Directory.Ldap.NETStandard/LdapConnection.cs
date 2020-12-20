@@ -21,14 +21,13 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
 using System;
-using System.Collections;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {

@@ -38,9 +38,9 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
         }
 
-        public async Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
+        public Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
-            return challenge;
+            return Task.FromResult(challenge);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -19,7 +19,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
-        public async Task  Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
+        public async Task Delete_OfNotExistingEntry_ShouldThrownNoSuchObject()
         {
             var ldapException = await Assert.ThrowsAsync<LdapException>(
                 () => TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.DeleteAsync(TestHelper.BuildDn(Guid.NewGuid().ToString())); }));

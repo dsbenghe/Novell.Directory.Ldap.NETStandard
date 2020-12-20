@@ -1,10 +1,10 @@
-﻿using System.Threading.Tasks;
-using Novell.Directory.Ldap.Controls;
+﻿using Novell.Directory.Ldap.Controls;
 using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Novell.Directory.Ldap.SearchExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -193,7 +193,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             public const int PageSize = 20;
             private readonly Random _random = new Random();
             public string CnPrefix { get; }
-            public IReadOnlyCollection<LdapEntry> Entries  => _entriesTask.Result;
+            public IReadOnlyCollection<LdapEntry> Entries => _entriesTask.Result;
 
             private Task<LdapEntry[]> _entriesTask;
 
@@ -205,7 +205,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             public Task InitializeAsync()
             {
                 _entriesTask = Task.WhenAll(
-                    Enumerable.Range(1, Pages * PageSize + _random.Next() % PageSize)
+                    Enumerable.Range(1, (Pages * PageSize) + (_random.Next() % PageSize))
                         .Select(x => LdapOps.AddEntryAsync(CnPrefix)));
                 return _entriesTask;
             }

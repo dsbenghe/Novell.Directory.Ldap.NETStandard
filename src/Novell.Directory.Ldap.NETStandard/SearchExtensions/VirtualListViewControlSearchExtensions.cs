@@ -1,8 +1,8 @@
-﻿using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.SearchExtensions
 {

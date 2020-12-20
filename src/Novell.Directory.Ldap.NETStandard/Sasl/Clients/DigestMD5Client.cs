@@ -68,7 +68,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             _currentState = State.Disposed;
         }
 
-        public async override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
+        public override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)
@@ -100,7 +100,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                     throw new SaslException("Unknown client state.");
             }
 
-            return response;
+            return Task.FromResult(response);
         }
 
         private bool CheckServerResponseAuth(byte[] serverResponse)
