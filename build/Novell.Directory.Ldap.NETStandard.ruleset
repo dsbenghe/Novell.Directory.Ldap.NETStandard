@@ -69,49 +69,45 @@
     <Rule Id="CA2242" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-    <Rule Id="SX1309" Action="Error" />
-    <Rule Id="SA1101" Action="None" />
-    <Rule Id="SX1101" Action="Error" />
+    <Rule Id="SA1024" Action="None" />  <!-- Colon must not be preceded by a space. -->
+    <Rule Id="SA1101" Action="None" />  <!-- A call to an instance member of the local class or a base class is not prefixed with ‘this.’, within a C# code file; this is conflicting with the Varian style guidelines. -->
+    <Rule Id="SX1101" Action="Error" /> <!-- Do not prefix local calls with 'this.' -->
+    <Rule Id="SA1008" Action="None" />  <!-- Opening parenthesis must not be preceded by a space --> <!-- (required when deconstruction operator is used) -->
+    <Rule Id="SA1009" Action="None" />  <!-- Closing parenthesis must be spaced correctly -->
+    <Rule Id="SA1111" Action="None" />  <!-- Closing parenthesis must be on line of last parameter -->
+    <Rule Id="SA1117" Action="None" />  <!-- The parameters should all be placed on the same line or each parameter should be placed on its own line. -->
+    <Rule Id="SA1118" Action="None" />  <!-- Parameter must not span multiple lines -->
+    <Rule Id="SA1124" Action="None" />  <!-- Do not use regions -->
+    <Rule Id="SA1200" Action="None" />  <!-- A C# using directive is placed outside of a namespace element. -->
+    <Rule Id="SA1201" Action="None" />  <!-- A field should not follow a property -->
+    <Rule Id="SA1202" Action="None" />  <!-- 'public' members should come before 'internal' members -->
+    <Rule Id="SA1203" Action="None" />  <!-- Constant fields should appear before non-constant fields -->
+    <Rule Id="SA1204" Action="None" />  <!-- Static members must appear before non-static members -->
+    <Rule Id="SA1214" Action="None" />  <!-- Readonly fields should appear before non-readonly fields -->
+    <Rule Id="SA1300" Action="None" />  <!-- Element must begin with upper-case letter -->
+    <Rule Id="SA1309" Action="None" />  <!-- A field name in C# begins with an underscore -->
+    <Rule Id="SX1309" Action="Error" /> <!-- Field name must begin with underscore -->
+    <Rule Id="SA1402" Action="None" />  <!-- File may only contain a single class -->
+    <Rule Id="SA1516" Action="None" />  <!-- Elements must be separated by blank line -->
+    <Rule Id="SA1518" Action="None" />  <!-- Code must not contain blank lines at the end of the file -->
     <Rule Id="SA1600" Action="None" />
-    <Rule Id="SA1601" Action="None" />
-    <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1601" Action="None" /> 	<!-- Partial elements should be documented -->
+    <Rule Id="SA1602" Action="None" />  <!-- Enumeration items should be documented -->
     <Rule Id="SA1604" Action="None" />
-    <Rule Id="SA1413" Action="None" />
-    <Rule Id="SA1309" Action="None" />
-    <Rule Id="SA1200" Action="None" />
-    <Rule Id="SA1605" Action="None" />
-    <Rule Id="SA1606" Action="None" />
-    <Rule Id="SA1607" Action="None" />
-    <Rule Id="SA1608" Action="None" />
-    <Rule Id="SA1610" Action="None" />
+    <Rule Id="SA1606" Action="None" />	<!-- Element documentation should have summary text -->
     <Rule Id="SA1611" Action="None" />
-    <Rule Id="SA1612" Action="None" />
-    <Rule Id="SA1613" Action="None" />
-    <Rule Id="SA1614" Action="None" />
-    <Rule Id="SA1615" Action="None" />
-    <Rule Id="SA1616" Action="None" />
-    <Rule Id="SA1617" Action="None" />
-    <Rule Id="SA1618" Action="None" />
-    <Rule Id="SA1619" Action="None" />
-    <Rule Id="SA1620" Action="None" />
-    <Rule Id="SA1621" Action="None" />
-    <Rule Id="SA1622" Action="None" />
-    <Rule Id="SA1623" Action="None" />
-    <Rule Id="SA1624" Action="None" />
-    <Rule Id="SA1625" Action="None" />
-    <Rule Id="SA1626" Action="None" />
-    <Rule Id="SA1627" Action="None" />
-    <Rule Id="SA1633" Action="None" />
-    <Rule Id="SA1634" Action="None" />
-    <Rule Id="SA1635" Action="None" />
-    <Rule Id="SA1636" Action="None" />
-    <Rule Id="SA1637" Action="None" />
-    <Rule Id="SA1638" Action="None" />
-    <Rule Id="SA1640" Action="None" />
-    <Rule Id="SA1641" Action="None" />
-    <Rule Id="SA1642" Action="None" />
-    <Rule Id="SA1643" Action="None" />
-    <Rule Id="IDE0004" Action="None" />
+    <Rule Id="SA1612" Action="None" />  <!-- The parameter '' does not exist. -->
+    <Rule Id="SA1613" Action="None" />  <!-- Element parameter documentation should declare parameter name -->
+    <Rule Id="SA1614" Action="None" />  <!-- Element parameter documentation should have text -->
+    <Rule Id="SA1615" Action="None" />	
+    <Rule Id="SA1616" Action="None" />  <!-- Element return value documentation should have text -->
+    <Rule Id="SA1618" Action="None" />	<!-- The documentation for type parameter 'T' is missing -->
+    <Rule Id="SA1622" Action="None" />	<!-- Generic type parameter documentation should have text. -->
+    <Rule Id="SA1623" Action="None" />  <!-- The documentation text within a C# property's <summary> tag does not match the accessors within the property. -->
+    <Rule Id="SA1625" Action="None" />  <!-- Element documentation must not be copied and pasted -->
+    <Rule Id="SA1633" Action="None" />  <!-- The file header XML is invalid. -->
+    <Rule Id="SA1642" Action="None" />  <!-- The XML documentation header for a C# constructor does not contain the appropriate summary text. -->
+    <Rule Id="SA1649" Action="None" />  <!-- File name must match first type name -->
   </Rules>
   <Rules AnalyzerId="Roslynator.CSharp.Analyzers" RuleNamespace="Roslynator.CSharp.Analyzers">
     <Rule Id="RCS1129" Action="None" />

@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BEE82E9C-181
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A16475B-0D8E-4316-86D5-F7D37EEE802D}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
 		test\conf\baseDn.ldif = test\conf\baseDn.ldif
@@ -14,6 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		ChangeLog.md = ChangeLog.md
 		configure-opendj.sh = configure-opendj.sh
 		configure-openldap.sh = configure-openldap.sh
+		build\Novell.Directory.Ldap.NETStandard.ruleset = build\Novell.Directory.Ldap.NETStandard.ruleset
 		README.md = README.md
 		test\conf\slapd.conf = test\conf\slapd.conf
 	EndProjectSection
