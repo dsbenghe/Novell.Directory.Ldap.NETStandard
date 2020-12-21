@@ -101,21 +101,6 @@ namespace Novell.Directory.Ldap
             return literal;
         }
 
-        /*******************************/
-
-        /// <summary>
-        ///     Removes the first occurrence of an specific object from an ArrayList instance.
-        /// </summary>
-        /// <param name="arrayList">The ArrayList instance.</param>
-        /// <param name="element">The element to remove.</param>
-        /// <returns>True if item is found in the ArrayList; otherwise, false.</returns>
-        public static bool VectorRemoveElement(ArrayList arrayList, object element)
-        {
-            var containsItem = arrayList.Contains(element);
-            arrayList.Remove(element);
-            return containsItem;
-        }
-
         /// <summary>
         ///     Copies an array of chars obtained from a String into a specified array of chars.
         /// </summary>
