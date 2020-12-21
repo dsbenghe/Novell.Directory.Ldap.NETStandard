@@ -176,7 +176,7 @@ namespace Novell.Directory.Ldap
         ///     0 is returned if no authentication has been performed.
         /// </summary>
         /// <returns>
-        ///     The protol version used for authentication or 0
+        ///     The protocol version used for authentication or 0
         ///     not authenticated.
         /// </returns>
         public int ProtocolVersion
@@ -197,7 +197,7 @@ namespace Novell.Directory.Ldap
         ///     Returns the distinguished name (DN) used for as the bind name during
         ///     the last successful bind operation.  <code>null</code> is returned
         ///     if no authentication has been performed or if the bind resulted in
-        ///     an aonymous connection.
+        ///     an anonymous connection.
         /// </summary>
         /// <returns>
         ///     The distinguished name if authenticated; otherwise, null.
@@ -287,8 +287,8 @@ namespace Novell.Directory.Ldap
                     return;
                 }
 
-                // We set the constraints this way, so a thread doesn't get an
-                // conconsistant view of the referrals.
+                // We set the constraints this way, so a thread doesn't get a
+                // consistent view of the referrals.
                 var newCons = (LdapSearchConstraints)_defSearchCons.Clone();
                 newCons.HopLimit = value.HopLimit;
                 newCons.TimeLimit = value.TimeLimit;
@@ -337,7 +337,7 @@ namespace Novell.Directory.Ldap
         ///     constraints is specified when calling the search operation method).
         /// </summary>
         /// <returns>
-        ///     The set of default search contraints that apply to
+        ///     The set of default search constraints that apply to
         ///     this connection.
         /// </returns>
         /// <seealso cref="Constraints">
@@ -347,7 +347,7 @@ namespace Novell.Directory.Ldap
         public LdapSearchConstraints SearchConstraints => (LdapSearchConstraints)_defSearchCons.Clone();
 
         /// <summary>
-        ///     Indicates whther the perform Secure Operation or not.
+        ///     Indicates whether the perform Secure Operation or not.
         /// </summary>
         /// <returns>
         ///     True if SSL is on
@@ -413,10 +413,7 @@ namespace Novell.Directory.Ldap
                     return null;
                 }
 
-                // We have to clone the control just in case
-                // we have two client threads that end up retreiving the
-                // same control.
-                var clonedControl = new LdapControl[_responseCtls.Length];
+                LdapControl[] clonedControls;
 
                 // Also note we synchronize access to the local response
                 // control object just in case another message containing controls
@@ -424,16 +421,25 @@ namespace Novell.Directory.Ldap
                 // this one.
                 lock (_responseCtlSemaphore)
                 {
+                    if (_responseCtls == null)
+                    {
+                        return null;
+                    }
+
+                    // We have to clone the control just in case
+                    // we have two client threads that end up retrieving the
+                    // same control.
+                    clonedControls = new LdapControl[_responseCtls.Length];
                     for (var i = 0; i < _responseCtls.Length; i++)
                     {
-                        clonedControl[i] = (LdapControl)_responseCtls[i].Clone();
+                        clonedControls[i] = (LdapControl)_responseCtls[i].Clone();
                     }
                 }
 
                 // Return the cloned copy.  Note we have still left the
                 // control in the local responseCtls variable just in case
                 // somebody requests it again.
-                return clonedControl;
+                return clonedControls;
             }
         }
 
@@ -850,11 +856,11 @@ namespace Novell.Directory.Ldap
         ///     The clone can issue requests and freely modify options and search
         ///     constraints, and , without affecting the source object or other clones.
         ///     If the clone disconnects or reconnects, it is completely dissociated
-        ///     from the source object and other clones. Reauthenticating in a clone,
+        ///     from the source object and other clones. Re-authenticating in a clone,
         ///     however, is a global operation which will affect the source object
         ///     and all associated clones, because it applies to the single shared
         ///     physical connection. Any request by an associated object after one
-        ///     has reauthenticated will carry the new identity.
+        ///     has re-authenticated will carry the new identity.
         /// </summary>
         /// <returns>
         ///     A of the object.
@@ -887,10 +893,13 @@ namespace Novell.Directory.Ldap
 
             if (_responseCtls != null)
             {
-                newClone._responseCtls = new LdapControl[_responseCtls.Length];
-                for (var i = 0; i < _responseCtls.Length; i++)
+                lock (_responseCtlSemaphore)
                 {
-                    newClone._responseCtls[i] = (LdapControl)_responseCtls[i].Clone();
+                    newClone._responseCtls = new LdapControl[_responseCtls.Length];
+                    for (var i = 0; i < _responseCtls.Length; i++)
+                    {
+                        newClone._responseCtls[i] = (LdapControl)_responseCtls[i].Clone();
+                    }
                 }
             }
             else
@@ -1035,7 +1044,7 @@ namespace Novell.Directory.Ldap
         ///     An object returned from a search.
         /// </param>
         /// <param name="cons">
-        ///     The contraints specific to the operation.
+        ///     The constraints specific to the operation.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
@@ -1073,7 +1082,7 @@ namespace Novell.Directory.Ldap
         ///     queue for the operation.
         /// </param>
         /// <param name="cons">
-        ///     The contraints specific to the operation.
+        ///     The constraints specific to the operation.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
@@ -1124,7 +1133,7 @@ namespace Novell.Directory.Ldap
         ///     are abandoned, and the queue is emptied.
         /// </param>
         /// <param name="cons">
-        ///     The contraints specific to the operation.
+        ///     The constraints specific to the operation.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
@@ -1132,23 +1141,17 @@ namespace Novell.Directory.Ldap
         /// </exception>
         public void Abandon(LdapMessageQueue queue, LdapConstraints cons)
         {
-            if (queue != null)
+            if (queue == null)
             {
-                MessageAgent agent;
-                if (queue is LdapSearchQueue)
-                {
-                    agent = queue.MessageAgent;
-                }
-                else
-                {
-                    agent = queue.MessageAgent;
-                }
+                return;
+            }
 
-                var msgIds = agent.MessageIDs;
-                for (var i = 0; i < msgIds.Length; i++)
-                {
-                    agent.Abandon(msgIds[i], cons);
-                }
+            var agent = queue.MessageAgent;
+
+            var msgIds = agent.MessageIDs;
+            foreach (var messageId in msgIds)
+            {
+                agent.Abandon(messageId, cons);
             }
         }
 
@@ -1466,7 +1469,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Asynchronously compares an attribute value with one in the directory,
-        ///     using the specified queue and contraints.
+        ///     using the specified queue and constraints.
         ///     Please note that a successful completion of this command results in
         ///     one of two status codes: LdapException.COMPARE_TRUE if the entry
         ///     has the value, and LdapException.COMPARE_FALSE if the entry
@@ -1544,7 +1547,7 @@ namespace Novell.Directory.Ldap
 
         /// <summary>
         ///     Asynchronously deletes the entry with the specified distinguished name
-        ///     from the directory, using the specified contraints and queue.
+        ///     from the directory, using the specified constraints and queue.
         ///     Note: A Delete operation will not remove an entry that contains
         ///     subordinate entries, nor will it dereference alias entries.
         /// </summary>

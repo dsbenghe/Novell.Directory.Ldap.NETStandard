@@ -82,34 +82,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     merges two message agents.
-        /// </summary>
-        /// <param name="fromAgent">
-        ///     the agent to be merged into this one.
-        /// </param>
-        internal void Merge(MessageAgent fromAgent)
-        {
-            var msgs = fromAgent.RemoveAll();
-            for (var i = 0; i < msgs.Length; i++)
-            {
-                _messages.Add(msgs[i]);
-                ((Message)msgs[i]).Agent = this;
-            }
-
-            lock (_messages)
-            {
-                if (msgs.Length > 1)
-                {
-                    Monitor.PulseAll(_messages); // wake all threads waiting for messages
-                }
-                else if (msgs.Length == 1)
-                {
-                    Monitor.Pulse(_messages); // only wake one thread
-                }
-            }
-        }
-
-        /// <summary>
         ///     Wakes up any threads waiting for messages in the message agent.
         /// </summary>
         internal void SleepersAwake(bool all)

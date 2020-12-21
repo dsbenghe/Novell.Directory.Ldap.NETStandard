@@ -103,10 +103,10 @@ namespace Novell.Directory.Ldap.Utilclass
         };
 
         /// <summary>mask to AND with a continuation byte: should equal continuationResult. </summary>
-        private static readonly byte ContinuationMask = (byte)SupportClass.Identity(0xC0);
+        private static readonly byte ContinuationMask = 0xC0;
 
         /// <summary>expected result of ANDing a continuation byte with continuationMask. </summary>
-        private static readonly byte ContinuationResult = (byte)SupportClass.Identity(0x80);
+        private static readonly byte ContinuationResult = 0x80;
 
         /// <summary>
         ///     Default constructor, don't allow instances of the
@@ -245,7 +245,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
-            SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
+            GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
             return Decode(c);
         }
 
@@ -722,6 +722,27 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///     Copies an array of chars obtained from a String into a specified array of chars.
+        /// </summary>
+        /// <param name="sourceString">The String to get the chars from.</param>
+        /// <param name="sourceStart">Position of the String to start getting the chars.</param>
+        /// <param name="sourceEnd">Position of the String to end getting the chars.</param>
+        /// <param name="destinationArray">Array to return the chars.</param>
+        /// <param name="destinationStart">Position of the destination array of chars to start storing the chars.</param>
+        private static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
+            ref char[] destinationArray, int destinationStart)
+        {
+            var sourceCounter = sourceStart;
+            var destinationCounter = destinationStart;
+            while (sourceCounter < sourceEnd)
+            {
+                destinationArray[destinationCounter] = sourceString[sourceCounter];
+                sourceCounter++;
+                destinationCounter++;
+            }
         }
     }
 }

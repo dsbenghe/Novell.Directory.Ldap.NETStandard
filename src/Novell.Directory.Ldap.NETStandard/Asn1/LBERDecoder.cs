@@ -169,7 +169,7 @@ namespace Novell.Directory.Ldap.Asn1
         {
             var lber = new byte[len];
 
-            var i = SupportClass.ReadInput(inRenamed, ref lber, 0, lber.Length);
+            var i = ReadInput(inRenamed, ref lber, 0, lber.Length);
 
             if (i != len)
             {
@@ -224,7 +224,7 @@ namespace Novell.Directory.Ldap.Asn1
             while (totalLen < len)
             {
                 // Make sure we have read all the data
-                var inLen = SupportClass.ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
+                var inLen = ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
                 totalLen += inLen;
             }
 
@@ -250,6 +250,57 @@ namespace Novell.Directory.Ldap.Asn1
             var rval = octets.ToUtf8String();
 
             return rval; // new String( "UTF8");
+        }
+
+        /// <summary>
+        ///     Reads a number of characters from the current source Stream and writes the data to the target array at the
+        ///     specified index.
+        /// </summary>
+        /// <param name="sourceStream">The source Stream to read from.</param>
+        /// <param name="target">Contains the array of characteres read from the source Stream.</param>
+        /// <param name="start">The starting index of the target array.</param>
+        /// <param name="count">The maximum number of characters to read from the source Stream.</param>
+        /// <returns>
+        ///     The number of characters read. The number will be less than or equal to count depending on the data available
+        ///     in the source Stream. Returns -1 if the end of the stream is reached.
+        /// </returns>
+        private static int ReadInput(Stream sourceStream, ref byte[] target, int start, int count)
+        {
+            // Returns 0 bytes if not enough space in target
+            if (target.Length == 0)
+            {
+                return 0;
+            }
+
+            var receiver = new byte[target.Length];
+            var bytesRead = 0;
+            var startIndex = start;
+            var bytesToRead = count;
+            while (bytesToRead > 0)
+            {
+                var n = sourceStream.Read(receiver, startIndex, bytesToRead);
+                if (n == 0)
+                {
+                    break;
+                }
+
+                bytesRead += n;
+                startIndex += n;
+                bytesToRead -= n;
+            }
+
+            // Returns -1 if EOF
+            if (bytesRead == 0)
+            {
+                return -1;
+            }
+
+            for (var i = start; i < start + bytesRead; i++)
+            {
+                target[i] = receiver[i];
+            }
+
+            return bytesRead;
         }
     }
 }
