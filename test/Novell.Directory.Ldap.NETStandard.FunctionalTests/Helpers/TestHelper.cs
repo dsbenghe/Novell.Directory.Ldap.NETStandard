@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
