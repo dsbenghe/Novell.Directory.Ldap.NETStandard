@@ -265,7 +265,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     a shallow copy of this object.
         /// </returns>
-        internal object Copy()
+        private object Copy()
         {
             var c = new Connection
             {
@@ -321,14 +321,14 @@ namespace Novell.Directory.Ldap
                 {
                     if (_writeSemaphoreOwner == 0)
                     {
-                        // we have acquired the semahpore
+                        // we have acquired the semaphore
                         _writeSemaphoreOwner = id;
                         break;
                     }
 
                     if (_writeSemaphoreOwner == id)
                     {
-                        // we already own the semahpore
+                        // we already own the semaphore
                         break;
                     }
 
@@ -514,7 +514,7 @@ namespace Novell.Directory.Ldap
                 // Make socket connection to specified host and port
                 if (port == 0)
                 {
-                    port = 389; // LdapConnection.DEFAULT_PORT;
+                    port = LdapConnection.DefaultPort;
                 }
 
                 try
@@ -524,7 +524,7 @@ namespace Novell.Directory.Ldap
                         Host = host;
                         Port = port;
 
-                        if (!IPAddress.TryParse(host, out IPAddress ipAddress))
+                        if (!IPAddress.TryParse(host, out var ipAddress))
                         {
                             var ipAddresses = Dns.GetHostAddressesAsync(host).ResultAndUnwrap();
                             ipAddress = ipAddresses.First(ip =>
@@ -539,15 +539,15 @@ namespace Novell.Directory.Ldap
 
                             _sock.Connect(ipEndPoint, ConnectionTimeout);
 
-                            var sslstream = new SslStream(
+                            var sslStream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            sslstream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
+                            sslStream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
 
-                            _inStream = sslstream;
-                            _outStream = sslstream;
+                            _inStream = sslStream;
+                            _outStream = sslStream;
                         }
                         else
                         {

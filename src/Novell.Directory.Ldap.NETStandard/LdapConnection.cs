@@ -602,45 +602,10 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public void Connect(string host, int port)
         {
-            // connect doesn't affect other clones
-            // If not a clone, destroys old connection.
-            // Step through the space-delimited list
-            var hostList = new Tokenizer(host, " ");
-            while (hostList.HasMoreTokens())
-            {
-                try
-                {
-                    var specifiedPort = port;
-                    var address = hostList.NextToken();
-                    var colonIndex = address.IndexOf(':'); // after the colon is the port
-                    if (colonIndex != -1 && colonIndex + 1 != address.Length)
-                    {
-                        // parse Port out of address
-                        try
-                        {
-                            specifiedPort = int.Parse(address.Substring(colonIndex + 1));
-                            address = address.Substring(0, colonIndex - 0);
-                        }
-                        catch (Exception e)
-                        {
-                            throw new ArgumentException(ExceptionMessages.InvalidAddress, e);
-                        }
-                    }
-
-                    // This may return a different conn object
-                    // Disassociate this clone with the underlying connection.
-                    Connection = Connection.DestroyClone();
-                    Connection.Connect(address, specifiedPort);
-                    break;
-                }
-                catch (LdapException)
-                {
-                    if (!hostList.HasMoreTokens())
-                    {
-                        throw;
-                    }
-                }
-            }
+            // This may return a different conn object
+            // Disassociate this clone with the underlying connection.
+            Connection = Connection.DestroyClone();
+            Connection.Connect(host, port);
         }
 
         /// <inheritdoc />
