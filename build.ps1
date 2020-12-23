@@ -129,7 +129,8 @@ task test-stress configure-openldap, {
     $env:TRANSPORT_SECURITY=$TransportSecurity.ToUpper()
     exec {
         dotnet run --configuration $CONFIGURATION `
-            --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj $ConcurrencyLevel 30
+            --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj `
+            $ConcurrencyLevel 30 -f $Fx
     }
 }
 
