@@ -101,8 +101,6 @@ namespace Novell.Directory.Ldap
             return literal;
         }
 
-        /*******************************/
-
         /// <summary>
         ///     Copies an array of chars obtained from a String into a specified array of chars.
         /// </summary>

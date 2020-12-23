@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Link to this from /usr/local/bin to be able to call invoke-build directly from bash.
+# Example:
+# ln -s ~/.local/share/powershell/Modules/InvokeBuild/5.5.3/ib.sh /usr/local/bin/ib
+# chmod +x /usr/local/bin/ib
+# ib task1, task2
+
+if [ $# -gt 0 ]
+then
+    pwsh -NoProfile -ExecutionPolicy Bypass -Command "./build.ps1 $@"
+else
+    pwsh -NoProfile -ExecutionPolicy Bypass -Command "./build.ps1"
+fi

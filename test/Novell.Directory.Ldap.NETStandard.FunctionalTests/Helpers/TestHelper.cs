@@ -5,6 +5,8 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class TestHelper
     {
+        private static TransportSecurity? envTransportSecurity = null;
+
         private enum TransportSecurity
         {
             Off,
@@ -90,14 +92,32 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 return transportSecurity;
             }
 
-            var envValue = Environment.GetEnvironmentVariable("TRANSPORT_SECURITY");
-            if (!string.IsNullOrWhiteSpace(envValue))
+            transportSecurity = GetTransportSecurity(transportSecurity);
+
+            return transportSecurity;
+        }
+
+        private static TransportSecurity GetTransportSecurity(TransportSecurity transportSecurity)
+        {
+            if (envTransportSecurity.HasValue)
             {
-                if (Enum.TryParse(envValue, true, out TransportSecurity parsedValue))
-                {
-                    transportSecurity = parsedValue;
-                }
+                return transportSecurity;
             }
+
+            var envValue = Environment.GetEnvironmentVariable("TRANSPORT_SECURITY");
+            if (string.IsNullOrWhiteSpace(envValue))
+            {
+                return transportSecurity;
+            }
+
+            if (!Enum.TryParse(envValue, true, out TransportSecurity parsedEnvTransportSecurity))
+            {
+                return transportSecurity;
+            }
+
+            envTransportSecurity = parsedEnvTransportSecurity;
+            Console.WriteLine($"Using env variable for transport security {envTransportSecurity}");
+            transportSecurity = envTransportSecurity.Value;
 
             return transportSecurity;
         }
