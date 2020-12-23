@@ -12,16 +12,32 @@ variables:
 stages:
 - stage: CI
   jobs:
-  - job: BuildAndTest 
+  - job: LinuxCI
     steps:
     - task: PowerShell@2
+      displayName: Build
       inputs:
         filePath: 'build.ps1'
         arguments: 'build'
     - task: PowerShell@2
+      displayName: Test
       inputs:
         filePath: 'build.ps1'
         arguments: 'test'
+  - job: WindowsCI 
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: TestUnit
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-unit'
 - stage: StressTests
   jobs:
   - template: stress-tests-matrix.yml
