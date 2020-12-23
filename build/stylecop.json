@@ -7,10 +7,10 @@
     "$schema":
         "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
     "settings": {
-		"orderingRules": {
-			"systemUsingDirectivesFirst": false,
-			"usingDirectivesPlacement": "outsideNamespace",
-			"blankLinesBetweenUsingGroups": "require",
-		}
+		  "orderingRules": {
+			  "systemUsingDirectivesFirst": false,
+			  "usingDirectivesPlacement": "outsideNamespace",
+			  "blankLinesBetweenUsingGroups": "require",
+		  }
     }
 }

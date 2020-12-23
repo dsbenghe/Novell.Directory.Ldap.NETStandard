@@ -148,6 +148,7 @@ namespace Novell.Directory.Ldap
 
         private LdapSearchConstraints _defSearchCons;
         private LdapControl[] _responseCtls;
+        private readonly LdapConnectionOptions _ldapConnectionOptions;
 
         // Synchronization Object used to synchronize access to responseCtls
         private readonly object _responseCtlSemaphore = new object();
@@ -165,10 +166,16 @@ namespace Novell.Directory.Ldap
         ///     An object capable of producing a Socket.
         /// </param>
         public LdapConnection()
+            : this(new LdapConnectionOptions())
         {
+        }
+
+        public LdapConnection(LdapConnectionOptions ldapConnectionOptions)
+        {
+            _ldapConnectionOptions = ldapConnectionOptions ?? throw new ArgumentNullException(nameof(ldapConnectionOptions));
             _defSearchCons = new LdapSearchConstraints();
             _saslClientFactories = new ConcurrentDictionary<string, ISaslClientFactory>(StringComparer.OrdinalIgnoreCase);
-            Connection = new Connection();
+            Connection = new Connection(_ldapConnectionOptions);
         }
 
         /// <summary>
@@ -355,8 +362,8 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool SecureSocketLayer
         {
-            get => Connection.Ssl;
-            set => Connection.Ssl = value;
+            get => _ldapConnectionOptions.Ssl;
+            set => _ldapConnectionOptions.SetSecureSocketLayer(value);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using System.Collections.Generic;
 
-namespace Novell.Directory.Ldap.NETStandard.UnitTests
+namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
 {
     public class TestSaslClientFactory : ISaslClientFactory
     {

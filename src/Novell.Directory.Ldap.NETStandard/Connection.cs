@@ -64,6 +64,8 @@ namespace Novell.Directory.Ldap
     internal class Connection : IDebugIdentifier
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
+        private readonly LdapConnectionOptions _ldapConnectionOptions;
+
         // Ldap message IDs are all positive numbers so we can use negative
         //  numbers as flags.  This are flags assigned to stopReaderMessageID
         //  to tell the reader what state we are in.
@@ -145,8 +147,9 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Create a new Connection object.
         /// </summary>
-        internal Connection()
+        internal Connection(LdapConnectionOptions ldapConnectionOptions)
         {
+            _ldapConnectionOptions = ldapConnectionOptions;
             _encoder = new LberEncoder();
             _decoder = new LberDecoder();
             _stopReaderMessageId = ContinueReading;
@@ -161,8 +164,6 @@ namespace Novell.Directory.Ldap
         ///     true if clones exist, false otherwise.
         /// </returns>
         internal bool Cloned => _cloneCount > 0;
-
-        internal bool Ssl { get; set; }
 
         /// <summary> gets the host used for this connection.</summary>
         internal string Host { get; private set; }
@@ -267,7 +268,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         private object Copy()
         {
-            var c = new Connection
+            var c = new Connection(_ldapConnectionOptions)
             {
                 Host = Host,
                 Port = Port,
@@ -527,12 +528,18 @@ namespace Novell.Directory.Ldap
                         if (!IPAddress.TryParse(host, out var ipAddress))
                         {
                             var ipAddresses = Dns.GetHostAddressesAsync(host).ResultAndUnwrap();
-                            ipAddress = ipAddresses.First(ip =>
-                                ip.AddressFamily == AddressFamily.InterNetwork ||
-                                ip.AddressFamily == AddressFamily.InterNetworkV6);
+                            ipAddress = ipAddresses
+                                .Where(x => _ldapConnectionOptions.IpAddressFilter(x))
+                                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork
+                                             || ip.AddressFamily == AddressFamily.InterNetworkV6);
+
+                            if (ipAddress == null)
+                            {
+                                throw new ArgumentException("No ip address found", nameof(ipAddress));
+                            }
                         }
 
-                        if (Ssl)
+                        if (_ldapConnectionOptions.Ssl)
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
@@ -544,7 +551,12 @@ namespace Novell.Directory.Ldap
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            sslStream.AuthenticateAsClientAsync(host).WaitAndUnwrap(ConnectionTimeout);
+                            sslStream.AuthenticateAsClientAsync(
+                                    host,
+                                    new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
+                                    _ldapConnectionOptions.SslProtocols,
+                                    _ldapConnectionOptions.CheckCertificateRevocationEnabled)
+                                .WaitAndUnwrap(ConnectionTimeout);
 
                             _inStream = sslStream;
                             _outStream = sslStream;
@@ -759,7 +771,7 @@ namespace Novell.Directory.Ldap
             }
             catch (IOException ioe)
             {
-                if (msg.Type == LdapMessage.BindRequest && Ssl)
+                if (msg.Type == LdapMessage.BindRequest && _ldapConnectionOptions.Ssl)
                 {
                     var strMsg = GetSslHandshakeErrors();
                     throw new LdapException(strMsg, new object[] { Host, Port }, LdapException.SslHandshakeFailed, null,
@@ -969,14 +981,21 @@ namespace Novell.Directory.Ldap
             {
                 WaitForReader(null);
                 _nonTlsBackup = _socket;
-                var sslstream = new SslStream(
+                var sslStream = new SslStream(
                     _socket.GetStream(),
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
-                sslstream.AuthenticateAsClientAsync(Host).WaitAndUnwrap(ConnectionTimeout);
-                _inStream = sslstream;
-                _outStream = sslstream;
+
+                sslStream.AuthenticateAsClientAsync(
+                        Host,
+                        new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
+                        _ldapConnectionOptions.SslProtocols,
+                        _ldapConnectionOptions.CheckCertificateRevocationEnabled)
+                    .WaitAndUnwrap(ConnectionTimeout);
+
+                _inStream = sslStream;
+                _outStream = sslStream;
                 StartReader();
             }
             catch (Exception ex)
