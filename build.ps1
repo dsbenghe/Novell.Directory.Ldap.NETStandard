@@ -118,7 +118,7 @@ task remove-openldap -After test-stress {
         sudo systemctl stop slapd
     }
     exec {
-        sudo apt-get remove slapd -y
+        sudo apt-get purge slapd -y
     }
     exec {
         rm /tmp/slapd -r -f
