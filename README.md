@@ -5,7 +5,7 @@ LDAP client library - .NET Standard 1.3/2.0/2.1 and .NET5 - compatible .NET plat
 It works with any LDAP protocol compatible directory server (including Microsoft Active Directory).
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nabbc061vlumiivs/branch/master?svg=true)](https://ci.appveyor.com/project/dsbenghe/novell-directory-ldap-netstandard/branch/master) - Windows Build  
-[![Build Status](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard.svg?branch=master)](https://travis-ci.org/dsbenghe/Novell.Directory.Ldap.NETStandard) - Linux Build (includes functional tests & stress tests running against OpenLDAP)  
+[![Build Status](https://dev.azure.com/dsbenghe/Ldap/_apis/build/status/Novell.Directory.Ldap.NETStandard?branchName=master)](https://dev.azure.com/dsbenghe/Ldap/_build/latest?definitionId=6&branchName=master) - Linux Build (includes functional tests & stress tests running against OpenLDAP)  
 [![NuGet](https://img.shields.io/nuget/v/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/) - Stable version  
 [![NuGet](https://img.shields.io/nuget/vpre/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/absoluteLatest) - Developing version  
 
