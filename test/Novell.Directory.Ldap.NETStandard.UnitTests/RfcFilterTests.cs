@@ -52,7 +52,6 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [InlineData("(&(objectCategory=person)(objectClass=user)(!(primaryGroupID=513)))")]
         [InlineData("(&(objectCategory=computer)(primaryGroupID=515))")]
         [InlineData("(objectSID=S-1-5-21-73586283-152049171-839522115-1111)")]
-        [InlineData("(&(objectCategory=computer)(operatingSystem=*server*))")]
         [InlineData("(&(objectCategory=computer)(!(userAccountControl:1.2.840.113556.1.4.803:=8192)))")]
         [InlineData("(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))")]
         [InlineData("(primaryGroupID=516)")]
@@ -95,6 +94,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [InlineData(@"(objectGUID=\90\39\5F\19\1A\B5\1B\4A\9E\96\86\C6\6C\B1\8D\11)", Skip = "Not equals escaping")]
         [InlineData(@"(objectGUID=\90\39\5F\19\1A\B5\1B\4A*)", Skip = "Not equals escaping")]
         [InlineData(@"(objectSID=\01\05\00\00\00\00\00\05\15\00\00\00\6b\d6\62\04\13\16\10\09\43\17\0a\32\57\04\00\00)", Skip = "Not equals escaping")]
+        [InlineData("(&(objectCategory=computer)(operatingSystem=*server*))", Skip = "Not equals mask")]
         [InlineData("(&(objectCategory=computer)(operatingSystem=*server*)(!(userAccountControl:1.2.840.113556.1.4.803:=8192)))", Skip = "Not equals mask")]
         [InlineData("(&(objectCategory=person)(objectClass=user)(|(proxyAddresses=*:jsmith@company.com)(mail=jsmith@company.com)))", Skip = "Not equals mask")]
 
