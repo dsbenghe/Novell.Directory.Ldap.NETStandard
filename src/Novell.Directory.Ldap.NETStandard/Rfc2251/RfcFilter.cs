@@ -465,10 +465,12 @@ namespace Novell.Directory.Ldap.Rfc2251
             for (iString = 0, iOctets = 0; iString < length; iString++)
             {
                 ch = stringRenamed[iString];
-                var codePoint = Char.ConvertToUtf32(stringRenamed, iString);
-                if(codePoint > 0xffff) {
+                var codePoint = char.ConvertToUtf32(stringRenamed, iString);
+                if (codePoint > 0xffff)
+                {
                     iString++;
                 }
+
                 if (escape)
                 {
                     if ((ival = Hex2Int(ch)) < 0)
@@ -511,7 +513,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                             else
                             {
                                 // char > 0x7f, could be encoded in 2, 3 or 4 bytes
-                                utf8Bytes = Encoding.UTF8.GetBytes(Char.ConvertFromUtf32(codePoint));
+                                utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
 
                                 // copy utf8 encoded character into octets
                                 Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
@@ -524,7 +526,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             // found invalid character
                             var escString = string.Empty;
-                            utf8Bytes = Encoding.UTF8.GetBytes(Char.ConvertFromUtf32(codePoint));
+                            utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
 
                             for (var i = 0; i < utf8Bytes.Length; i++)
                             {
