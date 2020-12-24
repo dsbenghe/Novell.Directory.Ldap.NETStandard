@@ -1,8 +1,8 @@
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.StressTests
@@ -32,12 +32,12 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
                 testsAssembly.DefinedTypes.Where(x => x.Name.EndsWith("Tests"))
                     .SelectMany(t => t.GetMethods())
                     .Where(m => m.IsPublic)
-                    .Where(m => m.CustomAttributes.Any(attr => attr.AttributeType.Name == typeof(FactAttribute).Name
+                    .Where(m => m.CustomAttributes.Any(attr => attr.AttributeType.Name == nameof(FactAttribute)
                         && attr.NamedArguments.Count(na => na.MemberName == "Skip") == 0))
-                    .Where(m => m.CustomAttributes.All(attr => attr.AttributeType.Name != typeof(LongRunningAttribute).Name))
+                    .Where(m => m.CustomAttributes.All(attr => attr.AttributeType.Name != nameof(LongRunningAttribute)))
                     .ToList();
         }
 
-        public static List<Action> Tests = new List<Action>();
+        public static List<Action> Tests { get; } = new List<Action>();
     }
 }

@@ -8,7 +8,7 @@ namespace Novell.Directory.Ldap
         {
             /// <summary>
             /// RFC 4532: LDAP "Who am I?" Operation
-            /// https://tools.ietf.org/html/rfc4532
+            /// https://tools.ietf.org/html/rfc4532.
             /// </summary>
             public const string WhoAmI = "1.3.6.1.4.1.4203.1.11.3";
             public const string StartTls = "1.3.6.1.4.1.1466.20037";
@@ -21,12 +21,12 @@ namespace Novell.Directory.Ldap
 
             /// <summary>
             /// LDAP_SERVER_BATCH_REQUEST_OID
-            /// https://msdn.microsoft.com/en-us/library/jj217379.aspx
+            /// https://msdn.microsoft.com/en-us/library/jj217379.aspx.
             /// </summary>
             public const string ServerBatchRequest = "1.2.840.113556.1.4.2212";
         }
 
-        private static IReadOnlyDictionary<string, string> _oidNames = new Dictionary<string, string>
+        private static readonly IReadOnlyDictionary<string, string> _oidNames = new Dictionary<string, string>
         {
             [Extensions.WhoAmI] = "Who am I? (RFC 4532)",
             [Extensions.StartTls] = "Start TLS",
@@ -45,6 +45,7 @@ namespace Novell.Directory.Ldap
             {
                 return displayName;
             }
+
             return oid;
         }
     }

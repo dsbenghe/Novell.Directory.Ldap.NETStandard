@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapAttributeSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -135,8 +126,8 @@ namespace Novell.Directory.Ldap
             bool isUserModifiable, int usage)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Attribute])
         {
-            this.names = names;
-            Oid = oid;
+            Names = names;
+            Id = oid;
             Description = description;
             Obsolete = obsolete;
             SyntaxString = syntaxString;
@@ -168,12 +159,12 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                 {
-                    names = parser.Names;
+                    Names = parser.Names;
                 }
 
                 if (parser.Id != null)
                 {
-                    Oid = parser.Id;
+                    Id = parser.Id;
                 }
 
                 if (parser.Description != null)
@@ -197,7 +188,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -308,7 +299,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(token);
             }
 
-            var strArray = Names;
+            var strArray = GetNames();
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");
@@ -400,9 +391,6 @@ namespace Novell.Directory.Ldap
 
                     case DsaOperation:
                         valueBuffer.Append(" USAGE dSAOperation");
-                        break;
-
-                    default:
                         break;
                 }
             }

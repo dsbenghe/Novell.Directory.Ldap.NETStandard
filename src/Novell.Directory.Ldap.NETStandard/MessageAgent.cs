@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,18 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.MessageAgent.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Threading;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -88,34 +79,6 @@ namespace Novell.Directory.Ldap
         private object[] RemoveAll()
         {
             return _messages.RemoveAll();
-        }
-
-        /// <summary>
-        ///     merges two message agents.
-        /// </summary>
-        /// <param name="fromAgent">
-        ///     the agent to be merged into this one.
-        /// </param>
-        internal void Merge(MessageAgent fromAgent)
-        {
-            var msgs = fromAgent.RemoveAll();
-            for (var i = 0; i < msgs.Length; i++)
-            {
-                _messages.Add(msgs[i]);
-                ((Message)msgs[i]).Agent = this;
-            }
-
-            lock (_messages)
-            {
-                if (msgs.Length > 1)
-                {
-                    Monitor.PulseAll(_messages); // wake all threads waiting for messages
-                }
-                else if (msgs.Length == 1)
-                {
-                    Monitor.Pulse(_messages); // only wake one thread
-                }
-            }
         }
 
         /// <summary>
@@ -193,7 +156,7 @@ namespace Novell.Directory.Ldap
             {
                 // Send abandon request and remove from connection list
                 var info = _messages.FindMessageById(msgId);
-                SupportClass.VectorRemoveElement(_messages, info); // This message is now dead
+                _messages.Remove(info);
                 info.Abandon(cons, null);
             }
             catch (FieldAccessException ex)
@@ -212,7 +175,7 @@ namespace Novell.Directory.Ldap
                 var info = (Message)_messages[i];
 
                 // Message complete and no more replies, remove from id list
-                SupportClass.VectorRemoveElement(_messages, info);
+                _messages.Remove(info);
                 info.Abandon(null, null);
             }
         }
@@ -291,7 +254,7 @@ namespace Novell.Directory.Ldap
                     if (!info.AcceptsReplies() && !info.HasReplies())
                     {
                         // Message complete and no more replies, remove from id list
-                        SupportClass.VectorRemoveElement(_messages, info);
+                        _messages.Remove(info);
                         info.Abandon(null, null); // Get rid of resources
                     }
 
@@ -325,7 +288,7 @@ namespace Novell.Directory.Ldap
                         if (!info.AcceptsReplies() && !info.HasReplies())
                         {
                             // Message complete & no more replies, remove from id list
-                            SupportClass.VectorRemoveElement(_messages, info); // remove from list
+                            _messages.Remove(info); // remove from list
                             info.Abandon(null, null); // Get rid of resources
 
                             // Start loop at next message that is now moved

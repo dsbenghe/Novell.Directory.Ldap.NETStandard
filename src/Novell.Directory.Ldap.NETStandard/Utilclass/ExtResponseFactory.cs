@@ -1,6 +1,6 @@
+﻿using Novell.Directory.Ldap.Rfc2251;
 using System;
 using System.Reflection;
-using Novell.Directory.Ldap.Rfc2251;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -50,8 +50,8 @@ namespace Novell.Directory.Ldap.Utilclass
                     return tempResponse;
                 }
 
-                Type[] argsClass = {typeof(RfcLdapMessage) };
-                object[] args = {inResponse };
+                Type[] argsClass = { typeof(RfcLdapMessage) };
+                object[] args = { inResponse };
                 Exception ex;
                 try
                 {

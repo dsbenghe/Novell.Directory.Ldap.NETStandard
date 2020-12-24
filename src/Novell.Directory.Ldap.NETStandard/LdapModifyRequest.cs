@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,18 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapModifyRequest.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
+using System;
 
 namespace Novell.Directory.Ldap
 {
@@ -87,54 +78,51 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     an array of LdapModification objects.
         /// </returns>
-        public LdapModification[] Modifications
+        public LdapModification[] GetModifications()
         {
-            get
+            // Get the RFC request object for this request
+            var req = (RfcModifyRequest)Asn1Object.GetRequest();
+
+            // get beginning sequenceOf modifications
+            var seqof = req.Modifications;
+            var mods = seqof.ToArray();
+            var modifications = new LdapModification[mods.Length];
+
+            // Process each modification
+            for (var m = 0; m < mods.Length; m++)
             {
-                // Get the RFC request object for this request
-                var req = (RfcModifyRequest)Asn1Object.GetRequest();
-
-                // get beginning sequenceOf modifications
-                var seqof = req.Modifications;
-                var mods = seqof.ToArray();
-                var modifications = new LdapModification[mods.Length];
-
-                // Process each modification
-                for (var m = 0; m < mods.Length; m++)
+                // Each modification consists of a mod type and a sequence
+                // containing the attr name and a set of values
+                var opSeq = (Asn1Sequence)mods[m];
+                if (opSeq.Size() != 2)
                 {
-                    // Each modification consists of a mod type and a sequence
-                    // containing the attr name and a set of values
-                    var opSeq = (Asn1Sequence)mods[m];
-                    if (opSeq.Size() != 2)
-                    {
-                        throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Size());
-                    }
-
-                    // Contains operation and sequence for the attribute
-                    var opArray = opSeq.ToArray();
-                    var asn1Op = (Asn1Enumerated)opArray[0];
-
-                    // get the operation
-                    var op = asn1Op.IntValue();
-                    var attrSeq = (Asn1Sequence)opArray[1];
-                    var attrArray = attrSeq.ToArray();
-                    var aname = (RfcAttributeDescription)attrArray[0];
-                    var name = aname.StringValue();
-                    var avalue = (Asn1SetOf)attrArray[1];
-                    var valueArray = avalue.ToArray();
-                    var attr = new LdapAttribute(name);
-
-                    for (var v = 0; v < valueArray.Length; v++)
-                    {
-                        var rfcV = (RfcAttributeValue)valueArray[v];
-                        attr.AddValue(rfcV.ByteValue());
-                    }
-
-                    modifications[m] = new LdapModification(op, attr);
+                    throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Size());
                 }
 
-                return modifications;
+                // Contains operation and sequence for the attribute
+                var opArray = opSeq.ToArray();
+                var asn1Op = (Asn1Enumerated)opArray[0];
+
+                // get the operation
+                var op = asn1Op.IntValue();
+                var attrSeq = (Asn1Sequence)opArray[1];
+                var attrArray = attrSeq.ToArray();
+                var aname = (RfcAttributeDescription)attrArray[0];
+                var name = aname.StringValue();
+                var avalue = (Asn1SetOf)attrArray[1];
+                var valueArray = avalue.ToArray();
+                var attr = new LdapAttribute(name);
+
+                for (var v = 0; v < valueArray.Length; v++)
+                {
+                    var rfcV = (RfcAttributeValue)valueArray[v];
+                    attr.AddValue(rfcV.ByteValue());
+                }
+
+                modifications[m] = new LdapModification(op, attr);
             }
+
+            return modifications;
         }
 
         /// <summary>
@@ -161,7 +149,7 @@ namespace Novell.Directory.Ldap
                     var attrEnum = attr.ByteValues;
                     while (attrEnum.MoveNext())
                     {
-                        vals.Add(new RfcAttributeValue((byte[])attrEnum.Current));
+                        vals.Add(new RfcAttributeValue(attrEnum.Current));
                     }
                 }
 

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.Base64.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
-using System.IO;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Utilclass
@@ -66,7 +56,7 @@ namespace Novell.Directory.Ldap.Utilclass
             'k',
             'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
             '6',
-            '7', '8', '9', '+', '/'
+            '7', '8', '9', '+', '/',
         }; // 4-9, + /;  56-63
 
         /// <summary>
@@ -92,7 +82,7 @@ namespace Novell.Directory.Ldap.Utilclass
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12,
             0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e,
             0x1f, 0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x30,
-            0x31, 0x32, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00
+            0x31, 0x32, 0x33, 0x00, 0x00, 0x00, 0x00, 0x00,
         }; // 120-127 'xyz     '
 
         /// <summary>
@@ -107,16 +97,16 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private static readonly byte[][] LowerBoundMask =
         {
-            new byte[] {0, 0 }, new[] { (byte)0x1E, (byte)0x00 },
+            new byte[] { 0, 0 }, new[] { (byte)0x1E, (byte)0x00 },
             new[] { (byte)0x0F, (byte)0x20 }, new[] { (byte)0x07, (byte)0x30 }, new[] { (byte)0x02, (byte)0x38 },
-            new[] { (byte)0x01, (byte)0x3C }
+            new[] { (byte)0x01, (byte)0x3C },
         };
 
         /// <summary>mask to AND with a continuation byte: should equal continuationResult. </summary>
-        private static readonly byte ContinuationMask = (byte)SupportClass.Identity(0xC0);
+        private static readonly byte ContinuationMask = 0xC0;
 
         /// <summary>expected result of ANDing a continuation byte with continuationMask. </summary>
-        private static readonly byte ContinuationResult = (byte)SupportClass.Identity(0x80);
+        private static readonly byte ContinuationResult = 0x80;
 
         /// <summary>
         ///     Default constructor, don't allow instances of the
@@ -171,7 +161,7 @@ namespace Novell.Directory.Ldap.Utilclass
             // four bytes with one or two paddings
             else
             {
-                ntb = len / 3 + 1;
+                ntb = (len / 3) + 1;
             }
 
             // need two paddings
@@ -255,7 +245,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public static byte[] Decode(string encodedString)
         {
             var c = new char[encodedString.Length];
-            SupportClass.GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
+            GetCharsFromString(encodedString, 0, encodedString.Length, ref c, 0);
             return Decode(c);
         }
 
@@ -300,7 +290,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into one byte.
-                dByteLen = gn * 3 - 2;
+                dByteLen = (gn * 3) - 2;
                 decodedBytes = new byte[dByteLen];
             }
             else if (encodedChars[ecLen - 1] == '=')
@@ -310,7 +300,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                 // the first two bytes of the last four-bytes of encodedChars will
                 // be decoded into two bytes.
-                dByteLen = gn * 3 - 1;
+                dByteLen = (gn * 3) - 1;
                 decodedBytes = new byte[dByteLen];
             }
             else
@@ -414,7 +404,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into one byte.
-                dByteLen = gn * 3 - 2;
+                dByteLen = (gn * 3) - 2;
                 decodedBytes = new byte[dByteLen];
             }
             else if (encodedSBuf[end - 1] == '=')
@@ -424,7 +414,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                 // the first two bytes of the last four-bytes of ebs will be
                 // decoded into two bytes.
-                dByteLen = gn * 3 - 1;
+                dByteLen = (gn * 3) - 1;
                 decodedBytes = new byte[dByteLen];
             }
             else
@@ -463,8 +453,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 decodedBytes[j + 1] =
-                    (byte)
-                    (((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) |
+                    (byte)(((Dmap[encodedSBuf[start + i + 1]] & 0x0f) << 4) |
                      ((Dmap[encodedSBuf[start + i + 2]] & 0x3c) >> 2));
 
                 // build decodedBytes[j+2]
@@ -474,8 +463,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 }
 
                 decodedBytes[j + 2] =
-                    (byte)
-                    (((Dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (Dmap[encodedSBuf[start + i + 3]] & 0x3f));
+                    (byte)(((Dmap[encodedSBuf[start + i + 2]] & 0x03) << 6) | (Dmap[encodedSBuf[start + i + 3]] & 0x3f));
             }
 
             return decodedBytes;
@@ -706,7 +694,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     continue;
                 }
 
-                if (count == -1 || index + count >= array.Length || isUcs2Only && count >= 3)
+                if (count == -1 || index + count >= array.Length || (isUcs2Only && count >= 3))
                 {
                     /* Any count that puts us out of bounds for the index is
                     * invalid.  Valid UCS2 characters can only have 2 additional
@@ -734,6 +722,27 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             return true;
+        }
+
+        /// <summary>
+        ///     Copies an array of chars obtained from a String into a specified array of chars.
+        /// </summary>
+        /// <param name="sourceString">The String to get the chars from.</param>
+        /// <param name="sourceStart">Position of the String to start getting the chars.</param>
+        /// <param name="sourceEnd">Position of the String to end getting the chars.</param>
+        /// <param name="destinationArray">Array to return the chars.</param>
+        /// <param name="destinationStart">Position of the destination array of chars to start storing the chars.</param>
+        private static void GetCharsFromString(string sourceString, int sourceStart, int sourceEnd,
+            ref char[] destinationArray, int destinationStart)
+        {
+            var sourceCounter = sourceStart;
+            var destinationCounter = destinationStart;
+            while (sourceCounter < sourceEnd)
+            {
+                destinationArray[destinationCounter] = sourceString[sourceCounter];
+                sourceCounter++;
+                destinationCounter++;
+            }
         }
     }
 }

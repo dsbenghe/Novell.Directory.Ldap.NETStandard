@@ -277,7 +277,7 @@ namespace Novell.Directory.Ldap
         void Bind(int version, string dn, byte[] passwd, LdapConstraints cons);
 
         /// <summary>
-        /// Bind via a SASL Mechanism
+        /// Bind via a SASL Mechanism.
         /// </summary>
         /// <param name="saslRequest"></param>
         void Bind(SaslRequest saslRequest);
@@ -298,16 +298,11 @@ namespace Novell.Directory.Ldap
         ///     in turn until a connection can be established.
         /// </summary>
         /// <param name="host">
-        ///     A host name or a dotted string representing the IP address
-        ///     of a host running an Ldap server. It may also
-        ///     contain a list of host names, space-delimited. Each host
-        ///     name can include a trailing colon and port number.
+        ///     A host name.
         /// </param>
         /// <param name="port">
         ///     The TCP or UDP port number to connect to or contact.
-        ///     The default Ldap port is 389. The port parameter is
-        ///     ignored for any host hame which includes a colon and
-        ///     port number.
+        ///     The default Ldap port is 389.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error
@@ -827,5 +822,21 @@ namespace Novell.Directory.Ldap
         ///     True if connection is open; false if the connection is closed.
         /// </returns>
         bool Connected { get; }
+
+        /// <summary>
+        ///     Returns a copy of the set of search constraints associated with this
+        ///     connection. These constraints apply to search operations performed
+        ///     through this connection (unless a different set of
+        ///     constraints is specified when calling the search operation method).
+        /// </summary>
+        /// <returns>
+        ///     The set of default search constraints that apply to
+        ///     this connection.
+        /// </returns>
+        /// <seealso cref="SearchConstraints">
+        /// </seealso>
+        /// <seealso cref="LdapSearchConstraints">
+        /// </seealso>
+        LdapSearchConstraints SearchConstraints { get; }
     }
 }

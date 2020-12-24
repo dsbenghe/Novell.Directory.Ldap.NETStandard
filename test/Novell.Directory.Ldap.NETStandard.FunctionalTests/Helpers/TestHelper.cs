@@ -4,17 +4,19 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
     public static class TestHelper
     {
+        private static TransportSecurity? envTransportSecurity = null;
+
         private enum TransportSecurity
         {
             Off,
             Ssl,
-            Tls
+            Tls,
         }
 
         public static void WithLdapConnection(Action<ILdapConnection> actionOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             WithLdapConnectionImpl<object>(
-                (ldapConnection) =>
+                ldapConnection =>
             {
                 actionOnConnectedLdapConnection(ldapConnection);
                 return null;
@@ -84,20 +86,37 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         private static TransportSecurity GetTransportSecurity(bool useSsl, bool disableEnvTransportSecurity)
         {
             var transportSecurity = useSsl ? TransportSecurity.Ssl : TransportSecurity.Off;
-            if(disableEnvTransportSecurity)
+            if (disableEnvTransportSecurity)
+            {
+                return transportSecurity;
+            }
+
+            transportSecurity = GetTransportSecurity(transportSecurity);
+
+            return transportSecurity;
+        }
+
+        private static TransportSecurity GetTransportSecurity(TransportSecurity transportSecurity)
+        {
+            if (envTransportSecurity.HasValue)
             {
                 return transportSecurity;
             }
 
             var envValue = Environment.GetEnvironmentVariable("TRANSPORT_SECURITY");
-            if (!string.IsNullOrWhiteSpace(envValue))
+            if (string.IsNullOrWhiteSpace(envValue))
             {
-                TransportSecurity parsedValue;
-                if (Enum.TryParse(envValue, true, out parsedValue))
-                {
-                    transportSecurity = parsedValue;
-                }
+                return transportSecurity;
             }
+
+            if (!Enum.TryParse(envValue, true, out TransportSecurity parsedEnvTransportSecurity))
+            {
+                return transportSecurity;
+            }
+
+            envTransportSecurity = parsedEnvTransportSecurity;
+            Console.WriteLine($"Using env variable for transport security {envTransportSecurity}");
+            transportSecurity = envTransportSecurity.Value;
 
             return transportSecurity;
         }

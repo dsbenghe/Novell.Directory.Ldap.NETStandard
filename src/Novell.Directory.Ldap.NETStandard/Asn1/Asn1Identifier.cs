@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Asn1.Asn1Identifier.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.IO;
@@ -214,9 +205,9 @@ namespace Novell.Directory.Ldap.Asn1
             Asn1Class = r >> 6;
             Constructed = (r & 0x20) != 0;
             Tag = r & 0x1F; // if tag < 30 then its a single octet identifier.
-            if (Tag == 0x1F)
 
-                // if true, its a multiple octet identifier.
+            // if true, its a multiple octet identifier.
+            if (Tag == 0x1F)
             {
                 Tag = DecodeTagNumber(inRenamed);
             }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapDITContentRuleSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -95,9 +86,9 @@ namespace Novell.Directory.Ldap
             string[] auxiliary, string[] required, string[] optional, string[] precluded)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditcontent])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            Oid = oid;
+            Names = new string[names.Length];
+            names.CopyTo(Names, 0);
+            Id = oid;
             Description = description;
             Obsolete = obsolete;
             AuxiliaryClasses = auxiliary;
@@ -125,13 +116,13 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
                 if (parser.Id != null)
                 {
-                    Oid = parser.Id;
+                    Id = parser.Id;
                 }
 
                 if (parser.Description != null)
@@ -168,7 +159,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -185,7 +176,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of allowed auxiliary classes.
         /// </returns>
-        public string[] AuxiliaryClasses { get; } = {string.Empty };
+        public string[] AuxiliaryClasses { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of additional required attributes for an entry
@@ -194,7 +185,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional required attributes.
         /// </returns>
-        public string[] RequiredAttributes { get; } = {string.Empty };
+        public string[] RequiredAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of additional optional attributes for an entry
@@ -203,7 +194,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of additional optional attributes.
         /// </returns>
-        public string[] OptionalAttributes { get; } = {string.Empty };
+        public string[] OptionalAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns the list of precluded attributes for an entry controlled by
@@ -212,7 +203,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The list of precluded attributes.
         /// </returns>
-        public string[] PrecludedAttributes { get; } = {string.Empty };
+        public string[] PrecludedAttributes { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -231,7 +222,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(token);
             }
 
-            var strArray = Names;
+            var strArray = GetNames();
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

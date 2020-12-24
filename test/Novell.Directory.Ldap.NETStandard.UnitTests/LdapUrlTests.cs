@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
@@ -17,7 +15,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void Ctor_EmptyString_Exception()
         {
             // This is technically a bug since the LdapUrl ctor should check and throw a proper exception
-            Assert.Throws<IndexOutOfRangeException>(() => new LdapUrl(""));
+            Assert.Throws<IndexOutOfRangeException>(() => new LdapUrl(string.Empty));
         }
 
         [Fact]
@@ -112,14 +110,15 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             Assert.Equal("cn=admin,ou=marketing,o=corporation", url.GetDn());
             Assert.Equal(LdapConnection.ScopeSub, url.Scope);
             Assert.Equal("(objectclass=*)", url.Filter);
-            Assert.Equal(new string[] { "attr1", "attr2", "attr3" }, url.AttributeArray);
-            Assert.Equal(new string[] { "ext1", "ext2", "ext3" }, url.Extensions);
+            Assert.Equal(new[] { "attr1", "attr2", "attr3" }, url.AttributeArray);
+            Assert.Equal(new[] { "ext1", "ext2", "ext3" }, url.Extensions);
         }
 
         [Fact]
         public void Ctor_ComplexTooManyFields_Exception()
         {
             var urlStr = "ldap://foo.example.com/cn=admin,ou=marketing,o=corporation?attr1,attr2,attr3?sub?(objectclass=*)?ext1,ext2,ext3?";
+
             // LdapUrl: URL has too many ? fields
             Assert.Throws<UriFormatException>(() => new LdapUrl(urlStr));
         }

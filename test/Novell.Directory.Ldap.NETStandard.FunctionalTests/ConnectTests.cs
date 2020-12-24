@@ -1,5 +1,4 @@
-﻿using System;
-using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -39,8 +38,19 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     }
                     finally
                     {
-                        //ldapConnection.StopTls();
+                        ldapConnection.StopTls();
                     }
+                }, false, true);
+        }
+
+        [Fact]
+        public void Disconnect_WithStartTls_WithoutStopTls_Works()
+        {
+            TestHelper.WithLdapConnection(
+                ldapConnection =>
+                {
+                    ldapConnection.StartTls();
+                    ldapConnection.Bind(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                 }, false, true);
         }
 
@@ -57,7 +67,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 }, false, true);
         }
 
-        [Fact(Skip = "This randomly fails")]
+        [Fact]
         public void Connect_WithBindAfterStartTlsAndRestoreNonTls_Works()
         {
             TestHelper.WithLdapConnection(

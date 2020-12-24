@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * The MIT License
  * Copyright (c) 2003 Novell Inc.  www.novell.com
  *
@@ -21,18 +21,8 @@
  * SOFTWARE.
  *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Rfc2251.RfcIntermediateResponse.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
-using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -68,22 +58,22 @@ namespace Novell.Directory.Ldap.Rfc2251
          * decoding it from an InputStream. The stream contains the intermediate
          * response sequence that follows the msgID in the PDU. The intermediate
          * response draft defines this as:
-         *      IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-         *             responseName     [0] LDAPOID OPTIONAL,
-         *             responseValue    [1] OCTET STRING OPTIONAL }
+         * IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+         * responseName     [0] LDAPOID OPTIONAL,
+         * responseValue    [1] OCTET STRING OPTIONAL }
          *
          * Until post Falcon sp1, the LDAP server was incorrectly encoding
          * intermediate response as:
-         *      IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
-         *             Components of LDAPResult,
-         *             responseName     [0] LDAPOID OPTIONAL,
-         *             responseValue    [1] OCTET STRING OPTIONAL }
+         * IntermediateResponse ::= [APPLICATION 25] SEQUENCE {
+         * Components of LDAPResult,
+         * responseName     [0] LDAPOID OPTIONAL,
+         * responseValue    [1] OCTET STRING OPTIONAL }
          *
          * where the Components of LDAPResult are
-         *               resultCode      ENUMERATED {...}
-         *               matchedDN       LDAPDN,
-         *               errorMessage    LDAPString,
-         *               referral        [3] Referral OPTIONAL }
+         * resultCode      ENUMERATED {...}
+         * matchedDN       LDAPDN,
+         * errorMessage    LDAPString,
+         * referral        [3] Referral OPTIONAL }
          *
          *
          * (The components of LDAPResult never have the optional referral.)
@@ -100,15 +90,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         // throws IOException
         {
             // super(dec, in, len);
-
             var i = 0;
             _mResponseNameIndex = _mResponseValueIndex = 0;
 
             // decode optional tagged elements. The parent class constructor will
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.
-
-            if (Size() >= 3) // the incorrectly encoded case, LDAPResult contains
+            // the incorrectly encoded case, LDAPResult contains
+            if (Size() >= 3)
             {
                 i = 3; // at least 3 components
             }

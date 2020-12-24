@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Utilclass.DN.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections.Generic;
@@ -114,7 +105,6 @@ namespace Novell.Directory.Ldap.Utilclass
             var currRdn = new Rdn();
 
             // indicates whether an OID number has a first digit of ZERO
-
             var tokenIndex = 0;
             var currIndex = 0;
             var valueStart = 0;
@@ -210,7 +200,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         tokenBuf[tokenIndex++] = currChar;
                         currChar = dnString[++currIndex];
 
-                        if (IsDigit(currChar) && firstDigitZero || currChar == '.' && firstDigitZero)
+                        if ((IsDigit(currChar) && firstDigitZero) || (currChar == '.' && firstDigitZero))
                         {
                             throw new ArgumentException(dnString);
                         }
@@ -474,7 +464,7 @@ namespace Novell.Directory.Ldap.Utilclass
             } // end while
 
             // check ending state
-            if (state == UnquotedRdnValue || state == HexRdnValue && hexDigitCount % 2 == 0 && hexDigitCount != 0)
+            if (state == UnquotedRdnValue || (state == HexRdnValue && hexDigitCount % 2 == 0 && hexDigitCount != 0))
             {
                 attrValue = new string(tokenBuf, 0, tokenIndex - trailingSpaceCount);
                 rawValue = dnString.Substring(valueStart, currIndex - trailingSpaceCount - valueStart);
@@ -511,7 +501,7 @@ namespace Novell.Directory.Ldap.Utilclass
             {
                 var parent = new Dn
                 {
-                    _rdnList = new List<Rdn>(_rdnList)
+                    _rdnList = new List<Rdn>(_rdnList),
                 };
 
                 if (parent._rdnList.Count >= 1)
@@ -536,9 +526,8 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         private bool IsAlpha(char ch)
         {
-            if (ch < 91 && ch > 64 || ch < 123 && ch > 96)
-
-                // ASCII A-Z
+            // ASCII A-Z
+            if ((ch < 91 && ch > 64) || (ch < 123 && ch > 96))
             {
                 return true;
             }
@@ -560,9 +549,8 @@ namespace Novell.Directory.Ldap.Utilclass
         private bool IsDigit(char ch)
         {
             if (ch < 58 && ch > 47)
-
-                // ASCII 0-9
             {
+                // ASCII 0-9
                 return true;
             }
 
@@ -581,9 +569,8 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         private static bool IsHexDigit(char ch)
         {
-            if (ch < 58 && ch > 47 || ch < 71 && ch > 64 || ch < 103 && ch > 96)
-
-                // ASCII A-F
+            // ASCII A-F
+            if ((ch < 58 && ch > 47) || (ch < 71 && ch > 64) || (ch < 103 && ch > 96))
             {
                 return true;
             }
@@ -632,21 +619,18 @@ namespace Novell.Directory.Ldap.Utilclass
             int result;
 
             if (hex1 < 58 && hex1 > 47)
-
-                // ASCII 0-9
             {
+                // ASCII 0-9
                 result = (hex1 - 48) * 16;
             }
             else if (hex1 < 71 && hex1 > 64)
-
-                // ASCII a-f
             {
+                // ASCII a-f
                 result = (hex1 - 55) * 16;
             }
             else if (hex1 < 103 && hex1 > 96)
-
-                // ASCII A-F
             {
+                // ASCII A-F
                 result = (hex1 - 87) * 16;
             }
             else
@@ -655,21 +639,18 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             if (hex0 < 58 && hex0 > 47)
-
-                // ASCII 0-9
             {
+                // ASCII 0-9
                 result += hex0 - 48;
             }
             else if (hex0 < 71 && hex0 > 64)
-
-                // ASCII a-f
             {
+                // ASCII a-f
                 result += hex0 - 55;
             }
             else if (hex0 < 103 && hex0 > 96)
-
-                // ASCII A-F
             {
+                // ASCII A-F
                 result += hex0 - 87;
             }
             else
@@ -725,7 +706,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             for (var i = 0; i < length; i++)
             {
-                if (!(_rdnList[i]).Equals(toDn.GetRdnList()[i]))
+                if (!_rdnList[i].Equals(toDn.GetRdnList()[i]))
                 {
                     return false;
                 }
@@ -754,7 +735,7 @@ namespace Novell.Directory.Ldap.Utilclass
             var rdns = new string[length];
             for (var i = 0; i < length; i++)
             {
-                rdns[i] = (_rdnList[i]).ToString(noTypes);
+                rdns[i] = _rdnList[i].ToString(noTypes);
             }
 
             return rdns;
@@ -789,7 +770,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
             // Search from the end of the DN for an RDN that matches the end RDN of
             // containerDN.
-            while (!(_rdnList[j]).Equals(containerDn._rdnList[i]))
+            while (!_rdnList[j].Equals(containerDn._rdnList[i]))
             {
                 j--;
                 if (j <= 0)
@@ -807,15 +788,14 @@ namespace Novell.Directory.Ldap.Utilclass
             // step backwards to verify that all RDNs in containerDN exist in this DN
             for (; i >= 0 && j >= 0; i--, j--)
             {
-                if (!(_rdnList[j]).Equals(containerDn._rdnList[i]))
+                if (!_rdnList[j].Equals(containerDn._rdnList[i]))
                 {
                     return false;
                 }
             }
 
+            // the DNs are identical and thus not contained
             if (j == 0 && i == 0)
-
-                // the DNs are identical and thus not contained
             {
                 return false;
             }
@@ -853,7 +833,7 @@ namespace Novell.Directory.Ldap.Utilclass
         public override int GetHashCode()
         {
             var hashCode = 5751775;
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<Rdn>>.Default.GetHashCode(_rdnList);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<List<Rdn>>.Default.GetHashCode(_rdnList);
             return hashCode;
         }
     }

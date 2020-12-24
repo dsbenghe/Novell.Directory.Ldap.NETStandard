@@ -1,21 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
     /// <summary>
     /// The PLAIN SASL mechanism does not provide a security layer.
-    /// 
+    ///
     /// The PLAIN mechanism should not be used without adequate data security
     /// protection as this mechanism affords no integrity or confidentiality
     /// protections itself.  The mechanism is intended to be used with data
     /// security protections provided by application-layer protocol,
     /// generally through its use of Transport Layer Security (TLS)
     /// services.
-    /// 
+    ///
     /// RFC 4616:
-    /// https://tools.ietf.org/html/rfc4616
+    /// https://tools.ietf.org/html/rfc4616.
     /// </summary>
     public class PlainClient : BaseSaslClient
     {
@@ -63,6 +61,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                         throw new SaslException("Could not validate response-auth " +
                                                 "value from server");
                     }
+
                     break;
                 case State.ValidServerResponse:
                 case State.InvalidServerResponse:
@@ -91,7 +90,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             CredentialsSent,
             ValidServerResponse,
             InvalidServerResponse,
-            Disposed
+            Disposed,
         }
     }
 }

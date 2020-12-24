@@ -1,14 +1,13 @@
 ﻿using Novell.Directory.Ldap.Sasl;
-using System.Collections;
 using System.Collections.Generic;
 
-namespace Novell.Directory.Ldap.NETStandard.UnitTests
+namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
 {
     public class TestSaslClientFactory : ISaslClientFactory
     {
         public TestSaslClientFactory(string mechanism)
         {
-            SupportedMechanisms = new string[] { mechanism };
+            SupportedMechanisms = new[] { mechanism };
         }
 
         public IReadOnlyList<string> SupportedMechanisms { get; }
@@ -19,9 +18,10 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         }
     }
 
-    public class TestSaslClient : ISaslClient
+    public sealed class TestSaslClient : ISaslClient
     {
-        public virtual DebugId DebugId { get; } = DebugId.ForType<TestSaslClient>();
+        public DebugId DebugId { get; } = DebugId.ForType<TestSaslClient>();
+
         public TestSaslClient(string mechanism)
         {
             MechanismName = mechanism;

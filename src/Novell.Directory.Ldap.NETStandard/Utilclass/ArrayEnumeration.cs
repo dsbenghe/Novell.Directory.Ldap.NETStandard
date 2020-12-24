@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Utilclass.ArrayEnumeration.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System;
 using System.Collections;
@@ -65,7 +56,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public void Reset()
         {
-            Current = default(T);
+            Current = default;
             _index = 0;
         }
 
@@ -93,6 +84,8 @@ namespace Novell.Directory.Ldap.Utilclass
             return _eArray[_index++];
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+        }
     }
 }

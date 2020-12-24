@@ -18,7 +18,10 @@ namespace Novell.Directory.Ldap
 
         public void RegisterSaslClientFactory(ISaslClientFactory saslClientFactory)
         {
-            if (saslClientFactory == null) throw new ArgumentNullException(nameof(saslClientFactory));
+            if (saslClientFactory == null)
+            {
+                throw new ArgumentNullException(nameof(saslClientFactory));
+            }
 
             var mechanisms = saslClientFactory.SupportedMechanisms;
             if (mechanisms.IsEmpty())
@@ -50,11 +53,15 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        /// Internal for Unit-Test purposes only
+        /// Internal for Unit-Test purposes only.
         /// </summary>
         internal ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (saslRequest == null)
+            {
+                throw new ArgumentNullException(nameof(saslRequest));
+            }
+
             if (_saslClientFactories.TryGetValue(saslRequest.SaslMechanism, out var factory))
             {
                 return factory.CreateClient(saslRequest);
@@ -74,14 +81,17 @@ namespace Novell.Directory.Ldap
         ///     the connection is not present or not authenticated.
         /// </returns>
         /// <remarks>
-        ///     TODO: Can this be a strong class rather than a Hashtable/IDictionary?
+        ///     TODO: Can this be a strong class rather than a Hashtable/IDictionary?.
         /// </remarks>
         public virtual IDictionary SaslBindProperties
             => Connection?.BindProperties?.SaslBindProperties;
 
         public virtual void Bind(SaslRequest saslRequest)
         {
-            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (saslRequest == null)
+            {
+                throw new ArgumentNullException(nameof(saslRequest));
+            }
 
             Hashtable saslBindProperties = null;
 
@@ -145,11 +155,12 @@ namespace Novell.Directory.Ldap
                 throw new LdapException("Bind failure, no response received.");
             }
 
-            var bindResponse = ((RfcBindResponse)ldapResponse.Asn1Object.get_Renamed(1));
+            var bindResponse = (RfcBindResponse)ldapResponse.Asn1Object.get_Renamed(1);
             lock (_responseCtlSemaphore)
             {
                 _responseCtls = ldapResponse.Controls;
             }
+
             var serverCreds = bindResponse.ServerSaslCreds;
             var resultCode = ldapResponse.ResultCode;
 
@@ -166,6 +177,7 @@ namespace Novell.Directory.Ldap
                 ldapResponse.ChkResultCode();
                 throw new LdapException("SASL Bind Error.", resultCode, null);
             }
+
             return replyBuf;
         }
     }

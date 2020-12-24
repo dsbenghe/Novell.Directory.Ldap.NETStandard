@@ -1,5 +1,6 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using System;
 
 namespace Novell.Directory.Ldap
 {
@@ -9,7 +10,7 @@ namespace Novell.Directory.Ldap
 
         static Logger()
         {
-            Log = Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            Log = NullLogger.Instance;
         }
 
         public static ILoggerFactory Factory

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
@@ -52,5 +52,16 @@ namespace Novell.Directory.Ldap
         ///     followed.
         /// </exception>
         LdapEntry Next();
+
+        /// <summary>
+        ///     Returns the latest server controls returned by the server
+        ///     in the context of this search request, or null
+        ///     if no server controls were returned.
+        /// </summary>
+        /// <returns>
+        ///     The server controls returned with the search request, or null
+        ///     if none were returned.
+        /// </returns>
+        LdapControl[] ResponseControls { get; }
     }
 }

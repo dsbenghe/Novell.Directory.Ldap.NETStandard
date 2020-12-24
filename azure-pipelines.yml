@@ -1,0 +1,64 @@
+# ASP.NET Core
+# Build and test ASP.NET Core projects targeting .NET Core.
+# Add steps that run tests, create a NuGet package, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+pool:
+  vmImage: ubuntu-20.04
+
+variables:
+  buildConfiguration: 'Release'
+
+stages:
+- stage: CI
+  jobs:
+  - job: Linux_CI
+    pool:
+      vmImage: ubuntu-20.04
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: Test
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test'
+  - job: Windows_CI 
+    pool:
+      vmImage: windows-2019
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: TestUnit
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-unit'
+  - job: MacOS_CI
+    pool:
+      vmImage: macOS-10.15
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: TestUnit
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-unit'
+- stage: StressTests
+  jobs:
+  - template: stress-tests-matrix.yml
+    parameters:
+      image: ['ubuntu-20.04']
+      concurrency_level: [10, 20, 30]
+      security: ['OFF', 'TLS', "SSL"]
+      netfx: ['net5', 'netcoreapp3.1']

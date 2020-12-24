@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,18 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Controls.LdapEntryChangeControl.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
-using System.IO;
 using Novell.Directory.Ldap.Asn1;
+using System.IO;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -102,9 +92,8 @@ namespace Novell.Directory.Ldap.Controls
             ChangeType = ((Asn1Enumerated)asn1Obj).IntValue();
 
             // check for optional elements
+            // 8 means modifyDN
             if (sequence.Size() > 1 && ChangeType == 8)
-
-                // 8 means modifyDN
             {
                 // get the previous DN - it is encoded as an octet string
                 asn1Obj = sequence.get_Renamed(1);

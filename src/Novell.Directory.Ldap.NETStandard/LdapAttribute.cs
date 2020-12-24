@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,21 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapAttribute.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -101,12 +91,7 @@ namespace Novell.Directory.Ldap
         /// </param>
         public LdapAttribute(string attrName)
         {
-            if (attrName == null)
-            {
-                throw new ArgumentException("Attribute name cannot be null");
-            }
-
-            Name = attrName;
+            Name = attrName ?? throw new ArgumentException("Attribute name cannot be null");
             _baseName = GetBaseName(attrName);
             _subTypes = GetSubtypes(attrName);
         }
@@ -271,16 +256,8 @@ namespace Novell.Directory.Ldap
                 var sva = new string[size];
                 for (var j = 0; j < size; j++)
                 {
-                    try
-                    {
-                        var valueBytes = (byte[])_values[j];
-                        sva[j] = valueBytes.ToUtf8String();
-                    }
-                    catch (IOException uee)
-                    {
-                        // Exception should NEVER get thrown but just in case it does ...
-                        throw new Exception(uee.ToString());
-                    }
+                    var valueBytes = (byte[])_values[j];
+                    sva[j] = valueBytes.ToUtf8String();
                 }
 
                 return sva;
@@ -309,15 +286,8 @@ namespace Novell.Directory.Ldap
                 string rval = null;
                 if (_values != null)
                 {
-                    try
-                    {
-                        var valueBytes = (byte[])_values[0];
-                        rval = valueBytes.ToUtf8String();
-                    }
-                    catch (IOException use)
-                    {
-                        throw new Exception(use.ToString());
-                    }
+                    var valueBytes = (byte[])_values[0];
+                    rval = valueBytes.ToUtf8String();
                 }
 
                 return rval;
@@ -461,14 +431,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            try
-            {
-                Add(attrString.ToUtf8Bytes());
-            }
-            catch (IOException ue)
-            {
-                throw new Exception(ue.ToString());
-            }
+            Add(attrString.ToUtf8Bytes());
         }
 
         /// <summary>
@@ -551,82 +514,6 @@ namespace Novell.Directory.Ldap
             }
 
             Add(Base64.Decode(attrChars));
-        }
-
-        /// <summary>
-        ///     Adds a URL, indicating a file or other resource that contains
-        ///     the value of the attribute.
-        /// </summary>
-        /// <param name="url">
-        ///     String value of a URL pointing to the resource containing
-        ///     the value of the attribute.
-        ///     @throws IllegalArgumentException if url is null.
-        /// </param>
-        public void AddUrlValue(string url)
-        {
-            if (url == null)
-            {
-                throw new ArgumentException("Attribute URL cannot be null");
-            }
-
-            AddUrlValue(new Uri(url));
-        }
-
-        /// <summary>
-        ///     Adds a URL, indicating a file or other resource that contains
-        ///     the value of the attribute.
-        /// </summary>
-        /// <param name="url">
-        ///     A URL class pointing to the resource containing the value
-        ///     of the attribute.
-        ///     @throws IllegalArgumentException if url is null.
-        /// </param>
-        public void AddUrlValue(Uri url)
-        {
-            // Class to encapsulate the data bytes and the length
-            if (url == null)
-            {
-                throw new ArgumentException("Attribute URL cannot be null");
-            }
-
-            try
-            {
-                // Get InputStream from the URL
-                var webRequest = WebRequest.Create(url);
-                var inRenamed = webRequest.GetResponseAsync().ResultAndUnwrap().GetResponseStream();
-
-                // Read the bytes into buffers and store the them in an arraylist
-                var bufs = new List<UrlData>();
-                var buf = new byte[4096];
-                int len, totalLength = 0;
-                while ((len = SupportClass.ReadInput(inRenamed, ref buf, 0, 4096)) != -1)
-                {
-                    bufs.Add(new UrlData(this, buf, len));
-                    buf = new byte[4096];
-                    totalLength += len;
-                }
-
-                /*
-                * Now that the length is known, allocate an array to hold all
-                * the bytes of data and copy the data to that array, store
-                * it in this LdapAttribute
-                */
-                var data = new byte[totalLength];
-                var offset = 0;
-                for (var i = 0; i < bufs.Count; i++)
-                {
-                    var b = bufs[i];
-                    len = b.GetLength();
-                    Array.Copy(b.GetData(), 0, data, offset, len);
-                    offset += len;
-                }
-
-                Add(data);
-            }
-            catch (IOException ue)
-            {
-                throw new Exception(ue.ToString());
-            }
         }
 
         /// <summary>
@@ -794,7 +681,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 return false;
-                gotSubType: ;
+            gotSubType:;
             }
 
             return true;
@@ -907,7 +794,7 @@ namespace Novell.Directory.Ldap
         {
             if (_values == null)
             {
-                _values = new object[] {bytes };
+                _values = new object[] { bytes };
             }
             else
             {
@@ -984,55 +871,49 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             var result = new StringBuilder("LdapAttribute: ");
-            try
+
+            result.Append("{type='" + Name + "'");
+            if (_values != null)
             {
-                result.Append("{type='" + Name + "'");
-                if (_values != null)
+                result.Append(", ");
+                if (_values.Length == 1)
                 {
-                    result.Append(", ");
-                    if (_values.Length == 1)
-                    {
-                        result.Append("value='");
-                    }
-                    else
-                    {
-                        result.Append("values='");
-                    }
-
-                    for (var i = 0; i < _values.Length; i++)
-                    {
-                        if (i != 0)
-                        {
-                            result.Append("','");
-                        }
-
-                        var valueBytes = (byte[])_values[i];
-
-                        if (valueBytes.Length == 0)
-                        {
-                            continue;
-                        }
-
-                        var sval = valueBytes.ToUtf8String();
-                        if (sval.Length == 0)
-                        {
-                            // didn't decode well, must be binary
-                            result.Append("<binary value, length:" + sval.Length);
-                            continue;
-                        }
-
-                        result.Append(sval);
-                    }
-
-                    result.Append("'");
+                    result.Append("value='");
+                }
+                else
+                {
+                    result.Append("values='");
                 }
 
-                result.Append("}");
+                for (var i = 0; i < _values.Length; i++)
+                {
+                    if (i != 0)
+                    {
+                        result.Append("','");
+                    }
+
+                    var valueBytes = (byte[])_values[i];
+
+                    if (valueBytes.Length == 0)
+                    {
+                        continue;
+                    }
+
+                    var sval = valueBytes.ToUtf8String();
+                    if (sval.Length == 0)
+                    {
+                        // didn't decode well, must be binary
+                        result.Append("<binary value, length:" + sval.Length);
+                        continue;
+                    }
+
+                    result.Append(sval);
+                }
+
+                result.Append("'");
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.ToString());
-            }
+
+            result.Append("}");
 
             return result.ToString();
         }

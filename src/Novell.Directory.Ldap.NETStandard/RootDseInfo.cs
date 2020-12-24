@@ -5,7 +5,7 @@ using System.Linq;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfo(ILdapConnection)"/>
+    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfo(ILdapConnection)"/>.
     /// </summary>
     public class RootDseInfo
     {
@@ -19,7 +19,7 @@ namespace Novell.Directory.Ldap
         public IReadOnlyList<string> SupportedLDAPPolicies { get; }
 
         /// <summary>
-        /// All Root DSE Attributes that aren't already part of other properties of this class
+        /// All Root DSE Attributes that aren't already part of other properties of this class.
         /// </summary>
         public IReadOnlyDictionary<string, IReadOnlyList<string>> OtherAttributes { get; }
 
@@ -63,8 +63,8 @@ namespace Novell.Directory.Ldap
             OtherAttributes = otherAttributes;
 
             // Don't want any of those properties be null
-            ServerName = ServerName ?? "";
-            DefaultNamingContext = DefaultNamingContext ?? "";
+            ServerName = ServerName ?? string.Empty;
+            DefaultNamingContext = DefaultNamingContext ?? string.Empty;
             NamingContexts = NamingContexts ?? Array.Empty<string>();
             SupportedSaslMechanisms = SupportedSaslMechanisms ?? Array.Empty<string>();
             SupportedCapabilities = SupportedCapabilities ?? Array.Empty<string>();

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Events.SearchResultEventArgs.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.Text;
 
@@ -55,7 +46,7 @@ namespace Novell.Directory.Ldap.Events
             var buf = new StringBuilder();
 
             buf.AppendFormat("[{0}:", GetType());
-            buf.AppendFormat("(Classification={0})", EClassification);
+            buf.AppendFormat("(Classification={0})", EventClassification);
             buf.AppendFormat("(Type={0})", GetChangeTypeString());
             buf.AppendFormat("(EventInformation:{0})", GetStringRepresentaionOfEventInformation());
             buf.Append("]");
@@ -77,7 +68,7 @@ namespace Novell.Directory.Ldap.Events
                 var i = 0;
                 foreach (var control in controls)
                 {
-                    buf.AppendFormat("(Control{0}={1})", ++i, control.ToString());
+                    buf.AppendFormat("(Control{0}={1})", ++i, control);
                 }
 
                 buf.Append(")");
@@ -88,7 +79,7 @@ namespace Novell.Directory.Ldap.Events
 
         private string GetChangeTypeString()
         {
-            switch (EType)
+            switch (EventType)
             {
                 case LdapEventType.LdapPsearchAdd:
                     return "ADD";
@@ -103,7 +94,7 @@ namespace Novell.Directory.Ldap.Events
                     return "MODDN";
 
                 default:
-                    return "No change type: " + EType;
+                    return "No change type: " + EventType;
             }
         }
     } // end of class SearchResultEventArgs

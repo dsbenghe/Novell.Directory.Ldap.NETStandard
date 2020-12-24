@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,20 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Message.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
-using System.Threading;
 using Microsoft.Extensions.Logging;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -257,7 +248,7 @@ namespace Novell.Directory.Ldap
                     default:
                         _timer = new Timeout(_mslimit, this)
                         {
-                            IsBackground = true // If this is the last thread running, allow exit.
+                            IsBackground = true, // If this is the last thread running, allow exit.
                         };
                         _timer.Start();
                         break;
@@ -475,11 +466,11 @@ namespace Novell.Directory.Ldap
         {
             private readonly Message _message;
 
-            private readonly int _timeToWait;
+            private readonly int _timeToWaitInMilliseconds;
 
             internal Timeout(int interval, Message msg)
             {
-                _timeToWait = interval;
+                _timeToWaitInMilliseconds = interval;
                 _message = msg;
             }
 
@@ -489,14 +480,16 @@ namespace Novell.Directory.Ldap
             /// </summary>
             protected override void Run()
             {
-                for (var i = 0; i < 10000; i++)
+                var ticksMultiplier = 100;
+                var timeToWaitInMultiplierOfTicks = _timeToWaitInMilliseconds * ticksMultiplier;
+                for (var i = 0; i < TimeSpan.TicksPerMillisecond / ticksMultiplier; i++)
                 {
                     if (IsStopping)
                     {
                         return;
                     }
 
-                    Thread.Sleep(new TimeSpan(_timeToWait));
+                    Thread.Sleep(new TimeSpan(timeToWaitInMultiplierOfTicks));
                 }
 
                 _message._acceptReplies = false;

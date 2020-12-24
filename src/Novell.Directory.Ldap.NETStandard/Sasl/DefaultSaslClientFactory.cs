@@ -1,5 +1,5 @@
-﻿using System;
-using Novell.Directory.Ldap.Sasl.Clients;
+﻿using Novell.Directory.Ldap.Sasl.Clients;
+using System;
 
 namespace Novell.Directory.Ldap.Sasl
 {
@@ -7,7 +7,10 @@ namespace Novell.Directory.Ldap.Sasl
     {
         public static ISaslClient CreateClient(SaslRequest saslRequest)
         {
-            if (saslRequest == null) throw new ArgumentNullException(nameof(saslRequest));
+            if (saslRequest == null)
+            {
+                throw new ArgumentNullException(nameof(saslRequest));
+            }
 
             if (!IsSaslMechanismSupported(saslRequest.SaslMechanism))
             {
@@ -22,7 +25,8 @@ namespace Novell.Directory.Ldap.Sasl
                     return new DigestMD5Client(saslRequest);
                 case SaslConstants.Mechanism.Plain:
                     return new PlainClient(saslRequest);
-                //case LdapConstants.SaslMechanism.GssApi:
+
+                // case LdapConstants.SaslMechanism.GssApi:
                 default:
                     return null;
             }
@@ -30,7 +34,10 @@ namespace Novell.Directory.Ldap.Sasl
 
         public static bool IsSaslMechanismSupported(string mechanism)
         {
-            if (string.IsNullOrEmpty(mechanism)) return false;
+            if (string.IsNullOrEmpty(mechanism))
+            {
+                return false;
+            }
 
             switch (mechanism)
             {

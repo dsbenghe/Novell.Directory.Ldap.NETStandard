@@ -21,23 +21,23 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Asn1;
 using System;
 using System.IO;
-using Novell.Directory.Ldap.Asn1;
 
 namespace Novell.Directory.Ldap.Controls
 {
     /// <summary>
-    /// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an 
-    /// LDAP server to return an extended form of the objects DN: <GUID=guid_value>;dn.
+    /// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an
+    /// LDAP server to return an extended form of the objects DN:. <GUID=guid_value>;dn.
+    /// See https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/57056773-932c-4e55-9491-e13f49ba580c
     /// </summary>
-    /// <see cref="https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/57056773-932c-4e55-9491-e13f49ba580c"/>
     public class ExtendedDnControl : LdapControl
     {
         private const string ExtendedDnControlOID = "1.2.840.113556.1.4.529";
 
-        private readonly LberEncoder encoder = new LberEncoder();
-        private readonly Asn1Sequence controlValue = new Asn1Sequence();
+        private readonly LberEncoder _encoder = new LberEncoder();
+        private readonly Asn1Sequence _controlValue = new Asn1Sequence();
 
         /// <summary>
         /// Creates a new ExtendedDnControl using the specified flag.
@@ -49,19 +49,19 @@ namespace Novell.Directory.Ldap.Controls
         public ExtendedDnControl(GuidFormatFlag flag, bool critical)
             : base(ExtendedDnControlOID, critical, null)
         {
-            controlValue.Add(new Asn1Integer((int)flag));
+            _controlValue.Add(new Asn1Integer((int)flag));
 
             try
             {
                 using (var encodedData = new MemoryStream())
                 {
-                    controlValue.Encode(encoder, encodedData);
+                    _controlValue.Encode(_encoder, encodedData);
                     SetValue(encodedData.ToArray());
                 }
             }
             catch (IOException e)
             {
-                //Shouldn't occur unless there is a serious failure
+                // Shouldn't occur unless there is a serious failure
                 throw new InvalidOperationException("Unable to create instance of ExtendedDnControl", e);
             }
         }
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Controls
         public enum GuidFormatFlag
         {
             Hex,
-            String
+            String,
         }
     }
 }

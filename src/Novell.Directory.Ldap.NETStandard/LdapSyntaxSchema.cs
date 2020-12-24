@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,20 +21,11 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapSyntaxSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -66,7 +57,7 @@ namespace Novell.Directory.Ldap
         public LdapSyntaxSchema(string oid, string description)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
         {
-            Oid = oid;
+            Id = oid;
             Description = description;
             Value = FormatString();
         }
@@ -88,7 +79,7 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Id != null)
                 {
-                    Oid = parser.Id;
+                    Id = parser.Id;
                 }
 
                 if (parser.Description != null)
@@ -99,7 +90,7 @@ namespace Novell.Directory.Ldap
                 var qualifiers = parser.Qualifiers;
                 while (qualifiers.MoveNext())
                 {
-                    var attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    var attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 

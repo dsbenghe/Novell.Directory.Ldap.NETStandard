@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,9 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.RespControlVector.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -40,55 +32,38 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     existing Vector class so that it can be used to maintain a
     ///     list of currently registered control responses.
     /// </summary>
-    public class RespControlVector : ArrayList
+    public class RespControlVector
     {
-        public RespControlVector(int cap, int incr)
-            : base(cap)
-        {
-        }
+        private readonly object _lockObject = new object();
+        private readonly List<RegisteredControl> _controls = new List<RegisteredControl>();
 
-        /* Adds a control to the current list of registered response controls.
-        *
-        */
-
+        /// <summary>
+        /// Adds a control to the current list of registered response controls.
+        /// </summary>
+        /// <param name="oid"></param>
+        /// <param name="controlClass"></param>
         public void RegisterResponseControl(string oid, Type controlClass)
         {
-            lock (this)
+            lock (_lockObject)
             {
-                Add(new RegisteredControl(this, oid, controlClass));
+                _controls.Add(new RegisteredControl(oid, controlClass));
             }
         }
 
-        /* Searches the list of registered controls for a mathcing control.  We
-        * search using the OID string.  If a match is found we return the
-        * Class name that was provided to us on registration.
-        */
-
+        /// <summary>
+        /// Searches the list of registered controls for a matching control.
+        /// We search using the OID string.
+        /// If a match is found we return the Class name that was provided to us on registration.
+        /// </summary>
+        /// <param name="searchOid"></param>
+        /// <returns></returns>
         public Type FindResponseControl(string searchOid)
         {
-            lock (this)
+            lock (_lockObject)
             {
-                RegisteredControl ctl = null;
-
-                /* loop through the contents of the vector */
-                for (var i = 0; i < Count; i++)
-                {
-                    /* Get next registered control */
-                    if ((ctl = (RegisteredControl)ToArray()[i]) == null)
-                    {
-                        throw new FieldAccessException();
-                    }
-
-                    /* Does the stored OID match with whate we are looking for */
-                    if (ctl.MyOid.CompareTo(searchOid) == 0)
-                    {
-                        /* Return the class name if we have match */
-                        return ctl.MyClass;
-                    }
-                }
-
-                /* The requested control does not have a registered response class */
-                return null;
+                return _controls
+                    .SingleOrDefault(x => x.MyOid.Equals(searchOid, StringComparison.OrdinalIgnoreCase))
+                    ?.MyClass;
             }
         }
 
@@ -99,18 +74,15 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         private class RegisteredControl
         {
-            public readonly Type MyClass;
+            public Type MyClass { get; }
 
-            public readonly string MyOid;
+            public string MyOid { get; }
 
-            public RegisteredControl(RespControlVector enclosingInstance, string oid, Type controlClass)
+            public RegisteredControl(string oid, Type controlClass)
             {
-                EnclosingInstance = enclosingInstance;
                 MyOid = oid;
                 MyClass = controlClass;
             }
-
-            public RespControlVector EnclosingInstance { get; }
         }
     }
 }

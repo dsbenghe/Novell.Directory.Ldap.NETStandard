@@ -1,6 +1,6 @@
-﻿using System;
+﻿using FluentAssertions;
+using System;
 using System.Collections.Generic;
-using FluentAssertions;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
@@ -14,6 +14,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
             {
                 cn = cnPrefix + "_" + cn;
             }
+
             var attributeSet = new LdapAttributeSet
             {
                 new LdapAttribute("cn", cn),
@@ -21,7 +22,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
                 new LdapAttribute("givenName", "Lionel"),
                 new LdapAttribute("sn", "Messi"),
                 new LdapAttribute("mail", cn + "@gmail.com"),
-                new LdapAttribute("userPassword", TestsConfig.DefaultPassword)
+                new LdapAttribute("userPassword", TestsConfig.DefaultPassword),
             };
 
             var dn = TestHelper.BuildDn(cn);

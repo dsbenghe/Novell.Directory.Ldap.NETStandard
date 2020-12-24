@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,16 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Asn1.LBEREncoder.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -78,11 +68,11 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            outRenamed.WriteByte((byte)(b.BooleanValue() ? (byte)SupportClass.Identity(0xff) : (byte)0x00));
+            outRenamed.WriteByte(b.BooleanValue() ? (byte)0xff : (byte)0x00);
         }
 
         /// <summary>
-        ///     Encode an Asn1Numeric directly into the specified outputstream.
+        ///     Encode an Asn1Numeric directly into the specified output stream.
         ///     Use a two's complement representation in the fewest number of octets
         ///     possible.
         ///     Can be used to encode INTEGER and ENUMERATED values.
@@ -102,12 +92,12 @@ namespace Novell.Directory.Ldap.Asn1
             }
 
             Encode(n.GetIdentifier(), outRenamed);
-            outRenamed.WriteByte((byte)len); // Length
-            for (var i = len - 1; i >= 0; i--)
+            outRenamed.WriteByte(len); // Length
 
-                // Content
+            // Content
+            for (var i = len - 1; i >= 0; i--)
             {
-                outRenamed.WriteByte((byte)octets[i]);
+                outRenamed.WriteByte(octets[i]);
             }
         }
 

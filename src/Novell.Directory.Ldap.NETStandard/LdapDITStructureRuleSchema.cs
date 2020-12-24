@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapDITStructureRuleSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -83,8 +74,8 @@ namespace Novell.Directory.Ldap
             string[] superiorIDs)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.Ditstructure])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
+            Names = new string[names.Length];
+            names.CopyTo(Names, 0);
             RuleId = ruleId;
             Description = description;
             Obsolete = obsolete;
@@ -111,8 +102,8 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
                 if (parser.Id != null)
@@ -141,7 +132,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -183,7 +174,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A list of all structure rules that are superior to this structure rule.
         /// </returns>
-        public string[] Superiors { get; } = {string.Empty };
+        public string[] Superiors { get; } = { string.Empty };
 
         /// <summary>
         ///     Returns a string in a format suitable for directly adding to a
@@ -199,7 +190,7 @@ namespace Novell.Directory.Ldap
             var token = RuleId.ToString();
             valueBuffer.Append(token);
 
-            var strArray = Names;
+            var strArray = GetNames();
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

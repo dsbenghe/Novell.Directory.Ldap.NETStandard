@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Utilclass.ExceptionMessages.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using System.Collections.Generic;
 
@@ -111,59 +102,59 @@ namespace Novell.Directory.Ldap.Utilclass
 
         internal static readonly Dictionary<string, string> MessageMap = new Dictionary<string, string>
         {
-            {Tostring, "{0}: {1} ({2}) {3}" },
-            {ServerMsg, "{0}: Server Message: {1}" },
-            {MatchedDn, "{0}: Matched DN: {1}" },
-            {FailedReferral, "{0}: Failed Referral: {1}" },
-            {ReferralItem, "{0}: Referral: {1}" },
-            {ConnectionError, "Unable to connect to server {0}:{1}" },
-            {ConnectionImpossible, "Unable to reconnect to server, application has never called connect()" },
-            {ConnectionWait, "Connection lost waiting for results from {0}:{1}" },
-            {ConnectionFinalized, "Connection closed by the application finalizing the object" },
-            {ConnectionClosed, "Connection closed by the application disconnecting" },
-            {ConnectionReader, "Reader thread terminated" },
-            {DupError, "RfcLdapMessage: Cannot duplicate message built from the input stream" },
-            {ReferenceError, "Error attempting to follow a search continuation reference" },
-            {ReferralError, "Error attempting to follow a referral" },
-            {ReferralLocal, "LdapSearchResults.{0}(): No entry found & request is not complete" },
-            {ReferralSend, "Error sending request to referred server" },
-            {ReferenceNofollow, "Search result reference received, and referral following is off" },
-            {ReferralBind, "LdapBind.bind() function returned null" },
-            {ReferralBindMatch, "Could not match LdapBind.bind() connection with Server Referral URL list" },
-            {NoDupRequest, "Cannot duplicate message to follow referral for {0} request, not allowed" },
-            {ServerConnectError, "Error connecting to server {0} while attempting to follow a referral" },
-            {NoSupProperty, "Requested property is not supported." },
-            {EntryParamError, "Invalid Entry parameter" },
-            {DnParamError, "Invalid DN parameter" },
-            {RdnParamError, "Invalid DN or RDN parameter" },
-            {OpParamError, "Invalid extended operation parameter, no OID specified" },
-            {ParamError, "Invalid parameter" },
-            {DecodingError, "Error Decoding responseValue" },
-            {EncodingError, "Encoding Error" },
-            {IoException, "I/O Exception on host {0}, port {1}" },
-            {InvalidEscape, "Invalid value in escape sequence \"{0}\"" },
-            {ShortEscape, "Incomplete escape sequence" },
-            {UnexpectedEnd, "Unexpected end of filter" },
-            {MissingLeftParen, "Unmatched parentheses, left parenthesis missing" },
-            {NoOption, "Semicolon present, but no option specified" },
-            {MissingRightParen, "Unmatched parentheses, right parenthesis missing" },
-            {ExpectingRightParen, "Expecting right parenthesis, found \"{0}\"" },
-            {ExpectingLeftParen, "Expecting left parenthesis, found \"{0}\"" },
-            {NoAttributeName, "Missing attribute description" },
-            {NoDnNorMatchingRule, "DN and matching rule not specified" },
-            {NoMatchingRule, "Missing matching rule" },
-            {InvalidFilterComparison, "Invalid comparison operator" },
-            {InvalidCharInFilter, "The invalid character \"{0}\" needs to be escaped as \"{1}\"" },
-            {InvalidEscInDescr, "Escape sequence not allowed in attribute description" },
-            {InvalidCharInDescr, "Invalid character \"{0}\" in attribute description" },
-            {NotAnAttribute, "Schema element is not an LdapAttributeSchema object" },
-            {UnequalLengths, "Length of attribute Name array does not equal length of Flags array" },
-            {ImproperReferral, "Referral not supported for command {0}" },
-            {NotImplemented, "Method LdapConnection.startTLS not implemented" },
-            {NoMemory, "All results could not be stored in memory, sort failed" },
-            {ServerShutdownReq, "Received unsolicited notification from server {0}:{1} to shutdown" },
-            {InvalidAddress, "Invalid syntax for address with port; {0}" },
-            {UnknownResult, "Unknown Ldap result code {0}" },
+            { Tostring, "{0}: {1} ({2}) {3}" },
+            { ServerMsg, "{0}: Server Message: {1}" },
+            { MatchedDn, "{0}: Matched DN: {1}" },
+            { FailedReferral, "{0}: Failed Referral: {1}" },
+            { ReferralItem, "{0}: Referral: {1}" },
+            { ConnectionError, "Unable to connect to server {0}:{1}" },
+            { ConnectionImpossible, "Unable to reconnect to server, application has never called connect()" },
+            { ConnectionWait, "Connection lost waiting for results from {0}:{1}" },
+            { ConnectionFinalized, "Connection closed by the application finalizing the object" },
+            { ConnectionClosed, "Connection closed by the application disconnecting" },
+            { ConnectionReader, "Reader thread terminated" },
+            { DupError, "RfcLdapMessage: Cannot duplicate message built from the input stream" },
+            { ReferenceError, "Error attempting to follow a search continuation reference" },
+            { ReferralError, "Error attempting to follow a referral" },
+            { ReferralLocal, "LdapSearchResults.{0}(): No entry found & request is not complete" },
+            { ReferralSend, "Error sending request to referred server" },
+            { ReferenceNofollow, "Search result reference received, and referral following is off" },
+            { ReferralBind, "LdapBind.bind() function returned null" },
+            { ReferralBindMatch, "Could not match LdapBind.bind() connection with Server Referral URL list" },
+            { NoDupRequest, "Cannot duplicate message to follow referral for {0} request, not allowed" },
+            { ServerConnectError, "Error connecting to server {0} while attempting to follow a referral" },
+            { NoSupProperty, "Requested property is not supported." },
+            { EntryParamError, "Invalid Entry parameter" },
+            { DnParamError, "Invalid DN parameter" },
+            { RdnParamError, "Invalid DN or RDN parameter" },
+            { OpParamError, "Invalid extended operation parameter, no OID specified" },
+            { ParamError, "Invalid parameter" },
+            { DecodingError, "Error Decoding responseValue" },
+            { EncodingError, "Encoding Error" },
+            { IoException, "I/O Exception on host {0}, port {1}" },
+            { InvalidEscape, "Invalid value in escape sequence \"{0}\"" },
+            { ShortEscape, "Incomplete escape sequence" },
+            { UnexpectedEnd, "Unexpected end of filter" },
+            { MissingLeftParen, "Unmatched parentheses, left parenthesis missing" },
+            { NoOption, "Semicolon present, but no option specified" },
+            { MissingRightParen, "Unmatched parentheses, right parenthesis missing" },
+            { ExpectingRightParen, "Expecting right parenthesis, found \"{0}\"" },
+            { ExpectingLeftParen, "Expecting left parenthesis, found \"{0}\"" },
+            { NoAttributeName, "Missing attribute description" },
+            { NoDnNorMatchingRule, "DN and matching rule not specified" },
+            { NoMatchingRule, "Missing matching rule" },
+            { InvalidFilterComparison, "Invalid comparison operator" },
+            { InvalidCharInFilter, "The invalid character \"{0}\" needs to be escaped as \"{1}\"" },
+            { InvalidEscInDescr, "Escape sequence not allowed in attribute description" },
+            { InvalidCharInDescr, "Invalid character \"{0}\" in attribute description" },
+            { NotAnAttribute, "Schema element is not an LdapAttributeSchema object" },
+            { UnequalLengths, "Length of attribute Name array does not equal length of Flags array" },
+            { ImproperReferral, "Referral not supported for command {0}" },
+            { NotImplemented, "Method LdapConnection.startTLS not implemented" },
+            { NoMemory, "All results could not be stored in memory, sort failed" },
+            { ServerShutdownReq, "Received unsolicited notification from server {0}:{1} to shutdown" },
+            { InvalidAddress, "Invalid syntax for address with port; {0}" },
+            { UnknownResult, "Unknown Ldap result code {0}" },
             {
                 OutstandingOperations,
                 "Cannot start or stop TLS because outstanding Ldap operations exist on this connection"
@@ -172,14 +163,14 @@ namespace Novell.Directory.Ldap.Utilclass
                 WrongFactory,
                 "StartTLS cannot use the set socket factory because it does not implement LdapTLSSocketFactory"
             },
-            {NoTlsFactory, "StartTLS failed because no LdapTLSSocketFactory has been set for this Connection" },
-            {NoStarttls, "An attempt to stopTLS on a connection where startTLS had not been called" },
-            {StoptlsError, "Error stopping TLS: Error getting input & output streams from the original socket" },
-            {MultipleSchema, "Multiple schema found when reading the subschemaSubentry for {0}" },
-            {NoSchema, "No schema found when reading the subschemaSubentry for {0}" },
-            {ReadMultiple, "Read response is ambiguous, multiple entries returned" },
-            {CannotBind, "Cannot bind. Use PoolManager.getBoundConnection()" },
-            {SslProviderMissing, "Please ensure that SSL Provider is properly installed." }
+            { NoTlsFactory, "StartTLS failed because no LdapTLSSocketFactory has been set for this Connection" },
+            { NoStarttls, "An attempt to stopTLS on a connection where startTLS had not been called" },
+            { StoptlsError, "Error stopping TLS: Error getting input & output streams from the original socket" },
+            { MultipleSchema, "Multiple schema found when reading the subschemaSubentry for {0}" },
+            { NoSchema, "No schema found when reading the subschemaSubentry for {0}" },
+            { ReadMultiple, "Read response is ambiguous, multiple entries returned" },
+            { CannotBind, "Cannot bind. Use PoolManager.getBoundConnection()" },
+            { SslProviderMissing, "Please ensure that SSL Provider is properly installed." },
         };
 
         public static string GetErrorMessage(string code)

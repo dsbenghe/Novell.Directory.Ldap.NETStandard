@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapObjectClassSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
+using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
 using System.IO;
 using System.Text;
-using Novell.Directory.Ldap.Utilclass;
 
 namespace Novell.Directory.Ldap
 {
@@ -101,9 +92,9 @@ namespace Novell.Directory.Ldap
             string[] required, string[] optional, int type, bool obsolete)
             : base(LdapSchema.SchemaTypeNames[LdapSchema.ObjectClass])
         {
-            this.names = new string[names.Length];
-            names.CopyTo(this.names, 0);
-            Oid = oid;
+            Names = new string[names.Length];
+            names.CopyTo(Names, 0);
+            Id = oid;
             Description = description;
             Type = type;
             Obsolete = obsolete;
@@ -145,13 +136,13 @@ namespace Novell.Directory.Ldap
 
                 if (parser.Names != null)
                 {
-                    names = new string[parser.Names.Length];
-                    parser.Names.CopyTo(names, 0);
+                    Names = new string[parser.Names.Length];
+                    parser.Names.CopyTo(Names, 0);
                 }
 
                 if (parser.Id != null)
                 {
-                    Oid = parser.Id;
+                    Id = parser.Id;
                 }
 
                 if (parser.Description != null)
@@ -183,7 +174,7 @@ namespace Novell.Directory.Ldap
                 AttributeQualifier attrQualifier;
                 while (qualifiers.MoveNext())
                 {
-                    attrQualifier = (AttributeQualifier)qualifiers.Current;
+                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -255,7 +246,7 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append(token);
             }
 
-            var strArray = Names;
+            var strArray = GetNames();
             if (strArray != null)
             {
                 valueBuffer.Append(" NAME ");

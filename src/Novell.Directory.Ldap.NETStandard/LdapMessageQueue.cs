@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapMessageQueue.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 
@@ -43,19 +34,19 @@ namespace Novell.Directory.Ldap
     public abstract class LdapMessageQueue : IDebugIdentifier
     {
         public virtual DebugId DebugId { get; } = DebugId.ForType<LdapMessageQueue>();
-    
+
         /// <summary> The message agent object associated with this queue.</summary>
-        internal MessageAgent Agent;
+        private readonly MessageAgent _agent;
 
         /// <summary>
         ///     Constructs a response queue using the specified message agent.
         /// </summary>
         /// <param name="agent">
-        ///     The message agent to associate with this conneciton.
+        ///     The message agent to associate with this connection.
         /// </param>
         internal LdapMessageQueue(string myname, MessageAgent agent)
         {
-            Agent = agent;
+            _agent = agent;
         }
 
         /// <summary>
@@ -64,7 +55,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The internal client message agent.
         /// </returns>
-        internal MessageAgent MessageAgent => Agent;
+        internal MessageAgent MessageAgent => _agent;
 
         /// <summary>
         ///     Returns the message IDs for all outstanding requests. These are requests
@@ -76,7 +67,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The message IDs for all outstanding requests.
         /// </returns>
-        public int[] MessageIDs => Agent.MessageIDs;
+        public int[] MessageIDs => _agent.MessageIDs;
 
         /// <summary>
         ///     Returns the response from an Ldap request.
@@ -145,7 +136,7 @@ namespace Novell.Directory.Ldap
         {
             object resp;
             LdapMessage response;
-            if ((resp = Agent.GetLdapMessage(msgid)) == null)
+            if ((resp = _agent.GetLdapMessage(msgid)) == null)
             {
                 // blocks
                 return null; // no messages from this agent
@@ -197,7 +188,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool IsResponseReceived()
         {
-            return Agent.IsResponseReceived();
+            return _agent.IsResponseReceived();
         }
 
         /// <summary>
@@ -215,7 +206,7 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public bool IsResponseReceived(int msgid)
         {
-            return Agent.IsResponseReceived(msgid);
+            return _agent.IsResponseReceived(msgid);
         }
 
         /// <summary>
@@ -229,7 +220,7 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public bool IsComplete(int msgid)
         {
-            return Agent.IsComplete(msgid);
+            return _agent.IsComplete(msgid);
         }
     }
 }

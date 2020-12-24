@@ -10,11 +10,13 @@ namespace Novell.Directory.Ldap.Sasl
         /// </summary>
         Invalid = 0,
 
-        // "auth" 
+        // "auth"
         AuthenticationOnly = 1,
+
         // "auth-int"
         AuthenticationWithIntegrityProtection = 2,
+
         // "auth-conf"
-        AuthenticationWithIntegrityAndPrivacyProtection = 4
+        AuthenticationWithIntegrityAndPrivacyProtection = 4,
     }
 }

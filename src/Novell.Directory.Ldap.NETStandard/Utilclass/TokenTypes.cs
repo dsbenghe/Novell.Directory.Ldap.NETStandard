@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.,  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.TokenType.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
@@ -42,6 +33,6 @@ namespace Novell.Directory.Ldap.Utilclass
         Number = -2,
         Word = -3,
         Real = -4,
-        String = -5
+        String = -5,
     }
 }

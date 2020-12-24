@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,23 +21,14 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Utilclass.RespExtensionSet.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
-using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
-    ///     This  class  extends the AbstractSet and Implements the Set
+    ///     This  class implements a Set
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>

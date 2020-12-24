@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.MessageVector.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
 using System.Collections;
 using System.Linq;
@@ -40,11 +31,15 @@ namespace Novell.Directory.Ldap
     ///     The. <code>MessageVector</code> class implements additional semantics
     ///     to Vector needed for handling messages.
     /// </summary>
-    internal class MessageVector : ArrayList
+    // TODO - This is locking on this because the same lock is used outside the type - this needs to be improved before removing lock(this)
+#pragma warning disable CA2002 // Do not lock on objects with weak identity
+    internal class MessageVector
     {
+        private readonly ArrayList _arrayList;
+
         internal MessageVector(int cap)
-            : base(cap)
         {
+            _arrayList = new ArrayList(cap);
         }
 
         /// <summary>
@@ -60,7 +55,7 @@ namespace Novell.Directory.Ldap
             lock (this)
             {
                 var results = ToArray();
-                Clear();
+                _arrayList.Clear();
                 return results;
             }
         }
@@ -81,7 +76,7 @@ namespace Novell.Directory.Ldap
         {
             lock (this)
             {
-                var message = this.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
+                var message = _arrayList.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
                 if (message == null)
                 {
                     throw new FieldAccessException();
@@ -90,5 +85,92 @@ namespace Novell.Directory.Ldap
                 return message;
             }
         }
+
+        /// <summary>
+        ///     Adds an object to the end of the Vector.
+        /// </summary>
+        /// <returns>
+        ///     The  index at which the message has been added.
+        /// </returns>
+        public int Add(object message)
+        {
+            lock (this)
+            {
+                return _arrayList.Add(message);
+            }
+        }
+
+        /// <summary>
+        ///     Removes the first occurrence of a specific object from the Vector.
+        /// </summary>
+        public void Remove(object message)
+        {
+            lock (this)
+            {
+                _arrayList.Remove(message);
+            }
+        }
+
+        /// <summary>
+        ///     Gets the number of elements actually contained in the Vector.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _arrayList.Count;
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Gets the Message at the specified index.
+        /// </summary>
+        public object this[int index]
+        {
+            get
+            {
+                lock (this)
+                {
+                    return _arrayList[index];
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Removes the element at the specified index.
+        /// </summary>
+        public void RemoveAt(int index)
+        {
+            lock (this)
+            {
+                _arrayList.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        ///     Copies the elements to a new array.
+        /// </summary>
+        public object[] ToArray()
+        {
+            lock (this)
+            {
+                return _arrayList.ToArray();
+            }
+        }
+
+        /// <summary>
+        ///     Removes all elements.
+        /// </summary>
+        public void Clear()
+        {
+            lock (this)
+            {
+                _arrayList.Clear();
+            }
+        }
     }
+#pragma warning restore CA2002 // Do not lock on objects with weak identity
 }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Events.PSearchEventSource.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Controls;
+using System;
 
 namespace Novell.Directory.Ldap.Events
 {
@@ -275,11 +266,6 @@ namespace Novell.Directory.Ldap.Events
                         EventClassifiers.ClassificationLdapPsearch,
                         LdapEventType.LdapPsearchAny));
                     bListenersNotified = true;
-                    break;
-
-                default:
-                    // This seems to be some unknown event.
-                    // Let this be notified to generic DirectoryListeners in the base class...
                     break;
             }
 

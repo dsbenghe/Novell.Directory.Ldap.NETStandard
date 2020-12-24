@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -20,15 +20,6 @@
 * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 * SOFTWARE.
 *******************************************************************************/
-
-//
-// Novell.Directory.Ldap.Rfc2251.RfcAbandonRequest.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
 
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
@@ -55,7 +46,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
         {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] {"Abandon" },
+            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "Abandon" },
                 LdapException.LdapNotSupported, null);
         }
 

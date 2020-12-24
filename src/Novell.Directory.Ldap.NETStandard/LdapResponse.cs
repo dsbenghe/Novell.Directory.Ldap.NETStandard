@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,19 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapResponse.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System;
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System;
 
 namespace Novell.Directory.Ldap
 {
@@ -157,17 +148,17 @@ namespace Novell.Directory.Ldap
                     return _exception.LdapErrorMessage;
                 }
 
-/*              RfcResponse resp=(RfcResponse)( message.Response);
-                if(resp == null)
-                    Console.WriteLine(" Response is null");
-                else
-                    Console.WriteLine(" Response is non null");
-                string str=resp.getErrorMessage().stringValue();
-                if( str==null)
-                     Console.WriteLine("str is null..");
-                Console.WriteLine(" Response is non null" + str);
-                return str;
-*/
+                /*              RfcResponse resp=(RfcResponse)( message.Response);
+                                if(resp == null)
+                                    Console.WriteLine(" Response is null");
+                                else
+                                    Console.WriteLine(" Response is non null");
+                                string str=resp.getErrorMessage().stringValue();
+                                if( str==null)
+                                     Console.WriteLine("str is null..");
+                                Console.WriteLine(" Response is non null" + str);
+                                return str;
+                */
                 return ((IRfcResponse)Message.Response).GetErrorMessage().StringValue();
             }
         }

@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,15 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Events.LdapEventArgs.cs
-//
-// Author:
-//   Anil Bhatia (banil@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System.Text;
 
 namespace Novell.Directory.Ldap.Events
@@ -42,30 +33,24 @@ namespace Novell.Directory.Ldap.Events
     /// <seealso cref='Novell.Directory.Ldap.Events.SearchReferralEventArgs' />
     public class LdapEventArgs : DirectoryEventArgs
     {
-        protected LdapEventType EType;
-
         public LdapEventArgs(
             LdapMessage sourceMessage,
             EventClassifiers aClassification,
             LdapEventType aType)
             : base(sourceMessage, aClassification)
         {
-            EType = aType;
+            EventType = aType;
         }
 
-        public LdapEventType EventType
-        {
-            get => EType;
-            set => EType = value;
-        }
+        public LdapEventType EventType { get; set; }
 
         public override string ToString()
         {
             var buf = new StringBuilder();
             buf.Append("[");
             buf.AppendFormat("{0}:", GetType());
-            buf.AppendFormat("(Classification={0})", EClassification);
-            buf.AppendFormat("(Type={0})", EType);
+            buf.AppendFormat("(Classification={0})", EventClassification);
+            buf.AppendFormat("(Type={0})", EventType);
             buf.AppendFormat("(EventInformation:{0})", LdapMessage);
             buf.Append("]");
 

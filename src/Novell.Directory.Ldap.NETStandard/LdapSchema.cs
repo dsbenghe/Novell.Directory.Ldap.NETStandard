@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.LdapSchema.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
@@ -115,7 +105,7 @@ namespace Novell.Directory.Ldap
         internal static readonly string[] SchemaTypeNames =
         {
             "attributeTypes", "objectClasses", "ldapSyntaxes",
-            "nameForms", "dITContentRules", "dITStructureRules", "matchingRules", "matchingRuleUse"
+            "nameForms", "dITContentRules", "dITStructureRules", "matchingRules", "matchingRuleUse",
         };
 
         /// <summary>
@@ -162,7 +152,7 @@ namespace Novell.Directory.Ldap
             var itr = GetAttributeSet().GetEnumerator();
             while (itr.MoveNext())
             {
-                var attr = (LdapAttribute)itr.Current;
+                var attr = itr.Current;
                 string valueRenamed, attrName = attr.Name;
                 var enumString = attr.StringValues;
 
@@ -402,7 +392,7 @@ namespace Novell.Directory.Ldap
         private void AddElement(int schemaType, LdapSchemaElement element)
         {
             _idTable[schemaType][element.Id] = element;
-            var names = element.Names;
+            var names = element.GetNames();
             foreach (var name in names)
             {
                 _nameTable[schemaType][name.ToUpper()] = element;

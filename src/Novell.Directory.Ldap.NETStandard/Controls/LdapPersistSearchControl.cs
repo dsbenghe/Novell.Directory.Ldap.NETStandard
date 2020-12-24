@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,17 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
-//
-// Novell.Directory.Ldap.Controls.LdapPersistSearchControl.cs
-//
-// Author:
-//   Sunil Kumar (Sunilk@novell.com)
-//
-// (C) 2003 Novell, Inc (http://www.novell.com)
-//
-
-using System.Text;
 using Novell.Directory.Ldap.Asn1;
+using System.Text;
 
 namespace Novell.Directory.Ldap.Controls
 {
@@ -69,19 +60,19 @@ namespace Novell.Directory.Ldap.Controls
         public const int Moddn = 8;
 
         /* private data members */
-        private static readonly int SequenceSize = 3;
+        private const int SequenceSize = 3;
 
-        private static readonly int ChangetypesIndex = 0;
-        private static readonly int ChangesonlyIndex = 1;
-        private static readonly int ReturncontrolsIndex = 2;
+        private const int ChangetypesIndex = 0;
+        private const int ChangesonlyIndex = 1;
+        private const int ReturncontrolsIndex = 2;
 
         private static readonly LberEncoder SEncoder;
 
         /// <summary> The requestOID of the persistent search control.</summary>
-        private static readonly string RequestOid = "2.16.840.1.113730.3.4.3";
+        private const string RequestOid = "2.16.840.1.113730.3.4.3";
 
         /// <summary> The responseOID of the psersistent search - entry change control.</summary>
-        private static readonly string ResponseOid = "2.16.840.1.113730.3.4.7";
+        private const string ResponseOid = "2.16.840.1.113730.3.4.7";
 
         /// <summary>
         ///     Change type specifying that you want to track any of the above
@@ -270,7 +261,7 @@ namespace Novell.Directory.Ldap.Controls
         /// <summary>  Sets the encoded value of the LdapControlClass.</summary>
         private void SetValue()
         {
-            base.SetValue(_mSequence.GetEncoding(SEncoder));
+            SetValue(_mSequence.GetEncoding(SEncoder));
         }
     } // end class LdapPersistentSearchControl
 }
