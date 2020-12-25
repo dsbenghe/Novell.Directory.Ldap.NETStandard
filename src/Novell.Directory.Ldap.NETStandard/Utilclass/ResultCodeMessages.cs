@@ -36,8 +36,8 @@ namespace Novell.Directory.Ldap.Utilclass
             { "0", "Success" },
             { "1", "Operations Error" },
             { "2", "Protocol Error" },
-            { "3", "Timelimit Exceeded" },
-            { "4", "Sizelimit Exceeded" },
+            { "3", "Time Limit Exceeded " },
+            { "4", "Size Limit Exceeded" },
             { "5", "Compare False" },
             { "6", "Compare True" },
             { "7", "Authentication Method Not Supported" },
@@ -66,15 +66,19 @@ namespace Novell.Directory.Ldap.Utilclass
             { "52", "Unavailable" },
             { "53", "Unwilling To Perform" },
             { "54", "Loop Detect" },
+            { "60", "Sort Control Missing" },
+            { "61", "Offset Range Error" },
             { "64", "Naming Violation" },
             { "65", "Object Class Violation" },
             { "66", "Not Allowed On Non-leaf" },
             { "67", "Not Allowed On RDN" },
             { "68", "Entry Already Exists" },
             { "69", "Object Class Modifications Prohibited" },
+            { "70", "Results Too Large" },
             { "71", "Affects Multiple DSAs" },
+            { "76", "Virtual List View Error" },
             { "80", "Other" },
-            { "81", "Server Down" },
+            { "81", "Server Connection Closed" },
             { "82", "Local Error" },
             { "83", "Encoding Error" },
             { "84", "Decoding Error" },
@@ -91,14 +95,28 @@ namespace Novell.Directory.Ldap.Utilclass
             { "95", "More Results To Return" },
             { "96", "Client Loop" },
             { "97", "Referral Limit Exceeded" },
+            { "100", "Invalid Response" },
+            { "101", "Ambiguous Response" },
             { "112", "TLS not supported" },
             { "113", "SSL handshake failed" },
             { "114", "SSL Provider not found" },
+            { "118", "Canceled" },
+            { "119", "No Such Operation" },
+            { "120", "Too Late" },
+            { "121", "Cannot Cancel" },
+            { "122", "Assertion Failed" },
+            { "123", "Authorization Denied" },
+            { "16654", "No Operation" },
         };
 
         public static string GetResultCode(string code)
         {
             return ErrorCodes[code];
+        }
+
+        public static bool HasResultCode(string code)
+        {
+            return ErrorCodes.ContainsKey(code);
         }
     } // End ResultCodeMessages
 }
