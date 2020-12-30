@@ -15,7 +15,8 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             var options = new LdapConnectionOptions()
                 .UseSsl()
-                .UseSslProtocols(SslProtocols.None);
+                .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureSslProtocols(SslProtocols.None);
             using var ldapConnection = new LdapConnection(options);
 
             ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
@@ -28,7 +29,8 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 #pragma warning disable CS0618 // Type or member is obsolete
             var options = new LdapConnectionOptions()
                 .UseSsl()
-                .UseSslProtocols(SslProtocols.Ssl2);
+                .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureSslProtocols(SslProtocols.Ssl2);
 #pragma warning restore CS0618 // Type or member is obsolete
             using var ldapConnection = new LdapConnection(options);
 
@@ -46,7 +48,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public void Connect_with_no_ip_selected_throws()
         {
             var options = new LdapConnectionOptions()
-                .UseIpAddressFilter(ip => false);
+                .ConfigureIpAddressFilter(ip => false);
             using var ldapConnection = new LdapConnection(options);
 
             Assert.Throws<ArgumentException>(
@@ -58,7 +60,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public void Connect_with_ipv4_selected_connects()
         {
             var options = new LdapConnectionOptions()
-                .UseIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork);
+                .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork);
             using var ldapConnection = new LdapConnection(options);
 
             ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
@@ -70,7 +72,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public void Connect_with_ipv6_selected_connects()
         {
             var options = new LdapConnectionOptions()
-                .UseIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
+                .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetworkV6);
             using var ldapConnection = new LdapConnection(options);
 
             ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);

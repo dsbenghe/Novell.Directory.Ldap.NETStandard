@@ -1,4 +1,0 @@
-dn: dc=example,dc=com
-objectClass: dcObject
-objectClass: organizationalUnit
-ou: anyorg

@@ -654,7 +654,7 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public LdapExtendedResponse ExtendedOperation(LdapExtendedOperation op, LdapConstraints cons)
         {
-            // Call asynchronous API and get back handler to reponse queue
+            // Call asynchronous API and get back handler to response queue
             var queue = ExtendedOperation(op, cons, null);
             var queueResponse = queue.GetResponse();
             var response = (LdapExtendedResponse)queueResponse;
@@ -800,6 +800,7 @@ namespace Novell.Directory.Ldap
             return new LdapSearchResults(this, queue, cons);
         }
 
+        // [Obsolete("It will change from an event to just a simple delegate")]
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
         {
             add => Connection.OnRemoteCertificateValidation += value;
@@ -807,6 +808,7 @@ namespace Novell.Directory.Ldap
             remove => Connection.OnRemoteCertificateValidation -= value;
         }
 
+        // [Obsolete("It will change from an event to just a simple delegate")]
         public event LocalCertificateSelectionCallback UserDefinedClientCertSelectionDelegate
         {
             add => Connection.OnLocalCertificateSelection += value;

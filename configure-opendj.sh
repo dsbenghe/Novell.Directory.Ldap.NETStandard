@@ -6,4 +6,4 @@ sleep 30
 docker ps -a
 # test to see that is running
 ldapwhoami -H ldap://localhost:4389 -D "cn=admin,dc=example,dc=com" -w password 
-ldapadd -h localhost:4389 -D cn=admin,dc=example,dc=com -w password -f test/conf/baseDn.ldif
+ldapadd -h localhost:4389 -D cn=admin,dc=example,dc=com -w password -f test/conf/setupData.ldif

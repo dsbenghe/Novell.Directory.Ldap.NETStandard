@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// Allow tweaking some of the options of connecting to the Ldap server.
+    /// Allow customizing some of the options of connecting to the Ldap server.
     /// </summary>
     public class LdapConnectionOptions
     {
@@ -36,10 +36,9 @@ namespace Novell.Directory.Ldap
         /// returned by the dns resolving wil be used.
         /// Can be used if for example we want to use exclusively IPV6.
         /// </summary>
-        public LdapConnectionOptions UseIpAddressFilter(Func<IPAddress, bool> ipAddressFilter)
+        public LdapConnectionOptions ConfigureIpAddressFilter(Func<IPAddress, bool> ipAddressFilter)
         {
             IpAddressFilter = ipAddressFilter ?? throw new ArgumentNullException(nameof(ipAddressFilter));
-
             return this;
         }
 
@@ -50,7 +49,6 @@ namespace Novell.Directory.Ldap
         public LdapConnectionOptions UseSsl()
         {
             Ssl = true;
-
             return this;
         }
 
@@ -58,11 +56,10 @@ namespace Novell.Directory.Ldap
         /// Configure the client certificates to be used while establishing the SSL connection.
         /// By default none will be used.
         /// </summary>
-        public LdapConnectionOptions UseClientCertificates(IEnumerable<X509Certificate> clientCertificates)
+        public LdapConnectionOptions ConfigureClientCertificates(IEnumerable<X509Certificate> clientCertificates)
         {
             var clientCertificatesList = clientCertificates?.ToList();
             _clientCertificates = clientCertificatesList ?? throw new ArgumentNullException(nameof(clientCertificatesList));
-
             return this;
         }
 
@@ -70,10 +67,9 @@ namespace Novell.Directory.Ldap
         /// Configure the ssl protocols versions to be used.
         /// By default, the OS selected secure options will be used. Equivalent to <see cref="SslProtocols.None"/>.
         /// </summary>
-        public LdapConnectionOptions UseSslProtocols(SslProtocols sslProtocols)
+        public LdapConnectionOptions ConfigureSslProtocols(SslProtocols sslProtocols)
         {
             SslProtocols = sslProtocols;
-
             return this;
         }
 

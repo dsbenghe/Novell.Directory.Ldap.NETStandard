@@ -1,0 +1,15 @@
+dn: dc=example,dc=com
+objectClass: dcObject
+objectClass: organizationalUnit
+ou: anyorg
+
+# external-test user
+dn: cn=external-test,dc=example,dc=com
+cn: external-test
+sn: external-test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+displayName: External User
+uid: external-test

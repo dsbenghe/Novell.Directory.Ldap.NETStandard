@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void UseSslProtocols_enables_specific_ssl_protocols()
         {
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .UseSslProtocols(SslProtocols.Tls11 | SslProtocols.Tls12);
+                .ConfigureSslProtocols(SslProtocols.Tls11 | SslProtocols.Tls12);
 
             Assert.True(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls11));
             Assert.True(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls12));
@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
                 new X509Certificate(),
             };
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .UseClientCertificates(clientCertificates);
+                .ConfigureClientCertificates(clientCertificates);
 
             Assert.Equal(clientCertificates, ldapConnectionOptions.ClientCertificates);
         }
@@ -70,7 +70,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             bool AlwaysFalseIpAddressFilter(IPAddress ipAddress) => false;
 
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .UseIpAddressFilter(AlwaysFalseIpAddressFilter);
+                .ConfigureIpAddressFilter(AlwaysFalseIpAddressFilter);
 
             var ipAddressV4 = CreateRandomIpAddressV4();
             Assert.Equal(AlwaysFalseIpAddressFilter(ipAddressV4), ldapConnectionOptions.IpAddressFilter(ipAddressV4));
@@ -85,7 +85,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             bool IpAddressFilter(IPAddress ipAddress) => ipAddressV4.Equals(ipAddress);
 
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .UseIpAddressFilter(IpAddressFilter);
+                .ConfigureIpAddressFilter(IpAddressFilter);
 
             Assert.True(ldapConnectionOptions.IpAddressFilter(ipAddressV4));
         }
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             bool IpAddressFilter(IPAddress ipAddress) => ipAddressV4.Equals(ipAddress);
 
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .UseIpAddressFilter(IpAddressFilter);
+                .ConfigureIpAddressFilter(IpAddressFilter);
 
             Assert.False(ldapConnectionOptions.IpAddressFilter(diffIpAddressV4));
         }

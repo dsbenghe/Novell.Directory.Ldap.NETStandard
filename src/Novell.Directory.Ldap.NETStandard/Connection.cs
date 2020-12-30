@@ -228,9 +228,9 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal bool Tls => _nonTlsBackup != null;
 
-        public event RemoteCertificateValidationCallback OnRemoteCertificateValidation;
+        internal event RemoteCertificateValidationCallback OnRemoteCertificateValidation;
 
-        public event LocalCertificateSelectionCallback OnLocalCertificateSelection;
+        internal event LocalCertificateSelectionCallback OnLocalCertificateSelection;
 
         private string GetSslHandshakeErrors()
         {
@@ -447,7 +447,7 @@ namespace Novell.Directory.Ldap
 
         /****************************************************************************/
 
-        public bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
+        internal bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
             if (OnRemoteCertificateValidation != null)
@@ -458,7 +458,7 @@ namespace Novell.Directory.Ldap
             return DefaultCertificateValidationHandler(certificate, chain, sslPolicyErrors);
         }
 
-        public X509Certificate LocalCertificateSelectionCallback(object sender, string targetHost,
+        internal X509Certificate LocalCertificateSelectionCallback(object sender, string targetHost,
             X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers)
         {
             return OnLocalCertificateSelection?.Invoke(sender, targetHost, localCertificates,

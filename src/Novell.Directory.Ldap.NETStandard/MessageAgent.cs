@@ -23,6 +23,7 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Novell.Directory.Ldap
@@ -223,6 +224,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal void SendMessage(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
         {
+            Debug.WriteLine(msg.ToString());
+
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, bindProps);

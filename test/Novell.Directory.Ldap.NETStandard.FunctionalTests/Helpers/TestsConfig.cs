@@ -10,6 +10,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
         public int ServerPortSsl { get; set; }
 
+        public int AlternateServerPort { get; set; }
+
+        public int AlternateServerPortSsl { get; set; }
+
         public string BaseDn { get; set; }
 
         public string RootUserDn { get; set; }

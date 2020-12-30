@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyModel;
+using System;
+using System.Net.Sockets;
+using System.Reflection;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 {
@@ -48,7 +51,9 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
         private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
-            using (var ldapConnection = new LdapConnection())
+            var ldapConnectionOptions = new LdapConnectionOptions()
+                .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork);
+            using (var ldapConnection = new LdapConnection(ldapConnectionOptions))
             {
                 ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
                 var ldapPort = TestsConfig.LdapServer.ServerPort;
@@ -124,6 +129,22 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         public static string BuildDn(string cn)
         {
             return $"cn={cn}," + TestsConfig.LdapServer.BaseDn;
+        }
+
+        public static byte[] GetCertificate(string name)
+        {
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var manifestResourceStream = executingAssembly.GetManifestResourceStream($"{executingAssembly.GetName().Name}.certs.{name}");
+
+            if (manifestResourceStream == null)
+            {
+                throw new ArgumentNullException(nameof(manifestResourceStream));
+            }
+
+            var certBytes = new byte[manifestResourceStream.Length];
+            manifestResourceStream.Read(certBytes, 0, certBytes.Length);
+
+            return certBytes;
         }
     }
 }
