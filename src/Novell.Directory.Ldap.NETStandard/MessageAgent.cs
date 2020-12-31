@@ -23,6 +23,7 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,34 +81,6 @@ namespace Novell.Directory.Ldap
         private object[] RemoveAll()
         {
             return _messages.RemoveAll();
-        }
-
-        /// <summary>
-        ///     Merges two message agents.
-        /// </summary>
-        /// <param name="fromAgent">
-        ///     the agent to be merged into this one.
-        /// </param>
-        internal void Merge(MessageAgent fromAgent)
-        {
-            var msgs = fromAgent.RemoveAll();
-            for (var i = 0; i < msgs.Length; i++)
-            {
-                _messages.Add(msgs[i]);
-                ((Message)msgs[i]).Agent = this;
-            }
-
-            lock (_messages)
-            {
-                if (msgs.Length > 1)
-                {
-                    Monitor.PulseAll(_messages); // wake all threads waiting for messages
-                }
-                else if (msgs.Length == 1)
-                {
-                    Monitor.Pulse(_messages); // only wake one thread
-                }
-            }
         }
 
         /// <summary>
@@ -252,6 +225,8 @@ namespace Novell.Directory.Ldap
         /// </param>
         internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
         {
+            Debug.WriteLine(msg.ToString());
+
             // creating a messageInfo causes the message to be sent
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, bindProps);

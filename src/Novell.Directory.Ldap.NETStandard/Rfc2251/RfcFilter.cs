@@ -458,7 +458,6 @@ namespace Novell.Directory.Ldap.Rfc2251
             int ival, length = stringRenamed.Length;
             byte[] utf8Bytes;
             char ch; // Character we are adding to the octet string
-            var ca = new char[1]; // used while converting multibyte UTF-8 char
             var temp = (char)0; // holds the value of the escaped sequence
 
             // loop through each character of the string and copy them into octets
@@ -466,6 +465,12 @@ namespace Novell.Directory.Ldap.Rfc2251
             for (iString = 0, iOctets = 0; iString < length; iString++)
             {
                 ch = stringRenamed[iString];
+                var codePoint = char.ConvertToUtf32(stringRenamed, iString);
+                if (codePoint > 0xffff)
+                {
+                    iString++;
+                }
+
                 if (escape)
                 {
                     if ((ival = Hex2Int(ch)) < 0)
@@ -507,9 +512,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             }
                             else
                             {
-                                // char > 0x7f, could be encoded in 2 or 3 bytes
-                                ca[0] = ch;
-                                utf8Bytes = Encoding.UTF8.GetBytes(ca);
+                                // char > 0x7f, could be encoded in 2, 3 or 4 bytes
+                                utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
 
                                 // copy utf8 encoded character into octets
                                 Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
@@ -522,8 +526,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         {
                             // found invalid character
                             var escString = string.Empty;
-                            ca[0] = ch;
-                            utf8Bytes = Encoding.UTF8.GetBytes(ca);
+                            utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
 
                             for (var i = 0; i < utf8Bytes.Length; i++)
                             {

@@ -52,7 +52,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                     new Asn1Identifier(Asn1Identifier.Context, true, 3),
                     new RfcSaslCredentials(
                         new RfcLdapString(mechanism),
-                        credentials != null ? new Asn1OctetString(credentials) : null), false))
+                        credentials != null ? new Asn1OctetString(credentials) : new Asn1OctetString(new byte[0])), false))
         {
             // implicit tagging
         }

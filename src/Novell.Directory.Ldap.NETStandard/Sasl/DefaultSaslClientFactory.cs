@@ -25,6 +25,8 @@ namespace Novell.Directory.Ldap.Sasl
                     return new DigestMD5Client(saslRequest);
                 case SaslConstants.Mechanism.Plain:
                     return new PlainClient(saslRequest);
+                case SaslConstants.Mechanism.External:
+                    return new ExternalClient(saslRequest);
 
                 // case LdapConstants.SaslMechanism.GssApi:
                 default:
@@ -44,6 +46,7 @@ namespace Novell.Directory.Ldap.Sasl
                 case SaslConstants.Mechanism.CramMd5:
                 case SaslConstants.Mechanism.DigestMd5:
                 case SaslConstants.Mechanism.Plain:
+                case SaslConstants.Mechanism.External:
                     return true;
                 default:
                     return false;

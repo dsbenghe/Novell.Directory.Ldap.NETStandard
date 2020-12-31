@@ -28,7 +28,7 @@ using System.Collections.Generic;
 namespace Novell.Directory.Ldap.Utilclass
 {
     /// <summary>
-    ///     This  class  extends the AbstractSet and Implements the Set
+    ///     This  class implements a Set
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>

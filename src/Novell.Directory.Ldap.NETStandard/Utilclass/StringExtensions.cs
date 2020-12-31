@@ -2,12 +2,12 @@
 
 namespace Novell.Directory.Ldap.Utilclass
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         /// <summary>
         /// Replaces string.Substring(offset).StartsWith(value) and avoids memory allocations.
         /// </summary>
-        public static bool StartsWithStringAtOffset(this string baseString, string value, int offset)
+        internal static bool StartsWithStringAtOffset(this string baseString, string value, int offset)
         {
             if (value == null)
             {
@@ -29,7 +29,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 return false;
             }
 
-            for (int i = 0; i < value.Length; i++)
+            for (var i = 0; i < value.Length; i++)
             {
                 if (baseString[offset + i] != value[i])
                 {

@@ -68,11 +68,11 @@ namespace Novell.Directory.Ldap.Asn1
             outRenamed.WriteByte(0x01);
 
             /* Encode the boolean content*/
-            outRenamed.WriteByte(b.BooleanValue() ? (byte)SupportClass.Identity(0xff) : (byte)0x00);
+            outRenamed.WriteByte(b.BooleanValue() ? (byte)0xff : (byte)0x00);
         }
 
         /// <summary>
-        ///     Encode an Asn1Numeric directly into the specified outputstream.
+        ///     Encode an Asn1Numeric directly into the specified output stream.
         ///     Use a two's complement representation in the fewest number of octets
         ///     possible.
         ///     Can be used to encode INTEGER and ENUMERATED values.

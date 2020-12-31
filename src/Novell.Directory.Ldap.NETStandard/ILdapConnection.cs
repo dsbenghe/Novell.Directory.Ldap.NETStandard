@@ -299,16 +299,11 @@ namespace Novell.Directory.Ldap
         ///     in turn until a connection can be established.
         /// </summary>
         /// <param name="host">
-        ///     A host name or a dotted string representing the IP address
-        ///     of a host running an Ldap server. It may also
-        ///     contain a list of host names, space-delimited. Each host
-        ///     name can include a trailing colon and port number.
+        ///     A host name.
         /// </param>
         /// <param name="port">
         ///     The TCP or UDP port number to connect to or contact.
-        ///     The default Ldap port is 389. The port parameter is
-        ///     ignored for any host hame which includes a colon and
-        ///     port number.
+        ///     The default Ldap port is 389.
         /// </param>
         /// <exception>
         ///     LdapException A general exception which includes an error

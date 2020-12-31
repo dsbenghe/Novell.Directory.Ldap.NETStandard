@@ -78,7 +78,7 @@ task internal-test-functional {
     }    
 }
 
-task test-functional configure-opendj, {
+task test-functional configure-opendj, configure-openldap, {
     $env:TRANSPORT_SECURITY="OFF"
     Invoke-Build internal-test-functional $BuildFile
 
@@ -106,7 +106,10 @@ task configure-openldap {
         sudo apt-get update
     }
     exec {
-        sudo apt-get install ldap-utils gnutls-bin ssl-cert slapd -y
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install `
+          ldap-utils gnutls-bin ssl-cert slapd `
+          sasl2-bin libsasl2-2 libsasl2-modules libsasl2-modules-ldap `
+          -y
     }
     exec {
         bash configure-openldap.sh
@@ -115,13 +118,7 @@ task configure-openldap {
 
 task remove-openldap -After test-stress {
     exec {
-        sudo systemctl stop slapd
-    }
-    exec {
-        sudo apt-get purge slapd -y
-    }
-    exec {
-        rm /tmp/slapd -r -f
+        bash build/remove-openldap.sh
     }
 }
 
@@ -139,3 +136,4 @@ task clean {
 }
 
 task . build, test
+task reset-openldap remove-openldap, configure-openldap

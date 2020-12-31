@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyModel;
+using System;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
@@ -49,9 +52,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
 
         private static async Task<T> WithLdapConnectionImplAsync<T>(Func<ILdapConnection, Task<T>> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
-            using (var ldapConnection = new LdapConnection())
+            var ldapConnectionOptions = new LdapConnectionOptions()
+                .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true);
+            using (var ldapConnection = new LdapConnection(ldapConnectionOptions))
             {
-                ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
                 var ldapPort = TestsConfig.LdapServer.ServerPort;
                 var transportSecurity = GetTransportSecurity(useSsl, disableEnvTransportSecurity);
                 if (transportSecurity == TransportSecurity.Ssl)
@@ -125,6 +130,22 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         public static string BuildDn(string cn)
         {
             return $"cn={cn}," + TestsConfig.LdapServer.BaseDn;
+        }
+
+        public static byte[] GetCertificate(string name)
+        {
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var manifestResourceStream = executingAssembly.GetManifestResourceStream($"{executingAssembly.GetName().Name}.certs.{name}");
+
+            if (manifestResourceStream == null)
+            {
+                throw new ArgumentNullException(nameof(manifestResourceStream));
+            }
+
+            var certBytes = new byte[manifestResourceStream.Length];
+            manifestResourceStream.Read(certBytes, 0, certBytes.Length);
+
+            return certBytes;
         }
     }
 }

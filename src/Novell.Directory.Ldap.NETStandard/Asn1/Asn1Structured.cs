@@ -211,7 +211,9 @@ namespace Novell.Directory.Ldap.Asn1
 
             sb.Append(" }");
 
-            return ToString() + sb;
+#pragma warning disable SA1100 // Do not prefix calls with base unless local implementation exists
+            return base.ToString() + sb; // TODO: improve this so we can get rid of the disabling
+#pragma warning restore SA1100 // Do not prefix calls with base unless local implementation exists
         }
     }
 }

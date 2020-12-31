@@ -1,9 +1,10 @@
-﻿using Novell.Directory.Ldap.Sasl;
+﻿using Novell.Directory.Ldap.NETStandard.UnitTests.Helpers;
+using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Sasl.Clients;
 using System.Linq;
 using Xunit;
 
-namespace Novell.Directory.Ldap.NETStandard.UnitTests
+namespace Novell.Directory.Ldap.NETStandard.UnitTests.Sasl
 {
     public class SaslClientFactoryTests
     {

@@ -32,7 +32,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 null);
         }
 
-        [Fact]
+        [Fact(Skip = "Until configured for openldap")]
         [LongRunning]
         public async Task Search_when_paging_using_VirtualListViewControl_returns_expected_results()
         {
@@ -50,7 +50,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             AssertReceivedExpectedResults(_pagedSearchTestsFixture.Entries, entries);
         }
 
-        [Fact]
+        [Fact(Skip = "Until configured for openldap")]
         [LongRunning]
         public async Task Search_when_paging_using_VirtualListViewControl_using_converter_returns_expected_results()
         {
@@ -69,7 +69,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             AssertReceivedExpectedResults(_pagedSearchTestsFixture.Entries, entries.Select(x => x.Item1).ToList());
         }
 
-        [Fact]
+        [Fact(Skip = "Until configured for openldap")]
         [LongRunning]
         public async Task Search_when_paging_using_VirtualListViewControl_with_one_page_returns_expected_results()
         {
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             AssertReceivedExpectedResults(_pagedSearchTestsFixture.Entries, entries);
         }
 
-        [Fact]
+        [Fact(Skip = "Until configured for openldap")]
         [LongRunning]
         public async Task Search_when_paging_using_VirtualListViewControl_returns_zero_results()
         {

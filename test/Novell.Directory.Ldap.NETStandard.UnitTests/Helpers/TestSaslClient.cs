@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Novell.Directory.Ldap.NETStandard.UnitTests
+namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
 {
     public class TestSaslClientFactory : ISaslClientFactory
     {

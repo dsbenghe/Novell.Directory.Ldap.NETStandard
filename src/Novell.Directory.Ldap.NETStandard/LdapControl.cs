@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
     {
         static LdapControl()
         {
-            RegisteredControls = new RespControlVector(5);
+            RegisteredControls = new RespControlVector();
         }
 
         /// <summary>

@@ -3,9 +3,15 @@ currentUser="$(whoami)"
 echo $currentUser
 echo "slapd status"
 sudo apt-get install apparmor-utils -y
-sudo systemctl stop slapd
-# disable apparmor for slapd
-sudo aa-disable slapd
+sudo service slapd stop
+if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
+    # running under WSL/WSL2
+    # apparmor doesnt seem to be active
+    echo "Running under WSL"
+else
+    # disable apparmor for slapd
+    sudo aa-disable slapd
+fi
 # work folder for slapd
 mkdir /tmp/slapd
 # start setup ssl
@@ -31,4 +37,4 @@ sleep 5
 # test to see that is running
 echo "test slapd is running"
 ldapwhoami -H ldap://localhost:5389 -D "cn=admin,dc=example,dc=com" -w password 
-ldapadd -h localhost:5389 -D cn=admin,dc=example,dc=com -w password -f test/conf/baseDn.ldif
+ldapadd -h localhost:5389 -D cn=admin,dc=example,dc=com -w password -f test/conf/setupData.ldif

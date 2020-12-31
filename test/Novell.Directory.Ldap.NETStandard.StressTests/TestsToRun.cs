@@ -19,9 +19,19 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             return GetMethods()
                 .Select(m =>
                 {
-                    var testType = m.DeclaringType;
-                    var testInstance = Activator.CreateInstance(testType);
-                    return new Action(() => { m.Invoke(testInstance, null); });
+                    return new Action(() =>
+                    {
+                        var testType = m.DeclaringType;
+                        var testInstance = Activator.CreateInstance(testType);
+                        try
+                        {
+                            m.Invoke(testInstance, null);
+                        }
+                        finally
+                        {
+                            (testInstance as IDisposable)?.Dispose();
+                        }
+                    });
                 }).ToList();
         }
 
