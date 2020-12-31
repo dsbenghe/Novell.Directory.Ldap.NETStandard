@@ -557,7 +557,7 @@ namespace Novell.Directory.Ldap
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
-                            await sslstream.AuthenticateAsClientAsync(
+                            await sslStream.AuthenticateAsClientAsync(
                                     host,
                                     new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                                     _ldapConnectionOptions.SslProtocols,
@@ -992,7 +992,7 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
-                await sslstream.AuthenticateAsClientAsync(
+                await sslStream.AuthenticateAsClientAsync(
                         Host,
                         new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                         _ldapConnectionOptions.SslProtocols,

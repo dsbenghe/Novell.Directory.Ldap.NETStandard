@@ -616,12 +616,12 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc />
-        public async Task ConnectAsync(string host, int port)
+        public Task ConnectAsync(string host, int port)
         {
             // This may return a different conn object
             // Disassociate this clone with the underlying connection.
             Connection = Connection.DestroyClone();
-            await Connection.ConnectAsync(host, port);
+            return Connection.ConnectAsync(host, port);
         }
 
         /// <inheritdoc />

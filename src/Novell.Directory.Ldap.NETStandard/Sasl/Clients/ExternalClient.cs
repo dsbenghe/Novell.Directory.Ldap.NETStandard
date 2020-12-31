@@ -1,4 +1,6 @@
-﻿namespace Novell.Directory.Ldap.Sasl.Clients
+﻿using System.Threading.Tasks;
+
+namespace Novell.Directory.Ldap.Sasl.Clients
 {
     /// <summary>
     /// SASL External client.
@@ -21,7 +23,7 @@
         {
         }
 
-        public override byte[] EvaluateChallenge(byte[] challenge)
+        public override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)
@@ -47,7 +49,7 @@
                     throw new SaslException("Unknown client state.");
             }
 
-            return response;
+            return Task.FromResult(response);
         }
 
         protected override void Dispose(bool disposing)

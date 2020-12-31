@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
@@ -31,44 +32,44 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
-        public void Bind_with_client_certificate_is_successful()
+        public async Task Bind_with_client_certificate_is_successful()
         {
             _ldapConnectionOptions.UseSsl();
             using var ldapConnection = new LdapConnection(_ldapConnectionOptions);
 
-            ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
+            await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
 
-            ldapConnection.Bind(new SaslExternalRequest());
+            await ldapConnection.BindAsync(new SaslExternalRequest());
 
             Assert.True(ldapConnection.Bound);
-            var response = ldapConnection.WhoAmI();
+            var response = await ldapConnection.WhoAmIAsync();
             Assert.Equal(_expectedAuthzId, response.AuthzId);
         }
 
         [Fact]
-        public void Bind_with_client_certificate_using_start_tls_is_successful()
+        public async Task Bind_with_client_certificate_using_start_tls_is_successful()
         {
             using var ldapConnection = new LdapConnection(_ldapConnectionOptions);
-            ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
+            await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
 
             try
             {
-                ldapConnection.StartTls();
+                await ldapConnection.StartTlsAsync();
 
-                ldapConnection.Bind(new SaslExternalRequest());
+                await ldapConnection.BindAsync(new SaslExternalRequest());
 
                 Assert.True(ldapConnection.Bound);
-                var response = ldapConnection.WhoAmI();
+                var response = await ldapConnection.WhoAmIAsync();
                 Assert.Equal(_expectedAuthzId, response.AuthzId);
             }
             finally
             {
-                ldapConnection.StopTls();
+                await ldapConnection.StopTlsAsync();
             }
         }
 
         [Fact]
-        public void Bind_with_client_certificate_using_obsoleted_api_is_successful()
+        public async Task Bind_with_client_certificate_using_obsoleted_api_is_successful()
         {
             var ldapConnectionOptions = new LdapConnectionOptions()
                 .UseSsl()
@@ -83,12 +84,12 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             ldapConnection.UserDefinedClientCertSelectionDelegate += LdapConnectionLocalCertificateSelectionCallback;
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
+            await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
 
-            ldapConnection.Bind(new SaslExternalRequest());
+            await ldapConnection.BindAsync(new SaslExternalRequest());
 
             Assert.True(ldapConnection.Bound);
-            var response = ldapConnection.WhoAmI();
+            var response = await ldapConnection.WhoAmIAsync();
             Assert.Equal(_expectedAuthzId, response.AuthzId);
         }
 
