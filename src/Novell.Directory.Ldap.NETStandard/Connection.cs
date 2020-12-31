@@ -36,12 +36,6 @@ using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
-    public delegate bool RemoteCertificateValidationCallback(
-        object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors);
-
-    public delegate X509Certificate LocalCertificateSelectionCallback(
-        object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers);
-
     /// <summary>
     ///     The class that creates a connection to the Ldap server. After the
     ///     connection is made, a thread is created that reads data from the
@@ -228,9 +222,9 @@ namespace Novell.Directory.Ldap
         /// </summary>
         internal bool Tls => _nonTlsBackup != null;
 
-        internal event RemoteCertificateValidationCallback OnRemoteCertificateValidation;
+        internal System.Net.Security.RemoteCertificateValidationCallback OnRemoteCertificateValidation { get; set; }
 
-        internal event LocalCertificateSelectionCallback OnLocalCertificateSelection;
+        internal System.Net.Security.LocalCertificateSelectionCallback OnLocalCertificateSelection { get; set; }
 
         private string GetSslHandshakeErrors()
         {
@@ -450,6 +444,12 @@ namespace Novell.Directory.Ldap
         internal bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
             SslPolicyErrors sslPolicyErrors)
         {
+            if (_ldapConnectionOptions.RemoteCertificateValidationCallback != null)
+            {
+                return _ldapConnectionOptions.RemoteCertificateValidationCallback(
+                    sender, certificate, chain, sslPolicyErrors);
+            }
+
             if (OnRemoteCertificateValidation != null)
             {
                 return OnRemoteCertificateValidation(sender, certificate, chain, sslPolicyErrors);
@@ -461,8 +461,14 @@ namespace Novell.Directory.Ldap
         internal X509Certificate LocalCertificateSelectionCallback(object sender, string targetHost,
             X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers)
         {
-            return OnLocalCertificateSelection?.Invoke(sender, targetHost, localCertificates,
-                remoteCertificate, acceptableIssuers);
+            if (_ldapConnectionOptions.LocalCertificateSelectionCallback != null)
+            {
+                return _ldapConnectionOptions.LocalCertificateSelectionCallback(
+                    sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers);
+            }
+
+            return OnLocalCertificateSelection?.Invoke(
+                sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers);
         }
 
         private bool DefaultCertificateValidationHandler(

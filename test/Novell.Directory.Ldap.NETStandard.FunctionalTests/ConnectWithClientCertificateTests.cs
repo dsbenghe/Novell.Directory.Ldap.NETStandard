@@ -22,6 +22,8 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 "password");
             _ldapConnectionOptions = new LdapConnectionOptions()
                 .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true)
+                .ConfigureLocalCertificateSelectionCallback(LdapConnectionLocalCertificateSelectionCallback)
                 .ConfigureClientCertificates(new List<X509Certificate>()
                 {
                     _x509Certificate2,
@@ -33,10 +35,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             _ldapConnectionOptions.UseSsl();
             using var ldapConnection = new LdapConnection(_ldapConnectionOptions);
-            ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
 
-            ldapConnection.UserDefinedClientCertSelectionDelegate +=
-                LdapConnection_UserDefinedClientCertSelectionDelegate;
             ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
 
             ldapConnection.Bind(new SaslExternalRequest());
@@ -50,10 +49,6 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public void Bind_with_client_certificate_using_start_tls_is_successful()
         {
             using var ldapConnection = new LdapConnection(_ldapConnectionOptions);
-            ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
-
-            ldapConnection.UserDefinedClientCertSelectionDelegate +=
-                LdapConnection_UserDefinedClientCertSelectionDelegate;
             ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
 
             try
@@ -72,7 +67,37 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             }
         }
 
-        private X509Certificate LdapConnection_UserDefinedClientCertSelectionDelegate(object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers)
+        [Fact]
+        public void Bind_with_client_certificate_using_obsoleted_api_is_successful()
+        {
+            var ldapConnectionOptions = new LdapConnectionOptions()
+                .UseSsl()
+                .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureClientCertificates(new List<X509Certificate>()
+                {
+                    _x509Certificate2,
+                });
+            using var ldapConnection = new LdapConnection(ldapConnectionOptions);
+#pragma warning disable CS0618 // Type or member is obsolete
+            ldapConnection.UserDefinedServerCertValidationDelegate += LdapConnectionUserDefinedServerCertValidationDelegate;
+            ldapConnection.UserDefinedClientCertSelectionDelegate += LdapConnectionLocalCertificateSelectionCallback;
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
+
+            ldapConnection.Bind(new SaslExternalRequest());
+
+            Assert.True(ldapConnection.Bound);
+            var response = ldapConnection.WhoAmI();
+            Assert.Equal(_expectedAuthzId, response.AuthzId);
+        }
+
+        private bool LdapConnectionUserDefinedServerCertValidationDelegate(object sender, X509Certificate certificate, X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
+        }
+
+        private X509Certificate LdapConnectionLocalCertificateSelectionCallback(object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers)
         {
             return _x509Certificate2;
         }

@@ -30,6 +30,9 @@ namespace Novell.Directory.Ldap
         public SslProtocols SslProtocols { get; private set; } = SslProtocols.None;
         public bool CheckCertificateRevocationEnabled { get; private set; }
 
+        public System.Net.Security.RemoteCertificateValidationCallback RemoteCertificateValidationCallback { get; private set; }
+        public System.Net.Security.LocalCertificateSelectionCallback LocalCertificateSelectionCallback { get; private set; }
+
         /// <summary>
         /// Configure an ip address filter.
         /// By default the first ip address of type <see cref="AddressFamily.InterNetwork"/> or <see cref="AddressFamily.InterNetworkV6"/>
@@ -81,6 +84,32 @@ namespace Novell.Directory.Ldap
         public LdapConnectionOptions CheckCertificateRevocation()
         {
             CheckCertificateRevocationEnabled = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure validation delegate for remote certificate validation callback.
+        /// </summary>
+        public LdapConnectionOptions ConfigureRemoteCertificateValidationCallback(
+            System.Net.Security.RemoteCertificateValidationCallback remoteCertificateValidationCallback)
+        {
+            RemoteCertificateValidationCallback = remoteCertificateValidationCallback ??
+                                                   throw new ArgumentNullException(
+                                                       nameof(remoteCertificateValidationCallback));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Configure selection delegate for local certificate selection callback.
+        /// </summary>
+        public LdapConnectionOptions ConfigureLocalCertificateSelectionCallback(
+            System.Net.Security.LocalCertificateSelectionCallback localCertificateSelectionCallback)
+        {
+            LocalCertificateSelectionCallback = localCertificateSelectionCallback ??
+                                                throw new ArgumentNullException(
+                                                    nameof(localCertificateSelectionCallback));
 
             return this;
         }

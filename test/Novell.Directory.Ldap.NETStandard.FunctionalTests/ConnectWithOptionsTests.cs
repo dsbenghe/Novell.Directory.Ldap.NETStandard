@@ -16,10 +16,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var options = new LdapConnectionOptions()
                 .UseSsl()
                 .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true)
                 .ConfigureSslProtocols(SslProtocols.None);
             using var ldapConnection = new LdapConnection(options);
 
-            ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
             ldapConnection.Connect(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl);
         }
 
@@ -30,11 +30,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             var options = new LdapConnectionOptions()
                 .UseSsl()
                 .ConfigureIpAddressFilter(ip => ip.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true)
                 .ConfigureSslProtocols(SslProtocols.Ssl2);
 #pragma warning restore CS0618 // Type or member is obsolete
             using var ldapConnection = new LdapConnection(options);
-
-            ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
 
             // exception thrown is different on Windows vs Linux
             var exceptionThrowType = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? typeof(Win32Exception) : typeof(AuthenticationException);

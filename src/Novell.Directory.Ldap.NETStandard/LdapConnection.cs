@@ -27,9 +27,17 @@ using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Novell.Directory.Ldap
 {
+    public delegate bool RemoteCertificateValidationCallback(
+        object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors);
+
+    public delegate X509Certificate LocalCertificateSelectionCallback(
+        object sender, string targetHost, X509CertificateCollection localCertificates, X509Certificate remoteCertificate, string[] acceptableIssuers);
+
     /// <summary>
     ///     The central class that encapsulates the connection
     ///     to a directory server through the Ldap protocol.
@@ -800,20 +808,24 @@ namespace Novell.Directory.Ldap
             return new LdapSearchResults(this, queue, cons);
         }
 
-        // [Obsolete("It will change from an event to just a simple delegate")]
+        [Obsolete("It will get deleted in the future. Alternative functionality provided.")]
         public event RemoteCertificateValidationCallback UserDefinedServerCertValidationDelegate
         {
-            add => Connection.OnRemoteCertificateValidation += value;
+            add => Connection.OnRemoteCertificateValidation = (sender, certificate, chain, errors) => value(sender, certificate, chain, errors);
 
-            remove => Connection.OnRemoteCertificateValidation -= value;
+            remove => Connection.OnRemoteCertificateValidation = null;
         }
 
-        // [Obsolete("It will change from an event to just a simple delegate")]
+        [Obsolete("It will get deleted in the future. Alternative functionality provided.")]
         public event LocalCertificateSelectionCallback UserDefinedClientCertSelectionDelegate
         {
-            add => Connection.OnLocalCertificateSelection += value;
+            add
+            {
+                Connection.OnLocalCertificateSelection =
+                    (sender, host, certificates, certificate, issuers) => value(sender, host, certificates, certificate, issuers);
+            }
 
-            remove => Connection.OnLocalCertificateSelection -= value;
+            remove => Connection.OnLocalCertificateSelection = null;
         }
 
         /*

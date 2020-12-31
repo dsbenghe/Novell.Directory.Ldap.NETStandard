@@ -52,10 +52,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         private static T WithLdapConnectionImpl<T>(Func<ILdapConnection, T> funcOnConnectedLdapConnection, bool useSsl = false, bool disableEnvTransportSecurity = false)
         {
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork);
+                .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
+                .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true);
             using (var ldapConnection = new LdapConnection(ldapConnectionOptions))
             {
-                ldapConnection.UserDefinedServerCertValidationDelegate += (sender, certificate, chain, errors) => true;
                 var ldapPort = TestsConfig.LdapServer.ServerPort;
                 var transportSecurity = GetTransportSecurity(useSsl, disableEnvTransportSecurity);
                 if (transportSecurity == TransportSecurity.Ssl)
