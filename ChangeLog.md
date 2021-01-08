@@ -1,5 +1,14 @@
 # Changelog
 
+### 3.6.0
+* Implement SASL external authentication with client certificate
+* Add LdapConnectionOptions to allow better configuration of how to connect including
+    * configuring the SslProtocols
+    * configuring a selector to filter the ip addresses used for connecting
+* Fix multi-threading issues - thanks to Marcin Krystianc - https://github.com/marcin-krystianc
+* Fix utf encoding issue in filter - thanks to Andrey Chayka - https://github.com/ubik
+* **Breaking change** Connecting using host:port and multiple hosts specified in the host string parameter is not supported anymore.
+
 ### 3.5.x
 * Add SimplePagedResultsControl & helper class for using it - thanks to Aleksandr Eliseev - https://github.com/metacube
 * Add helper classes & extensions methods to ILdapConnection for using SimplePagedResultsControl & VLVC
