@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -38,7 +37,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             _password = saslRequest.Credentials;
         }
 
-        public override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
+        public override byte[] EvaluateChallenge(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)
@@ -73,7 +72,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                     throw new SaslException("Unknown client state.");
             }
 
-            return Task.FromResult(response);
+            return response;
         }
 
         // Most failures (Invalid Credentials etc.) won't even reach us here anyway.

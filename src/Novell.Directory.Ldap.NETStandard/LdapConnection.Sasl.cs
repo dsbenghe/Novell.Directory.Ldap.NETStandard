@@ -114,7 +114,7 @@ namespace Novell.Directory.Ldap
                     byte[] clientResponse = null;
                     if (saslClient.HasInitialResponse)
                     {
-                        clientResponse = await saslClient.EvaluateChallengeAsync(Array.Empty<byte>());
+                        clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                     }
 
                     while (!saslClient.IsComplete)
@@ -125,11 +125,11 @@ namespace Novell.Directory.Ldap
 
                             if (replyBuf != null)
                             {
-                                clientResponse = await saslClient.EvaluateChallengeAsync(replyBuf);
+                                clientResponse = saslClient.EvaluateChallenge(replyBuf);
                             }
                             else
                             {
-                                clientResponse = await saslClient.EvaluateChallengeAsync(Array.Empty<byte>());
+                                clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                             }
                         }
                         catch (Exception ex)

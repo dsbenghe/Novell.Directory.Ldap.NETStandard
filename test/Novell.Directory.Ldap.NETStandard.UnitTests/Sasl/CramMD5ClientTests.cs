@@ -2,7 +2,6 @@
 using Novell.Directory.Ldap.Sasl.Clients;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests.Sasl
@@ -61,48 +60,48 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests.Sasl
         }
 
         [Fact]
-        public async Task EvaluateChallenge_Success()
+        public void EvaluateChallenge_Success()
         {
             var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
-            var response = await client.EvaluateChallengeAsync(Challenge);
+            var response = client.EvaluateChallenge(Challenge);
             Assert.False(client.IsComplete);
             Assert.Equal((IEnumerable<byte>)ExpectedResponse, response);
 
             // Step 2: State.CramMd5ResponseSent => State.ValidServerResponse
-            await client.EvaluateChallengeAsync(Array.Empty<byte>());
+            client.EvaluateChallenge(Array.Empty<byte>());
             Assert.True(client.IsComplete);
 
             // Step 3: State.ValidServerResponse => Exception
-            await Assert.ThrowsAsync<SaslException>(async () => await client.EvaluateChallengeAsync(Array.Empty<byte>()));
+            Assert.Throws<SaslException>(() => client.EvaluateChallenge(Array.Empty<byte>()));
         }
 
         [Fact]
-        public async Task EvaluateChallenge_NonEmptyServerResponse_Exception()
+        public void EvaluateChallenge_NonEmptyServerResponse_Exception()
         {
             var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
 
             // Step 1: State.Initial => State.CramMd5ResponseSent
-            var response = await client.EvaluateChallengeAsync(Challenge);
+            var response = client.EvaluateChallenge(Challenge);
             Assert.False(client.IsComplete);
             Assert.Equal((IEnumerable<byte>)ExpectedResponse, response);
 
             // Step 2: State.CramMd5ResponseSent => State.InvalidServerResponse
-            await Assert.ThrowsAsync<SaslException>(async () => await client.EvaluateChallengeAsync(new byte[] { 0x00 }));
+            Assert.Throws<SaslException>(() => client.EvaluateChallenge(new byte[] { 0x00 }));
             Assert.True(client.IsComplete);
         }
 
         [Fact]
-        public async Task EvaluateChallenge_Disposed_Exception()
+        public void EvaluateChallenge_Disposed_Exception()
         {
             var client = new CramMD5Client(new SaslCramMd5Request(AuthId, Password));
             Assert.False(client.IsComplete);
             client.Dispose();
             Assert.True(client.IsComplete);
-            await Assert.ThrowsAsync<SaslException>(async () => await client.EvaluateChallengeAsync(Challenge));
+            Assert.Throws<SaslException>(() => client.EvaluateChallenge(Challenge));
             Assert.True(client.IsComplete);
         }
     }

@@ -23,7 +23,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         {
         }
 
-        public override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
+        public override byte[] EvaluateChallenge(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)
@@ -49,7 +49,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                     throw new SaslException("Unknown client state.");
             }
 
-            return Task.FromResult(response);
+            return response;
         }
 
         protected override void Dispose(bool disposing)

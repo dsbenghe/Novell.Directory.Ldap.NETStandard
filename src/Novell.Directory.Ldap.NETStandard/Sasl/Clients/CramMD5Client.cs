@@ -1,5 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Sasl.Clients
 {
@@ -39,7 +38,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             _currentState = State.Disposed;
         }
 
-        public override Task<byte[]> EvaluateChallengeAsync(byte[] challenge)
+        public override byte[] EvaluateChallenge(byte[] challenge)
         {
             byte[] response = null;
             switch (_currentState)
@@ -78,7 +77,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                     throw new SaslException("Unknown client state.");
             }
 
-            return Task.FromResult(response);
+            return response;
         }
 
         private string CreateCramMd5Response(byte[] challenge)
