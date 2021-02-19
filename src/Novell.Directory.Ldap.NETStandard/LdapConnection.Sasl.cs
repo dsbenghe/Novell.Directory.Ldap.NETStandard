@@ -121,7 +121,7 @@ namespace Novell.Directory.Ldap
                     {
                         try
                         {
-                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints);
+                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints).ConfigureAwait(false);
 
                             if (replyBuf != null)
                             {
@@ -150,7 +150,7 @@ namespace Novell.Directory.Ldap
             constraints = constraints ?? _defSearchCons;
             var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
 
-            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps);
+            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps).ConfigureAwait(false);
             if (!(queue.GetResponse() is LdapResponse ldapResponse))
             {
                 throw new LdapException("Bind failure, no response received.");

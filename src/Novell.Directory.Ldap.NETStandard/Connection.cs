@@ -534,7 +534,7 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out var ipAddress))
                         {
-                            var ipAddresses = await Dns.GetHostAddressesAsync(host);
+                            var ipAddresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
                             ipAddress = ipAddresses
                                 .Where(x => _ldapConnectionOptions.IpAddressFilter(x))
                                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork
@@ -550,7 +550,7 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
-                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout);
+                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 
                             var sslStream = new SslStream(
                                 new NetworkStream(_sock, true),
@@ -562,7 +562,8 @@ namespace Novell.Directory.Ldap
                                     new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                                     _ldapConnectionOptions.SslProtocols,
                                     _ldapConnectionOptions.CheckCertificateRevocationEnabled)
-                                .TimeoutAfterAsync(ConnectionTimeout);
+                                .TimeoutAfterAsync(ConnectionTimeout)
+                                .ConfigureAwait(false);
 
                             _inStream = sslStream;
                             _outStream = sslStream;
@@ -570,7 +571,7 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             _socket = new TcpClient(ipAddress.AddressFamily);
-                            await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout);
+                            await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
@@ -719,7 +720,7 @@ namespace Novell.Directory.Ldap
             // For bind requests, if not connected, attempt to reconnect
             if (info.BindRequest && Connected == false && Host != null)
             {
-                await ConnectAsync(Host, Port, info.MessageId);
+                await ConnectAsync(Host, Port, info.MessageId).ConfigureAwait(false);
             }
 
             if (Connected)
@@ -997,7 +998,8 @@ namespace Novell.Directory.Ldap
                         new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                         _ldapConnectionOptions.SslProtocols,
                         _ldapConnectionOptions.CheckCertificateRevocationEnabled)
-                    .TimeoutAfterAsync(ConnectionTimeout);
+                    .TimeoutAfterAsync(ConnectionTimeout)
+                    .ConfigureAwait(false);
 
                 _inStream = sslStream;
                 _outStream = sslStream;
