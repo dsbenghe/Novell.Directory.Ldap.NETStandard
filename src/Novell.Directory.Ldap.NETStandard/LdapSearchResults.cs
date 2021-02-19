@@ -132,7 +132,7 @@ namespace Novell.Directory.Ldap
 
                             if (_cons.ReferralFollowing)
                             {
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, msg, refs, 0, true, _referralConn);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, msg, refs, 0, true, _referralConn).ConfigureAwait(false);
                             }
                             else
                             {
@@ -156,7 +156,7 @@ namespace Novell.Directory.Ldap
                             if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                             {
                                 // Following referrals
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn).ConfigureAwait(false);
                             }
                             else if (resultCode != LdapException.Success)
                             {
@@ -364,7 +364,7 @@ namespace Novell.Directory.Ldap
             // If no data at all, must reload enumeration
             if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
             {
-                _completed = await GetBatchOfResultsAsync();
+                _completed = await GetBatchOfResultsAsync().ConfigureAwait(false);
             }
         }
 
@@ -376,7 +376,7 @@ namespace Novell.Directory.Ldap
             _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
-            await ResetVectorsAsync();
+            await ResetVectorsAsync().ConfigureAwait(false);
             _completed = true;
         }
 

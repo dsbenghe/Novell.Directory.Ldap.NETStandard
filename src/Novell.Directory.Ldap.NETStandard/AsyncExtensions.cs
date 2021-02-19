@@ -12,13 +12,13 @@ namespace Novell.Directory.Ldap
             {
                 if (timeout == 0)
                 {
-                    await task;
+                    await task.ConfigureAwait(false);
                 }
                 else
                 {
-                    if (task == await Task.WhenAny(task, Task.Delay(timeout)))
+                    if (task == await Task.WhenAny(task, Task.Delay(timeout)).ConfigureAwait(false))
                     {
-                        await task;
+                        await task.ConfigureAwait(false);
                     }
                     else
                     {

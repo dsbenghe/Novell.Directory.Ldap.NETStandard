@@ -231,7 +231,7 @@ namespace Novell.Directory.Ldap
 
         internal async Task SendMessageAsync()
         {
-            await _conn.WriteMessageAsync(this);
+            await _conn.WriteMessageAsync(this).ConfigureAwait(false);
 
             // Start the timer thread
             if (_mslimit != 0)

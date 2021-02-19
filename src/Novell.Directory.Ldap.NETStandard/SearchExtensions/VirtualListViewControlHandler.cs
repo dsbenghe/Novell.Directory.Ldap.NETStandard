@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     options.Filter,
                     options.TargetAttributes,
                     options.TypesOnly,
-                    searchConstraints)).ToList();
+                    searchConstraints).ConfigureAwait(false)).ToList();
 
                 entries.AddRange(searchResults.Select(converter));
 

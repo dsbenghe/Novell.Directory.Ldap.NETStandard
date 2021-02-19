@@ -53,7 +53,7 @@ namespace Novell.Directory.Ldap
             var isNextPageAvailable = PrepareForNextPage(null, pageSize, true, ref searchConstraints);
             while (isNextPageAvailable)
             {
-                var responseControls = await RetrievePageAsync(options, searchConstraints, searchResult, converter);
+                var responseControls = await RetrievePageAsync(options, searchConstraints, searchResult, converter).ConfigureAwait(false);
                 isNextPageAvailable = PrepareForNextPage(responseControls, pageSize, false, ref searchConstraints);
             }
 
@@ -119,7 +119,7 @@ namespace Novell.Directory.Ldap
                     options.TargetAttributes,
                     false,
                     searchConstraints
-                );
+                ).ConfigureAwait(false);
 
             mappedResultsAccumulator.AddRange(searchResults.Select(converter));
 
