@@ -81,13 +81,15 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     sortControl,
                 });
 
-                var searchResults = (await _ldapConnection.SearchAsync(
+                var asyncSearchResults = await _ldapConnection.SearchAsync(
                     options.SearchBase,
                     LdapConnection.ScopeSub,
                     options.Filter,
                     options.TargetAttributes,
                     options.TypesOnly,
-                    searchConstraints).ConfigureAwait(false)).ToList();
+                    searchConstraints).ConfigureAwait(false);
+
+                var searchResults = await asyncSearchResults.ToListAsync().ConfigureAwait(false);
 
                 entries.AddRange(searchResults.Select(converter));
 

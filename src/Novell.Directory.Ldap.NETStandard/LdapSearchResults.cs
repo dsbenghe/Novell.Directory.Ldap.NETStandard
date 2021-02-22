@@ -25,6 +25,7 @@ using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
@@ -223,7 +224,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if there are more search results.
         /// </returns>
-        public bool HasMore()
+        public async Task<bool> HasMoreAsync()
         {
             var ret = false;
             if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
@@ -234,7 +235,7 @@ namespace Novell.Directory.Ldap
             else if (_completed == false)
             {
                 // reload the Vector by getting more results
-                ResetVectorsAsync().GetAwaiter().GetResult();
+                await ResetVectorsAsync().ConfigureAwait(false);
                 ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
 
@@ -258,7 +259,7 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException A referral was received and not
         ///     followed.
         /// </exception>
-        public LdapEntry Next()
+        public async Task<LdapEntry> NextAsync()
         {
             if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
@@ -266,7 +267,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Check if the enumeration is empty and must be reloaded
-            ResetVectorsAsync().GetAwaiter().GetResult();
+            await ResetVectorsAsync().ConfigureAwait(false);
 
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
@@ -321,19 +322,6 @@ namespace Novell.Directory.Ldap
             return (LdapEntry)element;
         }
 
-        /// <summary>Returns an enumerator that iterates through a collection.</summary>
-        /// <returns>An <see cref="T:System.Collections.IEnumerator" /> object that can be used to iterate through the collection.</returns>
-        /// <filterpriority>2.</filterpriority>
-        public IEnumerator<LdapEntry> GetEnumerator()
-        {
-            while (HasMore())
-            {
-                yield return Next();
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
         /*
         * If both of the vectors are empty, get more data for them.
         */
@@ -387,5 +375,18 @@ namespace Novell.Directory.Ldap
         {
             return _referralConn;
         }
+
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
+        /// <filterpriority>2.</filterpriority>
+        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            while (await HasMoreAsync().ConfigureAwait(false))
+            {
+                yield return await NextAsync().ConfigureAwait(false);
+            }
+        }
+
+        IAsyncEnumerator<LdapEntry> IAsyncEnumerable<LdapEntry>.GetAsyncEnumerator(CancellationToken cancellationToken) => GetAsyncEnumerator(cancellationToken);
     }
 }

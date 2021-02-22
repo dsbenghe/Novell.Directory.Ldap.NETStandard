@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentNullException(nameof(mappedResultsAccumulator));
             }
 
-            var searchResults = await _ldapConnection.SearchAsync(
+            var asyncSearchResults = await _ldapConnection.SearchAsync(
                     options.SearchBase,
                     LdapConnection.ScopeSub,
                     options.Filter,
@@ -121,9 +121,11 @@ namespace Novell.Directory.Ldap
                     searchConstraints
                 ).ConfigureAwait(false);
 
+            var searchResults = await asyncSearchResults.ToListAsync().ConfigureAwait(false);
+
             mappedResultsAccumulator.AddRange(searchResults.Select(converter));
 
-            return searchResults.ResponseControls;
+            return asyncSearchResults.ResponseControls;
         }
     }
 }

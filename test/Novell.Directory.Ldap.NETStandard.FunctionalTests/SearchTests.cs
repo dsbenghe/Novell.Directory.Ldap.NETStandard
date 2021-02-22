@@ -18,7 +18,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     var lsc = await ldapConnection.SearchAsync(TestsConfig.LdapServer.BaseDn, LdapConnection.ScopeSub, "cn=" + ldapEntry.GetAttribute("cn").StringValue, null, false);
-                    var entries = lsc.ToList();
+                    var entries = await lsc.ToListAsync();
 
                     Assert.Single(entries);
                     ldapEntry.AssertSameAs(entries[0]);

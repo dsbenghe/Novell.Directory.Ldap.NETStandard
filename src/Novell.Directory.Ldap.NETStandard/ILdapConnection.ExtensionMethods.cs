@@ -18,9 +18,10 @@ namespace Novell.Directory.Ldap
             var searchResults = await conn
                 .SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false)
                 .ConfigureAwait(false);
-            if (searchResults.HasMore())
+
+            if (await searchResults.HasMoreAsync().ConfigureAwait(false))
             {
-                var sr = searchResults.Next();
+                var sr = await searchResults.NextAsync().ConfigureAwait(false);
                 return new RootDseInfo(sr);
             }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -10,7 +11,7 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="!:LdapConnection.Search">
     /// </seealso>
-    public interface ILdapSearchResults : IEnumerable<LdapEntry>
+    public interface ILdapSearchResults : IAsyncEnumerable<LdapEntry>
     {
         /// <summary>
         ///     Returns a count of the items in the search result.
@@ -32,7 +33,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if there are more search results.
         /// </returns>
-        bool HasMore();
+        Task<bool> HasMoreAsync();
 
         /// <summary>
         ///     Returns the next result as an LdapEntry.
@@ -51,7 +52,7 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException A referral was received and not
         ///     followed.
         /// </exception>
-        LdapEntry Next();
+        Task<LdapEntry> NextAsync();
 
         /// <summary>
         ///     Returns the latest server controls returned by the server

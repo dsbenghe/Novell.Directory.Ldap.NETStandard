@@ -738,13 +738,13 @@ namespace Novell.Directory.Ldap
         {
             var sr = await SearchAsync(dn, ScopeBase, null, attrs, false, cons).ConfigureAwait(false);
 
-            if (!sr.HasMore())
+            if (!await sr.HasMoreAsync().ConfigureAwait(false))
             {
                 return null;
             }
 
-            var ret = sr.Next();
-            if (sr.HasMore())
+            var ret = await sr.NextAsync().ConfigureAwait(false);
+            if (await sr.HasMoreAsync().ConfigureAwait(false))
             {
                 // "Read response is ambiguous, multiple entries returned"
                 throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
