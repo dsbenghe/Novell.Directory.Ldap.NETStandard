@@ -2,6 +2,7 @@
 using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
@@ -12,7 +13,11 @@ namespace Novell.Directory.Ldap
     /// </summary>
     public static class SimplePagedResultsControlSearchExtensions
     {
-        public static Task<List<LdapEntry>> SearchUsingSimplePagingAsync([NotNull] this ILdapConnection ldapConnection, [NotNull] SearchOptions options, int pageSize)
+        public static Task<List<LdapEntry>> SearchUsingSimplePagingAsync(
+            [NotNull] this ILdapConnection ldapConnection,
+            [NotNull] SearchOptions options,
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (ldapConnection == null)
             {
@@ -30,10 +35,15 @@ namespace Novell.Directory.Ldap
             }
 
             return new SimplePagedResultsControlHandler(ldapConnection)
-                .SearchWithSimplePagingAsync(options, pageSize);
+                .SearchWithSimplePagingAsync(options, pageSize, cancellationToken);
         }
 
-        public static Task<List<T>> SearchUsingSimplePagingAsync<T>([NotNull] this ILdapConnection ldapConnection, [NotNull] Func<LdapEntry, T> converter, [NotNull] SearchOptions options, int pageSize)
+        public static Task<List<T>> SearchUsingSimplePagingAsync<T>(
+            [NotNull] this ILdapConnection ldapConnection,
+            [NotNull] Func<LdapEntry, T> converter,
+            [NotNull] SearchOptions options,
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (ldapConnection == null)
             {
@@ -51,7 +61,7 @@ namespace Novell.Directory.Ldap
             }
 
             return new SimplePagedResultsControlHandler(ldapConnection)
-                .SearchWithSimplePagingAsync(converter, options, pageSize);
+                .SearchWithSimplePagingAsync(converter, options, pageSize, cancellationToken);
         }
     }
 }

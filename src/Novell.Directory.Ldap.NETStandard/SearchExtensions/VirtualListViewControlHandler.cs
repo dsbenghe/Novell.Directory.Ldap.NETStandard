@@ -3,6 +3,7 @@ using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.SearchExtensions
@@ -23,7 +24,8 @@ namespace Novell.Directory.Ldap.SearchExtensions
         public Task<List<LdapEntry>> SearchUsingVlvAsync(
             [NotNull] LdapSortControl sortControl,
             [NotNull] SearchOptions options,
-            int pageSize)
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (sortControl == null)
             {
@@ -40,14 +42,15 @@ namespace Novell.Directory.Ldap.SearchExtensions
                 throw new ArgumentOutOfRangeException(nameof(pageSize));
             }
 
-            return SearchUsingVlvAsync(sortControl, entry => entry, options, pageSize);
+            return SearchUsingVlvAsync(sortControl, entry => entry, options, pageSize, cancellationToken);
         }
 
         public async Task<List<T>> SearchUsingVlvAsync<T>(
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
-            int pageSize)
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (sortControl == null)
             {
@@ -89,7 +92,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     options.TypesOnly,
                     searchConstraints).ConfigureAwait(false);
 
-                var searchResults = await asyncSearchResults.ToListAsync().ConfigureAwait(false);
+                var searchResults = await asyncSearchResults.ToListAsync(cancellationToken).ConfigureAwait(false);
 
                 entries.AddRange(searchResults.Select(converter));
 
