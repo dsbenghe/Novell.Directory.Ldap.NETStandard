@@ -23,7 +23,6 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,6 +85,38 @@ namespace Novell.Directory.Ldap
         ///     if none were returned.
         /// </returns>
         public LdapControl[] ResponseControls { get; private set; }
+
+        /// <summary>Returns an enumerator that iterates through a collection.</summary>
+        /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
+        /// <filterpriority>2.</filterpriority>
+        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        {
+            while (await HasMoreAsync().ConfigureAwait(false))
+            {
+                yield return await NextAsync().ConfigureAwait(false);
+            }
+        }
+
+        IAsyncEnumerator<LdapEntry> IAsyncEnumerable<LdapEntry>.GetAsyncEnumerator(CancellationToken cancellationToken) => GetAsyncEnumerator(cancellationToken);
+
+        /// <summary>
+        /// Get referral connections.
+        /// </summary>
+        public List<object> GetReferralConnections()
+        {
+            return _referralConn;
+        }
+
+        /// <summary> Cancels the search request and clears the message and enumeration.</summary>
+        internal async Task AbandonAsync()
+        {
+            // first, remove message ID and timer and any responses in the queue
+            _queue.MessageAgent.AbandonAll();
+
+            // next, clear out enumeration
+            await ResetVectorsAsync().ConfigureAwait(false);
+            _completed = true;
+        }
 
         /// <summary>
         ///     Collects batchSize elements from an LdapSearchQueue message
@@ -195,27 +226,6 @@ namespace Novell.Directory.Ldap
             }
 
             return false; // search not completed
-        }
-
-        /// <summary>
-        ///     Returns a count of the items in the search result.
-        ///     Returns a count of the entries and exceptions remaining in the object.
-        ///     If the search was submitted with a batch size greater than zero,
-        ///     getCount reports the number of results received so far but not enumerated
-        ///     with next().  If batch size equals zero, getCount reports the number of
-        ///     items received, since the application thread blocks until all results are
-        ///     received.
-        /// </summary>
-        /// <returns>
-        ///     The number of items received but not retrieved by the application.
-        /// </returns>
-        public int Count
-        {
-            get
-            {
-                var qCount = _queue.MessageAgent.Count;
-                return _entryCount - _entryIndex + _referenceCount - _referenceIndex + qCount;
-            }
         }
 
         /// <summary>
@@ -355,38 +365,5 @@ namespace Novell.Directory.Ldap
                 _completed = await GetBatchOfResultsAsync().ConfigureAwait(false);
             }
         }
-
-        /// <summary> Cancels the search request and clears the message and enumeration.</summary>
-        /*package*/
-        internal async Task AbandonAsync()
-        {
-            // first, remove message ID and timer and any responses in the queue
-            _queue.MessageAgent.AbandonAll();
-
-            // next, clear out enumeration
-            await ResetVectorsAsync().ConfigureAwait(false);
-            _completed = true;
-        }
-
-        /// <summary>
-        /// Get referral connections.
-        /// </summary>
-        public List<object> GetReferralConnections()
-        {
-            return _referralConn;
-        }
-
-        /// <summary>Returns an enumerator that iterates through a collection.</summary>
-        /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
-        /// <filterpriority>2.</filterpriority>
-        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-        {
-            while (await HasMoreAsync().ConfigureAwait(false))
-            {
-                yield return await NextAsync().ConfigureAwait(false);
-            }
-        }
-
-        IAsyncEnumerator<LdapEntry> IAsyncEnumerable<LdapEntry>.GetAsyncEnumerator(CancellationToken cancellationToken) => GetAsyncEnumerator(cancellationToken);
     }
 }
