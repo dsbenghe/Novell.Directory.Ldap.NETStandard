@@ -224,7 +224,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if there are more search results.
         /// </returns>
-        public async Task<bool> HasMoreAsync()
+        private async Task<bool> HasMoreAsync()
         {
             var ret = false;
             if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
@@ -259,7 +259,7 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException A referral was received and not
         ///     followed.
         /// </exception>
-        public async Task<LdapEntry> NextAsync()
+        private async Task<LdapEntry> NextAsync()
         {
             if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
