@@ -2,6 +2,7 @@
 using Novell.Directory.Ldap.Controls;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.SearchExtensions
@@ -16,7 +17,8 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] this ILdapConnection ldapConnection,
             [NotNull] LdapSortControl sortControl,
             [NotNull] SearchOptions options,
-            int pageSize)
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (ldapConnection == null)
             {
@@ -39,7 +41,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             }
 
             return new VirtualListViewControlHandler(ldapConnection)
-                .SearchUsingVlvAsync(sortControl, options, pageSize);
+                .SearchUsingVlvAsync(sortControl, options, pageSize, cancellationToken);
         }
 
         public static Task<List<T>> SearchUsingVlvAsync<T>(
@@ -47,7 +49,8 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] LdapSortControl sortControl,
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
-            int pageSize)
+            int pageSize,
+            CancellationToken cancellationToken = default)
         {
             if (ldapConnection == null)
             {
@@ -70,7 +73,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             }
 
             return new VirtualListViewControlHandler(ldapConnection)
-                .SearchUsingVlvAsync<T>(sortControl, converter, options, pageSize);
+                .SearchUsingVlvAsync<T>(sortControl, converter, options, pageSize, cancellationToken);
         }
     }
 }

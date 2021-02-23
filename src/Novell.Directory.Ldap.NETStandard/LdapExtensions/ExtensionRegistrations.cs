@@ -11,7 +11,7 @@ namespace Novell.Directory.Ldap
 
         public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons = null)
         {
-            var result = await conn.ExtendedOperationAsync(new LdapWhoAmIOperation(), cons);
+            var result = await conn.ExtendedOperationAsync(new LdapWhoAmIOperation(), cons).ConfigureAwait(false);
             if (result is LdapWhoAmIResponse whoami)
             {
                 return whoami;

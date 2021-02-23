@@ -736,21 +736,25 @@ namespace Novell.Directory.Ldap
         /// <inheritdoc />
         public async Task<LdapEntry> ReadAsync(string dn, string[] attrs, LdapSearchConstraints cons)
         {
-            var sr = await SearchAsync(dn, ScopeBase, null, attrs, false, cons).ConfigureAwait(false);
+            var searchResults = await SearchAsync(dn, ScopeBase, null, attrs, false, cons).ConfigureAwait(false);
 
-            if (!sr.HasMore())
+            var enumerator = searchResults.GetAsyncEnumerator();
+            await using (enumerator.ConfigureAwait(false))
             {
-                return null;
-            }
+                if (!await enumerator.MoveNextAsync().ConfigureAwait(false))
+                {
+                    return null;
+                }
 
-            var ret = sr.Next();
-            if (sr.HasMore())
-            {
-                // "Read response is ambiguous, multiple entries returned"
-                throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
-            }
+                var ret = enumerator.Current;
+                if (await enumerator.MoveNextAsync().ConfigureAwait(false))
+                {
+                    // "Read response is ambiguous, multiple entries returned"
+                    throw new LdapLocalException(ExceptionMessages.ReadMultiple, LdapException.AmbiguousResponse);
+                }
 
-            return ret;
+                return ret;
+            }
         }
 
         /// <inheritdoc />
