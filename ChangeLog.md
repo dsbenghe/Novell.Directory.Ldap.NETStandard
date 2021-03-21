@@ -1,7 +1,11 @@
 # Changelog
 
 ### 4.0.0
-* Change all the apis to be async
+* Change all the apis to be fully-async - no Task.Run tricks :).
+    * with contributions from https://github.com/nesc58.
+    * thanks to https://github.com/wslyhbb for the initial trigger :).
+* **Breaking change** Drop support for .NET Standard 1.3 due to lack of complete async support.
+* **Breaking change** Remove utility helpers for persistent search & notifications.
 
 ### 3.6.0
 * **Breaking change** Connecting using "host:port" and multiple hosts "host1 host2" syntax specified in the host string parameter is not supported anymore. Anyone who is really fond of these features can write them on top of the core api Connect(host, port)

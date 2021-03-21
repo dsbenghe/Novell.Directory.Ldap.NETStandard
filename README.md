@@ -1,8 +1,10 @@
 # .NET Standard LDAP client library
 
-[![Build Status](https://dev.azure.com/dsbenghe/Ldap/_apis/build/status/Novell.Directory.Ldap.NETStandard?branchName=master)](https://dev.azure.com/dsbenghe/Ldap/_build/latest?definitionId=6&branchName=master) [![NuGet](https://img.shields.io/nuget/v/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/) - Stable version - Win2019/Linux/MacOS CI
+[![NuGet downloads](https://img.shields.io/nuget/dt/Novell.Directory.Ldap.NETStandard?color=blue&label=nuget-downloads&logo=nuget)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/)
 
 [![Build Status](https://dev.azure.com/dsbenghe/Ldap/_apis/build/status/Novell.Directory.Ldap.NETStandard?branchName=develop)](https://dev.azure.com/dsbenghe/Ldap/_build/latest?definitionId=6&branchName=develop) [![NuGet](https://img.shields.io/nuget/vpre/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/absoluteLatest) - Developing version - Win2019/Linux/MacOS CI
+
+[![Build Status](https://dev.azure.com/dsbenghe/Ldap/_apis/build/status/Novell.Directory.Ldap.NETStandard?branchName=master)](https://dev.azure.com/dsbenghe/Ldap/_build/latest?definitionId=6&branchName=master) [![NuGet](https://img.shields.io/nuget/v/Novell.Directory.Ldap.NETStandard.svg)](https://www.nuget.org/packages/Novell.Directory.Ldap.NETStandard/) - Maintenance version - Win2019/Linux/MacOS CI
 
 LDAP client library - .NET Standard 2.0/2.1 and .NET5 - compatible .NET platforms: .NET5, .NET Core >= 2.0, .NET Framework >= 4.6.1, Universal Windows Platform, Xamarin (see here for a more detailed description of supported platforms https://docs.microsoft.com/en-us/dotnet/articles/standard/library ).
 
