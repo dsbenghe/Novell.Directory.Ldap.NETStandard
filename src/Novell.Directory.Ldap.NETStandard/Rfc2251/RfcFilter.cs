@@ -499,57 +499,49 @@ namespace Novell.Directory.Ldap.Rfc2251
                 }
                 else
                 {
-                    try
+                    // place the character into octets.
+                    if ((ch >= 0x01 && ch <= 0x27) || (ch >= 0x2B && ch <= 0x5B) || ch >= 0x5D)
                     {
-                        // place the character into octets.
-                        if ((ch >= 0x01 && ch <= 0x27) || (ch >= 0x2B && ch <= 0x5B) || ch >= 0x5D)
+                        // found valid char
+                        if (ch <= 0x7f)
                         {
-                            // found valid char
-                            if (ch <= 0x7f)
-                            {
-                                // char = %x01-27 / %x2b-5b / %x5d-7f
-                                octets[iOctets++] = (byte)ch;
-                            }
-                            else
-                            {
-                                // char > 0x7f, could be encoded in 2, 3 or 4 bytes
-                                utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
-
-                                // copy utf8 encoded character into octets
-                                Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
-                                iOctets = iOctets + utf8Bytes.Length;
-                            }
-
-                            escape = false;
+                            // char = %x01-27 / %x2b-5b / %x5d-7f
+                            octets[iOctets++] = (byte)ch;
                         }
                         else
                         {
-                            // found invalid character
-                            var escString = string.Empty;
+                            // char > 0x7f, could be encoded in 2, 3 or 4 bytes
                             utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
 
-                            for (var i = 0; i < utf8Bytes.Length; i++)
-                            {
-                                var u = utf8Bytes[i];
-                                if (u >= 0 && u < 0x10)
-                                {
-                                    escString = escString + "\\0" + Convert.ToString(u & 0xff, 16);
-                                }
-                                else
-                                {
-                                    escString = escString + "\\" + Convert.ToString(u & 0xff, 16);
-                                }
-                            }
-
-                            throw new LdapLocalException(
-                                ExceptionMessages.InvalidCharInFilter,
-                                new object[] { ch, escString }, LdapException.FilterError);
+                            // copy utf8 encoded character into octets
+                            Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
+                            iOctets = iOctets + utf8Bytes.Length;
                         }
+
+                        escape = false;
                     }
-                    catch (IOException ue)
+                    else
                     {
-                        // TODO: This can be removed? In Java, Encoding.GetEncoding("utf-8") might not work, but in .net we always have UTF-8
-                        throw new Exception("UTF-8 String encoding not supported by JVM", ue);
+                        // found invalid character
+                        var escString = string.Empty;
+                        utf8Bytes = Encoding.UTF8.GetBytes(char.ConvertFromUtf32(codePoint));
+
+                        for (var i = 0; i < utf8Bytes.Length; i++)
+                        {
+                            var u = utf8Bytes[i];
+                            if (u >= 0 && u < 0x10)
+                            {
+                                escString = escString + "\\0" + Convert.ToString(u & 0xff, 16);
+                            }
+                            else
+                            {
+                                escString = escString + "\\" + Convert.ToString(u & 0xff, 16);
+                            }
+                        }
+
+                        throw new LdapLocalException(
+                            ExceptionMessages.InvalidCharInFilter,
+                            new object[] { ch, escString }, LdapException.FilterError);
                     }
                 }
             }

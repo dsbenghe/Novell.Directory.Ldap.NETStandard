@@ -133,38 +133,36 @@ namespace Novell.Directory.Ldap
         /// </returns>
         private async Task<bool> GetBatchOfResultsAsync()
         {
-            LdapMessage msg;
-
             // <=batchSize so that we can pick up the result-done message
             for (var i = 0; i < _batchSize;)
             {
                 try
                 {
-                    if ((msg = _queue.GetResponse()) != null)
+                    LdapMessage ldapMessage;
+                    if ((ldapMessage = _queue.GetResponse()) != null)
                     {
                         // Only save controls if there are some
-                        var ctls = msg.Controls;
-                        if (ctls != null)
+                        if (ldapMessage.Controls != null)
                         {
-                            ResponseControls = ctls;
+                            ResponseControls = ldapMessage.Controls;
                         }
 
-                        if (msg is LdapSearchResult)
+                        if (ldapMessage is LdapSearchResult)
                         {
                             // Search Entry
-                            object entry = ((LdapSearchResult)msg).Entry;
+                            object entry = ((LdapSearchResult)ldapMessage).Entry;
                             _entries.Add(entry);
                             i++;
                             _entryCount++;
                         }
-                        else if (msg is LdapSearchResultReference)
+                        else if (ldapMessage is LdapSearchResultReference)
                         {
                             // Search Ref
-                            var refs = ((LdapSearchResultReference)msg).Referrals;
+                            var refs = ((LdapSearchResultReference)ldapMessage).Referrals;
 
                             if (_cons.ReferralFollowing)
                             {
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, msg, refs, 0, true, _referralConn).ConfigureAwait(false);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, ldapMessage, refs, 0, true, _referralConn).ConfigureAwait(false);
                             }
                             else
                             {
@@ -175,7 +173,7 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             // LdapResponse
-                            var resp = (LdapResponse)msg;
+                            var resp = (LdapResponse)ldapMessage;
                             var resultCode = resp.ResultCode;
 
                             // Check for an embedded exception

@@ -7,7 +7,7 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     The class performs token processing from strings.
     /// </summary>
-    public class Tokenizer
+    internal class Tokenizer
     {
         private readonly bool _returnDelims;
 
