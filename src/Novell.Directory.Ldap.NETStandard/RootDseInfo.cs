@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
     /// <summary>
-    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfoAsync(ILdapConnection)"/>.
+    /// The result of calling <see cref="LdapConnectionExtensionMethods.GetRootDseInfoAsync(ILdapConnection, CancellationToken)"/>.
     /// </summary>
     public class RootDseInfo
     {
