@@ -29,11 +29,12 @@ using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
-    internal sealed class MessageAgent
+    internal sealed class MessageAgent : IDisposable
     {
         public DebugId DebugId { get; } = DebugId.ForType<MessageAgent>();
         private int _indexLastRead;
         private readonly MessageVector _messages = new MessageVector(5);
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         /// <summary>
         ///     Get a list of message ids controlled by this agent.
@@ -152,14 +153,15 @@ namespace Novell.Directory.Ldap
         /// <param name="cons">
         ///     constraints associated with this request.
         /// </param>
-        internal void Abandon(int msgId, LdapConstraints cons)
+        /// <param name="cancellationToken"></param>
+        internal async Task Abandon(int msgId, LdapConstraints cons, CancellationToken cancellationToken)
         {
             try
             {
                 // Send abandon request and remove from connection list
                 var info = _messages.FindMessageById(msgId);
                 _messages.Remove(info);
-                info.Abandon(cons, null);
+                await info.Abandon(cons, null, cancellationToken).ConfigureAwait(false);
             }
             catch (FieldAccessException ex)
             {
@@ -168,7 +170,8 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Abandon all requests on this MessageAgent.</summary>
-        internal void AbandonAll()
+        /// <param name="cancellationToken"></param>
+        internal async Task AbandonAll(CancellationToken cancellationToken)
         {
             var size = _messages.Count;
 
@@ -178,7 +181,7 @@ namespace Novell.Directory.Ldap
 
                 // Message complete and no more replies, remove from id list
                 _messages.Remove(info);
-                info.Abandon(null, null);
+                await info.Abandon(null, null, cancellationToken).ConfigureAwait(false);
             }
         }
 
@@ -223,7 +226,7 @@ namespace Novell.Directory.Ldap
         ///     the interval to wait for the message to complete or.
         ///     <code>null</code> if infinite.
         /// </param>
-        internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps)
+        internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps, CancellationToken cancellationToken)
         {
             Debug.WriteLine(msg.ToString());
 
@@ -231,13 +234,13 @@ namespace Novell.Directory.Ldap
             // and a timer to be started if needed.
             var message = new Message(msg, timeOut, conn, this, bindProps);
             _messages.Add(message);
-            return message.SendMessageAsync(); // Now send message to server
+            return message.SendMessageAsync(cancellationToken); // Now send message to server
         }
 
         /// <summary>
         ///     Returns a response queued, or waits if none queued.
         /// </summary>
-        internal object GetLdapMessage(int? msgId)
+        internal async Task<object> GetLdapMessage(int? msgId, CancellationToken cancellationToken)
         {
             object rfcMsg;
 
@@ -259,7 +262,7 @@ namespace Novell.Directory.Ldap
                     {
                         // Message complete and no more replies, remove from id list
                         _messages.Remove(info);
-                        info.Abandon(null, null); // Get rid of resources
+                        await info.Abandon(null, null, cancellationToken).ConfigureAwait(false); // Get rid of resources
                     }
 
                     return rfcMsg;
@@ -293,7 +296,7 @@ namespace Novell.Directory.Ldap
                         {
                             // Message complete & no more replies, remove from id list
                             _messages.Remove(info); // remove from list
-                            info.Abandon(null, null); // Get rid of resources
+                            info.Abandon(null, null, cancellationToken).GetAwaiter().GetResult(); // Get rid of resources
 
                             // Start loop at next message that is now moved
                             // to the current position in the Vector.
@@ -318,6 +321,11 @@ namespace Novell.Directory.Ldap
                     Monitor.Wait(_messages);
                 } /* end while */
             } /* end synchronized */
+        }
+
+        public void Dispose()
+        {
+            _semaphore?.Dispose();
         }
     }
 }

@@ -229,9 +229,9 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal async Task SendMessageAsync()
+        internal async Task SendMessageAsync(CancellationToken cancellationToken)
         {
-            await _conn.WriteMessageAsync(this).ConfigureAwait(false);
+            await _conn.WriteMessageAsync(this, cancellationToken).ConfigureAwait(false);
 
             // Start the timer thread
             if (_mslimit != 0)
@@ -255,7 +255,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        internal void Abandon(LdapConstraints cons, InterThreadException informUserEx)
+        internal async Task Abandon(LdapConstraints cons, InterThreadException informUserEx, CancellationToken cancellationToken)
         {
             if (!_waitForReplyRenamedField)
             {
@@ -298,7 +298,7 @@ namespace Novell.Directory.Ldap
                     LdapMessage msg = new LdapAbandonRequest(MessageId, cont);
 
                     // Send abandon message to server
-                    _conn.WriteMessage(msg);
+                    await _conn.WriteMessage(msg, cancellationToken).ConfigureAwait(false);
                 }
                 catch (LdapException ex)
                 {
@@ -308,7 +308,7 @@ namespace Novell.Directory.Ldap
                 // If not informing user, remove message from agent
                 if (informUserEx == null)
                 {
-                    MessageAgent.Abandon(MessageId, null);
+                    await MessageAgent.Abandon(MessageId, null, cancellationToken).ConfigureAwait(false);
                 }
 
                 _conn.RemoveMessage(this);
@@ -477,6 +477,7 @@ namespace Novell.Directory.Ldap
             ///     The timeout thread.  If it wakes from the sleep, future input
             ///     is stopped and the request is timed out.
             /// </summary>
+            /// <param name="cancellationToken"></param>
             protected override void Run()
             {
                 var ticksMultiplier = 100;
@@ -495,9 +496,9 @@ namespace Novell.Directory.Ldap
 
                 // Note: Abandon clears the bind semaphore after failed bind.
                 _message.Abandon(
-                    null,
-                    new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
-                        _message));
+                      null,
+                      new InterThreadException("Client request timed out", null, LdapException.LdapTimeout, null,
+                          _message), default).GetAwaiter().GetResult();
             }
         }
     }

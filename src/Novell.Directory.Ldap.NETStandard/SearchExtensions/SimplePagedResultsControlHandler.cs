@@ -127,7 +127,8 @@ namespace Novell.Directory.Ldap
                     options.Filter,
                     options.TargetAttributes,
                     false,
-                    searchConstraints
+                    searchConstraints,
+                    cancellationToken
                 ).ConfigureAwait(false);
 
             var searchResults = await asyncSearchResults.ToListAsync(cancellationToken).ConfigureAwait(false);

@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
@@ -87,7 +88,7 @@ namespace Novell.Directory.Ldap
         public virtual IDictionary SaslBindProperties
             => Connection?.BindProperties?.SaslBindProperties;
 
-        public virtual async Task BindAsync(SaslRequest saslRequest)
+        public virtual async Task BindAsync(SaslRequest saslRequest, CancellationToken cancellationToken = default)
         {
             if (saslRequest == null)
             {
@@ -121,7 +122,7 @@ namespace Novell.Directory.Ldap
                     {
                         try
                         {
-                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints).ConfigureAwait(false);
+                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints, cancellationToken).ConfigureAwait(false);
 
                             if (replyBuf != null)
                             {
@@ -145,13 +146,13 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
+        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints, CancellationToken cancellationToken = default)
         {
             constraints = constraints ?? _defSearchCons;
             var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
 
-            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps).ConfigureAwait(false);
-            if (!(queue.GetResponse() is LdapResponse ldapResponse))
+            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps, cancellationToken).ConfigureAwait(false);
+            if (!((await queue.GetResponse(cancellationToken).ConfigureAwait(false)) is LdapResponse ldapResponse))
             {
                 throw new LdapException("Bind failure, no response received.");
             }

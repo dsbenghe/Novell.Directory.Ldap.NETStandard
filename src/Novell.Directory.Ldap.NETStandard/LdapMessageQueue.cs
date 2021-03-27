@@ -23,6 +23,8 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -77,6 +79,7 @@ namespace Novell.Directory.Ldap
         ///     The application is responsible to determine the type of message
         ///     returned.
         /// </summary>
+        /// <param name="cancellationToken"></param>
         /// <returns>
         ///     The response.
         /// </returns>
@@ -90,9 +93,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapMessage GetResponse()
+        public Task<LdapMessage> GetResponse(CancellationToken cancellationToken)
         {
-            return GetResponse(null);
+            return GetResponse(null, cancellationToken);
         }
 
         /// <summary>
@@ -109,6 +112,7 @@ namespace Novell.Directory.Ldap
         /// <param name="msgid">
         ///     query for responses for a specific message request.
         /// </param>
+        /// <param name="cancellationToken"></param>
         /// <returns>
         ///     The response from the server.
         /// </returns>
@@ -122,9 +126,9 @@ namespace Novell.Directory.Ldap
         ///     LdapException A general exception which includes an error
         ///     message and an Ldap error code.
         /// </exception>
-        public LdapMessage GetResponse(int msgid)
+        public Task<LdapMessage> GetResponse(int msgid, CancellationToken cancellationToken)
         {
-            return GetResponse((int?)msgid);
+            return GetResponse((int?)msgid, cancellationToken);
         }
 
         /// <summary>
@@ -132,11 +136,11 @@ namespace Novell.Directory.Ldap
         ///     Has an Integer object as a parameter so we can distinguish
         ///     the null and the message number case.
         /// </summary>
-        private LdapMessage GetResponse(int? msgid)
+        private async Task<LdapMessage> GetResponse(int? msgid, CancellationToken cancellationToken)
         {
             object resp;
             LdapMessage response;
-            if ((resp = _agent.GetLdapMessage(msgid)) == null)
+            if ((resp = await _agent.GetLdapMessage(msgid, cancellationToken).ConfigureAwait(false)) == null)
             {
                 // blocks
                 return null; // no messages from this agent

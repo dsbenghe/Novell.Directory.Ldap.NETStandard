@@ -90,7 +90,8 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     options.Filter,
                     options.TargetAttributes,
                     options.TypesOnly,
-                    searchConstraints).ConfigureAwait(false);
+                    searchConstraints,
+                    cancellationToken).ConfigureAwait(false);
 
                 var searchResults = await asyncSearchResults.ToListAsync(cancellationToken).ConfigureAwait(false);
 

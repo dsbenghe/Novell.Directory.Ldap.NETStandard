@@ -1,9 +1,11 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Security.Authentication;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -78,6 +80,25 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPort);
 
             Assert.True(ldapConnection.Connected);
+        }
+
+        [Fact]
+        public async Task Connect_with_CancellationToken()
+        {
+            using var ldapConnection = new LdapConnection();
+            using var cts = new CancellationTokenSource(100);
+
+            ldapConnection.ConnectionTimeout = 200;
+
+            var sw = Stopwatch.StartNew();
+
+            var ex = await Assert.ThrowsAsync<LdapException>(() => ldapConnection.ConnectAsync("1.1.1.1", 636, cts.Token));
+
+            Assert.IsType<OperationCanceledException>(ex.InnerException);
+
+            var em = sw.ElapsedMilliseconds;
+
+            Assert.True(em > 100 && em < 200);
         }
     }
 }
