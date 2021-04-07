@@ -274,35 +274,17 @@ namespace Novell.Directory.Ldap.Asn1
             {
                 return 0;
             }
-
-            var receiver = new byte[target.Length];
-            var bytesRead = 0;
-            var startIndex = start;
-            var bytesToRead = count;
-            while (bytesToRead > 0)
-            {
 #if NETSTANDARD2_0
-                var n = await sourceStream.ReadAsync(receiver, startIndex, bytesToRead, cancellationToken).ConfigureAwait(false);
+            var bytesRead = await sourceStream.ReadAsync(target, start, count, cancellationToken).ConfigureAwait(false);
 #else
-                var n = await sourceStream.ReadAsync(receiver.AsMemory(startIndex, bytesToRead), cancellationToken).ConfigureAwait(false);
+            var bytesRead = await sourceStream.ReadAsync(target.AsMemory(start, count), cancellationToken).ConfigureAwait(false);
 #endif
-                if (n == 0)
-                {
-                    break;
-                }
-
-                bytesRead += n;
-                startIndex += n;
-                bytesToRead -= n;
-            }
 
             // Returns -1 if EOF
-            if (bytesRead == 0)
+            if (bytesRead <= 0)
             {
                 return -1;
             }
-
-            Array.Copy(target, start, receiver, start, bytesRead);
 
             return bytesRead;
         }
