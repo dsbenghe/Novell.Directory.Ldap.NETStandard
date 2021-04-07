@@ -57,24 +57,6 @@ namespace Novell.Directory.Ldap.Asn1
             _content = content;
         }
 
-        /// <summary>
-        ///     Constructs an Asn1Boolean object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Boolean(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
-        {
-            _content = (bool)dec.DecodeBoolean(inRenamed, len);
-        }
-
         /* Asn1Object implementation
         */
 

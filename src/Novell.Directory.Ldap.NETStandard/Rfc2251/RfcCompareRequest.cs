@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     an existing request.
         /// </summary>
         internal RfcCompareRequest(Asn1Object[] origRequest, string baseRenamed)
-            : base(origRequest, origRequest.Length)
+            : base(origRequest)
         {
             // Replace the base if specified, otherwise keep original base
             if (baseRenamed != null)

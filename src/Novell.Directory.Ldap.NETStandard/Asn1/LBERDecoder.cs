@@ -21,7 +21,10 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -71,7 +74,7 @@ namespace Novell.Directory.Ldap.Asn1
             var inRenamed = new MemoryStream(valueRenamed);
             try
             {
-                asn1 = Decode(inRenamed);
+                asn1 = Decode(inRenamed, default).GetAwaiter().GetResult();
             }
             catch (IOException ioe)
             {
@@ -82,10 +85,10 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from an InputStream.</summary>
-        public Asn1Object Decode(Stream inRenamed)
+        public ValueTask<Asn1Object> Decode(Stream inRenamed, CancellationToken cancellationToken)
         {
             var len = new int[1];
-            return Decode(inRenamed, len);
+            return Decode(inRenamed, len, cancellationToken);
         }
 
         /// <summary>
@@ -95,7 +98,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the parameter len. This information is helpful when decoding
         ///     structured types.
         /// </summary>
-        public Asn1Object Decode(Stream inRenamed, int[] len)
+        public async ValueTask<Asn1Object> Decode(Stream inRenamed, int[] len, CancellationToken cancellationToken)
         {
             _asn1Id.Reset(inRenamed);
             _asn1Len.Reset(inRenamed);
@@ -108,22 +111,21 @@ namespace Novell.Directory.Ldap.Asn1
                 switch (_asn1Id.Tag)
                 {
                     case Asn1Sequence.Tag:
-                        return new Asn1Sequence(this, inRenamed, length);
+                        return new Asn1Sequence(await Asn1Structured.DecodeStructured(this, inRenamed, length, cancellationToken).ConfigureAwait(false));
 
                     case Asn1Set.Tag:
-                        return new Asn1Set(this, inRenamed, length);
+                        return new Asn1Set(await Asn1Structured.DecodeStructured(this, inRenamed, length, cancellationToken).ConfigureAwait(false));
 
                     case Asn1Boolean.Tag:
-                        return new Asn1Boolean(this, inRenamed, length);
+                        return new Asn1Boolean(await DecodeBoolean(inRenamed, length, cancellationToken).ConfigureAwait(false));
 
                     case Asn1Integer.Tag:
-                        return new Asn1Integer(this, inRenamed, length);
-
+                        return new Asn1Integer(await DecodeNumeric(inRenamed, length, cancellationToken).ConfigureAwait(false));
                     case Asn1OctetString.Tag:
-                        return new Asn1OctetString(this, inRenamed, length);
+                        return new Asn1OctetString(length > 0 ? await DecodeOctetString(inRenamed, length, cancellationToken).ConfigureAwait(false) : new byte[0]);
 
                     case Asn1Enumerated.Tag:
-                        return new Asn1Enumerated(this, inRenamed, length);
+                        return new Asn1Enumerated(await DecodeNumeric(inRenamed, length, cancellationToken).ConfigureAwait(false));
 
                     case Asn1Null.Tag:
                         return new Asn1Null(); // has no content to decode.
@@ -158,32 +160,32 @@ namespace Novell.Directory.Ldap.Asn1
             }
 
             // APPLICATION or CONTEXT-SPECIFIC tag
-            return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier)_asn1Id.Clone());
+            return new Asn1Tagged((Asn1Identifier)_asn1Id.Clone(), new Asn1OctetString(length > 0 ? await DecodeOctetString(inRenamed, length, cancellationToken).ConfigureAwait(false) : new byte[0]));
         }
 
         /* Decoders for ASN.1 simple type Contents
         */
 
         /// <summary> Decode a boolean directly from a stream.</summary>
-        public object DecodeBoolean(Stream inRenamed, int len)
+        public async ValueTask<bool> DecodeBoolean(Stream inRenamed, int len, CancellationToken cancellationToken)
         {
             var lber = new byte[len];
 
-            var i = ReadInput(inRenamed, ref lber, 0, lber.Length);
+            var i = await ReadInput(inRenamed, lber, 0, lber.Length, cancellationToken).ConfigureAwait(false);
 
             if (i != len)
             {
                 throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
             }
 
-            return lber[0] == 0x00 ? false : true;
+            return lber[0] != 0x00;
         }
 
         /// <summary>
         ///     Decode a Numeric type directly from a stream. Decodes INTEGER
         ///     and ENUMERATED types.
         /// </summary>
-        public object DecodeNumeric(Stream inRenamed, int len)
+        public async ValueTask<long> DecodeNumeric(Stream inRenamed, int len, CancellationToken cancellationToken)
         {
             long l = 0;
             var r = (long)inRenamed.ReadByte();
@@ -201,22 +203,26 @@ namespace Novell.Directory.Ldap.Asn1
 
             l = (l << 8) | r;
 
-            for (var i = 1; i < len; i++)
+            var octets = new byte[len - 1];
+#if NETSTANDARD2_0
+            if (len - 1 > await inRenamed.ReadAsync(octets, 0, octets.Length, cancellationToken).ConfigureAwait(false))
+#else
+            if (len - 1 > await inRenamed.ReadAsync(octets.AsMemory(), cancellationToken).ConfigureAwait(false))
+#endif
             {
-                r = inRenamed.ReadByte();
-                if (r < 0)
-                {
-                    throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
-                }
+                throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
+            }
 
-                l = (l << 8) | r;
+            for (var i = 0; i < len - 1; i++)
+            {
+                l = (l << 8) | octets[i];
             }
 
             return l;
         }
 
         /// <summary> Decode an OctetString directly from a stream.</summary>
-        public object DecodeOctetString(Stream inRenamed, int len)
+        public async ValueTask<byte[]> DecodeOctetString(Stream inRenamed, int len, CancellationToken cancellationToken)
         {
             var octets = new byte[len];
             var totalLen = 0;
@@ -224,7 +230,7 @@ namespace Novell.Directory.Ldap.Asn1
             while (totalLen < len)
             {
                 // Make sure we have read all the data
-                var inLen = ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
+                var inLen = await ReadInput(inRenamed, octets, totalLen, len - totalLen, cancellationToken).ConfigureAwait(false);
                 totalLen += inLen;
             }
 
@@ -232,19 +238,16 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode a CharacterString directly from a stream.</summary>
-        public object DecodeCharacterString(Stream inRenamed, int len)
+        public async ValueTask<string> DecodeCharacterString(Stream inRenamed, int len, CancellationToken cancellationToken)
         {
             var octets = new byte[len];
-
-            for (var i = 0; i < len; i++)
+#if NETSTANDARD2_0
+            if (len > await inRenamed.ReadAsync(octets, 0, len, cancellationToken).ConfigureAwait(false))
+#else
+            if (len > await inRenamed.ReadAsync(octets.AsMemory(), cancellationToken).ConfigureAwait(false))
+#endif
             {
-                var ret = inRenamed.ReadByte(); // blocks
-                if (ret == -1)
-                {
-                    throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
-                }
-
-                octets[i] = (byte)ret;
+                throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
             }
 
             var rval = octets.ToUtf8String();
@@ -264,7 +267,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The number of characters read. The number will be less than or equal to count depending on the data available
         ///     in the source Stream. Returns -1 if the end of the stream is reached.
         /// </returns>
-        private static int ReadInput(Stream sourceStream, ref byte[] target, int start, int count)
+        private static async ValueTask<int> ReadInput(Stream sourceStream, byte[] target, int start, int count, CancellationToken cancellationToken)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
@@ -278,7 +281,11 @@ namespace Novell.Directory.Ldap.Asn1
             var bytesToRead = count;
             while (bytesToRead > 0)
             {
-                var n = sourceStream.Read(receiver, startIndex, bytesToRead);
+#if NETSTANDARD2_0
+                var n = await sourceStream.ReadAsync(receiver, startIndex, bytesToRead, cancellationToken).ConfigureAwait(false);
+#else
+                var n = await sourceStream.ReadAsync(receiver.AsMemory(startIndex, bytesToRead), cancellationToken).ConfigureAwait(false);
+#endif
                 if (n == 0)
                 {
                     break;
@@ -295,10 +302,7 @@ namespace Novell.Directory.Ldap.Asn1
                 return -1;
             }
 
-            for (var i = start; i < start + bytesRead; i++)
-            {
-                target[i] = receiver[i];
-            }
+            Array.Copy(target, start, receiver, start, bytesRead);
 
             return bytesRead;
         }

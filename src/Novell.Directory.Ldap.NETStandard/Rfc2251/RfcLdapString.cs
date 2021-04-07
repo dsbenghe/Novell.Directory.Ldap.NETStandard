@@ -40,11 +40,5 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(ba)
         {
         }
-
-        /// <summary> </summary>
-        public RfcLdapString(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
     }
 }

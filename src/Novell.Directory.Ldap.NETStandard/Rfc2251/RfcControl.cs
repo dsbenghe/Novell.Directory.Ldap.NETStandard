@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -74,8 +73,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs a Control object by decoding it from an InputStream.</summary>
-        public RfcControl(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcControl(Asn1Object[] newContent)
+            : base(newContent)
         {
         }
 

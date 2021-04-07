@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -44,8 +43,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a SearchResultEntry is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        public RfcSearchResultEntry(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcSearchResultEntry(Asn1Object[] newContent)
+            : base(newContent)
         {
             // Decode objectName
             //      set(0, new RfcLdapDN(((Asn1OctetString)get(0)).stringValue()));

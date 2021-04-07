@@ -67,28 +67,6 @@ namespace Novell.Directory.Ldap.Asn1
             }
         }
 
-        /// <summary>
-        ///     Constructs an Asn1Tagged object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Tagged(IAsn1Decoder dec, Stream inRenamed, int len, Asn1Identifier identifier)
-            : base(identifier)
-        {
-            // If we are decoding an implicit tag, there is no way to know at this
-            // low level what the base type really is. We can place the content
-            // into an Asn1OctetString type and pass it back to the application who
-            // will be able to create the appropriate ASN.1 type for this tag.
-            _content = new Asn1OctetString(dec, inRenamed, len);
-        }
-
         /// <summary> Sets the Asn1Object tagged value.</summary>
         public Asn1Object TaggedValue
         {

@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -39,8 +38,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         // *************************************************************************
 
         /// <summary> Create a ModifyDNResponse by decoding it from an InputStream.</summary>
-        public RfcModifyDnResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcModifyDnResponse(Asn1Object[] newContent)
+            : base(newContent)
         {
         }
 

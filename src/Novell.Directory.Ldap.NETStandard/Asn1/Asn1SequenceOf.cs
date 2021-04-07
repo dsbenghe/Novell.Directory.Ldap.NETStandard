@@ -78,26 +78,20 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Asn1Sequence.
         /// </summary>
         public Asn1SequenceOf(Asn1Sequence sequence)
-            : base(Id, sequence.ToArray(), sequence.Size())
+            : base(Id, sequence.ToArray())
         {
         }
 
         /// <summary>
-        ///     Constructs an Asn1SequenceOf object by decoding data from an
-        ///     input stream.
+        ///     Constructs an Asn1SequenceOf object with an array representing an
+        ///     Asn1 sequence.
         /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
         /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
+        public Asn1SequenceOf(Asn1Object[] newContent)
+            : base(Id, newContent)
         {
-            DecodeStructured(dec, inRenamed, len);
         }
 
         /* Asn1SequenceOf specific methods

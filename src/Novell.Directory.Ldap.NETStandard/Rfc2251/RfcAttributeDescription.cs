@@ -21,9 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using Novell.Directory.Ldap.Asn1;
-using System.IO;
-
 namespace Novell.Directory.Ldap.Rfc2251
 {
     /*
@@ -39,8 +36,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="content">
+        ///     A byte array representing the string that
+        ///     will be contained in the this Asn1OctetString object.
+        /// </param>
+        public RfcAttributeDescription(byte[] content)
+            : base(content)
         {
         }
     }

@@ -21,8 +21,6 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System.IO;
-
 namespace Novell.Directory.Ldap.Asn1
 {
     /// <summary>
@@ -59,30 +57,12 @@ namespace Novell.Directory.Ldap.Asn1
         ///     number of placeholders for Asn1Objects. However there
         ///     are no actual Asn1Objects in this SequenceOf object.
         /// </summary>
-        /// <param name="size">
-        ///     Specifies the initial size of the collection.
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
         /// </param>
-        public Asn1Set(int size)
-            : base(Id, size)
+        public Asn1Set(Asn1Object[] newContent)
+            : base(Id, newContent)
         {
-        }
-
-        /// <summary>
-        ///     Constructs an Asn1Set object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
-        {
-            DecodeStructured(dec, inRenamed, len);
         }
 
         /* Asn1Set specific methods

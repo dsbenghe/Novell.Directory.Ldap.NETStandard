@@ -80,24 +80,6 @@ namespace Novell.Directory.Ldap.Asn1
             }
         }
 
-        /// <summary>
-        ///     Constructs an Asn1OctetString object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
-        {
-            _content = len > 0 ? (byte[])dec.DecodeOctetString(inRenamed, len) : new byte[0];
-        }
-
         /* Asn1Object implementation
         */
 

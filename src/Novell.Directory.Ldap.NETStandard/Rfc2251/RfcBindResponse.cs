@@ -23,6 +23,8 @@
 
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -46,21 +48,32 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Note: If serverSaslCreds is included in the BindResponse, it does not
         ///     need to be decoded since it is already an OCTET STRING.
         /// </summary>
-        public RfcBindResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcBindResponse(Asn1Object[] newContent)
+            : base(newContent)
         {
+        }
+
+        public static async ValueTask<RfcBindResponse> Decode(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
+        {
+            var response = new RfcBindResponse(await DecodeStructured(dec, inRenamed, len, cancellationToken).ConfigureAwait(false));
+
             // Decode optional referral from Asn1OctetString to Referral.
-            if (Size() > 3)
+            if (response.Size() > 3)
             {
-                var obj = (Asn1Tagged)get_Renamed(3);
+                var obj = (Asn1Tagged)response.get_Renamed(3);
                 var id = obj.GetIdentifier();
                 if (id.Tag == RfcLdapResult.Referral)
                 {
                     var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
                     var bais = new MemoryStream(content);
-                    set_Renamed(3, new RfcReferral(dec, bais, content.Length));
+                    response.set_Renamed(3, new RfcReferral(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                 }
             }
+
+            return response;
         }
 
         /// <summary>

@@ -68,23 +68,6 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary>
-        ///     Constructs an Asn1Enumerated object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Enumerated(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
-        {
-        }
-
-        /// <summary>
         ///     Call this method to encode the current instance into the
         ///     specified output stream using the specified encoder object.
         /// </summary>

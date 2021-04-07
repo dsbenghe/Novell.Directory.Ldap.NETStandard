@@ -67,7 +67,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     an existing request.
         /// </summary>
         internal RfcBindRequest(Asn1Object[] origRequest, string baseRenamed)
-            : base(origRequest, origRequest.Length)
+            : base(origRequest)
         {
             // Replace the dn if specified, otherwise keep original base
             if (baseRenamed != null)

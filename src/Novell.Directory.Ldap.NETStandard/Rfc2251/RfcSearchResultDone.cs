@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -39,8 +38,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         // *************************************************************************
 
         /// <summary> Decode a search result done from the input stream.</summary>
-        public RfcSearchResultDone(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcSearchResultDone(Asn1Object[] newContent)
+            : base(newContent)
         {
         }
 

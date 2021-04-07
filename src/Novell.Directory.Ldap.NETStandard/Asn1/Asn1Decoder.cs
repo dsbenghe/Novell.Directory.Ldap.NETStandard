@@ -22,6 +22,8 @@
 *******************************************************************************/
 
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -51,24 +53,28 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
         /// </summary>
+        /// <param name="inRenamed"></param>
+        /// <param name="cancellationToken"></param>
         /// <param name="in">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object Decode(Stream inRenamed);
+        ValueTask<Asn1Object> Decode(Stream inRenamed, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
         /// </summary>
+        /// <param name="inRenamed"></param>
         /// <param name="length">
         ///     The decoded components encoded length. This value is
         ///     handy when decoding structured types. It allows you to accumulate
         ///     the number of bytes decoded, so you know when the structured
         ///     type has decoded all of its components.
         /// </param>
+        /// <param name="cancellationToken"></param>
         /// <param name="in">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object Decode(Stream inRenamed, int[] length);
+        ValueTask<Asn1Object> Decode(Stream inRenamed, int[] length, CancellationToken cancellationToken);
 
         /* Decoders for ASN.1 simple types
         */
@@ -83,7 +89,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeBoolean(Stream inRenamed, int len);
+        ValueTask<bool> DecodeBoolean(Stream inRenamed, int len, CancellationToken cancellationToken);
 
         /// <summary>
         ///     Decode a Numeric value directly from a stream.  Call this method when you
@@ -96,7 +102,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeNumeric(Stream inRenamed, int len);
+        ValueTask<long> DecodeNumeric(Stream inRenamed, int len, CancellationToken cancellationToken);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode a REAL directly from a stream.
@@ -119,7 +125,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeOctetString(Stream inRenamed, int len);
+        ValueTask<byte[]> DecodeOctetString(Stream inRenamed, int len, CancellationToken cancellationToken);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode an OBJECT_IDENTIFIER directly from a stream.
@@ -137,7 +143,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeCharacterString(Stream inRenamed, int len);
+        ValueTask<string> DecodeCharacterString(Stream inRenamed, int len, CancellationToken cancellationToken);
 
         /* No Decoders for ASN.1 structured types. A structured type's value is a
         * collection of other types.

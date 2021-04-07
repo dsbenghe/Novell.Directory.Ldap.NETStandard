@@ -22,7 +22,10 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
+using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -138,21 +141,33 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream.</summary>
-        public RfcLdapResult(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcLdapResult(Asn1Object[] newContent)
+            : base(newContent)
         {
+        }
+
+        public static async ValueTask<T> Decode<T>(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken, Func<Asn1Object[], T> creator)
+            where T : RfcLdapResult
+        {
+            var result = creator(await DecodeStructured(dec, inRenamed, len, cancellationToken).ConfigureAwait(false));
+
             // Decode optional referral from Asn1OctetString to Referral.
-            if (Size() > 3)
+            if (result.Size() > 3)
             {
-                var obj = (Asn1Tagged)get_Renamed(3);
+                var obj = (Asn1Tagged)result.get_Renamed(3);
                 var id = obj.GetIdentifier();
                 if (id.Tag == Referral)
                 {
                     var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
                     var bais = new MemoryStream(content);
-                    set_Renamed(3, new RfcReferral(dec, bais, content.Length));
+                    result.set_Renamed(3, new RfcReferral(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                 }
             }
+
+            return result;
         }
 
         // *************************************************************************

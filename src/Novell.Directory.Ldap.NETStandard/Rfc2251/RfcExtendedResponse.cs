@@ -23,6 +23,8 @@
 
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -43,9 +45,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Context-specific TAG for optional response.</summary>
         public const int ResponseTag = 11;
 
-        private readonly int _referralIndex;
-        private readonly int _responseIndex;
-        private readonly int _responseNameIndex;
+        private int _referralIndex;
+        private int _responseIndex;
+        private int _responseNameIndex;
 
         // *************************************************************************
         // Constructors for ExtendedResponse
@@ -55,37 +57,48 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a ExtendedResponse is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        public RfcExtendedResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcExtendedResponse(Asn1Object[] newContent)
+            : base(newContent)
         {
+        }
+
+        public static async ValueTask<RfcExtendedResponse> Decode(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
+        {
+            var response = new RfcExtendedResponse(await DecodeStructured(dec, inRenamed, len, cancellationToken).ConfigureAwait(false));
+
             // decode optional tagged elements
-            if (Size() > 3)
+            if (response.Size() > 3)
             {
-                for (var i = 3; i < Size(); i++)
+                for (var i = 3; i < response.Size(); i++)
                 {
-                    var obj = (Asn1Tagged)get_Renamed(i);
+                    var obj = (Asn1Tagged)response.get_Renamed(i);
                     var id = obj.GetIdentifier();
                     switch (id.Tag)
                     {
                         case RfcLdapResult.Referral:
                             var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
                             var bais = new MemoryStream(content);
-                            set_Renamed(i, new RfcReferral(dec, bais, content.Length));
-                            _referralIndex = i;
+                            response.set_Renamed(i, new RfcReferral(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
+                            response._referralIndex = i;
                             break;
 
                         case ResponseNameTag:
-                            set_Renamed(i, new RfcLdapOid(((Asn1OctetString)obj.TaggedValue).ByteValue()));
-                            _responseNameIndex = i;
+                            response.set_Renamed(i, new RfcLdapOid(((Asn1OctetString)obj.TaggedValue).ByteValue()));
+                            response._responseNameIndex = i;
                             break;
 
                         case ResponseTag:
-                            set_Renamed(i, obj.TaggedValue);
-                            _responseIndex = i;
+                            response.set_Renamed(i, obj.TaggedValue);
+                            response._responseIndex = i;
                             break;
                     }
                 }
             }
+
+            return response;
         }
 
         /// <summary> </summary>

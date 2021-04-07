@@ -74,7 +74,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Asn1Set.
         /// </summary>
         public Asn1SetOf(Asn1Set setRenamed)
-            : base(Id, setRenamed.ToArray(), setRenamed.Size())
+            : base(Id, setRenamed.ToArray())
         {
         }
 

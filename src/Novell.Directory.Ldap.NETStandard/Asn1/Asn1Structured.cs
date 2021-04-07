@@ -21,9 +21,12 @@
 * SOFTWARE.
 *******************************************************************************/
 
-using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Asn1
 {
@@ -33,9 +36,7 @@ namespace Novell.Directory.Ldap.Asn1
     /// </summary>
     public abstract class Asn1Structured : Asn1Object
     {
-        private Asn1Object[] _content;
-
-        private int _contentIndex;
+        private readonly IList<Asn1Object> _content;
 
         /*
         * Create a an Asn1 structured type with default size of 10
@@ -59,7 +60,7 @@ namespace Novell.Directory.Ldap.Asn1
         protected internal Asn1Structured(Asn1Identifier id, int size)
             : base(id)
         {
-            _content = new Asn1Object[size];
+            _content = new List<Asn1Object>(size);
         }
 
         /*
@@ -72,11 +73,10 @@ namespace Novell.Directory.Ldap.Asn1
         * @param size the number of items of content in the array
         */
 
-        protected internal Asn1Structured(Asn1Identifier id, Asn1Object[] newContent, int size)
+        protected internal Asn1Structured(Asn1Identifier id, IList<Asn1Object> newContent)
             : base(id)
         {
-            _content = newContent;
-            _contentIndex = size;
+            _content = new List<Asn1Object>(newContent);
         }
 
         /// <summary>
@@ -89,14 +89,19 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
-        protected internal void DecodeStructured(IAsn1Decoder dec, Stream inRenamed, int len)
+        protected internal static ValueTask<Asn1Object[]> DecodeStructured(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
         {
-            var componentLen = new int[1]; // collects length of component
+            return Decode().ToArrayAsync(cancellationToken);
 
-            while (len > 0)
+            async IAsyncEnumerable<Asn1Object> Decode()
             {
-                Add(dec.Decode(inRenamed, componentLen));
-                len -= componentLen[0];
+                var componentLen = new int[1]; // collects length of component
+
+                while (len > 0)
+                {
+                    yield return await dec.Decode(inRenamed, componentLen, cancellationToken).ConfigureAwait(false);
+                    len -= componentLen[0];
+                }
             }
         }
 
@@ -109,8 +114,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// </returns>
         public Asn1Object[] ToArray()
         {
-            var cloneArray = new Asn1Object[_contentIndex];
-            Array.Copy(_content, 0, cloneArray, 0, _contentIndex);
+            var cloneArray = new Asn1Object[_content.Count];
+
+            _content.CopyTo(cloneArray, 0);
+
             return cloneArray;
         }
 
@@ -124,16 +131,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public void Add(Asn1Object valueRenamed)
         {
-            if (_contentIndex == _content.Length)
-            {
-                // Array too small, need to expand it, double length
-                var newSize = _contentIndex + _contentIndex;
-                var newArray = new Asn1Object[newSize];
-                Array.Copy(_content, 0, newArray, 0, _contentIndex);
-                _content = newArray;
-            }
-
-            _content[_contentIndex++] = valueRenamed;
+            _content.Add(valueRenamed);
         }
 
         /// <summary>
@@ -150,11 +148,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public void set_Renamed(int index, Asn1Object valueRenamed)
         {
-            if (index >= _contentIndex || index < 0)
-            {
-                throw new IndexOutOfRangeException("Asn1Structured: get: index " + index + ", size " + _contentIndex);
-            }
-
             _content[index] = valueRenamed;
         }
 
@@ -167,11 +160,6 @@ namespace Novell.Directory.Ldap.Asn1
         /// </param>
         public Asn1Object get_Renamed(int index)
         {
-            if (index >= _contentIndex || index < 0)
-            {
-                throw new IndexOutOfRangeException("Asn1Structured: set: index " + index + ", size " + _contentIndex);
-            }
-
             return _content[index];
         }
 
@@ -181,7 +169,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// </summary>
         public int Size()
         {
-            return _contentIndex;
+            return _content.Count;
         }
 
         /// <summary>
@@ -200,10 +188,10 @@ namespace Novell.Directory.Ldap.Asn1
 
             sb.Append(type);
 
-            for (var i = 0; i < _contentIndex; i++)
+            for (var i = 0; i < _content.Count; i++)
             {
                 sb.Append(_content[i]);
-                if (i != _contentIndex - 1)
+                if (i != _content.Count - 1)
                 {
                     sb.Append(", ");
                 }

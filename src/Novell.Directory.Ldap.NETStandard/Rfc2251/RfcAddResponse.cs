@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -42,8 +41,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a AddResponse is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        public RfcAddResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcAddResponse(Asn1Object[] newContent)
+            : base(newContent)
         {
         }
 

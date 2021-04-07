@@ -23,6 +23,9 @@
 
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -51,16 +54,25 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
-        /// <summary> Constructs a Controls object by decoding it from an InputStream.</summary>
-        public RfcControls(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <summary>
+        ///     Constructs a Controls object. This constructor is used in combination
+        ///     with the add() method to construct a set of Controls to send to the
+        ///     server.
+        /// </summary>
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcControls(Asn1Object[] newContent)
+            : base(newContent)
         {
-            // Convert each SEQUENCE element to a Control
-            for (var i = 0; i < Size(); i++)
-            {
-                var tempControl = new RfcControl((Asn1Sequence)get_Renamed(i));
-                set_Renamed(i, tempControl);
-            }
+        }
+
+        public static async ValueTask<RfcControls> Decode(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
+        {
+            return new RfcControls((await DecodeStructured(dec, inRenamed, len, cancellationToken)
+                .ConfigureAwait(false))
+                .Select<Asn1Object, Asn1Object>(item => new RfcControl((Asn1Sequence)item))
+                .ToArray());
         }
 
         // *************************************************************************

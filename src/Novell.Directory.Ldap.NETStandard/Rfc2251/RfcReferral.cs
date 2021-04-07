@@ -22,7 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Asn1;
-using System.IO;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -42,8 +41,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a Referral object is constructed, is when we are
         ///     decoding an RfcLdapResult or COMPONENTS OF RfcLdapResult.
         /// </summary>
-        public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcReferral(Asn1Object[] newContent)
+            : base(newContent)
         {
             // convert from Asn1OctetString to RfcLdapURL here (then look at
             // LdapResponse.getReferrals())

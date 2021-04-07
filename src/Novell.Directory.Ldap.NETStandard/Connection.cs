@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap
         // Number of clones in addition to original LdapConnection using this
         // connection.
         private int _cloneCount;
-        private Thread _deadReader; // Identity of last reader thread
+        private Task _deadReader; // Identity of last reader thread
         private Exception _deadReaderException; // Last exception of reader
         private readonly LberDecoder _decoder;
 
@@ -108,7 +108,7 @@ namespace Novell.Directory.Ldap
         private readonly MessageVector _messages;
         private TcpClient _nonTlsBackup;
         private Stream _outStream;
-        private Thread _reader; // New thread that reads data from the server.
+        private Task _reader; // New thread that reads data from the server.
 
         private ReaderThread _readerThreadEnclosure;
 
@@ -381,7 +381,7 @@ namespace Novell.Directory.Ldap
         * @param the thread id to match
         */
 
-        private void WaitForReader(Thread thread)
+        private void WaitForReader(Task thread)
         {
             // wait for previous reader thread to terminate
             var rInst = _reader;
@@ -889,7 +889,7 @@ namespace Novell.Directory.Ldap
                     // Just before closing the sockets, abort the reader thread
                     if (_reader != null && reason != "reader: thread stopping")
                     {
-                        _readerThreadEnclosure.Stop();
+                        await _readerThreadEnclosure.Stop().ConfigureAwait(false);
                     }
 
                     // Close the socket
@@ -994,13 +994,9 @@ namespace Novell.Directory.Ldap
         /// </summary>
         private void StartReader()
         {
-            // Start Reader Thread
-            var r = new Thread(new ReaderThread(this).Run)
-            {
-                IsBackground = true, // If the last thread running, allow exit.
-            };
-            r.Start();
-            WaitForReader(r);
+            // Start Reader Task
+            Task t = null;
+            WaitForReader(t = Task.Run(() => new ReaderThread(this).Run(t)));
         }
 
         /// <summary>
@@ -1156,7 +1152,7 @@ namespace Novell.Directory.Ldap
         public class ReaderThread
         {
             private readonly Connection _enclosingInstance;
-            private Thread _enclosedThread;
+            private Task _enclosedThread;
             private bool _isStopping;
 
             public ReaderThread(Connection enclosingInstance)
@@ -1164,11 +1160,11 @@ namespace Novell.Directory.Ldap
                 _enclosingInstance = enclosingInstance;
             }
 
-            public void Stop()
+            public ValueTask Stop()
             {
                 if (_enclosedThread == null)
                 {
-                    return;
+                    return default;
                 }
 
                 _isStopping = true;
@@ -1184,21 +1180,21 @@ namespace Novell.Directory.Ldap
                 var socketStream = _enclosingInstance._inStream;
                 socketStream?.Dispose();
 
-                _enclosedThread.Join();
+                return new ValueTask(_enclosedThread);
             }
 
             /// <summary>
             ///     This thread decodes and processes RfcLdapMessage's from the server.
             ///     Note: This thread needs a graceful shutdown implementation.
             /// </summary>
-            public void Run()
+            public async Task Run(Task task)
             {
                 var reason = "reader: thread stopping";
                 InterThreadException notify = null;
                 Message info = null;
                 Exception readerException = null;
                 _enclosingInstance._readerThreadEnclosure = this;
-                _enclosingInstance._reader = _enclosedThread = Thread.CurrentThread;
+                _enclosingInstance._reader = _enclosedThread = task;
                 try
                 {
                     while (!_isStopping)
@@ -1225,7 +1221,7 @@ namespace Novell.Directory.Ldap
                         // Turn the message into an RfcMessage class
                         var asn1Len = new Asn1Length(myIn);
 
-                        var msg = new RfcLdapMessage(_enclosingInstance._decoder, myIn, asn1Len.Length);
+                        var msg = await RfcLdapMessage.Decode(_enclosingInstance._decoder, myIn, asn1Len.Length, default).ConfigureAwait(false);
 
                         // ------------------------------------------------------------
                         // Process the decoded RfcLdapMessage.

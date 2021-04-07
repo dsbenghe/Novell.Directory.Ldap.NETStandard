@@ -23,6 +23,8 @@
 
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -46,8 +48,16 @@ namespace Novell.Directory.Ldap.Rfc2251
          * Context-specific TAG for optional response.
          */
         public const int TagResponse = 1;
-        private readonly int _mResponseNameIndex;
-        private readonly int _mResponseValueIndex;
+        private int _mResponseNameIndex;
+        private int _mResponseValueIndex;
+
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcIntermediateResponse(Asn1Object[] newContent)
+            : base( newContent)
+        {
+        }
 
         // *************************************************************************
         // Constructors for ExtendedResponse
@@ -84,10 +94,11 @@ namespace Novell.Directory.Ldap.Rfc2251
          * oid of the response. The element at m_responseValueIndex will be set
          * to an ASN1OctetString containing the value bytes.
          */
-        public RfcIntermediateResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public static async ValueTask<RfcIntermediateResponse> Decode(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
         {
-            _mResponseNameIndex = _mResponseValueIndex = 0;
+            var response = new RfcIntermediateResponse(await DecodeStructured(dec, inRenamed, len, cancellationToken).ConfigureAwait(false));
+
+            response._mResponseNameIndex = response._mResponseValueIndex = 0;
 
             int i;
 
@@ -95,7 +106,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.
             // the incorrectly encoded case, LDAPResult contains
-            if (Size() >= 3)
+            if (response.Size() >= 3)
             {
                 i = 3; // at least 3 components
             }
@@ -104,24 +115,26 @@ namespace Novell.Directory.Ldap.Rfc2251
                 i = 0; // correctly encoded case, can have zero components
             }
 
-            for (; i < Size(); i++)
+            for (; i < response.Size(); i++)
             {
-                var obj = (Asn1Tagged)get_Renamed(i);
+                var obj = (Asn1Tagged)response.get_Renamed(i);
                 var id = obj.GetIdentifier();
                 switch (id.Tag)
                 {
                     case TagResponseName:
-                        set_Renamed(i, new RfcLdapOid(
+                        response.set_Renamed(i, new RfcLdapOid(
                             ((Asn1OctetString)obj.TaggedValue).ByteValue()));
-                        _mResponseNameIndex = i;
+                        response._mResponseNameIndex = i;
                         break;
 
                     case TagResponse:
-                        set_Renamed(i, obj.TaggedValue);
-                        _mResponseValueIndex = i;
+                        response.set_Renamed(i, obj.TaggedValue);
+                        response._mResponseValueIndex = i;
                         break;
                 }
             }
+
+            return response;
         }
 
         public Asn1Enumerated GetResultCode()

@@ -24,6 +24,8 @@
 using Novell.Directory.Ldap.Asn1;
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Rfc2251
 {
@@ -75,7 +77,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </param>
         internal RfcLdapMessage(Asn1Object[] origContent, IRfcRequest origRequest, string dn, string filter,
             bool reference)
-            : base(origContent, origContent.Length)
+            : base(origContent)
         {
             set_Renamed(0, new RfcMessageId()); // MessageID has static counter
 
@@ -127,13 +129,22 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
-        /// <summary> Will decode an RfcLdapMessage directly from an InputStream.</summary>
-        public RfcLdapMessage(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        /// <summary> Create an RfcLdapMessage using the specified Ldap Response.</summary>
+        /// <param name="newContent">
+        ///     the array containing the Asn1 data for the sequence.
+        /// </param>
+        public RfcLdapMessage(Asn1Object[] newContent)
+            : base(newContent)
         {
+        }
+
+        public static async ValueTask<RfcLdapMessage> Decode(IAsn1Decoder dec, Stream inRenamed, int len, CancellationToken cancellationToken)
+        {
+            var message = new RfcLdapMessage(await DecodeStructured(dec, inRenamed, len, cancellationToken).ConfigureAwait(false));
+
             // Decode implicitly tagged protocol operation from an Asn1Tagged type
             // to its appropriate application type.
-            var protocolOp = (Asn1Tagged)get_Renamed(1);
+            var protocolOp = (Asn1Tagged)message.get_Renamed(1);
             var protocolOpId = protocolOp.GetIdentifier();
             var content = ((Asn1OctetString)protocolOp.TaggedValue).ByteValue();
             var bais = new MemoryStream(content);
@@ -141,47 +152,47 @@ namespace Novell.Directory.Ldap.Rfc2251
             switch (protocolOpId.Tag)
             {
                 case LdapMessage.SearchResponse:
-                    set_Renamed(1, new RfcSearchResultEntry(dec, bais, content.Length));
+                    message.set_Renamed(1, new RfcSearchResultEntry(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                     break;
 
                 case LdapMessage.SearchResult:
-                    set_Renamed(1, new RfcSearchResultDone(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcSearchResultDone(newContent)).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.SearchResultReference:
-                    set_Renamed(1, new RfcSearchResultReference(dec, bais, content.Length));
+                    message.set_Renamed(1, new RfcSearchResultReference(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                     break;
 
                 case LdapMessage.AddResponse:
-                    set_Renamed(1, new RfcAddResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcAddResponse(newContent)).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.BindResponse:
-                    set_Renamed(1, new RfcBindResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcBindResponse.Decode(dec, bais, content.Length, cancellationToken).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.CompareResponse:
-                    set_Renamed(1, new RfcCompareResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcCompareResponse(newContent)).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.DelResponse:
-                    set_Renamed(1, new RfcDelResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcDelResponse(newContent)).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.ExtendedResponse:
-                    set_Renamed(1, new RfcExtendedResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, new RfcExtendedResponse(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                     break;
 
                 case LdapMessage.IntermediateResponse:
-                    set_Renamed(1, new RfcIntermediateResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, new RfcIntermediateResponse(await DecodeStructured(dec, bais, content.Length, cancellationToken).ConfigureAwait(false)));
                     break;
 
                 case LdapMessage.ModifyResponse:
-                    set_Renamed(1, new RfcModifyResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcModifyResponse(newContent)).ConfigureAwait(false));
                     break;
 
                 case LdapMessage.ModifyRdnResponse:
-                    set_Renamed(1, new RfcModifyDnResponse(dec, bais, content.Length));
+                    message.set_Renamed(1, await RfcLdapResult.Decode(dec, bais, content.Length, cancellationToken, newContent => new RfcModifyDnResponse(newContent)).ConfigureAwait(false));
                     break;
 
                 default:
@@ -190,16 +201,18 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             // decode optional implicitly tagged controls from Asn1Tagged type to
             // to RFC 2251 types.
-            if (Size() > 2)
+            if (message.Size() > 2)
             {
-                var controls = (Asn1Tagged)get_Renamed(2);
+                var controls = (Asn1Tagged)message.get_Renamed(2);
 
                 // Asn1Identifier controlsId = protocolOp.getIdentifier();
                 // we could check to make sure we have controls here....
                 content = ((Asn1OctetString)controls.TaggedValue).ByteValue();
                 bais = new MemoryStream(content);
-                set_Renamed(2, new RfcControls(dec, bais, content.Length));
+                message.set_Renamed(2, await RfcControls.Decode(dec, bais, content.Length, cancellationToken).ConfigureAwait(false));
             }
+
+            return message;
         }
 
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
