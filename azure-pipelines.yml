@@ -40,6 +40,11 @@ stages:
       inputs:
         filePath: 'build.ps1'
         arguments: 'test-unit'
+    - task: NDependTask@1
+      inputs:
+        viewname: 'NDepend'
+      env:
+        SYSTEM_ACCESSTOKEN: $(system.accesstoken)
   - job: MacOS_CI
     pool:
       vmImage: macOS-10.15
