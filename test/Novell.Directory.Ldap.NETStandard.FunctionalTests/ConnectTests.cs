@@ -71,6 +71,27 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         }
 
         [Fact]
+        public async Task Connect_WithStartTls_And_WrongCredentials_ThrowsException()
+        {
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
+                {
+                    try
+                    {
+                        await ldapConnection.StartTlsAsync();
+                        await Assert.ThrowsAsync<LdapException>(
+                            async () => await ldapConnection.BindAsync(
+                                TestsConfig.LdapServer.RootUserDn,
+                                TestsConfig.LdapServer.RootUserPassword + "1"));
+                    }
+                    finally
+                    {
+                        await ldapConnection.StopTlsAsync();
+                    }
+                }, false, true);
+        }
+
+        [Fact]
         public async Task Disconnect_WithStartTls_WithoutStopTls_Works()
         {
             await TestHelper.WithLdapConnectionAsync(
