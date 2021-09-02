@@ -182,6 +182,25 @@ namespace Novell.Directory.Ldap
                     Superior = parser.Superior;
                 }
 
+                if (parser.Equality != null)
+                {
+                    EqualityMatchingRule = parser.Equality;
+                }
+
+                if (parser.Ordering != null)
+                {
+                    OrderingMatchingRule = parser.Ordering;
+                }
+
+                if (parser.Substring != null)
+                {
+                    SubstringMatchingRule = parser.Substring;
+                }
+
+                Collective = parser.Collective;
+                UserModifiable = parser.UserMod;
+                Usage = parser.Usage;
+
                 SingleValued = parser.Single;
                 Obsolete = parser.Obsolete;
                 var qualifiers = parser.Qualifiers;
