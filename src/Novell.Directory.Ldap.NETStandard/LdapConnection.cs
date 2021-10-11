@@ -2648,7 +2648,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 // increment hop count, check max hops
-                if (hopCount++ > cons.HopLimit)
+                if (++hopCount > cons.HopLimit)
                 {
                     throw new LdapLocalException("Max hops exceeded", LdapException.ReferralLimitExceeded);
                 }
