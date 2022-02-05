@@ -1,6 +1,7 @@
 # Changelog
 
 ### 4.0.0
+* add net6 as target
 * Change all the apis to be fully-async - no Task.Run tricks :).
     * with contributions from https://github.com/nesc58.
     * thanks to https://github.com/wslyhbb for the initial trigger :).

@@ -131,21 +131,5 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         {
             return $"cn={cn}," + TestsConfig.LdapServer.BaseDn;
         }
-
-        public static byte[] GetCertificate(string name)
-        {
-            var executingAssembly = Assembly.GetExecutingAssembly();
-            var manifestResourceStream = executingAssembly.GetManifestResourceStream($"{executingAssembly.GetName().Name}.certs.{name}");
-
-            if (manifestResourceStream == null)
-            {
-                throw new ArgumentNullException(nameof(manifestResourceStream));
-            }
-
-            var certBytes = new byte[manifestResourceStream.Length];
-            manifestResourceStream.Read(certBytes, 0, certBytes.Length);
-
-            return certBytes;
-        }
     }
 }

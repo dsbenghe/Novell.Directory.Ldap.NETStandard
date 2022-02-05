@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6;net5;netcoreapp3.1</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <!-- SA0001: XML comment analysis is disabled due to project configuration -->
     <NoWarn>SA0001</NoWarn>
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj" />
+    <ProjectReference Include="..\Novell.Directory.Ldap.NETStandard.UnitTests\Novell.Directory.Ldap.NETStandard.UnitTests.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,12 +28,6 @@
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="certs\external-test.pfx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

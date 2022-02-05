@@ -12,8 +12,8 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Release',
     # stress tests params
-    [ValidateSet('net5', 'netcoreapp3.1')]
-    [string]$Fx = 'net5',
+    [ValidateSet('net6', 'net5', 'netcoreapp3.1')]
+    [string]$Fx = 'net6',
     [string]$ConcurrencyLevel = 20,
     [ValidateSet('off', 'tls', 'ssl')]
     [string]$TransportSecurity = 'off'
@@ -34,6 +34,12 @@ if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps
     return
 }
 
+$script:SupportedNetVersions = @(
+    "net6"
+    "net5"
+    "netcoreapp3.1"
+)
+
 task build {
     exec {
         dotnet build -c $Configuration
@@ -41,14 +47,11 @@ task build {
 }
 
 task test-unit {
-    exec {
-        dotnet test --configuration $Configuration --no-build `
-            test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj -f net5
-    }
-
-    exec {
-        dotnet test --configuration $Configuration --no-build `
-            test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj -f netcoreapp3.1
+    foreach($netVersion in $SupportedNetVersions) {
+        exec {
+            dotnet test --configuration $Configuration --no-build `
+                test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj -f $netVersion
+        }
     }
 }
 
@@ -68,14 +71,12 @@ task configure-opendj {
 }
 
 task internal-test-functional {
-    exec {
-        dotnet test --configuration $CONFIGURATION  --no-build `
-            test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj -f net5
+    foreach($netVersion in $SupportedNetVersions) {
+        exec {
+            dotnet test --configuration $CONFIGURATION  --no-build `
+                test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj -f $netVersion
+        }
     }
-    exec {
-        dotnet test --configuration $CONFIGURATION  --no-build `
-            test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj -f netcoreapp3.1
-    }    
 }
 
 task test-functional configure-opendj, configure-openldap, {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Novell.Directory.Ldap.NETStandard.UnitTests.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Authentication;
@@ -7,9 +8,17 @@ using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
-    public class LdapConnectionOptionsTests
+    public sealed class LdapConnectionOptionsTests : IDisposable
     {
         private static readonly Random RandomGen = new Random();
+        private readonly X509Certificate2 _x509Certificate2;
+
+        public LdapConnectionOptionsTests()
+        {
+            _x509Certificate2 = new X509Certificate2(
+                CertsTestHelper.GetCertificate("external-test.pfx"),
+                "password");
+        }
 
         [Fact]
         public void New_instance_has_expected_defaults()
@@ -56,7 +65,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         {
             var clientCertificates = new List<X509Certificate>()
             {
-                new X509Certificate(),
+                _x509Certificate2,
             };
             var ldapConnectionOptions = new LdapConnectionOptions()
                 .ConfigureClientCertificates(clientCertificates);
@@ -126,6 +135,11 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             RandomGen.NextBytes(randomIpAddressV4Bytes);
             var ipAddressV4 = new IPAddress(randomIpAddressV4Bytes);
             return ipAddressV4;
+        }
+
+        public void Dispose()
+        {
+            _x509Certificate2?.Dispose();
         }
     }
 }

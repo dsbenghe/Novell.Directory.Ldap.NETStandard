@@ -1,4 +1,5 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using Novell.Directory.Ldap.NETStandard.UnitTests.Helpers;
 using Novell.Directory.Ldap.Sasl;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         {
             _expectedAuthzId = "dn:cn=external-test,dc=example,dc=com";
             _x509Certificate2 = new X509Certificate2(
-                TestHelper.GetCertificate("external-test.pfx"),
+                CertsTestHelper.GetCertificate("external-test.pfx"),
                 "password");
             _ldapConnectionOptions = new LdapConnectionOptions()
                 .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
