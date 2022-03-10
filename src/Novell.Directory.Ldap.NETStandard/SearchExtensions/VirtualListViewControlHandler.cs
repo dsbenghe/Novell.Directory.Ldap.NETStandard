@@ -1,5 +1,6 @@
 ﻿using JetBrains.Annotations;
 using Novell.Directory.Ldap.Controls;
+using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections.Generic;
 using System.Linq;
