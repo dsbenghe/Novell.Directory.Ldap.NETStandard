@@ -40,7 +40,7 @@ internal static class AddUserToGroup
         if (args.Length != 6)
         {
             Console.WriteLine("Usage:   sampleApp  <host name> <ldap port>  <login dn>  <password> <userdn> <groupdn>");
-            Console.WriteLine("Example sampleApp example.com 389 CN=Administrator,CN=Users,DC=example,DC=com StrongPassword CN=exampleUser,CN=Users,DC=example,DC=com CN=Users,DC=example,DC=com");
+            Console.WriteLine("Example sampleApp example.com 389 CN=Administrator,CN=Users,DC=example,DC=com StrongPassword CN=exampleUser,CN=Users,DC=example,DC=com CN=Users,DC=example,DC=com CN=ExampleGroup,CN=Users,DC=example,DC=com CN=Users,DC=example,DC=com"" );
             return;
         }
 
