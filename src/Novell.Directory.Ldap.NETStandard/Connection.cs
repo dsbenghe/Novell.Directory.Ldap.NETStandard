@@ -863,6 +863,19 @@ namespace Novell.Directory.Ldap
                     }
                 }
 
+                // If (still) using Tls then stop. Otherwise it takes 15 minutes to finish
+                if (Tls)
+                {
+                    try
+                    {
+                        StopTls();
+                    }
+                    catch (Exception)
+                    {
+                        // don't worry about error
+                    }
+                }
+
                 BindProperties = null;
                 if (_socket != null || _sock != null)
                 {

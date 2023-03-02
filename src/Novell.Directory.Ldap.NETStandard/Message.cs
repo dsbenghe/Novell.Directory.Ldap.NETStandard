@@ -194,7 +194,7 @@ namespace Novell.Directory.Ldap
                 {
                     if (_replies.Count == 0)
                     {
-                        Monitor.Wait(_replies);
+                        Monitor.Wait(_replies, _mslimit);
                         if (_waitForReplyRenamedField)
                         {
                             continue;
