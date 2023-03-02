@@ -12,7 +12,7 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Release',
     # stress tests params
-    [ValidateSet('net6', 'net5', 'netcoreapp3.1')]
+    [ValidateSet('net7', 'net6', 'netcoreapp3.1')]
     [string]$Fx = 'net6',
     [string]$ConcurrencyLevel = 20,
     [ValidateSet('off', 'tls', 'ssl')]
@@ -35,8 +35,8 @@ if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps
 }
 
 $script:SupportedNetVersions = @(
+    "net7"
     "net6"
-    "net5"
     "netcoreapp3.1"
 )
 

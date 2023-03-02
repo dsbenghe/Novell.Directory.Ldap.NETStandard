@@ -52,12 +52,10 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         public void UseSslProtocols_enables_specific_ssl_protocols()
         {
             var ldapConnectionOptions = new LdapConnectionOptions()
-                .ConfigureSslProtocols(SslProtocols.Tls11 | SslProtocols.Tls12);
+                .ConfigureSslProtocols(SslProtocols.Tls12 | SslProtocols.Tls13);
 
-            Assert.True(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls11));
             Assert.True(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls12));
-            Assert.False(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls));
-            Assert.False(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls13));
+            Assert.True(ldapConnectionOptions.SslProtocols.HasFlag(SslProtocols.Tls13));
         }
 
         [Fact]
