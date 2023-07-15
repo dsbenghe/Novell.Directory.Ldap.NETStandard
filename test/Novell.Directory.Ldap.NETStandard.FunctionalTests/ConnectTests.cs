@@ -139,5 +139,15 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                     await ldapConnection.StartTlsAsync();
                 }, false, true);
         }
+
+        [Fact]
+        public async Task Disconnect_WithStartTls_WithoutStopTls_Doesnt_Hang()
+        {
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
+                {
+                    await ldapConnection.StartTlsAsync();
+                }, false, true);
+        }
     }
 }
