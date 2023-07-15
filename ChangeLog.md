@@ -1,7 +1,7 @@
 # Changelog
 
 ### 4.0.0
-* add net7 as target; remove net5.
+* add net7 as target; remove net5; remove netcoreapp3.1
 * add net6 as target
 * Change all the apis to be fully-async - no Task.Run tricks :).
     * with contributions from https://github.com/nesc58.

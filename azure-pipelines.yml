@@ -62,4 +62,4 @@ stages:
       image: ['ubuntu-20.04']
       concurrency_level: [10, 30]
       security: ['OFF', 'TLS', "SSL"]
-      netfx: ['net7', 'net6', 'netcoreapp3.1']
+      netfx: ['net7', 'net6']
