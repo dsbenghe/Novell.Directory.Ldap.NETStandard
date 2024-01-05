@@ -36,11 +36,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
 #pragma warning restore CS0618 // Type or member is obsolete
             using var ldapConnection = new LdapConnection(options);
 
-            // exception thrown is different on Windows vs Linux
-            var exceptionThrowType = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? typeof(Win32Exception) : typeof(AuthenticationException);
-
-            await Assert.ThrowsAsync(
-                exceptionThrowType,
+            await Assert.ThrowsAsync<AuthenticationException>(
                 async () => await ldapConnection.ConnectAsync(TestsConfig.LdapServer.ServerAddress, TestsConfig.LdapServer.ServerPortSsl));
         }
 
