@@ -23,5 +23,32 @@ namespace Novell.Directory.Ldap
         ///     if none were returned.
         /// </returns>
         LdapControl[] ResponseControls { get; }
+
+        /// <summary>
+        ///     Reports if there are more search results.
+        /// </summary>
+        /// <returns>
+        ///     true if there are more search results.
+        /// </returns>
+        Task<bool> HasMoreAsync();
+
+        /// <summary>
+        ///     Returns the next result as an LdapEntry.
+        ///     If automatic referral following is disabled or if a referral
+        ///     was not followed, next() will throw an LdapReferralException
+        ///     when the referral is received.
+        /// </summary>
+        /// <returns>
+        ///     The next search result as an LdapEntry.
+        /// </returns>
+        /// <exception>
+        ///     LdapException A general exception which includes an error
+        ///     message and an Ldap error code.
+        /// </exception>
+        /// <exception>
+        ///     LdapReferralException A referral was received and not
+        ///     followed.
+        /// </exception>
+        Task<LdapEntry> NextAsync();
     }
 }
