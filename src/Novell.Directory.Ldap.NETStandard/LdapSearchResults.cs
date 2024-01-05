@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Novell.Directory.Ldap
 {
     /// <inheritdoc />
-    public class LdapSearchResults : ILdapSearchResults
+    public sealed class LdapSearchResults : ILdapSearchResults
     {
         private readonly int _batchSize; // Application specified batch size
         private readonly LdapSearchConstraints _cons; // LdapSearchConstraints for search
@@ -75,16 +75,91 @@ namespace Novell.Directory.Ldap
             _batchSize = requestedBatchSize == 0 ? int.MaxValue : requestedBatchSize;
         }
 
-        /// <summary>
-        ///     Returns the latest server controls returned by the server
-        ///     in the context of this search request, or null
-        ///     if no server controls were returned.
-        /// </summary>
-        /// <returns>
-        ///     The server controls returned with the search request, or null
-        ///     if none were returned.
-        /// </returns>
+        /// <inheritdoc/>
         public LdapControl[] ResponseControls { get; private set; }
+
+        /// <inheritdoc/>
+        public async Task<bool> HasMoreAsync()
+        {
+            var ret = false;
+            if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
+            {
+                // we have data
+                ret = true;
+            }
+            else if (_completed == false)
+            {
+                // reload the Vector by getting more results
+                await ResetVectorsAsync().ConfigureAwait(false);
+                ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
+            }
+
+            return ret;
+        }
+
+        /// <inheritdoc/>
+        public async Task<LdapEntry> NextAsync()
+        {
+            if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
+            {
+                throw new ArgumentOutOfRangeException("LdapSearchResults.Next() no more results");
+            }
+
+            // Check if the enumeration is empty and must be reloaded
+            await ResetVectorsAsync().ConfigureAwait(false);
+
+            // Check for Search References & deliver to app as they come in
+            // We only get here if not following referrals/references
+            if (_referenceIndex < _referenceCount)
+            {
+                var refs = _references[_referenceIndex++];
+                var rex = new LdapReferralException(ExceptionMessages.ReferenceNofollow);
+                rex.SetReferrals(refs);
+                throw rex;
+            }
+
+            object element;
+            if (_entryIndex < _entryCount)
+            {
+                // Check for Search Entries and the Search Result
+                element = _entries[_entryIndex++];
+                if (element is LdapResponse)
+                {
+                    // Search done w/bad status
+                    if (((LdapResponse)element).HasException())
+                    {
+                        var lr = (LdapResponse)element;
+                        var ri = lr.ActiveReferral;
+
+                        if (ri != null)
+                        {
+                            // Error attempting to follow a search continuation reference
+                            var rex = new LdapReferralException(ExceptionMessages.ReferenceError, lr.Exception);
+                            rex.SetReferrals(ri.ReferralList);
+                            rex.FailedReferral = ri.ReferralUrl.ToString();
+                            throw rex;
+                        }
+                    }
+
+                    // Throw an exception if not success
+                    ((LdapResponse)element).ChkResultCode();
+                }
+                else if (element is LdapException)
+                {
+                    throw (LdapException)element;
+                }
+            }
+            else
+            {
+                // If not a Search Entry, Search Result, or search continuation
+                // we are very confused.
+                // LdapSearchResults.next(): No entry found & request is not complete
+                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] { "next" },
+                    LdapException.LocalError, null);
+            }
+
+            return (LdapEntry)element;
+        }
 
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
         /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
@@ -96,8 +171,6 @@ namespace Novell.Directory.Ldap
                 yield return await NextAsync().ConfigureAwait(false);
             }
         }
-
-        IAsyncEnumerator<LdapEntry> IAsyncEnumerable<LdapEntry>.GetAsyncEnumerator(CancellationToken cancellationToken) => GetAsyncEnumerator(cancellationToken);
 
         /// <summary>
         /// Get referral connections.
@@ -224,110 +297,6 @@ namespace Novell.Directory.Ldap
             }
 
             return false; // search not completed
-        }
-
-        /// <summary>
-        ///     Reports if there are more search results.
-        /// </summary>
-        /// <returns>
-        ///     true if there are more search results.
-        /// </returns>
-        private async Task<bool> HasMoreAsync()
-        {
-            var ret = false;
-            if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
-            {
-                // we have data
-                ret = true;
-            }
-            else if (_completed == false)
-            {
-                // reload the Vector by getting more results
-                await ResetVectorsAsync().ConfigureAwait(false);
-                ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
-            }
-
-            return ret;
-        }
-
-        /// <summary>
-        ///     Returns the next result as an LdapEntry.
-        ///     If automatic referral following is disabled or if a referral
-        ///     was not followed, next() will throw an LdapReferralException
-        ///     when the referral is received.
-        /// </summary>
-        /// <returns>
-        ///     The next search result as an LdapEntry.
-        /// </returns>
-        /// <exception>
-        ///     LdapException A general exception which includes an error
-        ///     message and an Ldap error code.
-        /// </exception>
-        /// <exception>
-        ///     LdapReferralException A referral was received and not
-        ///     followed.
-        /// </exception>
-        private async Task<LdapEntry> NextAsync()
-        {
-            if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
-            {
-                throw new ArgumentOutOfRangeException("LdapSearchResults.Next() no more results");
-            }
-
-            // Check if the enumeration is empty and must be reloaded
-            await ResetVectorsAsync().ConfigureAwait(false);
-
-            // Check for Search References & deliver to app as they come in
-            // We only get here if not following referrals/references
-            if (_referenceIndex < _referenceCount)
-            {
-                var refs = _references[_referenceIndex++];
-                var rex = new LdapReferralException(ExceptionMessages.ReferenceNofollow);
-                rex.SetReferrals(refs);
-                throw rex;
-            }
-
-            object element;
-            if (_entryIndex < _entryCount)
-            {
-                // Check for Search Entries and the Search Result
-                element = _entries[_entryIndex++];
-                if (element is LdapResponse)
-                {
-                    // Search done w/bad status
-                    if (((LdapResponse)element).HasException())
-                    {
-                        var lr = (LdapResponse)element;
-                        var ri = lr.ActiveReferral;
-
-                        if (ri != null)
-                        {
-                            // Error attempting to follow a search continuation reference
-                            var rex = new LdapReferralException(ExceptionMessages.ReferenceError, lr.Exception);
-                            rex.SetReferrals(ri.ReferralList);
-                            rex.FailedReferral = ri.ReferralUrl.ToString();
-                            throw rex;
-                        }
-                    }
-
-                    // Throw an exception if not success
-                    ((LdapResponse)element).ChkResultCode();
-                }
-                else if (element is LdapException)
-                {
-                    throw (LdapException)element;
-                }
-            }
-            else
-            {
-                // If not a Search Entry, Search Result, or search continuation
-                // we are very confused.
-                // LdapSearchResults.next(): No entry found & request is not complete
-                throw new LdapException(ExceptionMessages.ReferralLocal, new object[] { "next" },
-                    LdapException.LocalError, null);
-            }
-
-            return (LdapEntry)element;
         }
 
         /*
