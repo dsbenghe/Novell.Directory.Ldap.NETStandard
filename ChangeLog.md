@@ -1,6 +1,7 @@
 # Changelog
 
 ### 4.0.0
+* add net8 as target
 * add net7 as target; remove net5; remove netcoreapp3.1
 * add net6 as target
 * Change all the apis to be fully-async - no Task.Run tricks :).
@@ -21,7 +22,7 @@
 * Fix thread-safety issue - thanks to Marcin Krystianc - https://github.com/marcin-krystianc
 * Fix utf encoding issue in filter - thanks to Andrey Chayka - https://github.com/ubik
 * Move build to Azure DevOps
-    * the tests are running on both netcoreapp3.1/net6/net7
+    * the tests are running on both netcoreapp3.1/net6/net8
         * the units tests are running on all three major platforms Windows, Linux Ubuntu, MacOS
         * the functional and stress tests are running against OpenLdap on Ubuntu 20.04
     * use Invoke-Build for the build script
