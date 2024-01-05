@@ -13,3 +13,15 @@ objectClass: organizationalPerson
 objectClass: inetOrgPerson
 displayName: External User
 uid: external-test
+
+# userWithSpecialPasswordChars user
+dn: cn=userWithSpecialPasswordChars,dc=example,dc=com
+cn: userWithSpecialPasswordChars
+sn: userWithSpecialPasswordChars
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+displayName: External User
+uid: userWithSpecialPasswordChars
+userPassword: password+;\"<>#,!./

@@ -19,6 +19,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         public string RootUserDn { get; set; }
 
         public string RootUserPassword { get; set; }
+
+        public string UserDn { get; set; }
+
+        public string UserPassword { get; set; }
     }
 
     public class TestsConfig

@@ -1,4 +1,5 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -13,6 +14,16 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
+                });
+        }
+
+        [Fact]
+        public async Task Connect_when_special_credentials_is_successful()
+        {
+            await TestHelper.WithLdapConnectionAsync(
+                async ldapConnection =>
+                {
+                    await ldapConnection.BindAsync(TestsConfig.LdapServer.UserDn, TestsConfig.LdapServer.UserPassword);
                 });
         }
 
