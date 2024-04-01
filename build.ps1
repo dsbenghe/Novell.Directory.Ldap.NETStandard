@@ -21,7 +21,7 @@ param(
 
 # Ensure and call the module.
 if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps1') {
-    $InvokeBuildVersion = '5.6.3'
+    $InvokeBuildVersion = '5.11.0'
     $ErrorActionPreference = 'Stop'
     try {
         Import-Module InvokeBuild -RequiredVersion $InvokeBuildVersion
