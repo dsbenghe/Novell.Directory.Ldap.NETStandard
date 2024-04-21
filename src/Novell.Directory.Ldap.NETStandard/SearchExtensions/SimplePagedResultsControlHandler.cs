@@ -124,7 +124,7 @@ namespace Novell.Directory.Ldap
 
             var asyncSearchResults = await _ldapConnection.SearchAsync(
                     options.SearchBase,
-                    LdapConnection.ScopeSub,
+                    options.Scope,
                     options.Filter,
                     options.TargetAttributes,
                     false,
