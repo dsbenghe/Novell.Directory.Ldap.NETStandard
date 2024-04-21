@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.DependencyModel;
-using System;
+﻿using System;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers

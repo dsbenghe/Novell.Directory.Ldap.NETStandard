@@ -1,5 +1,4 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
-using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             await TestHelper.WithAuthenticatedLdapConnectionAsync(
                 async ldapConnection =>
                 {
-                    var lsc = await ldapConnection.SearchAsync(TestsConfig.LdapServer.BaseDn, LdapConnection.ScopeSub, "cn=" + ldapEntry.GetAttribute("cn").StringValue, null, false);
+                    var lsc = await ldapConnection.SearchAsync(TestsConfig.LdapServer.BaseDn, LdapConnection.ScopeSub, "cn=" + ldapEntry.Get("cn").StringValue, null, false);
                     var entries = await lsc.ToListAsync();
 
                     Assert.Single(entries);

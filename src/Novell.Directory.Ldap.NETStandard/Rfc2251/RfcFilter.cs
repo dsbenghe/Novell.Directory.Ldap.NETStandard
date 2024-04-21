@@ -25,7 +25,6 @@ using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
-using System.IO;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Rfc2251

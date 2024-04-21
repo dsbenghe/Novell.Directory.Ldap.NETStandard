@@ -22,7 +22,7 @@
     <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <RootNamespace>Novell.Directory.Ldap</RootNamespace>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <!-- CS1570 XML comment has badly formed XML -->

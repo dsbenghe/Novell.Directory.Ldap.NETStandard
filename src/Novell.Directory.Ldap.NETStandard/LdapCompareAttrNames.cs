@@ -202,8 +202,8 @@ namespace Novell.Directory.Ldap
             do
             {
                 // while first and second are equal
-                one = entry1.GetAttribute(_sortByNames[i]);
-                two = entry2.GetAttribute(_sortByNames[i]);
+                one = entry1.Get(_sortByNames[i]);
+                two = entry2.Get(_sortByNames[i]);
                 if (one != null && two != null)
                 {
                     first = one.StringValueArray;

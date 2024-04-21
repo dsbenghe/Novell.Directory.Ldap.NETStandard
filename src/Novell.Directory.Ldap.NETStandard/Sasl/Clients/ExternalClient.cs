@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Novell.Directory.Ldap.Sasl.Clients
+﻿namespace Novell.Directory.Ldap.Sasl.Clients
 {
     /// <summary>
     /// SASL External client.

@@ -1,5 +1,4 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
-using System;
 using System.Threading.Tasks;
 using Xunit;
 

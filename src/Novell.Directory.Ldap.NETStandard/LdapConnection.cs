@@ -2899,7 +2899,7 @@ namespace Novell.Directory.Ldap
             * no entries are returned. */
             var ent = await ReadAsync(dn, attrSubSchema).ConfigureAwait(false);
 
-            var attr = ent.GetAttribute(attrSubSchema[0]);
+            var attr = ent.Get(attrSubSchema[0]);
             var values = attr.StringValueArray;
             if (values == null || values.Length < 1)
             {

@@ -40,27 +40,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     public class LdapEntry : IComparable
     {
-        protected LdapAttributeSet Attrs { get; }
-
-        /// <summary> Constructs an empty entry.</summary>
-        public LdapEntry()
-            : this(null, null)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs a new entry with the specified distinguished name and with
-        ///     an empty attribute set.
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name of the entry. The
-        ///     value is not validated. An invalid distinguished
-        ///     name will cause operations using this entry to fail.
-        /// </param>
-        public LdapEntry(string dn)
-            : this(dn, null)
-        {
-        }
+        private LdapAttributeSet Attrs { get; }
 
         /// <summary>
         ///     Constructs a new entry with the specified distinguished name and set
@@ -75,17 +55,11 @@ namespace Novell.Directory.Ldap
         ///     The initial set of attributes assigned to the
         ///     entry.
         /// </param>
-        public LdapEntry(string dn, LdapAttributeSet attrs)
+        public LdapEntry(string dn = null, LdapAttributeSet attrs = null)
         {
-            if (dn == null)
-            {
-                dn = string.Empty;
-            }
+            dn ??= string.Empty;
 
-            if (attrs == null)
-            {
-                attrs = new LdapAttributeSet();
-            }
+            attrs ??= new LdapAttributeSet();
 
             Dn = dn;
             Attrs = attrs;
@@ -97,7 +71,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The distinguished name of the entry.
         /// </returns>
-        public string Dn { get; set; }
+        public string Dn { get; }
 
         /// <summary>
         ///     Compares this object with the specified object for order.
@@ -119,17 +93,73 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns the attributes matching the specified attrName.
+        ///     Returns if there is an attribute with given name.
         /// </summary>
         /// <param name="attrName">
         ///     The name of the attribute or attributes to return.
         /// </param>
         /// <returns>
-        ///     An array of LdapAttribute objects.
+        ///     true if attribute exists, false otherwise.
         /// </returns>
-        public LdapAttribute GetAttribute(string attrName)
+        public bool Contains(string attrName)
+        {
+            return Attrs.ContainsKey(attrName);
+        }
+
+        /// <summary>
+        ///     Returns the attribute matching the specified attrName.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to return.
+        /// </param>
+        /// <returns>
+        ///     A LdapAttribute.
+        /// </returns>
+        public LdapAttribute Get(string attrName)
         {
             return Attrs.GetAttribute(attrName);
+        }
+
+        /// <summary>
+        ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to return.
+        /// </param>
+        /// <returns>
+        ///     A LdapAttribute.
+        /// </returns>
+        public LdapAttribute GetOrDefault(string attributeName, LdapAttribute fallback = default)
+        {
+            return !Attrs.TryGetValue(attributeName, out var attribute) ? fallback : attribute;
+        }
+
+        /// <summary>
+        ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to return.
+        /// </param>
+        /// <returns>
+        ///     The string attribute value.
+        /// </returns>
+        public string GetStringValueOrDefault(string attributeName, string fallback = default)
+        {
+            return GetOrDefault(attributeName)?.StringValue ?? fallback;
+        }
+
+        /// <summary>
+        ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to return.
+        /// </param>
+        /// <returns>
+        ///     The byte[] attribute value.
+        /// </returns>
+        public byte[] GetBytesValueOrDefault(string attributeName, byte[] fallback = default)
+        {
+            return GetOrDefault(attributeName)?.ByteValue ?? fallback;
         }
 
         /// <summary>

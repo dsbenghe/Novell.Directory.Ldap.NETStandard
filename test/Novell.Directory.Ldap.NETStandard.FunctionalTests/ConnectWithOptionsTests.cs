@@ -1,8 +1,6 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
 using System;
-using System.ComponentModel;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using Xunit;

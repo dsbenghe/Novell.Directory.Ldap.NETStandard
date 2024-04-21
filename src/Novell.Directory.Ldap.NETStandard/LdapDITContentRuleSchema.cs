@@ -23,7 +23,6 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System.Collections;
-using System.IO;
 using System.Text;
 
 namespace Novell.Directory.Ldap
