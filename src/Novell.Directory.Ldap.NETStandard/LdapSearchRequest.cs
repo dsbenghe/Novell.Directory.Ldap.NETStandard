@@ -23,7 +23,7 @@
 
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace Novell.Directory.Ldap
 {
@@ -337,20 +337,20 @@ namespace Novell.Directory.Ldap
         private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(6);
 
         /// <summary>
-        ///     Retrieves an Iterator object representing the parsed filter for
+        ///     Retrieves an IEnumerable object representing the parsed filter for
         ///     this search request.
-        ///     The first object returned from the Iterator is an Integer indicating
+        ///     The first object returned from the IEnumerator is an Integer indicating
         ///     the type of filter component. One or more values follow the component
-        ///     type as subsequent items in the Iterator. The pattern of Integer
+        ///     type as subsequent items in the IEnumerator. The pattern of Integer
         ///     component type followed by values continues until the end of the
         ///     filter.
         ///     Values returned as a byte array may represent UTF-8 characters or may
         ///     be binary values. The possible Integer components of a search filter
         ///     and the associated values that follow are:.
         ///     <ul>
-        ///         <li>AND - followed by an Iterator value</li>
-        ///         <li>OR - followed by an Iterator value</li>
-        ///         <li>NOT - followed by an Iterator value</li>
+        ///         <li>AND - followed by an IEnumerable&lt;object&gt; value</li>
+        ///         <li>OR - followed by an IEnumerable&lt;object&gt; value</li>
+        ///         <li>NOT - followed by an IEnumerable&lt;object&gt; value</li>
         ///         <li>
         ///             EQUALITY_MATCH - followed by the attribute name represented as a
         ///             String, and by the attribute value represented as a byte array
@@ -382,8 +382,8 @@ namespace Novell.Directory.Ldap
         ///     </ul>
         /// </summary>
         /// <returns>
-        ///     Iterator representing filter components.
+        ///     IEnumerable representing filter components.
         /// </returns>
-        public IEnumerator SearchFilter => RfcFilter.GetFilterIterator();
+        public IEnumerable<object> SearchFilter => RfcFilter.GetFilterEnumerable();
     }
 }

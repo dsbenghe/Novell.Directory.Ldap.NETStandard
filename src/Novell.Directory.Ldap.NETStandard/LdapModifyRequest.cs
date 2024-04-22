@@ -138,24 +138,23 @@ namespace Novell.Directory.Ldap
         {
             // Convert Java-API LdapModification[] to RFC2251 SEQUENCE OF SEQUENCE
             var rfcMods = new Asn1SequenceOf(mods.Length);
-            for (var i = 0; i < mods.Length; i++)
+            foreach (var mod in mods)
             {
-                var attr = mods[i].Attribute;
+                var attr = mod.Attribute;
 
                 // place modification attribute values in Asn1SetOf
                 var vals = new Asn1SetOf(attr.Size());
                 if (attr.Size() > 0)
                 {
-                    var attrEnum = attr.ByteValues;
-                    while (attrEnum.MoveNext())
+                    foreach (var byteValue in attr.ByteValueArray)
                     {
-                        vals.Add(new RfcAttributeValue(attrEnum.Current));
+                        vals.Add(new RfcAttributeValue(byteValue));
                     }
                 }
 
                 // create SEQUENCE containing mod operation and attr type and vals
                 var rfcMod = new Asn1Sequence(2);
-                rfcMod.Add(new Asn1Enumerated(mods[i].Op));
+                rfcMod.Add(new Asn1Enumerated(mod.Op));
                 rfcMod.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
 
                 // place SEQUENCE into SEQUENCE OF

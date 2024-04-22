@@ -87,10 +87,8 @@ namespace Novell.Directory.Ldap
                     Description = parser.Description;
                 }
 
-                var qualifiers = parser.Qualifiers;
-                while (qualifiers.MoveNext())
+                foreach (var attrQualifier in parser.Qualifiers)
                 {
-                    var attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -125,34 +123,28 @@ namespace Novell.Directory.Ldap
                 valueBuffer.Append("'" + token + "'");
             }
 
-            IEnumerator en;
-            if ((en = QualifierNames) != null)
+            foreach (var qualName in QualifierNames)
             {
-                string qualName;
-                string[] qualValue;
-                while (en.MoveNext())
+                valueBuffer.Append(" " + qualName + " ");
+                var qualValue = GetQualifier(qualName);
+                if (qualValue != null)
                 {
-                    qualName = (string)en.Current;
-                    valueBuffer.Append(" " + qualName + " ");
-                    if ((qualValue = GetQualifier(qualName)) != null)
+                    if (qualValue.Length > 1)
                     {
+                        valueBuffer.Append("( ");
+                        for (var i = 0; i < qualValue.Length; i++)
+                        {
+                            if (i > 0)
+                            {
+                                valueBuffer.Append(" ");
+                            }
+
+                            valueBuffer.Append("'" + qualValue[i] + "'");
+                        }
+
                         if (qualValue.Length > 1)
                         {
-                            valueBuffer.Append("( ");
-                            for (var i = 0; i < qualValue.Length; i++)
-                            {
-                                if (i > 0)
-                                {
-                                    valueBuffer.Append(" ");
-                                }
-
-                                valueBuffer.Append("'" + qualValue[i] + "'");
-                            }
-
-                            if (qualValue.Length > 1)
-                            {
-                                valueBuffer.Append(" )");
-                            }
+                            valueBuffer.Append(" )");
                         }
                     }
                 }

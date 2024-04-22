@@ -22,6 +22,7 @@
 *******************************************************************************/
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -183,6 +184,11 @@ namespace Novell.Directory.Ldap.Asn1
         {
             return _contentIndex;
         }
+
+        /// <summary>
+        ///     Gets an enumerable of Asn1Objects in this structred object.
+        /// </summary>
+        public IEnumerable<Asn1Object> RenamedEnumerable => new ArraySegment<Asn1Object>(_content, 0, _contentIndex);
 
         /// <summary>
         ///     Creates a String representation of this Asn1Structured.

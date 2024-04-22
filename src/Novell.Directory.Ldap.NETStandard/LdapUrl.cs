@@ -200,12 +200,12 @@ namespace Novell.Directory.Ldap
         public string[] AttributeArray { get; private set; }
 
         /// <summary>
-        ///     Returns an enumerator for the attribute names specified in the URL.
+        ///     Returns an enumerable for the attribute names specified in the URL.
         /// </summary>
         /// <returns>
         ///     An enumeration of attribute names.
         /// </returns>
-        public IEnumerator<string> Attributes => new ArrayEnumeration<string>(AttributeArray);
+        public IEnumerable<string> Attributes => AttributeArray;
 
         /// <summary>
         ///     Returns any Ldap URL extensions specified, or null if none are

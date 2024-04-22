@@ -1,6 +1,4 @@
 ﻿using Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -18,21 +16,10 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
             });
 
             Assert.NotNull(schema);
-            Assert.True(schema.AttributeNames.ToEnumerable().Any());
-            Assert.True(schema.AttributeSchemas.ToEnumerable().Any());
-            Assert.True(schema.ObjectClassNames.ToEnumerable().Any());
-            Assert.True(schema.ObjectClassSchemas.ToEnumerable().Any());
-        }
-    }
-
-    public static class EnumeratorExtensions
-    {
-        public static IEnumerable<T> ToEnumerable<T>(this IEnumerator<T> enumerator)
-        {
-            while (enumerator.MoveNext())
-            {
-                yield return enumerator.Current;
-            }
+            Assert.NotEmpty(schema.AttributeNames);
+            Assert.NotEmpty(schema.AttributeSchemas);
+            Assert.NotEmpty(schema.ObjectClassNames);
+            Assert.NotEmpty(schema.ObjectClassSchemas);
         }
     }
 }

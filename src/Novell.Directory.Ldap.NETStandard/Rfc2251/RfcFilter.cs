@@ -25,6 +25,7 @@ using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Rfc2251
@@ -788,8 +789,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary>
         ///     Adds an extensible match to the filter.
         /// </summary>
-        /// <param name="">
-        ///     matchingRule
+        /// <param name="matchingRule">
         ///     OID or name of the matching rule to use for comparison.
         /// </param>
         /// <param name="attrName">
@@ -871,49 +871,47 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary>
-        ///     Creates an iterator over the preparsed segments of a filter.
-        ///     The first object returned by an iterator is an integer indicating the
+        ///     Creates an enumerable over the preparsed segments of a filter.
+        ///     The first object returned by an enumerator is an integer indicating the
         ///     type of filter components.  Subseqence values are returned.  If a
         ///     component is of type 'AND' or 'OR' or 'NOT' then the value
-        ///     returned is another iterator.  This iterator is used by ToString.
+        ///     returned is another enumerable.  This enumerable is used by ToString.
         /// </summary>
         /// <returns>
         ///     Iterator over filter segments.
         /// </returns>
-        public IEnumerator GetFilterIterator()
+        public IEnumerable<object> GetFilterEnumerable()
         {
-            return new FilterIterator(this, (Asn1Tagged)ChoiceValue);
+            return FilterEnumerable((Asn1Tagged)ChoiceValue);
         }
 
         /// <summary> Creates and returns a String representation of this filter.</summary>
         public string FilterToString()
         {
             var filter = new StringBuilder();
-            StringFilter(GetFilterIterator(), filter);
+            StringFilter(GetFilterEnumerable(), filter);
             return filter.ToString();
         }
 
         /// <summary>
-        ///     Uses a filterIterator to create a string representation of a filter.
+        ///     Uses a filterEnumerable to create a string representation of a filter.
         /// </summary>
-        /// <param name="itr">
-        ///     Iterator of filter components.
+        /// <param name="filterEnumerable">
+        ///     Enumerable of filter components.
         /// </param>
         /// <param name="filter">
         ///     Buffer to place a string representation of the filter.
         /// </param>
-        /// <seealso cref="FilterIterator">
-        /// </seealso>
-        private static void StringFilter(IEnumerator itr, StringBuilder filter)
+        /// <seealso cref="FilterEnumerable" />
+        private static void StringFilter(IEnumerable<object> filterEnumerable, StringBuilder filter)
         {
-            int op;
             filter.Append('(');
+            using var itr = filterEnumerable.GetEnumerator();
             while (itr.MoveNext())
             {
                 var filterpart = itr.Current;
-                if (filterpart is int)
+                if (filterpart is int op)
                 {
-                    op = (int)filterpart;
                     switch (op)
                     {
                         case And:
@@ -930,8 +928,12 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                         case EqualityMatch:
                             {
+                                itr.MoveNext();
                                 filter.Append((string)itr.Current);
+
                                 filter.Append('=');
+
+                                itr.MoveNext();
                                 var valueRenamed = (byte[])itr.Current;
                                 filter.Append(ByteString(valueRenamed));
                                 break;
@@ -939,8 +941,12 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                         case GreaterOrEqual:
                             {
+                                itr.MoveNext();
                                 filter.Append((string)itr.Current);
+
                                 filter.Append(">=");
+
+                                itr.MoveNext();
                                 var valueRenamed = (byte[])itr.Current;
                                 filter.Append(ByteString(valueRenamed));
                                 break;
@@ -948,37 +954,50 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                         case LessOrEqual:
                             {
+                                itr.MoveNext();
                                 filter.Append((string)itr.Current);
+
                                 filter.Append("<=");
+
+                                itr.MoveNext();
                                 var valueRenamed = (byte[])itr.Current;
                                 filter.Append(ByteString(valueRenamed));
                                 break;
                             }
 
                         case Present:
+                            itr.MoveNext();
                             filter.Append((string)itr.Current);
                             filter.Append("=*");
                             break;
 
                         case ApproxMatch:
+                            itr.MoveNext();
                             filter.Append((string)itr.Current);
+
                             filter.Append("~=");
+
+                            itr.MoveNext();
                             var valueRenamed2 = (byte[])itr.Current;
                             filter.Append(ByteString(valueRenamed2));
                             break;
 
                         case ExtensibleMatch:
+                            itr.MoveNext();
                             var oid = (string)itr.Current;
 
+                            itr.MoveNext();
                             filter.Append((string)itr.Current);
                             filter.Append(':');
                             filter.Append(oid);
                             filter.Append(":=");
+                            itr.MoveNext();
                             filter.Append((string)itr.Current);
                             break;
 
                         case Substrings:
                             {
+                                itr.MoveNext();
                                 filter.Append((string)itr.Current);
                                 filter.Append('=');
                                 var noStarLast = false;
@@ -988,6 +1007,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                     switch (op)
                                     {
                                         case Initial:
+                                            itr.MoveNext();
                                             filter.Append((string)itr.Current);
                                             filter.Append('*');
                                             noStarLast = false;
@@ -999,6 +1019,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                                 filter.Append('*');
                                             }
 
+                                            itr.MoveNext();
                                             filter.Append((string)itr.Current);
                                             filter.Append('*');
                                             noStarLast = false;
@@ -1010,6 +1031,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                                 filter.Append('*');
                                             }
 
+                                            itr.MoveNext();
                                             filter.Append((string)itr.Current);
                                             break;
                                     }
@@ -1019,9 +1041,9 @@ namespace Novell.Directory.Ldap.Rfc2251
                             }
                     }
                 }
-                else if (filterpart is IEnumerator)
+                else if (filterpart is IEnumerable<object> enumerable)
                 {
-                    StringFilter((IEnumerator)filterpart, filter);
+                    StringFilter(enumerable, filter);
                 }
             }
 
@@ -1061,177 +1083,90 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary>
-        ///     This inner class wrappers the Search Filter with an iterator.
-        ///     This iterator will give access to all the individual components
+        ///     This static method wrappers the Search Filter with an enumerable.
+        ///     This enumerable will give access to all the individual components
         ///     preparsed.  The first call to next will return an Integer identifying
         ///     the type of filter component.  Then the component values will be returned
-        ///     AND, NOT, and OR components values will be returned as Iterators.
+        ///     AND, NOT, and OR components values will be returned as <c>IEnumerable&lt;object&gt;</c>.
         /// </summary>
-        private class FilterIterator : IEnumerator
+        private static IEnumerable<object> FilterEnumerable(Asn1Tagged root)
         {
-            private readonly Asn1Tagged _root;
+            yield return root.GetIdentifier().Tag;
 
-            private bool _hasMore = true;
+            var asn1 = root.TaggedValue;
 
-            /// <summary>indexes the several parts a component may have. </summary>
-            private int _index = -1;
-
-            /// <summary>indicates if the identifier for a component has been returned yet. </summary>
-            private bool _tagReturned;
-
-            public FilterIterator(RfcFilter enclosingInstance, Asn1Tagged root)
+            switch (asn1)
             {
-                EnclosingInstance = enclosingInstance;
-                _root = root;
-            }
+                case RfcLdapString ldapString:
+                    // one value to iterate
+                    yield return ldapString.StringValue();
+                    yield break;
 
-            private RfcFilter EnclosingInstance { get; }
-
-            public void Reset()
-            {
-            }
-
-            /// <summary>
-            ///     Returns filter identifiers and components of a filter.
-            ///     The first object returned is an Integer identifying
-            ///     its type.
-            /// </summary>
-            public object Current
-            {
-                get
-                {
-                    object toReturn = null;
-                    if (!_tagReturned)
+                case RfcSubstringFilter filter:
                     {
-                        _tagReturned = true;
-                        toReturn = _root.GetIdentifier().Tag;
-                    }
-                    else
-                    {
-                        var asn1 = _root.TaggedValue;
-
-                        switch (asn1)
+                        var sub = filter;
                         {
-                            case RfcLdapString ldapString:
-                                // one value to iterate
-                                _hasMore = false;
-                                toReturn = ldapString.StringValue();
-                                break;
-                            case RfcSubstringFilter filter:
-                                {
-                                    var sub = filter;
-                                    if (_index == -1)
-                                    {
-                                        // return attribute name
-                                        _index = 0;
-                                        var attr = (RfcAttributeDescription)sub.get_Renamed(0);
-                                        toReturn = attr.StringValue();
-                                    }
-                                    else if (_index % 2 == 0)
-                                    {
-                                        // return substring identifier
-                                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                        toReturn = ((Asn1Tagged)substrs.get_Renamed(_index / 2)).GetIdentifier().Tag;
-                                        _index++;
-                                    }
-                                    else
-                                    {
-                                        // return substring value
-                                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                                        var tag = (Asn1Tagged)substrs.get_Renamed(_index / 2);
-                                        var valueRenamed = (RfcLdapString)tag.TaggedValue;
-                                        toReturn = valueRenamed.StringValue();
-                                        _index++;
-                                    }
-
-                                    if (_index / 2 >= ((Asn1SequenceOf)sub.get_Renamed(1)).Size())
-                                    {
-                                        _hasMore = false;
-                                    }
-
-                                    break;
-                                }
-
-                            case RfcAttributeValueAssertion valueAssertion:
-                                {
-                                    // components: =,>=,<=,~=
-                                    var assertion = valueAssertion;
-
-                                    if (_index == -1)
-                                    {
-                                        toReturn = assertion.AttributeDescription;
-                                        _index = 1;
-                                    }
-                                    else if (_index == 1)
-                                    {
-                                        toReturn = assertion.AssertionValue;
-                                        _index = 2;
-                                        _hasMore = false;
-                                    }
-
-                                    break;
-                                }
-
-                            case RfcMatchingRuleAssertion assertion:
-                                {
-                                    // Extensible match
-                                    var exMatch = assertion;
-                                    if (_index == -1)
-                                    {
-                                        _index = 0;
-                                    }
-
-                                    toReturn =
-                                        ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(_index++)).TaggedValue)
-                                        .StringValue();
-                                    if (_index > 2)
-                                    {
-                                        _hasMore = false;
-                                    }
-
-                                    break;
-                                }
-
-                            case Asn1SetOf of:
-                                {
-                                    // AND and OR nested components
-                                    var setRenamed = of;
-                                    if (_index == -1)
-                                    {
-                                        _index = 0;
-                                    }
-
-                                    toReturn = new FilterIterator(
-                                        EnclosingInstance,
-                                        (Asn1Tagged)setRenamed.get_Renamed(_index++));
-                                    if (_index >= setRenamed.Size())
-                                    {
-                                        _hasMore = false;
-                                    }
-
-                                    break;
-                                }
-
-                            case Asn1Tagged tagged:
-                                // NOT nested component.
-                                toReturn = new FilterIterator(EnclosingInstance, tagged);
-                                _hasMore = false;
-                                break;
+                            // return attribute name
+                            var attr = (RfcAttributeDescription)sub.get_Renamed(0);
+                            yield return attr.StringValue();
                         }
+
+                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
+                        foreach (Asn1Tagged tag in substrs.RenamedEnumerable)
+                        {
+                            // return substring identifier
+                            yield return tag.GetIdentifier().Tag;
+
+                            // return substring value
+                            var valueRenamed = (RfcLdapString)tag.TaggedValue;
+                            yield return valueRenamed.StringValue();
+                        }
+
+                        yield break;
                     }
 
-                    return toReturn;
-                }
-            }
+                case RfcAttributeValueAssertion valueAssertion:
+                    {
+                        // components: =,>=,<=,~=
+                        var assertion = valueAssertion;
 
-            public bool MoveNext()
-            {
-                return _hasMore;
-            }
+                        yield return assertion.AttributeDescription;
+                        yield return assertion.AssertionValue;
 
-            public void Remove()
-            {
-                throw new NotSupportedException("Remove is not supported on a filter iterator");
+                        yield break;
+                    }
+
+                case RfcMatchingRuleAssertion assertion:
+                    {
+                        // Extensible match
+                        var exMatch = assertion;
+
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(0)).TaggedValue)
+                            .StringValue();
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(1)).TaggedValue)
+                            .StringValue();
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(2)).TaggedValue)
+                            .StringValue();
+
+                        yield break;
+                    }
+
+                case Asn1SetOf of:
+                    {
+                        // AND and OR nested components
+                        foreach (Asn1Tagged renamed in of.RenamedEnumerable)
+                        {
+                            yield return FilterEnumerable(renamed);
+                        }
+
+                        yield break;
+                    }
+
+                case Asn1Tagged tagged:
+                    // NOT nested component.
+                    yield return FilterEnumerable(tagged);
+
+                    yield break;
             }
         }
 

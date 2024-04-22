@@ -125,7 +125,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of all qualifiers of the element.
         /// </returns>
-        public IEnumerator QualifierNames => _hashQualifier.Keys.GetEnumerator();
+        public IEnumerable<string> QualifierNames => _hashQualifier.Keys;
 
         /// <summary>
         ///     Returns whether the element has the OBSOLETE qualifier

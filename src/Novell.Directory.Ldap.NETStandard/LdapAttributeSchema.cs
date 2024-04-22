@@ -203,11 +203,8 @@ namespace Novell.Directory.Ldap
 
                 SingleValued = parser.Single;
                 Obsolete = parser.Obsolete;
-                var qualifiers = parser.Qualifiers;
-                AttributeQualifier attrQualifier;
-                while (qualifiers.MoveNext())
+                foreach (var attrQualifier in parser.Qualifiers)
                 {
-                    attrQualifier = qualifiers.Current;
                     SetQualifier(attrQualifier.Name, attrQualifier.Values);
                 }
 
@@ -414,15 +411,12 @@ namespace Novell.Directory.Ldap
                 }
             }
 
-            var en = QualifierNames;
-
-            while (en.MoveNext())
+            foreach (var qualifierName in QualifierNames)
             {
-                token = (string)en.Current;
-                if (token != null)
+                if (qualifierName != null)
                 {
-                    valueBuffer.Append(" " + token);
-                    strArray = GetQualifier(token);
+                    valueBuffer.Append(" " + qualifierName);
+                    strArray = GetQualifier(qualifierName);
                     if (strArray != null)
                     {
                         if (strArray.Length > 1)
@@ -430,9 +424,9 @@ namespace Novell.Directory.Ldap
                             valueBuffer.Append("(");
                         }
 
-                        for (var i = 0; i < strArray.Length; i++)
+                        foreach (var strValue in strArray)
                         {
-                            valueBuffer.Append(" '" + strArray[i] + "'");
+                            valueBuffer.Append(" '" + strValue + "'");
                         }
 
                         if (strArray.Length > 1)

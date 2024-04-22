@@ -187,13 +187,10 @@ namespace Novell.Directory.Ldap
         {
             // Create a new tempAttributeSet
             var tempAttributeSet = new LdapAttributeSet();
-            var i = GetEnumerator();
 
             // Cycle throught this.attributeSet
-            while (i.MoveNext())
+            foreach (var attr in Values)
             {
-                var attr = i.Current;
-
                 // Does this attribute have the subtype we are looking for. If
                 // yes then add it to our AttributeSet, else next attribute
                 if (attr.HasSubtype(subtype))
@@ -264,9 +261,8 @@ namespace Novell.Directory.Ldap
         public override string ToString()
         {
             var retValue = new StringBuilder("LdapAttributeSet: ");
-            var attrs = GetEnumerator();
             var first = true;
-            while (attrs.MoveNext())
+            foreach (var attr in Values)
             {
                 if (!first)
                 {
@@ -274,7 +270,6 @@ namespace Novell.Directory.Ldap
                 }
 
                 first = false;
-                var attr = attrs.Current;
                 retValue.Append(attr);
             }
 
