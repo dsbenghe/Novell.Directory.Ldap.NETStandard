@@ -22,6 +22,7 @@
 *******************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -32,7 +33,7 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>
-    public class RespExtensionSet
+    public class RespExtensionSet : IEnumerable<Type>
     {
         private readonly ConcurrentDictionary<string, Type> _map;
 
@@ -70,10 +71,15 @@ namespace Novell.Directory.Ldap.Utilclass
             return _map.Values.GetEnumerator();
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
         /* Searches the list of registered responses for a mathcing response.  We
-        * search using the OID string.  If a match is found we return the
-        * Class name that was provided to us on registration.
-        */
+         * search using the OID string.  If a match is found we return the
+         * Class name that was provided to us on registration.
+         */
 
         public Type FindResponseExtension(string searchOid)
         {

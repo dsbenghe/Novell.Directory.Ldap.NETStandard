@@ -22,6 +22,7 @@
 *******************************************************************************/
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 
@@ -458,7 +459,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
         public string[] Names { get; }
 
-        public IEnumerator<AttributeQualifier> Qualifiers => _qualifiers.GetEnumerator();
+        public IEnumerable<AttributeQualifier> Qualifiers => new ReadOnlyCollection<AttributeQualifier>(_qualifiers);
 
         public string Id { get; }
 

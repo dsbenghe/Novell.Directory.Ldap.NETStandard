@@ -48,7 +48,7 @@ namespace Novell.Directory.Ldap
         private readonly string _baseName; // cn of cn;lang-ja;phonetic
 
         private readonly string[] _subTypes; // lang-ja of cn;lang-ja
-        private object[] _values; // Array of byte[] attribute values
+        private byte[][] _values; // Array of byte[] attribute values
 
         /// <summary>
         ///     Constructs an attribute with copies of all values of the input
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap
             // OK to just copy attributes, as the app only sees a deep copy of them
             if (attr._values != null)
             {
-                _values = new object[attr._values.Length];
+                _values = new byte[attr._values.Length][];
                 Array.Copy(attr._values, 0, _values, 0, _values.Length);
             }
         }
@@ -189,22 +189,22 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns an enumerator for the values of the attribute in byte format.
+        ///     Returns an enumerable for the values of the attribute in byte format.
         /// </summary>
         /// <returns>
         ///     The values of the attribute in byte format.
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );.
         /// </returns>
-        public IEnumerator<byte[]> ByteValues => new ArrayEnumeration<byte[]>(ByteValueArray);
+        public IEnumerable<byte[]> ByteValues => ByteValueArray;
 
         /// <summary>
-        ///     Returns an enumerator for the string values of an attribute.
+        ///     Returns an enumerable for the string values of an attribute.
         /// </summary>
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public IEnumerator<string> StringValues => new ArrayEnumeration<string>(StringValueArray);
+        public IEnumerable<string> StringValues => StringValueArray;
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -228,8 +228,8 @@ namespace Novell.Directory.Ldap
                 // Deep copy so application cannot change values
                 for (int i = 0, u = size; i < u; i++)
                 {
-                    bva[i] = new byte[((byte[])_values[i]).Length];
-                    Array.Copy((Array)_values[i], 0, bva[i], 0, bva[i].Length);
+                    bva[i] = new byte[_values[i].Length];
+                    Array.Copy(_values[i], 0, bva[i], 0, bva[i].Length);
                 }
 
                 return bva;
@@ -256,7 +256,7 @@ namespace Novell.Directory.Ldap
                 var sva = new string[size];
                 for (var j = 0; j < size; j++)
                 {
-                    var valueBytes = (byte[])_values[j];
+                    var valueBytes = _values[j];
                     sva[j] = valueBytes.ToUtf8String();
                 }
 
@@ -286,7 +286,7 @@ namespace Novell.Directory.Ldap
                 string rval = null;
                 if (_values != null)
                 {
-                    var valueBytes = (byte[])_values[0];
+                    var valueBytes = _values[0];
                     rval = valueBytes.ToUtf8String();
                 }
 
@@ -310,8 +310,8 @@ namespace Novell.Directory.Ldap
                 if (_values != null)
                 {
                     // Deep copy so app can't change the value
-                    bva = new byte[((byte[])_values[0]).Length];
-                    Array.Copy((Array)_values[0], 0, bva, 0, bva.Length);
+                    bva = new byte[_values[0].Length];
+                    Array.Copy(_values[0], 0, bva, 0, bva.Length);
                 }
 
                 return bva;
@@ -726,7 +726,7 @@ gotSubType:;
 
             for (var i = 0; i < _values.Length; i++)
             {
-                if (Equals(attrBytes, (byte[])_values[i]))
+                if (Equals(attrBytes, _values[i]))
                 {
                     if (i == 0 && _values.Length == 1)
                     {
@@ -742,7 +742,7 @@ gotSubType:;
                     else
                     {
                         var moved = _values.Length - i - 1;
-                        var tmp = new object[_values.Length - 1];
+                        var tmp = new byte[_values.Length - 1][];
                         if (i != 0)
                         {
                             Array.Copy(_values, 0, tmp, 0, i);
@@ -785,20 +785,20 @@ gotSubType:;
         {
             if (_values == null)
             {
-                _values = new object[] { bytes };
+                _values = new byte[][] { bytes };
             }
             else
             {
                 // Duplicate attribute values not allowed
                 for (var i = 0; i < _values.Length; i++)
                 {
-                    if (Equals(bytes, (byte[])_values[i]))
+                    if (Equals(bytes, _values[i]))
                     {
                         return; // Duplicate, don't add
                     }
                 }
 
-                var tmp = new object[_values.Length + 1];
+                var tmp = new byte[_values.Length + 1][];
                 Array.Copy(_values, 0, tmp, 0, _values.Length);
                 tmp[_values.Length] = bytes;
                 _values = tmp;
@@ -882,7 +882,7 @@ gotSubType:;
                         result.Append("','");
                     }
 
-                    var valueBytes = (byte[])_values[i];
+                    var valueBytes = _values[i];
 
                     if (valueBytes.Length == 0)
                     {

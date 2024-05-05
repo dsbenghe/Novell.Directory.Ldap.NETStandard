@@ -102,15 +102,12 @@ namespace Novell.Directory.Ldap
             // convert Java-API LdapEntry to RFC2251 AttributeList
             var attrSet = entry.GetAttributeSet();
             var attrList = new RfcAttributeList(attrSet.Count);
-            var itr = attrSet.GetEnumerator();
-            while (itr.MoveNext())
+            foreach (var attr in attrSet)
             {
-                var attr = itr.Current;
                 var vals = new Asn1SetOf(attr.Size());
-                var attrEnum = attr.ByteValues;
-                while (attrEnum.MoveNext())
+                foreach (var byteValue in attr.ByteValueArray)
                 {
-                    vals.Add(new RfcAttributeValue(attrEnum.Current));
+                    vals.Add(new RfcAttributeValue(byteValue));
                 }
 
                 attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));

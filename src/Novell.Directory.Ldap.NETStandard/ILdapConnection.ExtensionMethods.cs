@@ -19,13 +19,9 @@ namespace Novell.Directory.Ldap
                 .SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false)
                 .ConfigureAwait(false);
 
-            var enumerator = searchResults.GetAsyncEnumerator();
-            await using (enumerator.ConfigureAwait(false))
+            await foreach (var searchResult in searchResults.ConfigureAwait(false))
             {
-                if (await enumerator.MoveNextAsync().ConfigureAwait(false))
-                {
-                    return new RootDseInfo(enumerator.Current);
-                }
+                return new RootDseInfo(searchResult);
             }
 
             return null;
