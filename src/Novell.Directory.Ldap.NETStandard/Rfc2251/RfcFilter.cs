@@ -401,17 +401,15 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Must have 1 or more Filters.</summary>
         private Asn1SetOf ParseFilterList()
         {
-            var setRenamed = new Asn1SetOf();
-
-            setRenamed.Add(ParseFilter()); // must have at least 1 filter
+            var asn1SetOf = new Asn1SetOf();
 
             while (_ft.PeekChar() == '(')
             {
                 // check for more filters
-                setRenamed.Add(ParseFilter());
+                asn1SetOf.Add(ParseFilter());
             }
 
-            return setRenamed;
+            return asn1SetOf;
         }
 
         /// <summary>

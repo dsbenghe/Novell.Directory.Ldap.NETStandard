@@ -6,6 +6,8 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
     public class RfcFilterTests
     {
         [Theory]
+        [InlineData("(&)")]
+        [InlineData("(|)")]
         [InlineData("(&(objectCategory=person)(objectClass=user))")]
         [InlineData("(sAMAccountType=805306368)")]
         [InlineData("(objectCategory=computer)")]
