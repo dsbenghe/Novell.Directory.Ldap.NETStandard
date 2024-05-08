@@ -8,28 +8,8 @@ namespace Novell.Directory.Ldap
     /// </summary>
     internal class Tokenizer
     {
-        private readonly bool _returnDelims;
-
-        // The tokenizer uses the default delimiter set: the space character, the tab character, the newline character, and the carriage-return character
-        private string _delimiters = " \t\n\r";
-
         // Element list identified
-        private List<object> _elements;
-
-        // Source string to use
-        private string _source;
-
-        /// <summary>
-        ///     Initializes a new class instance with a specified string to process.
-        /// </summary>
-        /// <param name="source">String to tokenize.</param>
-        public Tokenizer(string source)
-        {
-            _elements = new List<object>();
-            _elements.AddRange(source.Split(_delimiters.ToCharArray()));
-            RemoveEmptyStrings();
-            _source = source;
-        }
+        private readonly List<string> _elements;
 
         /// <summary>
         ///     Initializes a new class instance with a specified string to process
@@ -37,31 +17,18 @@ namespace Novell.Directory.Ldap
         /// </summary>
         /// <param name="source">String to tokenize.</param>
         /// <param name="delimiters">String containing the delimiters.</param>
-        public Tokenizer(string source, string delimiters)
+        /// <param name="returnDelimiters"><c>true</c>, to return the found delimiter as token.</param>
+        public Tokenizer(string source, string delimiters, bool returnDelimiters = false)
         {
-            _elements = new List<object>();
-            _delimiters = delimiters;
-            _elements.AddRange(source.Split(_delimiters.ToCharArray()));
-            RemoveEmptyStrings();
-            _source = source;
-        }
-
-        public Tokenizer(string source, string delimiters, bool retDel)
-        {
-            _elements = new List<object>();
-            _delimiters = delimiters;
-            _source = source;
-            _returnDelims = retDel;
-            if (_returnDelims)
+            _elements = new List<string>();
+            if (returnDelimiters)
             {
-                Tokenize();
+                Tokenize(source, delimiters.ToCharArray());
             }
             else
             {
-                _elements.AddRange(source.Split(_delimiters.ToCharArray()));
+                _elements.AddRange(source.Split(delimiters.ToCharArray(), StringSplitOptions.RemoveEmptyEntries));
             }
-
-            RemoveEmptyStrings();
         }
 
         /// <summary>
@@ -69,21 +36,12 @@ namespace Novell.Directory.Ldap
         /// </summary>
         public int Count => _elements.Count;
 
-        private void Tokenize()
+        private void Tokenize(string tempstr, char[] delimiters)
         {
-            var tempstr = _source;
-            if (tempstr.IndexOfAny(_delimiters.ToCharArray()) < 0 && tempstr.Length > 0)
+            int nextIndex;
+            while ((nextIndex = tempstr.IndexOfAny(delimiters)) >= 0)
             {
-                _elements.Add(tempstr);
-            }
-            else if (tempstr.IndexOfAny(_delimiters.ToCharArray()) < 0 && tempstr.Length <= 0)
-            {
-                return;
-            }
-
-            while (tempstr.IndexOfAny(_delimiters.ToCharArray()) >= 0)
-            {
-                if (tempstr.IndexOfAny(_delimiters.ToCharArray()) == 0)
+                if (nextIndex == 0)
                 {
                     if (tempstr.Length > 1)
                     {
@@ -92,21 +50,20 @@ namespace Novell.Directory.Ldap
                     }
                     else
                     {
-                        tempstr = string.Empty;
+                        return;
                     }
                 }
                 else
                 {
-                    string toks = tempstr.Substring(0, tempstr.IndexOfAny(_delimiters.ToCharArray()));
-                    _elements.Add(toks);
-                    _elements.Add(tempstr.Substring(toks.Length, 1));
-                    if (tempstr.Length > toks.Length + 1)
+                    _elements.Add(tempstr.Substring(0, nextIndex));
+                    _elements.Add(tempstr.Substring(nextIndex, 1));
+                    if (tempstr.Length > nextIndex + 1)
                     {
-                        tempstr = tempstr.Substring(toks.Length + 1);
+                        tempstr = tempstr.Substring(nextIndex + 1);
                     }
                     else
                     {
-                        tempstr = string.Empty;
+                        return;
                     }
                 }
             }
@@ -132,56 +89,14 @@ namespace Novell.Directory.Ldap
         /// <returns>The string value of the token.</returns>
         public string NextToken()
         {
-            string result;
-            if (_source == string.Empty)
+            if (_elements.Count < 1)
             {
                 throw new Exception();
             }
 
-            if (_returnDelims)
-            {
-                // Tokenize();
-                RemoveEmptyStrings();
-                result = (string)_elements[0];
-                _elements.RemoveAt(0);
-                return result;
-            }
-
-            _elements = new List<object>();
-            _elements.AddRange(_source.Split(_delimiters.ToCharArray()));
-            RemoveEmptyStrings();
-            result = (string)_elements[0];
+            var result = _elements[0];
             _elements.RemoveAt(0);
-            _source = _source.Remove(_source.IndexOf(result), result.Length);
-            _source = _source.TrimStart(_delimiters.ToCharArray());
             return result;
-        }
-
-        /// <summary>
-        ///     Returns the next token from the source string, using the provided
-        ///     token delimiters.
-        /// </summary>
-        /// <param name="delimiters">String containing the delimiters to use.</param>
-        /// <returns>The string value of the token.</returns>
-        public string NextToken(string delimiters)
-        {
-            _delimiters = delimiters;
-            return NextToken();
-        }
-
-        /// <summary>
-        ///     Removes all empty strings from the token list.
-        /// </summary>
-        private void RemoveEmptyStrings()
-        {
-            for (var index = 0; index < _elements.Count; index++)
-            {
-                if ((string)_elements[index] == string.Empty)
-                {
-                    _elements.RemoveAt(index);
-                    index--;
-                }
-            }
         }
     }
 }
