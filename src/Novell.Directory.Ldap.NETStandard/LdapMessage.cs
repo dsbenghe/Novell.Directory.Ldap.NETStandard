@@ -498,12 +498,8 @@ namespace Novell.Directory.Ldap
                 }
 
                 var m = RequestingMessage;
-                if (m == null)
-                {
-                    return null;
-                }
 
-                return m._stringTag;
+                return m?._stringTag;
             }
 
             set => _stringTag = value;

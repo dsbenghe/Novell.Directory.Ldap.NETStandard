@@ -192,12 +192,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         public object GetProperty(string name)
         {
-            if (_properties == null)
-            {
-                return null; // Requested property not available.
-            }
-
-            return _properties[name];
+            return _properties?[name];
         }
 
         /// <summary>
