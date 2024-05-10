@@ -476,7 +476,7 @@ namespace Novell.Directory.Ldap
         /// <param name="element">
         ///     Schema element definition.
         /// </param>
-        private void AddElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, T element)
+        private static void AddElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, T element)
             where T : LdapSchemaElement
         {
             idTable[element.Id] = element;

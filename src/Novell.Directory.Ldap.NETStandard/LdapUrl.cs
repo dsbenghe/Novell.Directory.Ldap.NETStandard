@@ -554,7 +554,7 @@ namespace Novell.Directory.Ldap
             return url.ToString();
         }
 
-        private string[] ParseList(string listStr, char delimiter, int listStart, int listEnd)
+        private static string[] ParseList(string listStr, char delimiter, int listStart, int listEnd)
 
         // end of list + 1
         {
