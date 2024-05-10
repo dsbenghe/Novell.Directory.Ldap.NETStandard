@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the modifications for this request.
         /// </returns>
-        public Asn1SequenceOf Modifications => (Asn1SequenceOf)get_Renamed(1);
+        public Asn1SequenceOf Modifications => (Asn1SequenceOf)Get(1);
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)Get(0)).StringValue();
         }
 
         // *************************************************************************

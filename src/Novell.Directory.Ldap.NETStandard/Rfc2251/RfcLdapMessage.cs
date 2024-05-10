@@ -133,7 +133,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             // Decode implicitly tagged protocol operation from an Asn1Tagged type
             // to its appropriate application type.
-            var protocolOp = (Asn1Tagged)get_Renamed(1);
+            var protocolOp = (Asn1Tagged)Get(1);
             var protocolOpId = protocolOp.GetIdentifier();
             var content = ((Asn1OctetString)protocolOp.TaggedValue).ByteValue();
             var bais = new MemoryStream(content);
@@ -192,7 +192,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // to RFC 2251 types.
             if (Size() > 2)
             {
-                var controls = (Asn1Tagged)get_Renamed(2);
+                var controls = (Asn1Tagged)Get(2);
 
                 // Asn1Identifier controlsId = protocolOp.getIdentifier();
                 // we could check to make sure we have controls here....
@@ -203,10 +203,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
-        public int MessageId => ((Asn1Integer)get_Renamed(0)).IntValue();
+        public int MessageId => ((Asn1Integer)Get(0)).IntValue();
 
         /// <summary> Returns this RfcLdapMessage's message type.</summary>
-        public int Type => get_Renamed(1).GetIdentifier().Tag;
+        public int Type => Get(1).GetIdentifier().Tag;
 
         /// <summary>
         ///     Returns the response associated with this RfcLdapMessage.
@@ -214,7 +214,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     all which extend RfcResponse. It can also be
         ///     RfcSearchResultEntry, or RfcSearchResultReference.
         /// </summary>
-        public Asn1Object Response => get_Renamed(1);
+        public Asn1Object Response => Get(1);
 
         /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
         public RfcControls Controls
@@ -223,7 +223,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 if (Size() > 2)
                 {
-                    return (RfcControls)get_Renamed(2);
+                    return (RfcControls)Get(2);
                 }
 
                 return null;
@@ -254,12 +254,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         public IRfcRequest GetRequest()
         {
-            return (IRfcRequest)get_Renamed(1);
+            return (IRfcRequest)Get(1);
         }
 
         public bool IsRequest()
         {
-            return get_Renamed(1) is IRfcRequest;
+            return Get(1) is IRfcRequest;
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 throw new LdapException("DUP_ERROR", LdapException.LocalError, null);
             }
 
-            var newMsg = new RfcLdapMessage(ToArray(), (IRfcRequest)get_Renamed(1), dn, filter, reference);
+            var newMsg = new RfcLdapMessage(ToArray(), (IRfcRequest)Get(1), dn, filter, reference);
             return newMsg;
         }
     }

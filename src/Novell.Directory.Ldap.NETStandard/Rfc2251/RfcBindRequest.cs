@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Sets the protocol version.</summary>
         public Asn1Integer Version
         {
-            get => (Asn1Integer)get_Renamed(0);
+            get => (Asn1Integer)Get(0);
 
             set => set_Renamed(0, value);
         }
@@ -89,7 +89,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcLdapDn Name
         {
-            get => (RfcLdapDn)get_Renamed(1);
+            get => (RfcLdapDn)Get(1);
 
             set => set_Renamed(1, value);
         }
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public RfcAuthenticationChoice AuthenticationChoice
         {
-            get => (RfcAuthenticationChoice)get_Renamed(2);
+            get => (RfcAuthenticationChoice)Get(2);
 
             set => set_Renamed(2, value);
         }
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(1)).StringValue();
+            return ((RfcLdapDn)Get(1)).StringValue();
         }
 
         // *************************************************************************

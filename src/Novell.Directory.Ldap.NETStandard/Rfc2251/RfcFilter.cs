@@ -1104,11 +1104,11 @@ namespace Novell.Directory.Ldap.Rfc2251
                         var sub = filter;
                         {
                             // return attribute name
-                            var attr = (RfcAttributeDescription)sub.get_Renamed(0);
+                            var attr = (RfcAttributeDescription)sub.Get(0);
                             yield return attr.StringValue();
                         }
 
-                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
+                        var substrs = (Asn1SequenceOf)sub.Get(1);
                         foreach (Asn1Tagged tag in substrs.RenamedEnumerable)
                         {
                             // return substring identifier
@@ -1138,11 +1138,11 @@ namespace Novell.Directory.Ldap.Rfc2251
                         // Extensible match
                         var exMatch = assertion;
 
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(0)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.Get(0)).TaggedValue)
                             .StringValue();
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(1)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.Get(1)).TaggedValue)
                             .StringValue();
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(2)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.Get(2)).TaggedValue)
                             .StringValue();
 
                         yield break;

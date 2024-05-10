@@ -156,7 +156,7 @@ namespace Novell.Directory.Ldap
                 throw new LdapException("Bind failure, no response received.");
             }
 
-            var bindResponse = (RfcBindResponse)ldapResponse.Asn1Object.get_Renamed(1);
+            var bindResponse = (RfcBindResponse)ldapResponse.Asn1Object.Get(1);
             lock (_responseCtlSemaphore)
             {
                 _responseCtls = ldapResponse.Controls;

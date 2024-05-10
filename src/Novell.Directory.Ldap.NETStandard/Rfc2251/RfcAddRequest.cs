@@ -75,7 +75,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Gets the attributes of the entry.</summary>
-        public RfcAttributeList Attributes => (RfcAttributeList)get_Renamed(1);
+        public RfcAttributeList Attributes => (RfcAttributeList)Get(1);
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)Get(0)).StringValue();
         }
 
         // *************************************************************************

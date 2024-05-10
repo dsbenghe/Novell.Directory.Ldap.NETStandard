@@ -202,7 +202,7 @@ namespace Novell.Directory.Ldap
                     referrals = new string[size];
                     for (var i = 0; i < size; i++)
                     {
-                        var aRef = ((Asn1OctetString)refRenamed.get_Renamed(i)).StringValue();
+                        var aRef = ((Asn1OctetString)refRenamed.Get(i)).StringValue();
                         try
                         {
                             // get the referral URL

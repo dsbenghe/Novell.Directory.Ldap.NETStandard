@@ -64,7 +64,7 @@ namespace Novell.Directory.Ldap.Controls
                 throw new InvalidCastException(DecodedNotSequence);
             }
 
-            var size = ((Asn1Structured)asn1Object).get_Renamed(0);
+            var size = ((Asn1Structured)asn1Object).Get(0);
             if (!(size is Asn1Integer integerSize))
             {
                 throw new InvalidOperationException(DecodedNotInteger);
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Controls
 
             Size = integerSize.IntValue();
 
-            var cookie = ((Asn1Structured)asn1Object).get_Renamed(1);
+            var cookie = ((Asn1Structured)asn1Object).Get(1);
             if (!(cookie is Asn1OctetString octetCookie))
             {
                 throw new InvalidOperationException(DecodedNotOctetString);

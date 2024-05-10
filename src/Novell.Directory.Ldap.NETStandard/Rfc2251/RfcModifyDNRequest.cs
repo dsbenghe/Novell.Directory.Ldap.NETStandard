@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)Get(0)).StringValue();
         }
 
         // *************************************************************************

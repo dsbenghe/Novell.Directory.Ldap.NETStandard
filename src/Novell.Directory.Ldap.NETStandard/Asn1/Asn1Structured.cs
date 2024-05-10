@@ -166,7 +166,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The index of the Asn1Object to get from
         ///     this Asn1Structured object.
         /// </param>
-        public Asn1Object get_Renamed(int index)
+        public Asn1Object Get(int index)
         {
             if (index >= _contentIndex || index < 0)
             {

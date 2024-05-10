@@ -88,9 +88,9 @@ namespace Novell.Directory.Ldap
                     for (var i = 0; i < seqArray.Length; i++)
                     {
                         var seq = (Asn1Sequence)seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString)seq.get_Renamed(0)).StringValue());
+                        var attr = new LdapAttribute(((Asn1OctetString)seq.Get(0)).StringValue());
 
-                        var setRenamed = (Asn1Set)seq.get_Renamed(1);
+                        var setRenamed = (Asn1Set)seq.Get(1);
                         object[] setArray = setRenamed.ToArray();
                         for (var j = 0; j < setArray.Length; j++)
                         {

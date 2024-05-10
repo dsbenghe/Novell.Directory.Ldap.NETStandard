@@ -264,7 +264,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
-        public int Scope => ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
+        public int Scope => ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.Get(1)).Get(1)).IntValue();
 
         /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
         /// <returns>
@@ -279,7 +279,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
         public int Dereference =>
-            ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
+            ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.Get(1)).Get(2)).IntValue();
 
         /// <summary>
         ///     Retrieves the maximum number of entries to be returned on a search.
@@ -288,7 +288,7 @@ namespace Novell.Directory.Ldap
         ///     Maximum number of search entries.
         /// </returns>
         public int MaxResults =>
-            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object.Get(1)).Get(3)).IntValue();
 
         /// <summary>
         ///     Retrieves the server time limit for a search request.
@@ -297,7 +297,7 @@ namespace Novell.Directory.Ldap
         ///     server time limit in nanoseconds.
         /// </returns>
         public int ServerTimeLimit =>
-            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object.Get(1)).Get(4)).IntValue();
 
         /// <summary>
         ///     Retrieves whether attribute values or only attribute types(names) should
@@ -308,7 +308,7 @@ namespace Novell.Directory.Ldap
         ///     attributes types and values are to be returned.
         /// </returns>
         public bool TypesOnly =>
-            ((Asn1Boolean)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
+            ((Asn1Boolean)((RfcSearchRequest)Asn1Object.Get(1)).Get(5)).BooleanValue();
 
         /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
         /// <returns>
@@ -318,12 +318,12 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var attrs = (RfcAttributeDescriptionList)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(7);
+                var attrs = (RfcAttributeDescriptionList)((RfcSearchRequest)Asn1Object.Get(1)).Get(7);
 
                 var rAttrs = new string[attrs.Size()];
                 for (var i = 0; i < rAttrs.Length; i++)
                 {
-                    rAttrs[i] = ((RfcAttributeDescription)attrs.get_Renamed(i)).StringValue();
+                    rAttrs[i] = ((RfcAttributeDescription)attrs.Get(i)).StringValue();
                 }
 
                 return rAttrs;
@@ -340,7 +340,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     filter object for a search request.
         /// </returns>
-        private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(6);
+        private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object.Get(1)).Get(6);
 
         /// <summary>
         ///     Retrieves an IEnumerable object representing the parsed filter for

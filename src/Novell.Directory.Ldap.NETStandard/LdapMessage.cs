@@ -277,7 +277,7 @@ namespace Novell.Directory.Ldap
                                                 * we were parsing the control. Answer: By the time the
                                                 * code realizes that we have a control it is already too late.
                                                 */
-                        var rfcCtl = (RfcControl)asn1Ctrls.get_Renamed(i);
+                        var rfcCtl = (RfcControl)asn1Ctrls.Get(i);
                         var oid = rfcCtl.ControlType.StringValue();
                         var valueRenamed = rfcCtl.ControlValue.ByteValue();
                         var critical = rfcCtl.Criticality.BooleanValue();
