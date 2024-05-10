@@ -514,12 +514,8 @@ namespace Novell.Directory.Ldap
                 }
 
                 var m = RequestingMessage;
-                if (m == null)
-                {
-                    return null;
-                }
 
-                return m._stringTag;
+                return m?._stringTag;
             }
 
             set => _stringTag = value;
@@ -580,7 +576,7 @@ namespace Novell.Directory.Ldap
                     try
                     {
                         /* Call the control constructor for a registered Class*/
-                        object ctl = ctlConstructor.Invoke(args);
+                        var ctl = ctlConstructor.Invoke(args);
                         return (LdapControl)ctl;
                     }
                     catch (UnauthorizedAccessException e)

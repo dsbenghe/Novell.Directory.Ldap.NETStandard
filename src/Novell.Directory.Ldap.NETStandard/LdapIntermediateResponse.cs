@@ -84,12 +84,8 @@ namespace Novell.Directory.Ldap
         {
             var respOid =
                 ((RfcIntermediateResponse)Message.Response).GetResponseName();
-            if (respOid == null)
-            {
-                return null;
-            }
 
-            return respOid.StringValue();
+            return respOid?.StringValue();
         }
 
         /**
@@ -101,12 +97,8 @@ namespace Novell.Directory.Ldap
         {
             var tempString =
                 ((RfcIntermediateResponse)Message.Response).GetResponse();
-            if (tempString == null)
-            {
-                return null;
-            }
 
-            return tempString.ByteValue();
+            return tempString?.ByteValue();
         }
     }
 }

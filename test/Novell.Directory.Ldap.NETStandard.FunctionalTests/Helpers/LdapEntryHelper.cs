@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests.Helpers
         public static void AssertSameAs(this LdapAttributeSet expectedAttributeSet, LdapAttributeSet actualAttributeSet, List<string> excludeAttributes)
         {
             Assert.Equal(expectedAttributeSet.Count, actualAttributeSet.Count);
-            foreach (LdapAttribute expectedAttribute in expectedAttributeSet)
+            foreach (var expectedAttribute in expectedAttributeSet)
             {
                 if (excludeAttributes.Contains(expectedAttribute.Name))
                 {
