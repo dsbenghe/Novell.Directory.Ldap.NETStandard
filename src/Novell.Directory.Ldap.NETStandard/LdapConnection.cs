@@ -2397,8 +2397,7 @@ namespace Novell.Directory.Ldap
             // Check if we use LdapRebind to get authentication credentials
             if (rh == null || rh is ILdapAuthHandler)
             {
-                int i;
-                for (i = 0; i < referrals.Length; i++)
+                for (var i = 0; i < referrals.Length; i++)
                 {
                     // dn, pw are null in the default case (anonymous bind)
                     string dn = null;
@@ -2644,7 +2643,6 @@ namespace Novell.Directory.Ldap
                 origMsg = resp.RequestingMessage;
             }
 
-            LdapUrl refUrl; // referral represented as URL
             try
             {
                 // increment hop count, check max hops
@@ -2656,7 +2654,7 @@ namespace Novell.Directory.Ldap
                 // Get a connection to follow the referral
                 rinfo = await GetReferralConnectionAsync(refs).ConfigureAwait(false);
                 var rconn = rinfo.ReferralConnection; // new conn for following referral
-                refUrl = rinfo.ReferralUrl;
+                var refUrl = rinfo.ReferralUrl; // referral represented as URL
                 connList.Add(rconn);
 
                 // rebuild msg into new msg changing msgID,dn,scope,filter

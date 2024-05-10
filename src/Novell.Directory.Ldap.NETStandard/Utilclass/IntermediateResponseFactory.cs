@@ -80,8 +80,7 @@ namespace Novell.Directory.Ldap.Utilclass
 
                     try
                     {
-                        object resp = null;
-                        resp = extConstructor.Invoke(args);
+                        var resp = extConstructor.Invoke(args);
                         return (LdapIntermediateResponse)resp;
                     }
                     catch (UnauthorizedAccessException e)

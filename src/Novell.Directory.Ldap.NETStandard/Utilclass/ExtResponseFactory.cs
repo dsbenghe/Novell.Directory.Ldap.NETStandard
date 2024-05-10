@@ -58,8 +58,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     var extConstructor = extRespClass.GetConstructor(argsClass);
                     try
                     {
-                        object resp = null;
-                        resp = extConstructor.Invoke(args);
+                        var resp = extConstructor.Invoke(args);
                         return (LdapExtendedResponse)resp;
                     }
                     catch (UnauthorizedAccessException e)

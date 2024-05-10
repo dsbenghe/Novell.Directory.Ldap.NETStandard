@@ -384,7 +384,6 @@ namespace Novell.Directory.Ldap
                     break;
 
                 default:
-                    int res;
                     StopTimer();
 
                     // Accept no more results for this message
@@ -393,7 +392,7 @@ namespace Novell.Directory.Ldap
                     Complete = true;
                     if (_bindprops != null)
                     {
-                        res = ((IRfcResponse)message.Response).GetResultCode().IntValue();
+                        var res = ((IRfcResponse)message.Response).GetResultCode().IntValue();
                         if (res != LdapException.SaslBindInProgress)
                         {
                             if (_conn == null)
