@@ -455,14 +455,13 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             int ival, length = stringRenamed.Length;
             byte[] utf8Bytes;
-            char ch; // Character we are adding to the octet string
             var temp = (char)0; // holds the value of the escaped sequence
 
             // loop through each character of the string and copy them into octets
             // converting escaped sequences when needed
             for (iString = 0, iOctets = 0; iString < length; iString++)
             {
-                ch = stringRenamed[iString];
+                var ch = stringRenamed[iString]; // Character we are adding to the octet string
                 var codePoint = char.ConvertToUtf32(stringRenamed, iString);
                 if (codePoint > 0xffff)
                 {

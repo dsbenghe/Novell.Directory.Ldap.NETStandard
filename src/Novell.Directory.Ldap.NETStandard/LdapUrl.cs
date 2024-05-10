@@ -382,12 +382,10 @@ namespace Novell.Directory.Ldap
         public static string Encode(string toEncode)
         {
             var buffer = new StringBuilder(toEncode.Length); // empty but initial capicity of 'length'
-            string temp;
-            char currChar;
 
             for (var i = 0; i < toEncode.Length; i++)
             {
-                currChar = toEncode[i];
+                var currChar = toEncode[i];
 
                 if (currChar <= 0x1F || currChar == 0x7F || (currChar >= 0x80 && currChar <= 0xFF) || currChar == '<' ||
                     currChar == '>' || currChar == '\"' || currChar == '#' || currChar == '%' || currChar == '{' ||
@@ -395,7 +393,7 @@ namespace Novell.Directory.Ldap
                     currChar == '[' || currChar == '\'' || currChar == ';' || currChar == '/' || currChar == '?' ||
                     currChar == ':' || currChar == '@' || currChar == '=' || currChar == '&')
                 {
-                    temp = Convert.ToString(currChar, 16);
+                    var temp = Convert.ToString(currChar, 16);
                     if (temp.Length == 1)
                     {
                         buffer.Append("%0" + temp);

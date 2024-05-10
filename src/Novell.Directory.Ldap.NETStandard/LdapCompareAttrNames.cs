@@ -180,9 +180,6 @@ namespace Novell.Directory.Ldap
         {
             var entry1 = (LdapEntry)object1;
             var entry2 = (LdapEntry)object2;
-            LdapAttribute one, two;
-            string[] first; // multivalued attributes are ignored.
-            string[] second; // we just use the first element
             int compare, i = 0;
             if (_collator == null)
             {
@@ -193,12 +190,12 @@ namespace Novell.Directory.Ldap
             do
             {
                 // while first and second are equal
-                one = entry1.Get(_sortByNames[i]);
-                two = entry2.Get(_sortByNames[i]);
+                var one = entry1.Get(_sortByNames[i]);
+                var two = entry2.Get(_sortByNames[i]);
                 if (one != null && two != null)
                 {
-                    first = one.StringValueArray;
-                    second = two.StringValueArray;
+                    var first = one.StringValueArray; // multivalued attributes are ignored.
+                    var second = two.StringValueArray; // we just use the first element
                     compare = _collator.Compare(first[0], second[0]);
                 }
 
