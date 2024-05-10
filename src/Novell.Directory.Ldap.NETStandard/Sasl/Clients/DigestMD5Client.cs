@@ -165,8 +165,8 @@ namespace Novell.Directory.Ldap.Sasl.Clients
         private byte[] DigestCalcHa1(DigestResponse result)
         {
             var md5 = new MD5Digest();
-            byte[] hash = new byte[md5.GetDigestSize()];
-            byte[] ha1 = new byte[md5.GetDigestSize()];
+            var hash = new byte[md5.GetDigestSize()];
+            var ha1 = new byte[md5.GetDigestSize()];
 
             md5.BlockUpdate(result.Username.ToUtf8Bytes());
             md5.BlockUpdate(Colon);

@@ -139,7 +139,7 @@ namespace Novell.Directory.Ldap
                 // Yes even though the contructor above allocates a
                 // new Asn1OctetString, vals in that constuctor
                 // is only copied by reference
-                byte[] twin = new byte[vals.Length];
+                var twin = new byte[vals.Length];
                 for (var i = 0; i < vals.Length; i++)
                 {
                     twin[i] = vals[i];

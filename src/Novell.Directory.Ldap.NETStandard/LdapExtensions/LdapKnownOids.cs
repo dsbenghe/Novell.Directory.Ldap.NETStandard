@@ -41,7 +41,7 @@ namespace Novell.Directory.Ldap
 
         public static string GetDisplayNameForOid(string oid)
         {
-            if (_oidNames.TryGetValue(oid, out string displayName))
+            if (_oidNames.TryGetValue(oid, out var displayName))
             {
                 return displayName;
             }

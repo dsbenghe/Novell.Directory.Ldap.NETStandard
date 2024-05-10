@@ -26,7 +26,7 @@ namespace Novell.Directory.Ldap
         public RootDseInfo(LdapEntry rootDseEntry)
         {
             var otherAttributes = new Dictionary<string, IReadOnlyList<string>>();
-            foreach (LdapAttribute attr in rootDseEntry.GetAttributeSet())
+            foreach (var attr in rootDseEntry.GetAttributeSet())
             {
                 switch (attr.Name)
                 {

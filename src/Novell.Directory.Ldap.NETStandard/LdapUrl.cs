@@ -715,7 +715,7 @@ namespace Novell.Directory.Ldap
             int portStart;
             if (url[scanStart] == '[')
             {
-                int hostEnd = url.IndexOf(']', scanStart + 1);
+                var hostEnd = url.IndexOf(']', scanStart + 1);
                 if (hostEnd >= hostPortEnd || hostEnd == -1)
                 {
                     throw new UriFormatException("LdapUrl: \"]\" is missing on IPV6 host name");

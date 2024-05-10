@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             length = Math.Max(0, length);
 
             // fill the current word
-            int i = 0;
+            var i = 0;
             if (_xBufOff != 0)
             {
                 while (i < length)
@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
             }
 
             // process whole words.
-            int limit = ((length - i) & ~3) + i;
+            var limit = ((length - i) & ~3) + i;
             for (; i < limit; i += 4)
             {
                 ProcessWord(input, inOff + i);
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
         public void Finish()
         {
-            long bitLength = _byteCount << 3;
+            var bitLength = _byteCount << 3;
 
             // add the pad bytes.
             Update(128);
@@ -139,7 +139,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
             _xOff = 0;
 
-            for (int i = 0; i != _x.Length; i++)
+            for (var i = 0; i != _x.Length; i++)
             {
                 _x[i] = 0;
             }
@@ -175,7 +175,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
                 ProcessBlock();
             }
 
-            for (int i = _xOff; i < 14; ++i)
+            for (var i = _xOff; i < 14; ++i)
             {
                 _x[i] = 0;
             }
@@ -275,10 +275,10 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 #pragma warning disable RCS1032 // Remove redundant parentheses.
         internal void ProcessBlock()
         {
-            uint a = _h1;
-            uint b = _h2;
-            uint c = _h3;
-            uint d = _h4;
+            var a = _h1;
+            var b = _h2;
+            var c = _h3;
+            var d = _h4;
 
             // Round 1 - F cycle, 16 times.
             a = RotateLeft(a + F(b, c, d) + _x[0] + 0xd76aa478, S11) + b;

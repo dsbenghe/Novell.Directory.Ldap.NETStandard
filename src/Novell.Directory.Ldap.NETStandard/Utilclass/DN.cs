@@ -677,7 +677,7 @@ namespace Novell.Directory.Ldap.Utilclass
                 return null;
             }
 
-            string dn = _rdnList[0].ToString();
+            var dn = _rdnList[0].ToString();
             for (var i = 1; i < length; i++)
             {
                 dn += "," + _rdnList[i];
