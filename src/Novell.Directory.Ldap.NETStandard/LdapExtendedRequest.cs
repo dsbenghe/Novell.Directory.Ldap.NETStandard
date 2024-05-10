@@ -24,69 +24,68 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Represents an Ldap Extended Request.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
+ *               requestName      [0] LdapOID,
+ *               requestValue     [1] OCTET STRING OPTIONAL }
+ */
+public class LdapExtendedRequest : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedRequest>();
+
     /// <summary>
-    ///     Represents an Ldap Extended Request.
+    ///     Constructs an LdapExtendedRequest.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
-     *               requestName      [0] LdapOID,
-     *               requestValue     [1] OCTET STRING OPTIONAL }
-     */
-    public class LdapExtendedRequest : LdapMessage
+    /// <param name="op">
+    ///     The object which contains (1) an identifier of an extended
+    ///     operation which should be recognized by the particular Ldap
+    ///     server this client is connected to, and (2) an operation-
+    ///     specific sequence of octet strings or BER-encoded values.
+    /// </param>
+    /// <param name="cont">
+    ///     Any controls that apply to the extended request
+    ///     or null if none.
+    /// </param>
+    public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
+        : base(
+            ExtendedRequest,
+            new RfcExtendedRequest(
+                new RfcLdapOid(op.GetId()),
+                op.GetValue() != null ? new Asn1OctetString(op.GetValue()) : null), cont)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedRequest>();
+    }
 
-        /// <summary>
-        ///     Constructs an LdapExtendedRequest.
-        /// </summary>
-        /// <param name="op">
-        ///     The object which contains (1) an identifier of an extended
-        ///     operation which should be recognized by the particular Ldap
-        ///     server this client is connected to, and (2) an operation-
-        ///     specific sequence of octet strings or BER-encoded values.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the extended request
-        ///     or null if none.
-        /// </param>
-        public LdapExtendedRequest(LdapExtendedOperation op, LdapControl[] cont)
-            : base(
-                ExtendedRequest,
-                new RfcExtendedRequest(
-                    new RfcLdapOid(op.GetId()),
-                    op.GetValue() != null ? new Asn1OctetString(op.GetValue()) : null), cont)
+    /// <summary> Retrieves an extended operation from this request.</summary>
+    /// <returns>
+    ///     extended operation represented in this request.
+    /// </returns>
+    public LdapExtendedOperation ExtendedOperation
+    {
+        get
         {
-        }
+            var xreq = (RfcExtendedRequest)Asn1Object.Get(1);
 
-        /// <summary> Retrieves an extended operation from this request.</summary>
-        /// <returns>
-        ///     extended operation represented in this request.
-        /// </returns>
-        public LdapExtendedOperation ExtendedOperation
-        {
-            get
+            // Zeroth element is the OID, element one is the value
+            var tag = (Asn1Tagged)xreq.Get(0);
+            var oid = (RfcLdapOid)tag.TaggedValue;
+            var requestId = oid.StringValue();
+
+            byte[] requestValue = null;
+            if (xreq.Size() >= 2)
             {
-                var xreq = (RfcExtendedRequest)Asn1Object.Get(1);
-
-                // Zeroth element is the OID, element one is the value
-                var tag = (Asn1Tagged)xreq.Get(0);
-                var oid = (RfcLdapOid)tag.TaggedValue;
-                var requestId = oid.StringValue();
-
-                byte[] requestValue = null;
-                if (xreq.Size() >= 2)
-                {
-                    tag = (Asn1Tagged)xreq.Get(1);
-                    var valueRenamed = (Asn1OctetString)tag.TaggedValue;
-                    requestValue = valueRenamed.ByteValue();
-                }
-
-                return new LdapExtendedOperation(requestId, requestValue);
+                tag = (Asn1Tagged)xreq.Get(1);
+                var valueRenamed = (Asn1OctetString)tag.TaggedValue;
+                requestValue = valueRenamed.ByteValue();
             }
+
+            return new LdapExtendedOperation(requestId, requestValue);
         }
     }
 }

@@ -25,140 +25,139 @@ using System;
 using System.Globalization;
 using System.Text;
 
-namespace Novell.Directory.Ldap.Utilclass
-{
-    /// <summary>
-    ///     A utility class to get strings from the ExceptionMessages and
-    ///     ResultCodeMessages resources.
-    /// </summary>
-    public class ResourcesHandler
-    {
-        /// <summary> The default Locale.</summary>
-        private static CultureInfo _defaultLocale;
+namespace Novell.Directory.Ldap.Utilclass;
 
-        static ResourcesHandler()
+/// <summary>
+///     A utility class to get strings from the ExceptionMessages and
+///     ResultCodeMessages resources.
+/// </summary>
+public class ResourcesHandler
+{
+    /// <summary> The default Locale.</summary>
+    private static CultureInfo _defaultLocale;
+
+    static ResourcesHandler()
+    {
+        _defaultLocale = CultureInfo.CurrentUICulture;
+    }
+
+    // Cannot create an instance of this class
+    private ResourcesHandler()
+    {
+    }
+
+    /// <summary>
+    ///     Returns a string using the MessageOrKey as a key into
+    ///     ExceptionMessages or, if the Key does not exist, returns the
+    ///     string messageOrKey.  In addition it formats the arguments into the message
+    ///     according to MessageFormat.
+    /// </summary>
+    /// <param name="messageOrKey">
+    ///     Key string for the resource.
+    /// </param>
+    /// <param name="arguments">
+    ///     arguments.
+    /// </param>
+    /// <returns>
+    ///     the text for the message specified by the MessageKey or the Key
+    ///     if it there is no message for that key.
+    /// </returns>
+    public static string GetMessage(string messageOrKey, object[] arguments)
+    {
+        return GetMessage(messageOrKey, arguments, null);
+    }
+
+    /// <summary>
+    ///     Returns the message stored in the ExceptionMessages resource for the
+    ///     specified locale using messageOrKey and arguments passed into the
+    ///     constructor.  If no string exists in the resource then this returns
+    ///     the string stored in message.  (This method is identical to
+    ///     getLdapErrorMessage(Locale locale).).
+    /// </summary>
+    /// <param name="messageOrKey">
+    ///     Key string for the resource.
+    /// </param>
+    /// <param name="arguments">
+    ///     arguments.
+    /// </param>
+    /// <param name="locale">
+    ///     The Locale that should be used to pull message
+    ///     strings out of ExceptionMessages.
+    /// </param>
+    /// <returns>
+    ///     the text for the message specified by the MessageKey or the Key
+    ///     if it there is no message for that key.
+    /// </returns>
+    public static string GetMessage(string messageOrKey, object[] arguments, CultureInfo locale)
+    {
+        if (_defaultLocale == null)
         {
             _defaultLocale = CultureInfo.CurrentUICulture;
         }
 
-        // Cannot create an instance of this class
-        private ResourcesHandler()
+        if (locale == null)
         {
         }
 
-        /// <summary>
-        ///     Returns a string using the MessageOrKey as a key into
-        ///     ExceptionMessages or, if the Key does not exist, returns the
-        ///     string messageOrKey.  In addition it formats the arguments into the message
-        ///     according to MessageFormat.
-        /// </summary>
-        /// <param name="messageOrKey">
-        ///     Key string for the resource.
-        /// </param>
-        /// <param name="arguments">
-        ///     arguments.
-        /// </param>
-        /// <returns>
-        ///     the text for the message specified by the MessageKey or the Key
-        ///     if it there is no message for that key.
-        /// </returns>
-        public static string GetMessage(string messageOrKey, object[] arguments)
+        if (messageOrKey == null)
         {
-            return GetMessage(messageOrKey, arguments, null);
+            messageOrKey = string.Empty;
         }
 
-        /// <summary>
-        ///     Returns the message stored in the ExceptionMessages resource for the
-        ///     specified locale using messageOrKey and arguments passed into the
-        ///     constructor.  If no string exists in the resource then this returns
-        ///     the string stored in message.  (This method is identical to
-        ///     getLdapErrorMessage(Locale locale).).
-        /// </summary>
-        /// <param name="messageOrKey">
-        ///     Key string for the resource.
-        /// </param>
-        /// <param name="arguments">
-        ///     arguments.
-        /// </param>
-        /// <param name="locale">
-        ///     The Locale that should be used to pull message
-        ///     strings out of ExceptionMessages.
-        /// </param>
-        /// <returns>
-        ///     the text for the message specified by the MessageKey or the Key
-        ///     if it there is no message for that key.
-        /// </returns>
-        public static string GetMessage(string messageOrKey, object[] arguments, CultureInfo locale)
+        var pattern = ExceptionMessages.GetErrorMessage(messageOrKey);
+
+        // Format the message if arguments were passed
+        if (arguments != null)
         {
-            if (_defaultLocale == null)
-            {
-                _defaultLocale = CultureInfo.CurrentUICulture;
-            }
+            var strB = new StringBuilder();
+            strB.AppendFormat(pattern, arguments);
+            pattern = strB.ToString();
 
-            if (locale == null)
-            {
-            }
-
-            if (messageOrKey == null)
-            {
-                messageOrKey = string.Empty;
-            }
-
-            var pattern = ExceptionMessages.GetErrorMessage(messageOrKey);
-
-            // Format the message if arguments were passed
-            if (arguments != null)
-            {
-                var strB = new StringBuilder();
-                strB.AppendFormat(pattern, arguments);
-                pattern = strB.ToString();
-
-                // MessageFormat mf = new MessageFormat(pattern);
-                // pattern=System.String.Format(locale,pattern,arguments);
-                // mf.setLocale(locale);
-                // this needs to be reset with the new local - i18n defect in java
-                // mf.applyPattern(pattern);
-                // pattern = mf.format(arguments);
-            }
-
-            return pattern;
+            // MessageFormat mf = new MessageFormat(pattern);
+            // pattern=System.String.Format(locale,pattern,arguments);
+            // mf.setLocale(locale);
+            // this needs to be reset with the new local - i18n defect in java
+            // mf.applyPattern(pattern);
+            // pattern = mf.format(arguments);
         }
 
-        /// <summary>
-        ///     Returns a string representing the Ldap result code from the
-        ///     default ResultCodeMessages resource.
-        /// </summary>
-        /// <param name="code">
-        ///     the result code.
-        /// </param>
-        /// <returns>
-        ///     the String representing the result code.
-        /// </returns>
-        public static string GetResultString(int code)
-        {
-            return GetResultString(code, null);
-        }
+        return pattern;
+    }
 
-        /// <summary>
-        ///     Returns a string representing the Ldap result code.  The message
-        ///     is obtained from the locale specific ResultCodeMessage resource.
-        /// </summary>
-        /// <param name="code">
-        ///     the result code.
-        /// </param>
-        /// <param name="locale">
-        ///     The Locale that should be used to pull message
-        ///     strings out of ResultMessages.
-        /// </param>
-        /// <returns>
-        ///     the String representing the result code.
-        /// </returns>
-        public static string GetResultString(int code, CultureInfo locale)
-        {
-            var codeAsString = Convert.ToString(code);
-            return ResultCodeMessages.HasResultCode(codeAsString)
-                ? ResultCodeMessages.GetResultCode(codeAsString)
-                : GetMessage(ExceptionMessages.UnknownResult, new object[] { code }, locale);
-        }
-    } // end class ResourcesHandler
-}
+    /// <summary>
+    ///     Returns a string representing the Ldap result code from the
+    ///     default ResultCodeMessages resource.
+    /// </summary>
+    /// <param name="code">
+    ///     the result code.
+    /// </param>
+    /// <returns>
+    ///     the String representing the result code.
+    /// </returns>
+    public static string GetResultString(int code)
+    {
+        return GetResultString(code, null);
+    }
+
+    /// <summary>
+    ///     Returns a string representing the Ldap result code.  The message
+    ///     is obtained from the locale specific ResultCodeMessage resource.
+    /// </summary>
+    /// <param name="code">
+    ///     the result code.
+    /// </param>
+    /// <param name="locale">
+    ///     The Locale that should be used to pull message
+    ///     strings out of ResultMessages.
+    /// </param>
+    /// <returns>
+    ///     the String representing the result code.
+    /// </returns>
+    public static string GetResultString(int code, CultureInfo locale)
+    {
+        var codeAsString = Convert.ToString(code);
+        return ResultCodeMessages.HasResultCode(codeAsString)
+            ? ResultCodeMessages.GetResultCode(codeAsString)
+            : GetMessage(ExceptionMessages.UnknownResult, new object[] { code }, locale);
+    }
+} // end class ResourcesHandler

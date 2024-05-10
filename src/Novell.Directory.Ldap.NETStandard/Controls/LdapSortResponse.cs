@@ -24,101 +24,100 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Controls
+namespace Novell.Directory.Ldap.Controls;
+
+/// <summary>
+///     LdapSortResponse - will be added in newer version of Ldap
+///     Controls draft.
+/// </summary>
+public class LdapSortResponse : LdapControl
 {
     /// <summary>
-    ///     LdapSortResponse - will be added in newer version of Ldap
-    ///     Controls draft.
+    ///     This constructor is usually called by the SDK to instantiate an
+    ///     a LdapControl corresponding to the Server response to a Ldap
+    ///     Sort Control request.  Application programmers should not have
+    ///     any reason to call the constructor.  This constructor besides
+    ///     constructing a LdapControl object parses the contents of the response
+    ///     control.
+    ///     RFC 2891 defines this response control as follows:
+    ///     The controlValue is an OCTET STRING, whose
+    ///     value is the BER encoding of a value of the following SEQUENCE:
+    ///     SortResult ::= SEQUENCE {
+    ///     sortResult  ENUMERATED {
+    ///     success                   (0), -- results are sorted
+    ///     operationsError           (1), -- server internal failure
+    ///     timeLimitExceeded         (3), -- timelimit reached before
+    ///     -- sorting was completed
+    ///     strongAuthRequired        (8), -- refused to return sorted
+    ///     -- results via insecure
+    ///     -- protocol
+    ///     adminLimitExceeded       (11), -- too many matching entries
+    ///     -- for the server to sort
+    ///     noSuchAttribute          (16), -- unrecognized attribute
+    ///     -- type in sort key
+    ///     inappropriateMatching    (18), -- unrecognized or
+    ///     -- inappropriate matching
+    ///     -- rule in sort key
+    ///     insufficientAccessRights (50), -- refused to return sorted
+    ///     -- results to this client
+    ///     busy                     (51), -- too busy to process
+    ///     unwillingToPerform       (53), -- unable to sort
+    ///     other                    (80)
+    ///     },
+    ///     attributeType [0] AttributeDescription OPTIONAL }.
     /// </summary>
-    public class LdapSortResponse : LdapControl
+    /// <param name="oid">
+    ///     The OID of the control, as a dotted string.
+    /// </param>
+    /// <param name="critical">
+    ///     True if the Ldap operation should be discarded if
+    ///     the control is not supported. False if
+    ///     the operation can be processed without the control.
+    /// </param>
+    /// <param name="values">
+    ///     The control-specific data.
+    /// </param>
+    public LdapSortResponse(string oid, bool critical, byte[] values)
+        : base(oid, critical, values)
     {
-        /// <summary>
-        ///     This constructor is usually called by the SDK to instantiate an
-        ///     a LdapControl corresponding to the Server response to a Ldap
-        ///     Sort Control request.  Application programmers should not have
-        ///     any reason to call the constructor.  This constructor besides
-        ///     constructing a LdapControl object parses the contents of the response
-        ///     control.
-        ///     RFC 2891 defines this response control as follows:
-        ///     The controlValue is an OCTET STRING, whose
-        ///     value is the BER encoding of a value of the following SEQUENCE:
-        ///     SortResult ::= SEQUENCE {
-        ///     sortResult  ENUMERATED {
-        ///     success                   (0), -- results are sorted
-        ///     operationsError           (1), -- server internal failure
-        ///     timeLimitExceeded         (3), -- timelimit reached before
-        ///     -- sorting was completed
-        ///     strongAuthRequired        (8), -- refused to return sorted
-        ///     -- results via insecure
-        ///     -- protocol
-        ///     adminLimitExceeded       (11), -- too many matching entries
-        ///     -- for the server to sort
-        ///     noSuchAttribute          (16), -- unrecognized attribute
-        ///     -- type in sort key
-        ///     inappropriateMatching    (18), -- unrecognized or
-        ///     -- inappropriate matching
-        ///     -- rule in sort key
-        ///     insufficientAccessRights (50), -- refused to return sorted
-        ///     -- results to this client
-        ///     busy                     (51), -- too busy to process
-        ///     unwillingToPerform       (53), -- unable to sort
-        ///     other                    (80)
-        ///     },
-        ///     attributeType [0] AttributeDescription OPTIONAL }.
-        /// </summary>
-        /// <param name="oid">
-        ///     The OID of the control, as a dotted string.
-        /// </param>
-        /// <param name="critical">
-        ///     True if the Ldap operation should be discarded if
-        ///     the control is not supported. False if
-        ///     the operation can be processed without the control.
-        /// </param>
-        /// <param name="values">
-        ///     The control-specific data.
-        /// </param>
-        public LdapSortResponse(string oid, bool critical, byte[] values)
-            : base(oid, critical, values)
+        // Create a decoder object
+        var decoder = new LberDecoder();
+        if (decoder == null)
         {
-            // Create a decoder object
-            var decoder = new LberDecoder();
-            if (decoder == null)
-            {
-                throw new IOException("Decoding error");
-            }
-
-            // We should get back an enumerated type
-            var asnObj = decoder.Decode(values);
-
-            if (asnObj == null || !(asnObj is Asn1Sequence))
-            {
-                throw new IOException("Decoding error");
-            }
-
-            var asn1Enum = ((Asn1Sequence)asnObj).Get(0);
-            if (asn1Enum != null && asn1Enum is Asn1Enumerated)
-            {
-                ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
-            }
-
-            // Second element is the attributeType
-            if (((Asn1Sequence)asnObj).Size() > 1)
-            {
-                var asn1String = ((Asn1Sequence)asnObj).Get(1);
-                if (asn1String != null && asn1String is Asn1OctetString)
-                {
-                    FailedAttribute = ((Asn1OctetString)asn1String).StringValue();
-                }
-            }
+            throw new IOException("Decoding error");
         }
 
-        /// <summary>
-        ///     If not null, this returns the attribute that caused the sort
-        ///     operation to fail.
-        /// </summary>
-        public virtual string FailedAttribute { get; }
+        // We should get back an enumerated type
+        var asnObj = decoder.Decode(values);
 
-        /// <summary> Returns the result code from the sort.</summary>
-        public virtual int ResultCode { get; }
+        if (asnObj == null || !(asnObj is Asn1Sequence))
+        {
+            throw new IOException("Decoding error");
+        }
+
+        var asn1Enum = ((Asn1Sequence)asnObj).Get(0);
+        if (asn1Enum != null && asn1Enum is Asn1Enumerated)
+        {
+            ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
+        }
+
+        // Second element is the attributeType
+        if (((Asn1Sequence)asnObj).Size() > 1)
+        {
+            var asn1String = ((Asn1Sequence)asnObj).Get(1);
+            if (asn1String != null && asn1String is Asn1OctetString)
+            {
+                FailedAttribute = ((Asn1OctetString)asn1String).StringValue();
+            }
+        }
     }
+
+    /// <summary>
+    ///     If not null, this returns the attribute that caused the sort
+    ///     operation to fail.
+    /// </summary>
+    public virtual string FailedAttribute { get; }
+
+    /// <summary> Returns the result code from the sort.</summary>
+    public virtual int ResultCode { get; }
 }

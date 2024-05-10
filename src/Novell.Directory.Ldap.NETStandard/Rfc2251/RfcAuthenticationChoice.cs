@@ -23,46 +23,45 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Authentication Choice.
+///     <pre>
+///         AuthenticationChoice ::= CHOICE {
+///         simple                  [0] OCTET STRING,
+///         -- 1 and 2 reserved
+///         sasl                    [3] SaslCredentials }
+///     </pre>
+/// </summary>
+public class RfcAuthenticationChoice : Asn1Choice
 {
-    /// <summary>
-    ///     Represents an Ldap Authentication Choice.
-    ///     <pre>
-    ///         AuthenticationChoice ::= CHOICE {
-    ///         simple                  [0] OCTET STRING,
-    ///         -- 1 and 2 reserved
-    ///         sasl                    [3] SaslCredentials }
-    ///     </pre>
-    /// </summary>
-    public class RfcAuthenticationChoice : Asn1Choice
+    // *************************************************************************
+    // Constructors for AuthenticationChoice
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcAuthenticationChoice(Asn1Tagged choice)
+        : base(choice)
     {
-        // *************************************************************************
-        // Constructors for AuthenticationChoice
-        // *************************************************************************
-
-        /// <summary> </summary>
-        public RfcAuthenticationChoice(Asn1Tagged choice)
-            : base(choice)
-        {
-        }
-
-        public RfcAuthenticationChoice(string mechanism, byte[] credentials)
-            : base(
-                new Asn1Tagged(
-                    new Asn1Identifier(Asn1Identifier.Context, true, 3),
-                    new RfcSaslCredentials(
-                        new RfcLdapString(mechanism),
-                        credentials != null ? new Asn1OctetString(credentials) : new Asn1OctetString(new byte[0])), false))
-        {
-            // implicit tagging
-        }
-
-        // *************************************************************************
-        // Mutators
-        // *************************************************************************
-
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
     }
+
+    public RfcAuthenticationChoice(string mechanism, byte[] credentials)
+        : base(
+            new Asn1Tagged(
+                new Asn1Identifier(Asn1Identifier.Context, true, 3),
+                new RfcSaslCredentials(
+                    new RfcLdapString(mechanism),
+                    credentials != null ? new Asn1OctetString(credentials) : new Asn1OctetString(new byte[0])), false))
+    {
+        // implicit tagging
+    }
+
+    // *************************************************************************
+    // Mutators
+    // *************************************************************************
+
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 }

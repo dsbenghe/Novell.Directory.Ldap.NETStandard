@@ -23,101 +23,100 @@
 
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Encapsulates an ID which uniquely identifies a particular extended
+///     operation, known to a particular server, and the data associated
+///     with that extended operation.
+/// </summary>
+/// <seealso cref="LdapConnection.ExtendedOperationAsync">
+/// </seealso>
+public class LdapExtendedOperation
 {
+    public virtual DebugId DebugId { get; } = DebugId.ForType<LdapExtendedOperation>();
+
+    private string _oid;
+    private byte[] _vals;
+
     /// <summary>
-    ///     Encapsulates an ID which uniquely identifies a particular extended
-    ///     operation, known to a particular server, and the data associated
-    ///     with that extended operation.
+    ///     Constructs a new object with the specified object ID and data.
     /// </summary>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync">
-    /// </seealso>
-    public class LdapExtendedOperation
+    /// <param name="oid">
+    ///     The unique identifier of the operation.
+    /// </param>
+    /// <param name="vals">
+    ///     The operation-specific data of the operation.
+    /// </param>
+    public LdapExtendedOperation(string oid, byte[] vals)
     {
-        public virtual DebugId DebugId { get; } = DebugId.ForType<LdapExtendedOperation>();
+        _oid = oid;
+        _vals = vals;
+    }
 
-        private string _oid;
-        private byte[] _vals;
-
-        /// <summary>
-        ///     Constructs a new object with the specified object ID and data.
-        /// </summary>
-        /// <param name="oid">
-        ///     The unique identifier of the operation.
-        /// </param>
-        /// <param name="vals">
-        ///     The operation-specific data of the operation.
-        /// </param>
-        public LdapExtendedOperation(string oid, byte[] vals)
+    /// <summary>
+    ///     Returns a clone of this object.
+    /// </summary>
+    /// <returns>
+    ///     clone of this object.
+    /// </returns>
+    public object Clone()
+    {
+        try
         {
-            _oid = oid;
-            _vals = vals;
-        }
+            var newObj = MemberwiseClone();
 
-        /// <summary>
-        ///     Returns a clone of this object.
-        /// </summary>
-        /// <returns>
-        ///     clone of this object.
-        /// </returns>
-        public object Clone()
+            // Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
+            Array.Copy(_vals, 0, ((LdapExtendedOperation)newObj)._vals, 0, _vals.Length);
+            return newObj;
+        }
+        catch (Exception ce)
         {
-            try
-            {
-                var newObj = MemberwiseClone();
-
-                // Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
-                Array.Copy(_vals, 0, ((LdapExtendedOperation)newObj)._vals, 0, _vals.Length);
-                return newObj;
-            }
-            catch (Exception ce)
-            {
-                throw new Exception("Internal error, cannot create clone", ce);
-            }
+            throw new Exception("Internal error, cannot create clone", ce);
         }
+    }
 
-        /// <summary>
-        ///     Returns the unique identifier of the operation.
-        /// </summary>
-        /// <returns>
-        ///     The OID (object ID) of the operation.
-        /// </returns>
-        public string GetId()
-        {
-            return _oid;
-        }
+    /// <summary>
+    ///     Returns the unique identifier of the operation.
+    /// </summary>
+    /// <returns>
+    ///     The OID (object ID) of the operation.
+    /// </returns>
+    public string GetId()
+    {
+        return _oid;
+    }
 
-        /// <summary>
-        ///     Returns a reference to the operation-specific data.
-        /// </summary>
-        /// <returns>
-        ///     The operation-specific data.
-        /// </returns>
-        public byte[] GetValue()
-        {
-            return _vals;
-        }
+    /// <summary>
+    ///     Returns a reference to the operation-specific data.
+    /// </summary>
+    /// <returns>
+    ///     The operation-specific data.
+    /// </returns>
+    public byte[] GetValue()
+    {
+        return _vals;
+    }
 
-        /// <summary>
-        ///     Sets the value for the operation-specific data.
-        /// </summary>
-        /// <param name="newVals">
-        ///     The byte array of operation-specific data.
-        /// </param>
-        protected void SetValue(byte[] newVals)
-        {
-            _vals = newVals;
-        }
+    /// <summary>
+    ///     Sets the value for the operation-specific data.
+    /// </summary>
+    /// <param name="newVals">
+    ///     The byte array of operation-specific data.
+    /// </param>
+    protected void SetValue(byte[] newVals)
+    {
+        _vals = newVals;
+    }
 
-        /// <summary>
-        ///     Resets the OID for the operation to a new value.
-        /// </summary>
-        /// <param name="newoid">
-        ///     The new OID for the operation.
-        /// </param>
-        protected void SetId(string newoid)
-        {
-            _oid = newoid;
-        }
+    /// <summary>
+    ///     Resets the OID for the operation to a new value.
+    /// </summary>
+    /// <param name="newoid">
+    ///     The new OID for the operation.
+    /// </param>
+    protected void SetId(string newoid)
+    {
+        _oid = newoid;
     }
 }

@@ -23,91 +23,90 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary>
+///     The Asn1Sequence class can hold an ordered collection of components with
+///     distinct type.
+///     This class inherits from the Asn1Structured class which
+///     provides functionality to hold multiple Asn1 components.
+/// </summary>
+public class Asn1Sequence : Asn1Structured
 {
+    /// <summary> ASN.1 SEQUENCE tag definition.</summary>
+    public const int Tag = 0x10;
+
     /// <summary>
-    ///     The Asn1Sequence class can hold an ordered collection of components with
-    ///     distinct type.
-    ///     This class inherits from the Asn1Structured class which
-    ///     provides functionality to hold multiple Asn1 components.
+    ///     ID is added for Optimization.
+    ///     id needs only be one Value for every instance Thus we create it only once.
     /// </summary>
-    public class Asn1Sequence : Asn1Structured
+    private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
+
+    /* Constructors for Asn1Sequence
+            */
+
+    /// <summary>
+    ///     Constructs an Asn1Sequence object with no actual Asn1Objects in it.
+    ///     Assumes a default size of 10 elements.
+    /// </summary>
+    public Asn1Sequence()
+        : base(Id, 10)
     {
-        /// <summary> ASN.1 SEQUENCE tag definition.</summary>
-        public const int Tag = 0x10;
+    }
 
-        /// <summary>
-        ///     ID is added for Optimization.
-        ///     id needs only be one Value for every instance Thus we create it only once.
-        /// </summary>
-        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
+    /// <summary>
+    ///     Constructs an Asn1Sequence object with the specified
+    ///     number of placeholders for Asn1Objects.
+    ///     It should be noted there are no actual Asn1Objects in this
+    ///     SequenceOf object.
+    /// </summary>
+    /// <param name="size">
+    ///     Specifies the initial size of the collection.
+    /// </param>
+    public Asn1Sequence(int size)
+        : base(Id, size)
+    {
+    }
 
-        /* Constructors for Asn1Sequence
-                */
+    /// <summary>
+    ///     Constructs an Asn1Sequence object with an array representing an
+    ///     Asn1 sequence.
+    /// </summary>
+    /// <param name="newContent">
+    ///     the array containing the Asn1 data for the sequence.
+    /// </param>
+    /// <param name="size">
+    ///     Specifies the number of items in the array.
+    /// </param>
+    public Asn1Sequence(Asn1Object[] newContent, int size)
+        : base(Id, newContent, size)
+    {
+    }
 
-        /// <summary>
-        ///     Constructs an Asn1Sequence object with no actual Asn1Objects in it.
-        ///     Assumes a default size of 10 elements.
-        /// </summary>
-        public Asn1Sequence()
-            : base(Id, 10)
-        {
-        }
+    /// <summary>
+    ///     Constructs an Asn1Sequence object by decoding data from an
+    ///     input stream.
+    /// </summary>
+    /// <param name="dec">
+    ///     The decoder object to use when decoding the
+    ///     input stream.  Sometimes a developer might want to pass
+    ///     in his/her own decoder object.
+    /// </param>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public Asn1Sequence(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(Id)
+    {
+        DecodeStructured(dec, inRenamed, len);
+    }
 
-        /// <summary>
-        ///     Constructs an Asn1Sequence object with the specified
-        ///     number of placeholders for Asn1Objects.
-        ///     It should be noted there are no actual Asn1Objects in this
-        ///     SequenceOf object.
-        /// </summary>
-        /// <param name="size">
-        ///     Specifies the initial size of the collection.
-        /// </param>
-        public Asn1Sequence(int size)
-            : base(Id, size)
-        {
-        }
+    /* Asn1Sequence specific methods
+    */
 
-        /// <summary>
-        ///     Constructs an Asn1Sequence object with an array representing an
-        ///     Asn1 sequence.
-        /// </summary>
-        /// <param name="newContent">
-        ///     the array containing the Asn1 data for the sequence.
-        /// </param>
-        /// <param name="size">
-        ///     Specifies the number of items in the array.
-        /// </param>
-        public Asn1Sequence(Asn1Object[] newContent, int size)
-            : base(Id, newContent, size)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs an Asn1Sequence object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Sequence(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
-        {
-            DecodeStructured(dec, inRenamed, len);
-        }
-
-        /* Asn1Sequence specific methods
-        */
-
-        /// <summary> Return a String representation of this Asn1Sequence.</summary>
-        public override string ToString()
-        {
-            return ToString("SEQUENCE: { ");
-        }
+    /// <summary> Return a String representation of this Asn1Sequence.</summary>
+    public override string ToString()
+    {
+        return ToString("SEQUENCE: { ");
     }
 }

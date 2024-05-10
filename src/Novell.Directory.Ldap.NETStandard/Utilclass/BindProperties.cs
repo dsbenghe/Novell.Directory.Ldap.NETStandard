@@ -23,53 +23,52 @@
 
 using System.Collections;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap.Utilclass;
+
+/// <summary> Encapsulates an Ldap Bind properties.</summary>
+public class BindProperties
 {
-    /// <summary> Encapsulates an Ldap Bind properties.</summary>
-    public class BindProperties
+    public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties)
     {
-        public BindProperties(int version, string dn, string method, bool anonymous, Hashtable bindProperties)
-        {
-            ProtocolVersion = version;
-            AuthenticationDn = dn;
-            AuthenticationMethod = method;
-            Anonymous = anonymous;
-            SaslBindProperties = bindProperties;
-        }
-
-        /// <summary> gets the protocol version.</summary>
-        public int ProtocolVersion { get; } = 3;
-
-        /// <summary>
-        ///     Gets the authentication dn.
-        /// </summary>
-        /// <returns>
-        ///     the authentication dn for this connection.
-        /// </returns>
-        public string AuthenticationDn { get; }
-
-        /// <summary>
-        ///     Gets the authentication method.
-        /// </summary>
-        /// <returns>
-        ///     the authentication method for this connection.
-        /// </returns>
-        public string AuthenticationMethod { get; }
-
-        /// <summary>
-        ///     Gets the SASL Bind properties.
-        /// </summary>
-        /// <returns>
-        ///     the sasl bind properties for this connection.
-        /// </returns>
-        public Hashtable SaslBindProperties { get; }
-
-        /// <summary>
-        ///     Indicates whether or not the bind properties specify an anonymous bind.
-        /// </summary>
-        /// <returns>
-        ///     true if the bind properties specify an anonymous bind.
-        /// </returns>
-        public bool Anonymous { get; }
+        ProtocolVersion = version;
+        AuthenticationDn = dn;
+        AuthenticationMethod = method;
+        Anonymous = anonymous;
+        SaslBindProperties = bindProperties;
     }
+
+    /// <summary> gets the protocol version.</summary>
+    public int ProtocolVersion { get; } = 3;
+
+    /// <summary>
+    ///     Gets the authentication dn.
+    /// </summary>
+    /// <returns>
+    ///     the authentication dn for this connection.
+    /// </returns>
+    public string AuthenticationDn { get; }
+
+    /// <summary>
+    ///     Gets the authentication method.
+    /// </summary>
+    /// <returns>
+    ///     the authentication method for this connection.
+    /// </returns>
+    public string AuthenticationMethod { get; }
+
+    /// <summary>
+    ///     Gets the SASL Bind properties.
+    /// </summary>
+    /// <returns>
+    ///     the sasl bind properties for this connection.
+    /// </returns>
+    public Hashtable SaslBindProperties { get; }
+
+    /// <summary>
+    ///     Indicates whether or not the bind properties specify an anonymous bind.
+    /// </summary>
+    /// <returns>
+    ///     true if the bind properties specify an anonymous bind.
+    /// </returns>
+    public bool Anonymous { get; }
 }

@@ -23,20 +23,19 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents the Ldap Assertion Value.
+///     <pre>
+///         AssertionValue ::= OCTET STRING
+///     </pre>
+/// </summary>
+public class RfcAssertionValue : Asn1OctetString
 {
-    /// <summary>
-    ///     Represents the Ldap Assertion Value.
-    ///     <pre>
-    ///         AssertionValue ::= OCTET STRING
-    ///     </pre>
-    /// </summary>
-    public class RfcAssertionValue : Asn1OctetString
+    /// <summary> </summary>
+    public RfcAssertionValue(byte[] valueRenamed)
+        : base(valueRenamed)
     {
-        /// <summary> </summary>
-        public RfcAssertionValue(byte[] valueRenamed)
-            : base(valueRenamed)
-        {
-        }
     }
 }

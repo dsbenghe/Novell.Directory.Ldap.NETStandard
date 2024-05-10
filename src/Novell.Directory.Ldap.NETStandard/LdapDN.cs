@@ -25,246 +25,245 @@ using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Text;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     A utility class to facilitate composition and decomposition
+///     of distinguished names DNs.
+///     Specifies methods for manipulating a distinguished name DN
+///     and a relative distinguished name RDN.
+/// </summary>
+public static class LdapDn
 {
     /// <summary>
-    ///     A utility class to facilitate composition and decomposition
-    ///     of distinguished names DNs.
-    ///     Specifies methods for manipulating a distinguished name DN
-    ///     and a relative distinguished name RDN.
+    ///     Compares the two strings per the distinguishedNameMatch equality matching
+    ///     (using case-ignore matching).  IllegalArgumentException is thrown if one
+    ///     or both DNs are invalid.  UnsupportedOperationException is thrown if the
+    ///     API implementation is not able to determine if the DNs match or not.
     /// </summary>
-    public static class LdapDn
+    /// <param name="dn1">
+    ///     String form of the first DN to compare.
+    /// </param>
+    /// <param name="dn2">
+    ///     String form of the second DN to compare.
+    /// </param>
+    /// <returns>
+    ///     Returns true if the two strings correspond to the same DN; false
+    ///     if the DNs are different.
+    /// </returns>
+    public static bool Equals(string dn1, string dn2)
     {
-        /// <summary>
-        ///     Compares the two strings per the distinguishedNameMatch equality matching
-        ///     (using case-ignore matching).  IllegalArgumentException is thrown if one
-        ///     or both DNs are invalid.  UnsupportedOperationException is thrown if the
-        ///     API implementation is not able to determine if the DNs match or not.
-        /// </summary>
-        /// <param name="dn1">
-        ///     String form of the first DN to compare.
-        /// </param>
-        /// <param name="dn2">
-        ///     String form of the second DN to compare.
-        /// </param>
-        /// <returns>
-        ///     Returns true if the two strings correspond to the same DN; false
-        ///     if the DNs are different.
-        /// </returns>
-        public static bool Equals(string dn1, string dn2)
+        var dnA = new Dn(dn1);
+        var dnB = new Dn(dn2);
+        return dnA.Equals(dnB);
+    }
+
+    /// <summary>
+    ///     Returns the RDN after escaping the characters requiring escaping.
+    ///     For example, for the rdn "cn=Acme, Inc", the escapeRDN method
+    ///     returns "cn=Acme\, Inc".
+    ///     escapeRDN escapes the AttributeValue by inserting '\' before the
+    ///     following chars: * ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
+    ///     '#' if it comes at the beginning of the string, and
+    ///     ' ' (space) if it comes at the beginning or the end of a string.
+    ///     Note that single-valued attributes can be used because of ambiguity. See
+    ///     RFC 2253.
+    /// </summary>
+    /// <param name="rdn">
+    ///     The RDN to escape.
+    /// </param>
+    /// <returns>
+    ///     The RDN with escaping characters.
+    /// </returns>
+    public static string EscapeRdn(string rdn)
+    {
+        var escapedS = new StringBuilder(rdn);
+        var i = 0;
+
+        while (i < escapedS.Length && escapedS[i] != '=')
         {
-            var dnA = new Dn(dn1);
-            var dnB = new Dn(dn2);
-            return dnA.Equals(dnB);
+            i++; // advance until we find the separator =
         }
 
-        /// <summary>
-        ///     Returns the RDN after escaping the characters requiring escaping.
-        ///     For example, for the rdn "cn=Acme, Inc", the escapeRDN method
-        ///     returns "cn=Acme\, Inc".
-        ///     escapeRDN escapes the AttributeValue by inserting '\' before the
-        ///     following chars: * ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
-        ///     '#' if it comes at the beginning of the string, and
-        ///     ' ' (space) if it comes at the beginning or the end of a string.
-        ///     Note that single-valued attributes can be used because of ambiguity. See
-        ///     RFC 2253.
-        /// </summary>
-        /// <param name="rdn">
-        ///     The RDN to escape.
-        /// </param>
-        /// <returns>
-        ///     The RDN with escaping characters.
-        /// </returns>
-        public static string EscapeRdn(string rdn)
+        if (i == escapedS.Length)
         {
-            var escapedS = new StringBuilder(rdn);
-            var i = 0;
+            throw new ArgumentException("Could not parse RDN: Attribute " +
+                                        "type and name must be separated by an equal symbol, '='");
+        }
 
-            while (i < escapedS.Length && escapedS[i] != '=')
-            {
-                i++; // advance until we find the separator =
-            }
+        i++;
 
-            if (i == escapedS.Length)
-            {
-                throw new ArgumentException("Could not parse RDN: Attribute " +
-                                            "type and name must be separated by an equal symbol, '='");
-            }
+        // check for a space or # at the beginning of a string.
+        if (escapedS[i] == ' ' || escapedS[i] == '#')
+        {
+            escapedS.Insert(i++, '\\');
+        }
 
-            i++;
-
-            // check for a space or # at the beginning of a string.
-            if (escapedS[i] == ' ' || escapedS[i] == '#')
+        // loop from second char to the second to last
+        for (; i < escapedS.Length; i++)
+        {
+            if (escapedS[i] == ',' || escapedS[i] == '+' || escapedS[i] == '"' || escapedS[i] == '\\' ||
+                escapedS[i] == '<' || escapedS[i] == '>' || escapedS[i] == ';')
             {
                 escapedS.Insert(i++, '\\');
             }
-
-            // loop from second char to the second to last
-            for (; i < escapedS.Length; i++)
-            {
-                if (escapedS[i] == ',' || escapedS[i] == '+' || escapedS[i] == '"' || escapedS[i] == '\\' ||
-                    escapedS[i] == '<' || escapedS[i] == '>' || escapedS[i] == ';')
-                {
-                    escapedS.Insert(i++, '\\');
-                }
-            }
-
-            // check last char for a space
-            if (escapedS[escapedS.Length - 1] == ' ')
-            {
-                escapedS.Insert(escapedS.Length - 1, '\\');
-            }
-
-            return escapedS.ToString();
         }
 
-        /// <summary>
-        ///     Returns the individual components of a distinguished name (DN).
-        /// </summary>
-        /// <param name="dn">
-        ///     The distinguished name, for example, "cn=Babs
-        ///     Jensen,ou=Accounting,o=Acme,c=US".
-        /// </param>
-        /// <param name="noTypes">
-        ///     If true, returns only the values of the
-        ///     components and not the names.  For example, "Babs
-        ///     Jensen", "Accounting", "Acme", "US" instead of
-        ///     "cn=Babs Jensen", "ou=Accounting", "o=Acme", and
-        ///     "c=US".
-        /// </param>
-        /// <returns>
-        ///     An array of strings representing the individual components
-        ///     of a DN, or null if the DN is not valid.
-        /// </returns>
-        public static string[] ExplodeDn(string dn, bool noTypes)
+        // check last char for a space
+        if (escapedS[escapedS.Length - 1] == ' ')
         {
-            var dnToExplode = new Dn(dn);
-            return dnToExplode.ExplodeDn(noTypes);
+            escapedS.Insert(escapedS.Length - 1, '\\');
         }
 
-        /// <summary>
-        ///     Returns the individual components of a relative distinguished name
-        ///     (RDN), normalized.
-        /// </summary>
-        /// <param name="rdn">
-        ///     The relative distinguished name, or in other words,
-        ///     the left-most component of a distinguished name.
-        /// </param>
-        /// <param name="noTypes">
-        ///     If true, returns only the values of the
-        ///     components, and not the names of the component, for
-        ///     example "Babs Jensen" instead of "cn=Babs Jensen".
-        /// </param>
-        /// <returns>
-        ///     An array of strings representing the individual components
-        ///     of an RDN, or null if the RDN is not a valid RDN.
-        /// </returns>
-        public static string[] ExplodeRdn(string rdn, bool noTypes)
+        return escapedS.ToString();
+    }
+
+    /// <summary>
+    ///     Returns the individual components of a distinguished name (DN).
+    /// </summary>
+    /// <param name="dn">
+    ///     The distinguished name, for example, "cn=Babs
+    ///     Jensen,ou=Accounting,o=Acme,c=US".
+    /// </param>
+    /// <param name="noTypes">
+    ///     If true, returns only the values of the
+    ///     components and not the names.  For example, "Babs
+    ///     Jensen", "Accounting", "Acme", "US" instead of
+    ///     "cn=Babs Jensen", "ou=Accounting", "o=Acme", and
+    ///     "c=US".
+    /// </param>
+    /// <returns>
+    ///     An array of strings representing the individual components
+    ///     of a DN, or null if the DN is not valid.
+    /// </returns>
+    public static string[] ExplodeDn(string dn, bool noTypes)
+    {
+        var dnToExplode = new Dn(dn);
+        return dnToExplode.ExplodeDn(noTypes);
+    }
+
+    /// <summary>
+    ///     Returns the individual components of a relative distinguished name
+    ///     (RDN), normalized.
+    /// </summary>
+    /// <param name="rdn">
+    ///     The relative distinguished name, or in other words,
+    ///     the left-most component of a distinguished name.
+    /// </param>
+    /// <param name="noTypes">
+    ///     If true, returns only the values of the
+    ///     components, and not the names of the component, for
+    ///     example "Babs Jensen" instead of "cn=Babs Jensen".
+    /// </param>
+    /// <returns>
+    ///     An array of strings representing the individual components
+    ///     of an RDN, or null if the RDN is not a valid RDN.
+    /// </returns>
+    public static string[] ExplodeRdn(string rdn, bool noTypes)
+    {
+        var rdnToExplode = new Rdn(rdn);
+        return rdnToExplode.ExplodeRdn(noTypes);
+    }
+
+    /// <summary> Returns true if the string conforms to distinguished name syntax.</summary>
+    /// <param name="dn">
+    ///     String to evaluate fo distinguished name syntax.
+    /// </param>
+    /// <returns>
+    ///     true if the dn is valid.
+    /// </returns>
+    public static bool IsValid(string dn)
+    {
+        try
         {
-            var rdnToExplode = new Rdn(rdn);
-            return rdnToExplode.ExplodeRdn(noTypes);
+            new Dn(dn);
+        }
+        catch (ArgumentException)
+        {
+            return false;
         }
 
-        /// <summary> Returns true if the string conforms to distinguished name syntax.</summary>
-        /// <param name="dn">
-        ///     String to evaluate fo distinguished name syntax.
-        /// </param>
-        /// <returns>
-        ///     true if the dn is valid.
-        /// </returns>
-        public static bool IsValid(string dn)
-        {
-            try
-            {
-                new Dn(dn);
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
+        return true;
+    }
 
-            return true;
+    /// <summary>
+    ///     Returns the DN normalized by removal of non-significant space characters
+    ///     as per RFC 2253, section4.
+    /// </summary>
+    /// <returns>
+    ///     a normalized string.
+    /// </returns>
+    public static string Normalize(string dn)
+    {
+        var testDn = new Dn(dn);
+        return testDn.ToString();
+    }
+
+    /// <summary>
+    ///     Returns the RDN after unescaping the characters requiring escaping.
+    ///     For example, for the rdn "cn=Acme\, Inc", the unescapeRDN method
+    ///     returns "cn=Acme, Inc".
+    ///     unescapeRDN unescapes the AttributeValue by
+    ///     removing the '\' when the next character fits the following:
+    ///     ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
+    ///     '#' if it comes at the beginning of the Attribute Name
+    ///     (without the '\').
+    ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name.
+    /// </summary>
+    /// <param name="rdn">
+    ///     The RDN to unescape.
+    /// </param>
+    /// <returns>
+    ///     The RDN with the escaping characters removed.
+    /// </returns>
+    public static string UnescapeRdn(string rdn)
+    {
+        var unescaped = new StringBuilder();
+        var i = 0;
+
+        while (i < rdn.Length && rdn[i] != '=')
+        {
+            i++; // advance until we find the separator =
         }
 
-        /// <summary>
-        ///     Returns the DN normalized by removal of non-significant space characters
-        ///     as per RFC 2253, section4.
-        /// </summary>
-        /// <returns>
-        ///     a normalized string.
-        /// </returns>
-        public static string Normalize(string dn)
+        if (i == rdn.Length)
         {
-            var testDn = new Dn(dn);
-            return testDn.ToString();
+            throw new ArgumentException("Could not parse rdn: Attribute " +
+                                        "type and name must be separated by an equal symbol, '='");
         }
 
-        /// <summary>
-        ///     Returns the RDN after unescaping the characters requiring escaping.
-        ///     For example, for the rdn "cn=Acme\, Inc", the unescapeRDN method
-        ///     returns "cn=Acme, Inc".
-        ///     unescapeRDN unescapes the AttributeValue by
-        ///     removing the '\' when the next character fits the following:
-        ///     ',' '+' '"' '\' 'LESSTHAN' 'GREATERTHAN' ';'
-        ///     '#' if it comes at the beginning of the Attribute Name
-        ///     (without the '\').
-        ///     ' ' (space) if it comes at the beginning or the end of the Attribute Name.
-        /// </summary>
-        /// <param name="rdn">
-        ///     The RDN to unescape.
-        /// </param>
-        /// <returns>
-        ///     The RDN with the escaping characters removed.
-        /// </returns>
-        public static string UnescapeRdn(string rdn)
+        i++;
+
+        // check if the first two chars are "\ " (slash space) or "\#"
+        if (rdn[i] == '\\' && i + 1 < rdn.Length - 1 && (rdn[i + 1] == ' ' || rdn[i + 1] == '#'))
         {
-            var unescaped = new StringBuilder();
-            var i = 0;
-
-            while (i < rdn.Length && rdn[i] != '=')
-            {
-                i++; // advance until we find the separator =
-            }
-
-            if (i == rdn.Length)
-            {
-                throw new ArgumentException("Could not parse rdn: Attribute " +
-                                            "type and name must be separated by an equal symbol, '='");
-            }
-
             i++;
+        }
 
-            // check if the first two chars are "\ " (slash space) or "\#"
-            if (rdn[i] == '\\' && i + 1 < rdn.Length - 1 && (rdn[i + 1] == ' ' || rdn[i + 1] == '#'))
+        for (; i < rdn.Length; i++)
+        {
+            // if the current char is a slash, not the end char, and is followed
+            // by a special char then...
+            if (rdn[i] == '\\' && i != rdn.Length - 1)
             {
-                i++;
-            }
-
-            for (; i < rdn.Length; i++)
-            {
-                // if the current char is a slash, not the end char, and is followed
-                // by a special char then...
-                if (rdn[i] == '\\' && i != rdn.Length - 1)
+                if (rdn[i + 1] == ',' || rdn[i + 1] == '+' || rdn[i + 1] == '"' || rdn[i + 1] == '\\' ||
+                    rdn[i + 1] == '<' || rdn[i + 1] == '>' || rdn[i + 1] == ';')
                 {
-                    if (rdn[i + 1] == ',' || rdn[i + 1] == '+' || rdn[i + 1] == '"' || rdn[i + 1] == '\\' ||
-                        rdn[i + 1] == '<' || rdn[i + 1] == '>' || rdn[i + 1] == ';')
-                    {
-                        // I'm not sure if I have to check for these special chars
-                        continue;
-                    }
-
-                    // check if the last two chars are "\ "
-                    if (rdn[i + 1] == ' ' && i + 2 == rdn.Length)
-                    {
-                        // if the last char is a space
-                        continue;
-                    }
+                    // I'm not sure if I have to check for these special chars
+                    continue;
                 }
 
-                unescaped.Append(rdn[i]);
+                // check if the last two chars are "\ "
+                if (rdn[i + 1] == ' ' && i + 2 == rdn.Length)
+                {
+                    // if the last char is a space
+                    continue;
+                }
             }
 
-            return unescaped.ToString();
+            unescaped.Append(rdn[i]);
         }
-    } // end class LdapDN
-}
+
+        return unescaped.ToString();
+    }
+} // end class LdapDN

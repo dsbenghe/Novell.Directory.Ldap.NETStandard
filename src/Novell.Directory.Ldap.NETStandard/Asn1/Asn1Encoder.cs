@@ -23,143 +23,142 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary>
+///     This interface defines the methods for encoding each of the ASN.1 types.
+///     Encoders which implement this interface may be used to encode any of the
+///     Asn1Object data types.
+///     This package also provides the BEREncoder class that can be used to
+///     BER encode ASN.1 classes.  However an application might chose to use
+///     its own encoder class.
+///     This interface thus allows an application to use this package to
+///     encode ASN.1 objects using other encoding rules if needed.
+///     Note that Ldap packets are required to be BER encoded. Since this package
+///     includes a BER encoder no application provided encoder is needed for
+///     building Ldap packets.
+/// </summary>
+public interface IAsn1Encoder
 {
+    /* Encoders for ASN.1 simple types */
+
     /// <summary>
-    ///     This interface defines the methods for encoding each of the ASN.1 types.
-    ///     Encoders which implement this interface may be used to encode any of the
-    ///     Asn1Object data types.
-    ///     This package also provides the BEREncoder class that can be used to
-    ///     BER encode ASN.1 classes.  However an application might chose to use
-    ///     its own encoder class.
-    ///     This interface thus allows an application to use this package to
-    ///     encode ASN.1 objects using other encoding rules if needed.
-    ///     Note that Ldap packets are required to be BER encoded. Since this package
-    ///     includes a BER encoder no application provided encoder is needed for
-    ///     building Ldap packets.
+    ///     Encode an Asn1Boolean directly into the provided output stream.
     /// </summary>
-    public interface IAsn1Encoder
-    {
-        /* Encoders for ASN.1 simple types */
+    /// <param name="b">
+    ///     The Asn1Boolean object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Boolean b, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1Boolean directly into the provided output stream.
-        /// </summary>
-        /// <param name="b">
-        ///     The Asn1Boolean object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Boolean b, Stream outRenamed);
+    /// <summary>
+    ///     Encode an Asn1Numeric directly to a stream.
+    ///     Use a two's complement representation in the fewest number of octets
+    ///     possible.
+    ///     Can be used to encode both INTEGER and ENUMERATED values.
+    /// </summary>
+    /// <param name="n">
+    ///     The Asn1Numeric object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Numeric n, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1Numeric directly to a stream.
-        ///     Use a two's complement representation in the fewest number of octets
-        ///     possible.
-        ///     Can be used to encode both INTEGER and ENUMERATED values.
-        /// </summary>
-        /// <param name="n">
-        ///     The Asn1Numeric object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Numeric n, Stream outRenamed);
+    /* Asn1 TYPE NOT YET SUPPORTED
+     * Encode an Asn1Real directly to a stream.
+     * public void encode(Asn1Real r, OutputStream out)
+     * throws IOException;
+     */
 
-        /* Asn1 TYPE NOT YET SUPPORTED
-        * Encode an Asn1Real directly to a stream.
-        * public void encode(Asn1Real r, OutputStream out)
-        * throws IOException;
-        */
+    /// <summary>
+    ///     Encode an Asn1Null directly to a stream.
+    /// </summary>
+    /// <param name="n">
+    ///     The Asn1Null object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Null n, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1Null directly to a stream.
-        /// </summary>
-        /// <param name="n">
-        ///     The Asn1Null object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Null n, Stream outRenamed);
+    /* Asn1 TYPE NOT YET SUPPORTED
+     * Encode an Asn1BitString directly to a stream.
+     * public void encode(Asn1BitString bs, OutputStream out)
+     * throws IOException;
+     */
 
-        /* Asn1 TYPE NOT YET SUPPORTED
-        * Encode an Asn1BitString directly to a stream.
-        * public void encode(Asn1BitString bs, OutputStream out)
-        * throws IOException;
-        */
+    /// <summary>
+    ///     Encode an Asn1OctetString directly to a stream.
+    /// </summary>
+    /// <param name="os">
+    ///     The Asn1OctetString object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1OctetString os, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1OctetString directly to a stream.
-        /// </summary>
-        /// <param name="os">
-        ///     The Asn1OctetString object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1OctetString os, Stream outRenamed);
+    /* Asn1 TYPE NOT YET SUPPORTED
+     * Encode an Asn1ObjectIdentifier directly to a stream.
+     * public void encode(Asn1ObjectIdentifier oi, OutputStream out)
+     * throws IOException;
+     */
 
-        /* Asn1 TYPE NOT YET SUPPORTED
-        * Encode an Asn1ObjectIdentifier directly to a stream.
-        * public void encode(Asn1ObjectIdentifier oi, OutputStream out)
-        * throws IOException;
-        */
+    /* Asn1 TYPE NOT YET SUPPORTED
+     * Encode an Asn1CharacterString directly to a stream.
+     * public void encode(Asn1CharacterString cs, OutputStream out)
+     * throws IOException;
+     */
 
-        /* Asn1 TYPE NOT YET SUPPORTED
-        * Encode an Asn1CharacterString directly to a stream.
-        * public void encode(Asn1CharacterString cs, OutputStream out)
-        * throws IOException;
-        */
+    /* Encoder for ASN.1 structured types
+    */
 
-        /* Encoder for ASN.1 structured types
-        */
+    /// <summary>
+    ///     Encode an Asn1Structured directly to a stream.
+    /// </summary>
+    /// <param name="c">
+    ///     The Asn1Structured object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Structured c, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1Structured directly to a stream.
-        /// </summary>
-        /// <param name="c">
-        ///     The Asn1Structured object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Structured c, Stream outRenamed);
+    /// <summary>
+    ///     Encode an Asn1Tagged directly to a stream.
+    /// </summary>
+    /// <param name="t">
+    ///     The Asn1Tagged object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Tagged t, Stream outRenamed);
 
-        /// <summary>
-        ///     Encode an Asn1Tagged directly to a stream.
-        /// </summary>
-        /// <param name="t">
-        ///     The Asn1Tagged object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Tagged t, Stream outRenamed);
+    /* Encoders for ASN.1 useful types
+    */
 
-        /* Encoders for ASN.1 useful types
-        */
+    /* Encoder for ASN.1 Identifier
+    */
 
-        /* Encoder for ASN.1 Identifier
-        */
-
-        /// <summary>
-        ///     Encode an Asn1Identifier directly to a stream.
-        /// </summary>
-        /// <param name="id">
-        ///     The Asn1Identifier object to encode.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the ASN.1 object is
-        ///     to be encoded.
-        /// </param>
-        void Encode(Asn1Identifier id, Stream outRenamed);
-    }
+    /// <summary>
+    ///     Encode an Asn1Identifier directly to a stream.
+    /// </summary>
+    /// <param name="id">
+    ///     The Asn1Identifier object to encode.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the ASN.1 object is
+    ///     to be encoded.
+    /// </param>
+    void Encode(Asn1Identifier id, Stream outRenamed);
 }

@@ -1,45 +1,44 @@
 ﻿using Novell.Directory.Ldap.Sasl;
 using System.Collections.Generic;
 
-namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
+namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers;
+
+public class TestSaslClientFactory : ISaslClientFactory
 {
-    public class TestSaslClientFactory : ISaslClientFactory
+    public TestSaslClientFactory(string mechanism)
     {
-        public TestSaslClientFactory(string mechanism)
-        {
-            SupportedMechanisms = new[] { mechanism };
-        }
-
-        public IReadOnlyList<string> SupportedMechanisms { get; }
-
-        public ISaslClient CreateClient(SaslRequest saslRequest)
-        {
-            return new TestSaslClient(saslRequest?.SaslMechanism);
-        }
+        SupportedMechanisms = new[] { mechanism };
     }
 
-    public sealed class TestSaslClient : ISaslClient
+    public IReadOnlyList<string> SupportedMechanisms { get; }
+
+    public ISaslClient CreateClient(SaslRequest saslRequest)
     {
-        public DebugId DebugId { get; } = DebugId.ForType<TestSaslClient>();
+        return new TestSaslClient(saslRequest?.SaslMechanism);
+    }
+}
 
-        public TestSaslClient(string mechanism)
-        {
-            MechanismName = mechanism;
-        }
+public sealed class TestSaslClient : ISaslClient
+{
+    public DebugId DebugId { get; } = DebugId.ForType<TestSaslClient>();
 
-        public string MechanismName { get; }
+    public TestSaslClient(string mechanism)
+    {
+        MechanismName = mechanism;
+    }
 
-        public bool HasInitialResponse => false;
+    public string MechanismName { get; }
 
-        public bool IsComplete => true;
+    public bool HasInitialResponse => false;
 
-        public void Dispose()
-        {
-        }
+    public bool IsComplete => true;
 
-        public byte[] EvaluateChallenge(byte[] challenge)
-        {
-            return challenge;
-        }
+    public void Dispose()
+    {
+    }
+
+    public byte[] EvaluateChallenge(byte[] challenge)
+    {
+        return challenge;
     }
 }

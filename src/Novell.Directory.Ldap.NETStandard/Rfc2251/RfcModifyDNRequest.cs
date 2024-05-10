@@ -23,82 +23,81 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an LDAM MOdify DN Request.
+///     <pre>
+///         ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
+///         entry           LdapDN,
+///         newrdn          RelativeLdapDN,
+///         deleteoldrdn    BOOLEAN,
+///         newSuperior     [0] LdapDN OPTIONAL }
+///     </pre>
+/// </summary>
+public class RfcModifyDnRequest : Asn1Sequence, IRfcRequest
 {
+    // *************************************************************************
+    // Constructors for ModifyDNRequest
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn)
+        : this(entry, newrdn, deleteoldrdn, null)
+    {
+    }
+
+    /// <summary> </summary>
+    public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn,
+        RfcLdapDn newSuperior)
+        : base(4)
+    {
+        Add(entry);
+        Add(newrdn);
+        Add(deleteoldrdn);
+        if (newSuperior != null)
+        {
+            newSuperior.SetIdentifier(new Asn1Identifier(Asn1Identifier.Context, false, 0));
+            Add(newSuperior);
+        }
+    }
+
     /// <summary>
-    ///     Represents an LDAM MOdify DN Request.
+    ///     Constructs a new Delete Request copying from the ArrayList of
+    ///     an existing request.
+    /// </summary>
+    internal RfcModifyDnRequest(Asn1Object[] origRequest, string baseRenamed)
+        : base(origRequest, origRequest.Length)
+    {
+        // Replace the base if specified, otherwise keep original base
+        if (baseRenamed != null)
+        {
+            set_Renamed(0, new RfcLdapDn(baseRenamed));
+        }
+    }
+
+    public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+    {
+        return new RfcModifyDnRequest(ToArray(), baseRenamed);
+    }
+
+    public string GetRequestDn()
+    {
+        return ((RfcLdapDn)Get(0)).StringValue();
+    }
+
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
+
+    /// <summary>
+    ///     Override getIdentifier to return an application-wide id.
     ///     <pre>
-    ///         ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
-    ///         entry           LdapDN,
-    ///         newrdn          RelativeLdapDN,
-    ///         deleteoldrdn    BOOLEAN,
-    ///         newSuperior     [0] LdapDN OPTIONAL }
+    ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
     ///     </pre>
     /// </summary>
-    public class RfcModifyDnRequest : Asn1Sequence, IRfcRequest
+    public override Asn1Identifier GetIdentifier()
     {
-        // *************************************************************************
-        // Constructors for ModifyDNRequest
-        // *************************************************************************
-
-        /// <summary> </summary>
-        public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn)
-            : this(entry, newrdn, deleteoldrdn, null)
-        {
-        }
-
-        /// <summary> </summary>
-        public RfcModifyDnRequest(RfcLdapDn entry, RfcRelativeLdapDn newrdn, Asn1Boolean deleteoldrdn,
-            RfcLdapDn newSuperior)
-            : base(4)
-        {
-            Add(entry);
-            Add(newrdn);
-            Add(deleteoldrdn);
-            if (newSuperior != null)
-            {
-                newSuperior.SetIdentifier(new Asn1Identifier(Asn1Identifier.Context, false, 0));
-                Add(newSuperior);
-            }
-        }
-
-        /// <summary>
-        ///     Constructs a new Delete Request copying from the ArrayList of
-        ///     an existing request.
-        /// </summary>
-        internal RfcModifyDnRequest(Asn1Object[] origRequest, string baseRenamed)
-            : base(origRequest, origRequest.Length)
-        {
-            // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
-            {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
-            }
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcModifyDnRequest(ToArray(), baseRenamed);
-        }
-
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn)Get(0)).StringValue();
-        }
-
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary>
-        ///     Override getIdentifier to return an application-wide id.
-        ///     <pre>
-        ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 12.
-        ///     </pre>
-        /// </summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRdnRequest);
-        }
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRdnRequest);
     }
 }

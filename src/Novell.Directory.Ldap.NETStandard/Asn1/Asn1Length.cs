@@ -23,78 +23,77 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary>
+///     This class provides a means to manipulate ASN.1 Length's. It will
+///     be used by Asn1Encoder's and Asn1Decoder's by composition.
+/// </summary>
+public class Asn1Length
 {
-    /// <summary>
-    ///     This class provides a means to manipulate ASN.1 Length's. It will
-    ///     be used by Asn1Encoder's and Asn1Decoder's by composition.
-    /// </summary>
-    public class Asn1Length
+    /// <summary> Constructs an empty Asn1Length.  Values are added by calling reset.</summary>
+    public Asn1Length()
     {
-        /// <summary> Constructs an empty Asn1Length.  Values are added by calling reset.</summary>
-        public Asn1Length()
+    }
+
+    /// <summary> Constructs an Asn1Length.</summary>
+    public Asn1Length(int length)
+    {
+        Length = length;
+    }
+
+    /// <summary>
+    ///     Constructs an Asn1Length object by decoding data from an
+    ///     input stream.
+    /// </summary>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public Asn1Length(Stream inRenamed)
+    {
+        Reset(inRenamed);
+    }
+
+    /// <summary> Returns the length of this Asn1Length.</summary>
+    public int Length { get; private set; }
+
+    /// <summary> Returns the encoded length of this Asn1Length.</summary>
+    public int EncodedLength { get; private set; }
+
+    /// <summary>
+    ///     Resets an Asn1Length object by decoding data from an
+    ///     input stream.
+    ///     Note: this was added for optimization of Asn1.LBERdecoder.decode().
+    /// </summary>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public void Reset(Stream inRenamed)
+    {
+        EncodedLength = 0;
+        var r = inRenamed.ReadByte();
+        EncodedLength++;
+        if (r == 0x80)
         {
+            Length = -1;
         }
-
-        /// <summary> Constructs an Asn1Length.</summary>
-        public Asn1Length(int length)
+        else if (r < 0x80)
         {
-            Length = length;
+            Length = r;
         }
-
-        /// <summary>
-        ///     Constructs an Asn1Length object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Length(Stream inRenamed)
+        else
         {
-            Reset(inRenamed);
-        }
-
-        /// <summary> Returns the length of this Asn1Length.</summary>
-        public int Length { get; private set; }
-
-        /// <summary> Returns the encoded length of this Asn1Length.</summary>
-        public int EncodedLength { get; private set; }
-
-        /// <summary>
-        ///     Resets an Asn1Length object by decoding data from an
-        ///     input stream.
-        ///     Note: this was added for optimization of Asn1.LBERdecoder.decode().
-        /// </summary>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public void Reset(Stream inRenamed)
-        {
-            EncodedLength = 0;
-            var r = inRenamed.ReadByte();
-            EncodedLength++;
-            if (r == 0x80)
+            Length = 0;
+            for (r = r & 0x7F; r > 0; r--)
             {
-                Length = -1;
-            }
-            else if (r < 0x80)
-            {
-                Length = r;
-            }
-            else
-            {
-                Length = 0;
-                for (r = r & 0x7F; r > 0; r--)
+                var part = inRenamed.ReadByte();
+                EncodedLength++;
+                if (part < 0)
                 {
-                    var part = inRenamed.ReadByte();
-                    EncodedLength++;
-                    if (part < 0)
-                    {
-                        throw new EndOfStreamException("BERDecoder: decode: EOF in Asn1Length");
-                    }
-
-                    Length = (Length << 8) + part;
+                    throw new EndOfStreamException("BERDecoder: decode: EOF in Asn1Length");
                 }
+
+                Length = (Length << 8) + part;
             }
         }
     }

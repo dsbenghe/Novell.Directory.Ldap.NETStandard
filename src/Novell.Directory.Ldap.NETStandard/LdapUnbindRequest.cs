@@ -23,29 +23,28 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
-{
-    /// <summary>
-    ///     Represents an Ldap Unbind Request.
-    /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       UnbindRequest ::= [APPLICATION 2] NULL
-     */
-    public class LdapUnbindRequest : LdapMessage
-    {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapUnbindRequest>();
+namespace Novell.Directory.Ldap;
 
-        /// <summary>
-        ///     Constructs an Ldap Unbind Request.
-        /// </summary>
-        /// <param name="cont">
-        ///     Any controls that apply to the unbind request.
-        /// </param>
-        public LdapUnbindRequest(LdapControl[] cont)
-            : base(UnbindRequest, new RfcUnbindRequest(), cont)
-        {
-        }
+/// <summary>
+///     Represents an Ldap Unbind Request.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       UnbindRequest ::= [APPLICATION 2] NULL
+ */
+public class LdapUnbindRequest : LdapMessage
+{
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapUnbindRequest>();
+
+    /// <summary>
+    ///     Constructs an Ldap Unbind Request.
+    /// </summary>
+    /// <param name="cont">
+    ///     Any controls that apply to the unbind request.
+    /// </param>
+    public LdapUnbindRequest(LdapControl[] cont)
+        : base(UnbindRequest, new RfcUnbindRequest(), cont)
+    {
     }
 }

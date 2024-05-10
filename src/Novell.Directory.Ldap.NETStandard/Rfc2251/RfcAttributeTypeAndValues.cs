@@ -23,28 +23,27 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
-{
-    /// <summary>
-    ///     Represents and Ldap Attribute Type and Values.
-    ///     <pre>
-    ///         AttributeTypeAndValues ::= SEQUENCE {
-    ///         type    AttributeDescription,
-    ///         vals    SET OF AttributeValue }
-    ///     </pre>
-    /// </summary>
-    public class RfcAttributeTypeAndValues : Asn1Sequence
-    {
-        // *************************************************************************
-        // Constructor for AttributeTypeAndValues
-        // *************************************************************************
+namespace Novell.Directory.Ldap.Rfc2251;
 
-        /// <summary> </summary>
-        public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals)
-            : base(2)
-        {
-            Add(type);
-            Add(vals);
-        }
+/// <summary>
+///     Represents and Ldap Attribute Type and Values.
+///     <pre>
+///         AttributeTypeAndValues ::= SEQUENCE {
+///         type    AttributeDescription,
+///         vals    SET OF AttributeValue }
+///     </pre>
+/// </summary>
+public class RfcAttributeTypeAndValues : Asn1Sequence
+{
+    // *************************************************************************
+    // Constructor for AttributeTypeAndValues
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcAttributeTypeAndValues(RfcAttributeDescription type, Asn1SetOf vals)
+        : base(2)
+    {
+        Add(type);
+        Add(vals);
     }
 }

@@ -1,9 +1,8 @@
-﻿namespace Novell.Directory.Ldap.Sasl
+﻿namespace Novell.Directory.Ldap.Sasl;
+
+public enum ProtectionStrength
 {
-    public enum ProtectionStrength
-    {
-        High,
-        Medium,
-        Low,
-    }
+    High,
+    Medium,
+    Low,
 }

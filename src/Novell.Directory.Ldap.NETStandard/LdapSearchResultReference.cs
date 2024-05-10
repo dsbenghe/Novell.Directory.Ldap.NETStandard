@@ -24,48 +24,47 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Encapsulates a continuation reference from an asynchronous search operation.
+/// </summary>
+public class LdapSearchResultReference : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResultReference>();
+    private string[] _srefs;
+
+    /*package*/
+
     /// <summary>
-    ///     Encapsulates a continuation reference from an asynchronous search operation.
+    ///     Constructs an LdapSearchResultReference object.
     /// </summary>
-    public class LdapSearchResultReference : LdapMessage
+    /// <param name="message">
+    ///     The LdapMessage with a search reference.
+    /// </param>
+    internal LdapSearchResultReference(RfcLdapMessage message)
+        : base(message)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResultReference>();
-        private string[] _srefs;
+    }
 
-        /*package*/
-
-        /// <summary>
-        ///     Constructs an LdapSearchResultReference object.
-        /// </summary>
-        /// <param name="message">
-        ///     The LdapMessage with a search reference.
-        /// </param>
-        internal LdapSearchResultReference(RfcLdapMessage message)
-            : base(message)
+    /// <summary>
+    ///     Returns any URLs in the object.
+    /// </summary>
+    /// <returns>
+    ///     The URLs.
+    /// </returns>
+    public string[] Referrals
+    {
+        get
         {
-        }
-
-        /// <summary>
-        ///     Returns any URLs in the object.
-        /// </summary>
-        /// <returns>
-        ///     The URLs.
-        /// </returns>
-        public string[] Referrals
-        {
-            get
+            var references = ((RfcSearchResultReference)Message.Response).ToArray();
+            _srefs = new string[references.Length];
+            for (var i = 0; i < references.Length; i++)
             {
-                var references = ((RfcSearchResultReference)Message.Response).ToArray();
-                _srefs = new string[references.Length];
-                for (var i = 0; i < references.Length; i++)
-                {
-                    _srefs[i] = ((Asn1OctetString)references[i]).StringValue();
-                }
-
-                return _srefs;
+                _srefs[i] = ((Asn1OctetString)references[i]).StringValue();
             }
+
+            return _srefs;
         }
     }
 }

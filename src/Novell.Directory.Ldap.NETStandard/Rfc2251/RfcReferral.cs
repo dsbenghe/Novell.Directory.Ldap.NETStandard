@@ -24,35 +24,34 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Referral.
+///     <pre>
+///         Referral ::= SEQUENCE OF LdapURL
+///     </pre>
+/// </summary>
+public class RfcReferral : Asn1SequenceOf
 {
+    // *************************************************************************
+    // Constructor for Referral
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents an Ldap Referral.
-    ///     <pre>
-    ///         Referral ::= SEQUENCE OF LdapURL
-    ///     </pre>
+    ///     The only time a Referral object is constructed, is when we are
+    ///     decoding an RfcLdapResult or COMPONENTS OF RfcLdapResult.
     /// </summary>
-    public class RfcReferral : Asn1SequenceOf
+    public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        // *************************************************************************
-        // Constructor for Referral
-        // *************************************************************************
-
-        /// <summary>
-        ///     The only time a Referral object is constructed, is when we are
-        ///     decoding an RfcLdapResult or COMPONENTS OF RfcLdapResult.
-        /// </summary>
-        public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-            // convert from Asn1OctetString to RfcLdapURL here (then look at
-            // LdapResponse.getReferrals())
-        }
-
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        // inherited from SequenceOf
+        // convert from Asn1OctetString to RfcLdapURL here (then look at
+        // LdapResponse.getReferrals())
     }
+
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
+
+    // inherited from SequenceOf
 }

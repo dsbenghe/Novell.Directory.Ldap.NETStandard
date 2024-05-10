@@ -25,87 +25,86 @@ using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Encapsulates the response returned by an Ldap server on an
+///     asynchronous extended operation request.  It extends LdapResponse.
+///     The response can contain the OID of the extension, an octet string
+///     with the operation's data, both, or neither.
+/// </summary>
+public class LdapExtendedResponse : LdapResponse
 {
-    /// <summary>
-    ///     Encapsulates the response returned by an Ldap server on an
-    ///     asynchronous extended operation request.  It extends LdapResponse.
-    ///     The response can contain the OID of the extension, an octet string
-    ///     with the operation's data, both, or neither.
-    /// </summary>
-    public class LdapExtendedResponse : LdapResponse
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedResponse>();
+
+    static LdapExtendedResponse()
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedResponse>();
+        RegisteredResponses = new RespExtensionSet();
+    }
 
-        static LdapExtendedResponse()
+    /// <summary>
+    ///     Creates an LdapExtendedResponse object which encapsulates
+    ///     a server response to an asynchronous extended operation request.
+    /// </summary>
+    /// <param name="message">
+    ///     The RfcLdapMessage to convert to an
+    ///     LdapExtendedResponse object.
+    /// </param>
+    public LdapExtendedResponse(RfcLdapMessage message)
+        : base(message)
+    {
+    }
+
+    /// <summary>
+    ///     Returns the message identifier of the response.
+    /// </summary>
+    /// <returns>
+    ///     OID of the response.
+    /// </returns>
+    public string Id
+    {
+        get
         {
-            RegisteredResponses = new RespExtensionSet();
+            var respOid = ((RfcExtendedResponse)Message.Response).ResponseName;
+            return respOid?.StringValue();
         }
+    }
 
-        /// <summary>
-        ///     Creates an LdapExtendedResponse object which encapsulates
-        ///     a server response to an asynchronous extended operation request.
-        /// </summary>
-        /// <param name="message">
-        ///     The RfcLdapMessage to convert to an
-        ///     LdapExtendedResponse object.
-        /// </param>
-        public LdapExtendedResponse(RfcLdapMessage message)
-            : base(message)
+    public static RespExtensionSet RegisteredResponses { get; }
+
+    /// <summary>
+    ///     Returns the value part of the response in raw bytes.
+    /// </summary>
+    /// <returns>
+    ///     The value of the response.
+    /// </returns>
+    public byte[] Value
+    {
+        get
         {
+            var tempString = ((RfcExtendedResponse)Message.Response).Response;
+            return tempString?.ByteValue();
         }
+    }
 
-        /// <summary>
-        ///     Returns the message identifier of the response.
-        /// </summary>
-        /// <returns>
-        ///     OID of the response.
-        /// </returns>
-        public string Id
-        {
-            get
-            {
-                var respOid = ((RfcExtendedResponse)Message.Response).ResponseName;
-                return respOid?.StringValue();
-            }
-        }
-
-        public static RespExtensionSet RegisteredResponses { get; }
-
-        /// <summary>
-        ///     Returns the value part of the response in raw bytes.
-        /// </summary>
-        /// <returns>
-        ///     The value of the response.
-        /// </returns>
-        public byte[] Value
-        {
-            get
-            {
-                var tempString = ((RfcExtendedResponse)Message.Response).Response;
-                return tempString?.ByteValue();
-            }
-        }
-
-        /// <summary>
-        ///     Registers a class to be instantiated on receipt of a extendedresponse
-        ///     with the given OID.
-        ///     <p>
-        ///         Any previous registration for the OID is overridden. The
-        ///         extendedResponseClass object MUST be an extension of
-        ///         LDAPExtendedResponse.
-        ///     </p>
-        /// </summary>
-        /// <param name="oid">
-        ///     The object identifier of the control.
-        /// </param>
-        /// <param name="extendedResponseClass">
-        ///     A class which can instantiate an
-        ///     LDAPExtendedResponse.
-        /// </param>
-        public static void Register(string oid, Type extendedResponseClass)
-        {
-            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
-        }
+    /// <summary>
+    ///     Registers a class to be instantiated on receipt of a extendedresponse
+    ///     with the given OID.
+    ///     <p>
+    ///         Any previous registration for the OID is overridden. The
+    ///         extendedResponseClass object MUST be an extension of
+    ///         LDAPExtendedResponse.
+    ///     </p>
+    /// </summary>
+    /// <param name="oid">
+    ///     The object identifier of the control.
+    /// </param>
+    /// <param name="extendedResponseClass">
+    ///     A class which can instantiate an
+    ///     LDAPExtendedResponse.
+    /// </param>
+    public static void Register(string oid, Type extendedResponseClass)
+    {
+        RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
     }
 }

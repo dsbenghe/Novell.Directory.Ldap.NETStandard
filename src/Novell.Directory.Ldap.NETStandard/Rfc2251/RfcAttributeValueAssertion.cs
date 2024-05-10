@@ -23,48 +23,47 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Attribute Value Assertion.
+///     <pre>
+///         AttributeValueAssertion ::= SEQUENCE {
+///         attributeDesc   AttributeDescription,
+///         assertionValue  AssertionValue }
+///     </pre>
+/// </summary>
+public class RfcAttributeValueAssertion : Asn1Sequence
 {
     /// <summary>
-    ///     Represents an Ldap Attribute Value Assertion.
-    ///     <pre>
-    ///         AttributeValueAssertion ::= SEQUENCE {
-    ///         attributeDesc   AttributeDescription,
-    ///         assertionValue  AssertionValue }
-    ///     </pre>
+    ///     Creates an Attribute Value Assertion.
     /// </summary>
-    public class RfcAttributeValueAssertion : Asn1Sequence
+    /// <param name="ad">
+    ///     The assertion description.
+    /// </param>
+    /// <param name="av">
+    ///     The assertion value.
+    /// </param>
+    public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
+        : base(2)
     {
-        /// <summary>
-        ///     Creates an Attribute Value Assertion.
-        /// </summary>
-        /// <param name="ad">
-        ///     The assertion description.
-        /// </param>
-        /// <param name="av">
-        ///     The assertion value.
-        /// </param>
-        public RfcAttributeValueAssertion(RfcAttributeDescription ad, RfcAssertionValue av)
-            : base(2)
-        {
-            Add(ad);
-            Add(av);
-        }
-
-        /// <summary>
-        ///     Returns the attribute description.
-        /// </summary>
-        /// <returns>
-        ///     the attribute description.
-        /// </returns>
-        public string AttributeDescription => ((RfcAttributeDescription)Get(0)).StringValue();
-
-        /// <summary>
-        ///     Returns the assertion value.
-        /// </summary>
-        /// <returns>
-        ///     the assertion value.
-        /// </returns>
-        public byte[] AssertionValue => ((RfcAssertionValue)Get(1)).ByteValue();
+        Add(ad);
+        Add(av);
     }
+
+    /// <summary>
+    ///     Returns the attribute description.
+    /// </summary>
+    /// <returns>
+    ///     the attribute description.
+    /// </returns>
+    public string AttributeDescription => ((RfcAttributeDescription)Get(0)).StringValue();
+
+    /// <summary>
+    ///     Returns the assertion value.
+    /// </summary>
+    /// <returns>
+    ///     the assertion value.
+    /// </returns>
+    public byte[] AssertionValue => ((RfcAssertionValue)Get(1)).ByteValue();
 }

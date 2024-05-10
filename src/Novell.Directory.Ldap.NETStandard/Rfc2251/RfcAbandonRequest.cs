@@ -24,50 +24,49 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Utilclass;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents the Ldap Abandon Request.
+///     <pre>
+///         AbandonRequest ::= [APPLICATION 16] MessageID
+///     </pre>
+/// </summary>
+internal class RfcAbandonRequest : RfcMessageId, IRfcRequest
 {
+    // *************************************************************************
+    // Constructor for AbandonRequest
+    // *************************************************************************
+
+    /// <summary> Constructs an RfcAbandonRequest.</summary>
+    public RfcAbandonRequest(int msgId)
+        : base(msgId)
+    {
+    }
+
+    public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
+    {
+        throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "Abandon" },
+            LdapException.LdapNotSupported, null);
+    }
+
+    public string GetRequestDn()
+    {
+        return null;
+    }
+
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents the Ldap Abandon Request.
+    ///     Override getIdentifier to return an application-wide id.
     ///     <pre>
-    ///         AbandonRequest ::= [APPLICATION 16] MessageID
+    ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
     ///     </pre>
     /// </summary>
-    internal class RfcAbandonRequest : RfcMessageId, IRfcRequest
+    public override Asn1Identifier GetIdentifier()
     {
-        // *************************************************************************
-        // Constructor for AbandonRequest
-        // *************************************************************************
-
-        /// <summary> Constructs an RfcAbandonRequest.</summary>
-        public RfcAbandonRequest(int msgId)
-            : base(msgId)
-        {
-        }
-
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
-        {
-            throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "Abandon" },
-                LdapException.LdapNotSupported, null);
-        }
-
-        public string GetRequestDn()
-        {
-            return null;
-        }
-
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary>
-        ///     Override getIdentifier to return an application-wide id.
-        ///     <pre>
-        ///         ID = CLASS: APPLICATION, FORM: CONSTRUCTED, TAG: 16. (0x50)
-        ///     </pre>
-        /// </summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.AbandonRequest);
-        }
+        return new Asn1Identifier(Asn1Identifier.Application, false, LdapMessage.AbandonRequest);
     }
 }

@@ -2,29 +2,28 @@
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
+namespace Novell.Directory.Ldap.NETStandard.FunctionalTests;
+
+public class AddEntryTests
 {
-    public class AddEntryTests
+    [Fact]
+    public async Task AddEntry_NotExisting_ShouldWork()
     {
-        [Fact]
-        public async Task AddEntry_NotExisting_ShouldWork()
-        {
-            var ldapEntry = LdapEntryHelper.NewLdapEntry();
+        var ldapEntry = LdapEntryHelper.NewLdapEntry();
 
-            await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.AddAsync(ldapEntry); });
+        await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.AddAsync(ldapEntry); });
 
-            var readEntry = await LdapOps.GetEntryAsync(ldapEntry.Dn);
-            ldapEntry.AssertSameAs(readEntry);
-        }
+        var readEntry = await LdapOps.GetEntryAsync(ldapEntry.Dn);
+        ldapEntry.AssertSameAs(readEntry);
+    }
 
-        [Fact]
-        public async Task AddEntry_AlreadyExists_ShouldThrowEntryAlreadyExists()
-        {
-            var ldapEntry = await LdapOps.AddEntryAsync();
+    [Fact]
+    public async Task AddEntry_AlreadyExists_ShouldThrowEntryAlreadyExists()
+    {
+        var ldapEntry = await LdapOps.AddEntryAsync();
 
-            var ldapException = await Assert.ThrowsAsync<LdapException>(
-                async () => await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.AddAsync(ldapEntry); }));
-            Assert.Equal(LdapException.EntryAlreadyExists, ldapException.ResultCode);
-        }
+        var ldapException = await Assert.ThrowsAsync<LdapException>(
+            async () => await TestHelper.WithAuthenticatedLdapConnectionAsync(async ldapConnection => { await ldapConnection.AddAsync(ldapEntry); }));
+        Assert.Equal(LdapException.EntryAlreadyExists, ldapException.ResultCode);
     }
 }

@@ -23,115 +23,114 @@
 
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+public class InterThreadException : LdapException
 {
-    public class InterThreadException : LdapException
+    private readonly Message _request;
+
+    /// <summary>
+    ///     Constructs a InterThreadException with its associated message.
+    /// </summary>
+    /// <param name="message">
+    ///     The text providign additional error information.
+    /// </param>
+    /// <param name="resultCode">
+    ///     The error result code.
+    /// </param>
+    /// <param name="request">
+    ///     The Message class associated with this exception.
+    /// </param>
+    internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
+        Message request)
+        : base(message, arguments, resultCode, null, rootException)
     {
-        private readonly Message _request;
+        _request = request;
+    }
 
-        /// <summary>
-        ///     Constructs a InterThreadException with its associated message.
-        /// </summary>
-        /// <param name="message">
-        ///     The text providign additional error information.
-        /// </param>
-        /// <param name="resultCode">
-        ///     The error result code.
-        /// </param>
-        /// <param name="request">
-        ///     The Message class associated with this exception.
-        /// </param>
-        internal InterThreadException(string message, object[] arguments, int resultCode, Exception rootException,
-            Message request)
-            : base(message, arguments, resultCode, null, rootException)
+    /// <summary>
+    ///     Returns the message ID of this message request.
+    /// </summary>
+    /// <returns>
+    ///     the message ID.  Returns -1 if no message
+    ///     is associated with this exception.
+    /// </returns>
+    internal int MessageId
+    {
+        get
         {
-            _request = request;
-        }
-
-        /// <summary>
-        ///     Returns the message ID of this message request.
-        /// </summary>
-        /// <returns>
-        ///     the message ID.  Returns -1 if no message
-        ///     is associated with this exception.
-        /// </returns>
-        internal int MessageId
-        {
-            get
+            if (_request == null)
             {
-                if (_request == null)
-                {
-                    return -1;
-                }
-
-                return _request.MessageId;
+                return -1;
             }
+
+            return _request.MessageId;
         }
+    }
 
-        /// <summary>
-        ///     Returns the message type expected as a reply to
-        ///     the message associated with this message's request type.
-        /// </summary>
-        /// <returns>
-        ///     the message type of the expected reply.  Returns -1
-        ///     if no reply expected.
-        /// </returns>
-        internal int ReplyType
+    /// <summary>
+    ///     Returns the message type expected as a reply to
+    ///     the message associated with this message's request type.
+    /// </summary>
+    /// <returns>
+    ///     the message type of the expected reply.  Returns -1
+    ///     if no reply expected.
+    /// </returns>
+    internal int ReplyType
+    {
+        get
         {
-            get
+            if (_request == null)
             {
-                if (_request == null)
-                {
-                    return -1;
-                }
-
-                var reqType = _request.MessageType;
-                var responseType = -1;
-                switch (reqType)
-                {
-                    case LdapMessage.BindRequest:
-                        responseType = LdapMessage.BindResponse;
-                        break;
-
-                    case LdapMessage.UnbindRequest:
-                        responseType = -1;
-                        break;
-
-                    case LdapMessage.SearchRequest:
-                        responseType = LdapMessage.SearchResult;
-                        break;
-
-                    case LdapMessage.ModifyRequest:
-                        responseType = LdapMessage.ModifyResponse;
-                        break;
-
-                    case LdapMessage.AddRequest:
-                        responseType = LdapMessage.AddResponse;
-                        break;
-
-                    case LdapMessage.DelRequest:
-                        responseType = LdapMessage.DelResponse;
-                        break;
-
-                    case LdapMessage.ModifyRdnRequest:
-                        responseType = LdapMessage.ModifyRdnResponse;
-                        break;
-
-                    case LdapMessage.CompareRequest:
-                        responseType = LdapMessage.CompareResponse;
-                        break;
-
-                    case LdapMessage.AbandonRequest:
-                        responseType = -1;
-                        break;
-
-                    case LdapMessage.ExtendedRequest:
-                        responseType = LdapMessage.ExtendedResponse;
-                        break;
-                }
-
-                return responseType;
+                return -1;
             }
+
+            var reqType = _request.MessageType;
+            var responseType = -1;
+            switch (reqType)
+            {
+                case LdapMessage.BindRequest:
+                    responseType = LdapMessage.BindResponse;
+                    break;
+
+                case LdapMessage.UnbindRequest:
+                    responseType = -1;
+                    break;
+
+                case LdapMessage.SearchRequest:
+                    responseType = LdapMessage.SearchResult;
+                    break;
+
+                case LdapMessage.ModifyRequest:
+                    responseType = LdapMessage.ModifyResponse;
+                    break;
+
+                case LdapMessage.AddRequest:
+                    responseType = LdapMessage.AddResponse;
+                    break;
+
+                case LdapMessage.DelRequest:
+                    responseType = LdapMessage.DelResponse;
+                    break;
+
+                case LdapMessage.ModifyRdnRequest:
+                    responseType = LdapMessage.ModifyRdnResponse;
+                    break;
+
+                case LdapMessage.CompareRequest:
+                    responseType = LdapMessage.CompareResponse;
+                    break;
+
+                case LdapMessage.AbandonRequest:
+                    responseType = -1;
+                    break;
+
+                case LdapMessage.ExtendedRequest:
+                    responseType = LdapMessage.ExtendedResponse;
+                    break;
+            }
+
+            return responseType;
         }
     }
 }

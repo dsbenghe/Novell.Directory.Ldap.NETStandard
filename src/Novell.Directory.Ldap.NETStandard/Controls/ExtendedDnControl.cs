@@ -25,54 +25,53 @@ using Novell.Directory.Ldap.Asn1;
 using System;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Controls
+namespace Novell.Directory.Ldap.Controls;
+
+/// <summary>
+/// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an
+/// LDAP server to return an extended form of the objects DN:. <GUID=guid_value>;dn.
+/// See https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/57056773-932c-4e55-9491-e13f49ba580c
+/// </summary>
+public class ExtendedDnControl : LdapControl
 {
+    private const string ExtendedDnControlOID = "1.2.840.113556.1.4.529";
+
+    private readonly LberEncoder _encoder = new LberEncoder();
+    private readonly Asn1Sequence _controlValue = new Asn1Sequence();
+
     /// <summary>
-    /// LDAP_SERVER_EXTENDED_DN_OID  ( 1.2.840.113556.1.4.529 ) - This causes an
-    /// LDAP server to return an extended form of the objects DN:. <GUID=guid_value>;dn.
-    /// See https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-adts/57056773-932c-4e55-9491-e13f49ba580c
+    /// Creates a new ExtendedDnControl using the specified flag.
     /// </summary>
-    public class ExtendedDnControl : LdapControl
+    /// <param name="flag">The format of the GUID that will be returned.</param>
+    /// <param name="critical">True if the LDAP operation should be discarded if the
+    /// control is not supported. False if the operation can be processed without
+    /// the control.</param>
+    public ExtendedDnControl(GuidFormatFlag flag, bool critical)
+        : base(ExtendedDnControlOID, critical, null)
     {
-        private const string ExtendedDnControlOID = "1.2.840.113556.1.4.529";
+        _controlValue.Add(new Asn1Integer((int)flag));
 
-        private readonly LberEncoder _encoder = new LberEncoder();
-        private readonly Asn1Sequence _controlValue = new Asn1Sequence();
-
-        /// <summary>
-        /// Creates a new ExtendedDnControl using the specified flag.
-        /// </summary>
-        /// <param name="flag">The format of the GUID that will be returned.</param>
-        /// <param name="critical">True if the LDAP operation should be discarded if the
-        /// control is not supported. False if the operation can be processed without
-        /// the control.</param>
-        public ExtendedDnControl(GuidFormatFlag flag, bool critical)
-            : base(ExtendedDnControlOID, critical, null)
+        try
         {
-            _controlValue.Add(new Asn1Integer((int)flag));
-
-            try
+            using (var encodedData = new MemoryStream())
             {
-                using (var encodedData = new MemoryStream())
-                {
-                    _controlValue.Encode(_encoder, encodedData);
-                    SetValue(encodedData.ToArray());
-                }
-            }
-            catch (IOException e)
-            {
-                // Shouldn't occur unless there is a serious failure
-                throw new InvalidOperationException("Unable to create instance of ExtendedDnControl", e);
+                _controlValue.Encode(_encoder, encodedData);
+                SetValue(encodedData.ToArray());
             }
         }
-
-        /// <summary>
-        /// LDAP GUID format in HEX or string dashed format.
-        /// </summary>
-        public enum GuidFormatFlag
+        catch (IOException e)
         {
-            Hex,
-            String,
+            // Shouldn't occur unless there is a serious failure
+            throw new InvalidOperationException("Unable to create instance of ExtendedDnControl", e);
         }
+    }
+
+    /// <summary>
+    /// LDAP GUID format in HEX or string dashed format.
+    /// </summary>
+    public enum GuidFormatFlag
+    {
+        Hex,
+        String,
     }
 }

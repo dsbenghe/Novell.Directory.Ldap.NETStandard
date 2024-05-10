@@ -23,93 +23,92 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary> This class encapsulates the ASN.1 INTEGER type.</summary>
+public class Asn1Integer : Asn1Numeric
 {
-    /// <summary> This class encapsulates the ASN.1 INTEGER type.</summary>
-    public class Asn1Integer : Asn1Numeric
+    /// <summary> ASN.1 INTEGER tag definition.</summary>
+    public const int Tag = 0x02;
+
+    /// <summary> ID is added for Optimization.</summary>
+    /// <summary>
+    ///     ID needs only be one Value for every instance,
+    ///     thus we create it only once.
+    /// </summary>
+    private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+
+    /* Constructors for Asn1Integer
+            */
+
+    /// <summary>
+    ///     Call this constructor to construct an Asn1Integer
+    ///     object from an integer value.
+    /// </summary>
+    /// <param name="content">
+    ///     The integer value to be contained in the
+    ///     this Asn1Integer object.
+    /// </param>
+    public Asn1Integer(int content)
+        : base(Id, content)
     {
-        /// <summary> ASN.1 INTEGER tag definition.</summary>
-        public const int Tag = 0x02;
+    }
 
-        /// <summary> ID is added for Optimization.</summary>
-        /// <summary>
-        ///     ID needs only be one Value for every instance,
-        ///     thus we create it only once.
-        /// </summary>
-        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+    /// <summary>
+    ///     Call this constructor to construct an Asn1Integer
+    ///     object from a long value.
+    /// </summary>
+    /// <param name="content">
+    ///     The long value to be contained in the
+    ///     this Asn1Integer object.
+    /// </param>
+    public Asn1Integer(long content)
+        : base(Id, content)
+    {
+    }
 
-        /* Constructors for Asn1Integer
-                */
+    /// <summary>
+    ///     Constructs an Asn1Integer object by decoding data from an
+    ///     input stream.
+    /// </summary>
+    /// <param name="dec">
+    ///     The decoder object to use when decoding the
+    ///     input stream.  Sometimes a developer might want to pass
+    ///     in his/her own decoder object.
+    /// </param>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public Asn1Integer(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
+    {
+    }
 
-        /// <summary>
-        ///     Call this constructor to construct an Asn1Integer
-        ///     object from an integer value.
-        /// </summary>
-        /// <param name="content">
-        ///     The integer value to be contained in the
-        ///     this Asn1Integer object.
-        /// </param>
-        public Asn1Integer(int content)
-            : base(Id, content)
-        {
-        }
+    /* Asn1Object implementation
+    */
 
-        /// <summary>
-        ///     Call this constructor to construct an Asn1Integer
-        ///     object from a long value.
-        /// </summary>
-        /// <param name="content">
-        ///     The long value to be contained in the
-        ///     this Asn1Integer object.
-        /// </param>
-        public Asn1Integer(long content)
-            : base(Id, content)
-        {
-        }
+    /// <summary>
+    ///     Call this method to encode the current instance into the
+    ///     specified output stream using the specified encoder object.
+    /// </summary>
+    /// <param name="enc">
+    ///     Encoder object to use when encoding self.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the encoded byte
+    ///     stream is written.
+    /// </param>
+    public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+    {
+        enc.Encode(this, outRenamed);
+    }
 
-        /// <summary>
-        ///     Constructs an Asn1Integer object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Integer(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
-        {
-        }
+    /* Asn1Integer specific methods
+    */
 
-        /* Asn1Object implementation
-        */
-
-        /// <summary>
-        ///     Call this method to encode the current instance into the
-        ///     specified output stream using the specified encoder object.
-        /// </summary>
-        /// <param name="enc">
-        ///     Encoder object to use when encoding self.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the encoded byte
-        ///     stream is written.
-        /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
-        {
-            enc.Encode(this, outRenamed);
-        }
-
-        /* Asn1Integer specific methods
-        */
-
-        /// <summary> Returns a String representation of this Asn1Integer object.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "INTEGER: " + LongValue();
-        }
+    /// <summary> Returns a String representation of this Asn1Integer object.</summary>
+    public override string ToString()
+    {
+        return base.ToString() + "INTEGER: " + LongValue();
     }
 }

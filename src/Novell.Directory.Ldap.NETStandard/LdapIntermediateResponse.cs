@@ -25,80 +25,79 @@ using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Utilclass;
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/**
+ *
+ * Encapsulates the response returned by an LDAP server on an
+ * asynchronous extended operation request.  It extends LdapResponse.
+ *
+ * The response can contain the OID of the extension, an octet string
+ * with the operation's data, both, or neither.
+ */
+public class LdapIntermediateResponse : LdapResponse
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapIntermediateResponse>();
+    private static readonly RespExtensionSet RegisteredResponses = new RespExtensionSet();
+
     /**
+     * Creates an LdapIntermediateResponse object which encapsulates
+     * a server response to an asynchronous extended operation request.
      *
-     * Encapsulates the response returned by an LDAP server on an
-     * asynchronous extended operation request.  It extends LdapResponse.
-     *
-     * The response can contain the OID of the extension, an octet string
-     * with the operation's data, both, or neither.
+     * @param message  The RfcLdapMessage to convert to an
+     * LdapIntermediateResponse object.
      */
-    public class LdapIntermediateResponse : LdapResponse
+    public LdapIntermediateResponse(RfcLdapMessage message)
+        : base(message)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapIntermediateResponse>();
-        private static readonly RespExtensionSet RegisteredResponses = new RespExtensionSet();
+    }
 
-        /**
-         * Creates an LdapIntermediateResponse object which encapsulates
-         * a server response to an asynchronous extended operation request.
-         *
-         * @param message  The RfcLdapMessage to convert to an
-         * LdapIntermediateResponse object.
-         */
-        public LdapIntermediateResponse(RfcLdapMessage message)
-            : base(message)
-        {
-        }
+    /**
+     * Registers a class to be instantiated on receipt of a extendedresponse
+     * with the given OID.
+     *
+     * <p>Any previous registration for the OID is overridden. The
+     *  extendedResponseClass object MUST be an extension of
+     *  LdapIntermediateResponse. </p>
+     *
+     * @param oid            The object identifier of the control.
+     * <br><br>
+     * @param extendedResponseClass  A class which can instantiate an
+     *                                LdapIntermediateResponse.
+     */
+    public static void Register(string oid, Type extendedResponseClass)
+    {
+        RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
+    }
 
-        /**
-         * Registers a class to be instantiated on receipt of a extendedresponse
-         * with the given OID.
-         *
-         * <p>Any previous registration for the OID is overridden. The
-         *  extendedResponseClass object MUST be an extension of
-         *  LdapIntermediateResponse. </p>
-         *
-         * @param oid            The object identifier of the control.
-         * <br><br>
-         * @param extendedResponseClass  A class which can instantiate an
-         *                                LdapIntermediateResponse.
-         */
-        public static void Register(string oid, Type extendedResponseClass)
-        {
-            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
-        }
+    public static RespExtensionSet GetRegisteredResponses()
+    {
+        return RegisteredResponses;
+    }
 
-        public static RespExtensionSet GetRegisteredResponses()
-        {
-            return RegisteredResponses;
-        }
+    /**
+     * Returns the message identifier of the response.
+     *
+     * @return OID of the response.
+     */
+    public string GetId()
+    {
+        var respOid =
+            ((RfcIntermediateResponse)Message.Response).GetResponseName();
 
-        /**
-         * Returns the message identifier of the response.
-         *
-         * @return OID of the response.
-         */
-        public string GetId()
-        {
-            var respOid =
-                ((RfcIntermediateResponse)Message.Response).GetResponseName();
+        return respOid?.StringValue();
+    }
 
-            return respOid?.StringValue();
-        }
+    /**
+     * Returns the value part of the response in raw bytes.
+     *
+     * @return The value of the response.
+     */
+    public byte[] GetValue()
+    {
+        var tempString =
+            ((RfcIntermediateResponse)Message.Response).GetResponse();
 
-        /**
-         * Returns the value part of the response in raw bytes.
-         *
-         * @return The value of the response.
-         */
-        public byte[] GetValue()
-        {
-            var tempString =
-                ((RfcIntermediateResponse)Message.Response).GetResponse();
-
-            return tempString?.ByteValue();
-        }
+        return tempString?.ByteValue();
     }
 }

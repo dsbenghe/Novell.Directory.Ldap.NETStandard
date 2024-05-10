@@ -24,27 +24,26 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary> Represnts an Ldap String.</summary>
+public class RfcLdapString : Asn1OctetString
 {
-    /// <summary> Represnts an Ldap String.</summary>
-    public class RfcLdapString : Asn1OctetString
+    /// <summary> </summary>
+    public RfcLdapString(string s)
+        : base(s)
     {
-        /// <summary> </summary>
-        public RfcLdapString(string s)
-            : base(s)
-        {
-        }
+    }
 
-        /// <summary> </summary>
-        public RfcLdapString(byte[] ba)
-            : base(ba)
-        {
-        }
+    /// <summary> </summary>
+    public RfcLdapString(byte[] ba)
+        : base(ba)
+    {
+    }
 
-        /// <summary> </summary>
-        public RfcLdapString(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
+    /// <summary> </summary>
+    public RfcLdapString(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
+    {
     }
 }

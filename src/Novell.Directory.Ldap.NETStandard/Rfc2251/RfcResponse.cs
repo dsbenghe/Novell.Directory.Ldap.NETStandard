@@ -23,26 +23,25 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     This interface represents RfcLdapMessages that contain a response from a
+///     server.
+///     If the protocol operation of the RfcLdapMessage is of this type,
+///     it contains at least an RfcLdapResult.
+/// </summary>
+public interface IRfcResponse
 {
-    /// <summary>
-    ///     This interface represents RfcLdapMessages that contain a response from a
-    ///     server.
-    ///     If the protocol operation of the RfcLdapMessage is of this type,
-    ///     it contains at least an RfcLdapResult.
-    /// </summary>
-    public interface IRfcResponse
-    {
-        /// <summary> </summary>
-        Asn1Enumerated GetResultCode();
+    /// <summary> </summary>
+    Asn1Enumerated GetResultCode();
 
-        /// <summary> </summary>
-        RfcLdapDn GetMatchedDn();
+    /// <summary> </summary>
+    RfcLdapDn GetMatchedDn();
 
-        /// <summary> </summary>
-        RfcLdapString GetErrorMessage();
+    /// <summary> </summary>
+    RfcLdapString GetErrorMessage();
 
-        /// <summary> </summary>
-        RfcReferral GetReferral();
-    }
+    /// <summary> </summary>
+    RfcReferral GetReferral();
 }

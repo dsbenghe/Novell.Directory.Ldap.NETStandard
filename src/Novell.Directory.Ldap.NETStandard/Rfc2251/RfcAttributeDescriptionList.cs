@@ -23,50 +23,49 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
-{
-    /// <summary>
-    ///     The AttributeDescriptionList is used to list attributes to be returned in
-    ///     a search request.
-    ///     <pre>
-    ///         AttributeDescriptionList ::= SEQUENCE OF
-    ///         AttributeDescription
-    ///     </pre>
-    /// </summary>
-    /// <seealso cref="RfcAttributeDescription">
-    /// </seealso>
-    /// <seealso cref="Asn1SequenceOf">
-    /// </seealso>
-    /// <seealso cref="RfcSearchRequest">
-    /// </seealso>
-    public class RfcAttributeDescriptionList : Asn1SequenceOf
-    {
-        /// <summary> </summary>
-        public RfcAttributeDescriptionList(int size)
-            : base(size)
-        {
-        }
+namespace Novell.Directory.Ldap.Rfc2251;
 
-        /// <summary>
-        ///     Convenience constructor. This constructor will construct an
-        ///     AttributeDescriptionList using the supplied array of Strings.
-        /// </summary>
-        public RfcAttributeDescriptionList(string[] attrs)
-            : base(attrs == null ? 0 : attrs.Length)
+/// <summary>
+///     The AttributeDescriptionList is used to list attributes to be returned in
+///     a search request.
+///     <pre>
+///         AttributeDescriptionList ::= SEQUENCE OF
+///         AttributeDescription
+///     </pre>
+/// </summary>
+/// <seealso cref="RfcAttributeDescription">
+/// </seealso>
+/// <seealso cref="Asn1SequenceOf">
+/// </seealso>
+/// <seealso cref="RfcSearchRequest">
+/// </seealso>
+public class RfcAttributeDescriptionList : Asn1SequenceOf
+{
+    /// <summary> </summary>
+    public RfcAttributeDescriptionList(int size)
+        : base(size)
+    {
+    }
+
+    /// <summary>
+    ///     Convenience constructor. This constructor will construct an
+    ///     AttributeDescriptionList using the supplied array of Strings.
+    /// </summary>
+    public RfcAttributeDescriptionList(string[] attrs)
+        : base(attrs == null ? 0 : attrs.Length)
+    {
+        if (attrs != null)
         {
-            if (attrs != null)
+            for (var i = 0; i < attrs.Length; i++)
             {
-                for (var i = 0; i < attrs.Length; i++)
-                {
-                    Add(new RfcAttributeDescription(attrs[i]));
-                }
+                Add(new RfcAttributeDescription(attrs[i]));
             }
         }
-
-        /*
-        * Override add() to only accept types of AttributeDescription
-        *
-        * @exception Asn1InvalidTypeException
-        */
     }
+
+    /*
+     * Override add() to only accept types of AttributeDescription
+     *
+     * @exception Asn1InvalidTypeException
+     */
 }

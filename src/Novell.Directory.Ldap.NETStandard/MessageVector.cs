@@ -25,152 +25,151 @@ using System;
 using System.Collections;
 using System.Linq;
 
-namespace Novell.Directory.Ldap
-{
-    /// <summary>
-    ///     The. <code>MessageVector</code> class implements additional semantics
-    ///     to Vector needed for handling messages.
-    /// </summary>
-    // TODO - This is locking on this because the same lock is used outside the type - this needs to be improved before removing lock(this)
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     The. <code>MessageVector</code> class implements additional semantics
+///     to Vector needed for handling messages.
+/// </summary>
+// TODO - This is locking on this because the same lock is used outside the type - this needs to be improved before removing lock(this)
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
-    internal class MessageVector
+internal class MessageVector
+{
+    private readonly ArrayList _arrayList;
+
+    internal MessageVector(int cap)
     {
-        private readonly ArrayList _arrayList;
+        _arrayList = new ArrayList(cap);
+    }
 
-        internal MessageVector(int cap)
+    /// <summary>
+    ///     Returns an array containing all of the elements in this MessageVector.
+    ///     The elements returned are in the same order in the array as in the
+    ///     Vector.  The contents of the vector are cleared.
+    /// </summary>
+    /// <returns>
+    ///     the array containing all of the elements.
+    /// </returns>
+    internal object[] RemoveAll()
+    {
+        lock (this)
         {
-            _arrayList = new ArrayList(cap);
+            var results = ToArray();
+            _arrayList.Clear();
+            return results;
         }
+    }
 
-        /// <summary>
-        ///     Returns an array containing all of the elements in this MessageVector.
-        ///     The elements returned are in the same order in the array as in the
-        ///     Vector.  The contents of the vector are cleared.
-        /// </summary>
-        /// <returns>
-        ///     the array containing all of the elements.
-        /// </returns>
-        internal object[] RemoveAll()
+    /// <summary>
+    ///     Finds the Message object with the given MsgID, and returns the Message
+    ///     object. It finds the object and returns it in an atomic operation.
+    /// </summary>
+    /// <param name="msgId">
+    ///     The msgId of the Message object to return.
+    /// </param>
+    /// <returns>
+    ///     The Message object corresponding to this MsgId.
+    ///     @throws NoSuchFieldException when no object with the corresponding
+    ///     value for the MsgId field can be found.
+    /// </returns>
+    internal Message FindMessageById(int msgId)
+    {
+        lock (this)
+        {
+            var message = _arrayList.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
+            if (message == null)
+            {
+                throw new FieldAccessException();
+            }
+
+            return message;
+        }
+    }
+
+    /// <summary>
+    ///     Adds an object to the end of the Vector.
+    /// </summary>
+    /// <returns>
+    ///     The  index at which the message has been added.
+    /// </returns>
+    public int Add(object message)
+    {
+        lock (this)
+        {
+            return _arrayList.Add(message);
+        }
+    }
+
+    /// <summary>
+    ///     Removes the first occurrence of a specific object from the Vector.
+    /// </summary>
+    public void Remove(object message)
+    {
+        lock (this)
+        {
+            _arrayList.Remove(message);
+        }
+    }
+
+    /// <summary>
+    ///     Gets the number of elements actually contained in the Vector.
+    /// </summary>
+    public int Count
+    {
+        get
         {
             lock (this)
             {
-                var results = ToArray();
-                _arrayList.Clear();
-                return results;
-            }
-        }
-
-        /// <summary>
-        ///     Finds the Message object with the given MsgID, and returns the Message
-        ///     object. It finds the object and returns it in an atomic operation.
-        /// </summary>
-        /// <param name="msgId">
-        ///     The msgId of the Message object to return.
-        /// </param>
-        /// <returns>
-        ///     The Message object corresponding to this MsgId.
-        ///     @throws NoSuchFieldException when no object with the corresponding
-        ///     value for the MsgId field can be found.
-        /// </returns>
-        internal Message FindMessageById(int msgId)
-        {
-            lock (this)
-            {
-                var message = _arrayList.OfType<Message>().SingleOrDefault(m => m.MessageId == msgId);
-                if (message == null)
-                {
-                    throw new FieldAccessException();
-                }
-
-                return message;
-            }
-        }
-
-        /// <summary>
-        ///     Adds an object to the end of the Vector.
-        /// </summary>
-        /// <returns>
-        ///     The  index at which the message has been added.
-        /// </returns>
-        public int Add(object message)
-        {
-            lock (this)
-            {
-                return _arrayList.Add(message);
-            }
-        }
-
-        /// <summary>
-        ///     Removes the first occurrence of a specific object from the Vector.
-        /// </summary>
-        public void Remove(object message)
-        {
-            lock (this)
-            {
-                _arrayList.Remove(message);
-            }
-        }
-
-        /// <summary>
-        ///     Gets the number of elements actually contained in the Vector.
-        /// </summary>
-        public int Count
-        {
-            get
-            {
-                lock (this)
-                {
-                    return _arrayList.Count;
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Gets the Message at the specified index.
-        /// </summary>
-        public object this[int index]
-        {
-            get
-            {
-                lock (this)
-                {
-                    return _arrayList[index];
-                }
-            }
-        }
-
-        /// <summary>
-        ///     Removes the element at the specified index.
-        /// </summary>
-        public void RemoveAt(int index)
-        {
-            lock (this)
-            {
-                _arrayList.RemoveAt(index);
-            }
-        }
-
-        /// <summary>
-        ///     Copies the elements to a new array.
-        /// </summary>
-        public object[] ToArray()
-        {
-            lock (this)
-            {
-                return _arrayList.ToArray();
-            }
-        }
-
-        /// <summary>
-        ///     Removes all elements.
-        /// </summary>
-        public void Clear()
-        {
-            lock (this)
-            {
-                _arrayList.Clear();
+                return _arrayList.Count;
             }
         }
     }
-#pragma warning restore CA2002 // Do not lock on objects with weak identity
+
+    /// <summary>
+    ///     Gets the Message at the specified index.
+    /// </summary>
+    public object this[int index]
+    {
+        get
+        {
+            lock (this)
+            {
+                return _arrayList[index];
+            }
+        }
+    }
+
+    /// <summary>
+    ///     Removes the element at the specified index.
+    /// </summary>
+    public void RemoveAt(int index)
+    {
+        lock (this)
+        {
+            _arrayList.RemoveAt(index);
+        }
+    }
+
+    /// <summary>
+    ///     Copies the elements to a new array.
+    /// </summary>
+    public object[] ToArray()
+    {
+        lock (this)
+        {
+            return _arrayList.ToArray();
+        }
+    }
+
+    /// <summary>
+    ///     Removes all elements.
+    /// </summary>
+    public void Clear()
+    {
+        lock (this)
+        {
+            _arrayList.Clear();
+        }
+    }
 }
+#pragma warning restore CA2002 // Do not lock on objects with weak identity

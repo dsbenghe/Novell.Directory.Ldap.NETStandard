@@ -23,30 +23,29 @@
 
 using System;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap.Utilclass;
+
+/// <summary>
+///     Encapsulates a qualifier in a Schema definition.  Definitions that are not
+///     in rfc2252.  Begins with 'X-'.
+/// </summary>
+public class AttributeQualifier
 {
-    /// <summary>
-    ///     Encapsulates a qualifier in a Schema definition.  Definitions that are not
-    ///     in rfc2252.  Begins with 'X-'.
-    /// </summary>
-    public class AttributeQualifier
+    private readonly string[] _values;
+
+    public AttributeQualifier(string name, string[] valueRenamed)
     {
-        private readonly string[] _values;
-
-        public AttributeQualifier(string name, string[] valueRenamed)
+        if (name == null || valueRenamed == null)
         {
-            if (name == null || valueRenamed == null)
-            {
-                throw new ArgumentException("A null name or value " +
-                                            "was passed in for a schema definition qualifier");
-            }
-
-            Name = name;
-            _values = (string[])valueRenamed.Clone();
+            throw new ArgumentException("A null name or value " +
+                                        "was passed in for a schema definition qualifier");
         }
 
-        public string Name { get; }
-
-        public string[] Values => _values.IsEmpty() ? null : (string[])_values.Clone();
+        Name = name;
+        _values = (string[])valueRenamed.Clone();
     }
+
+    public string Name { get; }
+
+    public string[] Values => _values.IsEmpty() ? null : (string[])_values.Clone();
 }

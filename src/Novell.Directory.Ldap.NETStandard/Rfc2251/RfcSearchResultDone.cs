@@ -24,55 +24,54 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Search Result Done Response.
+///     <pre>
+///         SearchResultDone ::= [APPLICATION 5] LdapResult
+///     </pre>
+/// </summary>
+public class RfcSearchResultDone : RfcLdapResult
 {
-    /// <summary>
-    ///     Represents an Ldap Search Result Done Response.
-    ///     <pre>
-    ///         SearchResultDone ::= [APPLICATION 5] LdapResult
-    ///     </pre>
-    /// </summary>
-    public class RfcSearchResultDone : RfcLdapResult
+    // *************************************************************************
+    // Constructors for SearchResultDone
+    // *************************************************************************
+
+    /// <summary> Decode a search result done from the input stream.</summary>
+    public RfcSearchResultDone(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        // *************************************************************************
-        // Constructors for SearchResultDone
-        // *************************************************************************
+    }
 
-        /// <summary> Decode a search result done from the input stream.</summary>
-        public RfcSearchResultDone(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
+    /// <summary>
+    ///     Constructs an RfcSearchResultDone from parameters.
+    /// </summary>
+    /// <param name="resultCode">
+    ///     the result code of the operation.
+    /// </param>
+    /// <param name="matchedDn">
+    ///     the matched DN returned from the server.
+    /// </param>
+    /// <param name="errorMessage">
+    ///     the diagnostic message returned from the server.
+    /// </param>
+    /// <param name="referral">
+    ///     the referral(s) returned by the server.
+    /// </param>
+    public RfcSearchResultDone(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
+        RfcReferral referral)
+        : base(resultCode, matchedDn, errorMessage, referral)
+    {
+    }
 
-        /// <summary>
-        ///     Constructs an RfcSearchResultDone from parameters.
-        /// </summary>
-        /// <param name="resultCode">
-        ///     the result code of the operation.
-        /// </param>
-        /// <param name="matchedDn">
-        ///     the matched DN returned from the server.
-        /// </param>
-        /// <param name="errorMessage">
-        ///     the diagnostic message returned from the server.
-        /// </param>
-        /// <param name="referral">
-        ///     the referral(s) returned by the server.
-        /// </param>
-        public RfcSearchResultDone(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
-            RfcReferral referral)
-            : base(resultCode, matchedDn, errorMessage, referral)
-        {
-        }
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResult);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResult);
     }
 }

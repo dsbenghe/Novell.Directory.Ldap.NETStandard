@@ -23,33 +23,32 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
-{
-    /// <summary>
-    ///     Represents an Ldap Abandon Request.
-    /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       AbandonRequest ::= [APPLICATION 16] MessageID
-     */
-    public class LdapAbandonRequest : LdapMessage
-    {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapAbandonRequest>();
+namespace Novell.Directory.Ldap;
 
-        /// <summary>
-        ///     Construct an Ldap Abandon Request.
-        /// </summary>
-        /// <param name="id">
-        ///     The ID of the operation to abandon.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the abandon request
-        ///     or null if none.
-        /// </param>
-        public LdapAbandonRequest(int id, LdapControl[] cont)
-            : base(AbandonRequest, new RfcAbandonRequest(id), cont)
-        {
-        }
+/// <summary>
+///     Represents an Ldap Abandon Request.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       AbandonRequest ::= [APPLICATION 16] MessageID
+ */
+public class LdapAbandonRequest : LdapMessage
+{
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapAbandonRequest>();
+
+    /// <summary>
+    ///     Construct an Ldap Abandon Request.
+    /// </summary>
+    /// <param name="id">
+    ///     The ID of the operation to abandon.
+    /// </param>
+    /// <param name="cont">
+    ///     Any controls that apply to the abandon request
+    ///     or null if none.
+    /// </param>
+    public LdapAbandonRequest(int id, LdapControl[] cont)
+        : base(AbandonRequest, new RfcAbandonRequest(id), cont)
+    {
     }
 }

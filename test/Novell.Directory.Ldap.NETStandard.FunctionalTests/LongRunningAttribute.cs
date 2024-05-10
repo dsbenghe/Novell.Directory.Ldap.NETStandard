@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
+namespace Novell.Directory.Ldap.NETStandard.FunctionalTests;
+
+[AttributeUsage(AttributeTargets.Method)]
+public class LongRunningAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class LongRunningAttribute : Attribute
-    {
-    }
 }

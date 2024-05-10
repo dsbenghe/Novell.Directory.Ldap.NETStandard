@@ -23,50 +23,49 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Represents a request to delete an entry.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       DelRequest ::= [APPLICATION 10] LdapDN
+ */
+public class LdapDeleteRequest : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapDeleteRequest>();
+
     /// <summary>
-    ///     Represents a request to delete an entry.
+    ///     Constructs a request to delete an entry from the directory.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       DelRequest ::= [APPLICATION 10] LdapDN
-     */
-    public class LdapDeleteRequest : LdapMessage
+    /// <param name="dn">
+    ///     the dn of the entry to delete.
+    /// </param>
+    /// <param name="cont">
+    ///     Any controls that apply to the abandon request
+    ///     or null if none.
+    /// </param>
+    public LdapDeleteRequest(string dn, LdapControl[] cont)
+        : base(DelRequest, new RfcDelRequest(dn), cont)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapDeleteRequest>();
+    }
 
-        /// <summary>
-        ///     Constructs a request to delete an entry from the directory.
-        /// </summary>
-        /// <param name="dn">
-        ///     the dn of the entry to delete.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the abandon request
-        ///     or null if none.
-        /// </param>
-        public LdapDeleteRequest(string dn, LdapControl[] cont)
-            : base(DelRequest, new RfcDelRequest(dn), cont)
-        {
-        }
+    /// <summary>
+    ///     Returns of the dn of the entry to delete from the directory.
+    /// </summary>
+    /// <returns>
+    ///     the dn of the entry to delete.
+    /// </returns>
+    public string Dn => Asn1Object.RequestDn;
 
-        /// <summary>
-        ///     Returns of the dn of the entry to delete from the directory.
-        /// </summary>
-        /// <returns>
-        ///     the dn of the entry to delete.
-        /// </returns>
-        public string Dn => Asn1Object.RequestDn;
-
-        /// <summary>
-        ///     Return an Asn1 representation of this delete request
-        ///     #return an Asn1 representation of this object.
-        /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+    /// <summary>
+    ///     Return an Asn1 representation of this delete request
+    ///     #return an Asn1 representation of this object.
+    /// </summary>
+    public override string ToString()
+    {
+        return Asn1Object.ToString();
     }
 }

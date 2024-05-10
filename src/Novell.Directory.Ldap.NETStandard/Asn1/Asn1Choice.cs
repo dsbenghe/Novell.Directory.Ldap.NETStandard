@@ -23,102 +23,101 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary>
+///     The Asn1Choice object represents the choice of any Asn1Object. All
+///     Asn1Object methods are delegated to the object this Asn1Choice contains.
+/// </summary>
+/* Can a CHOICE contain anything BUT a TAGGED Type?
+*/
+public class Asn1Choice : Asn1Object
 {
-    /// <summary>
-    ///     The Asn1Choice object represents the choice of any Asn1Object. All
-    ///     Asn1Object methods are delegated to the object this Asn1Choice contains.
-    /// </summary>
-    /* Can a CHOICE contain anything BUT a TAGGED Type?
+    /* Constructors for Asn1Choice
     */
-    public class Asn1Choice : Asn1Object
+
+    /// <summary>
+    ///     Constructs an Asn1Choice object using an Asn1Object value.
+    /// </summary>
+    /// <param name="content">
+    ///     The Asn1Object that this Asn1Choice will
+    ///     encode.  Since all Asn1 objects are derived from Asn1Object
+    ///     any basic type can be passed in.
+    /// </param>
+    public Asn1Choice(Asn1Object content)
+        : base(null)
     {
-        /* Constructors for Asn1Choice
-        */
+        ChoiceValue = content;
+    }
 
-        /// <summary>
-        ///     Constructs an Asn1Choice object using an Asn1Object value.
-        /// </summary>
-        /// <param name="content">
-        ///     The Asn1Object that this Asn1Choice will
-        ///     encode.  Since all Asn1 objects are derived from Asn1Object
-        ///     any basic type can be passed in.
-        /// </param>
-        public Asn1Choice(Asn1Object content)
-            : base(null)
-        {
-            ChoiceValue = content;
-        }
+    /// <summary>
+    ///     No arg Constructor. This is used by Filter, who subsequently sets the
+    ///     content after parsing the RFC 2254 Search Filter String.
+    /// </summary>
+    protected internal Asn1Choice()
+        : base(null)
+    {
+        ChoiceValue = null;
+    }
 
-        /// <summary>
-        ///     No arg Constructor. This is used by Filter, who subsequently sets the
-        ///     content after parsing the RFC 2254 Search Filter String.
-        /// </summary>
-        protected internal Asn1Choice()
-            : base(null)
-        {
-            ChoiceValue = null;
-        }
+    /// <summary>
+    ///     Sets the CHOICE value stored in this Asn1Choice.
+    /// </summary>
+    /// <param name="content">
+    ///     The Asn1Object that this Asn1Choice will
+    ///     encode.  Since all Asn1 objects are derived from Asn1Object
+    ///     any basic type can be passed in.
+    /// </param>
+    protected Asn1Object ChoiceValue { get; set; }
 
-        /// <summary>
-        ///     Sets the CHOICE value stored in this Asn1Choice.
-        /// </summary>
-        /// <param name="content">
-        ///     The Asn1Object that this Asn1Choice will
-        ///     encode.  Since all Asn1 objects are derived from Asn1Object
-        ///     any basic type can be passed in.
-        /// </param>
-        protected Asn1Object ChoiceValue { get; set; }
+    /* Asn1Object implementation
+    */
 
-        /* Asn1Object implementation
-        */
+    /// <summary>
+    ///     Call this method to encode the contents of this Asn1Choice
+    ///     instance into the specified output stream using the
+    ///     specified encoder object.
+    /// </summary>
+    /// <param name="enc">
+    ///     Encoder object to use when encoding self.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the encoded byte
+    ///     stream is written.
+    /// </param>
+    public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+    {
+        ChoiceValue.Encode(enc, outRenamed);
+    }
 
-        /// <summary>
-        ///     Call this method to encode the contents of this Asn1Choice
-        ///     instance into the specified output stream using the
-        ///     specified encoder object.
-        /// </summary>
-        /// <param name="enc">
-        ///     Encoder object to use when encoding self.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the encoded byte
-        ///     stream is written.
-        /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
-        {
-            ChoiceValue.Encode(enc, outRenamed);
-        }
+    /* Asn1Choice specific methods
+    */
 
-        /* Asn1Choice specific methods
-        */
+    /// <summary>
+    ///     This method will return the Asn1Identifier of the
+    ///     encoded Asn1Object.We  override the parent method
+    ///     as the identifier of an Asn1Choice depends on the
+    ///     type of the object encoded by this Asn1Choice.
+    /// </summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return ChoiceValue.GetIdentifier();
+    }
 
-        /// <summary>
-        ///     This method will return the Asn1Identifier of the
-        ///     encoded Asn1Object.We  override the parent method
-        ///     as the identifier of an Asn1Choice depends on the
-        ///     type of the object encoded by this Asn1Choice.
-        /// </summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return ChoiceValue.GetIdentifier();
-        }
+    /// <summary>
+    ///     Sets the identifier of the contained Asn1Object. We
+    ///     override the parent method as the identifier of
+    ///     an Asn1Choice depends on the type of the object
+    ///     encoded by this Asn1Choice.
+    /// </summary>
+    public override void SetIdentifier(Asn1Identifier id)
+    {
+        ChoiceValue.SetIdentifier(id);
+    }
 
-        /// <summary>
-        ///     Sets the identifier of the contained Asn1Object. We
-        ///     override the parent method as the identifier of
-        ///     an Asn1Choice depends on the type of the object
-        ///     encoded by this Asn1Choice.
-        /// </summary>
-        public override void SetIdentifier(Asn1Identifier id)
-        {
-            ChoiceValue.SetIdentifier(id);
-        }
-
-        /// <summary> Return a String representation of this Asn1Object.</summary>
-        public override string ToString()
-        {
-            return ChoiceValue.ToString();
-        }
+    /// <summary> Return a String representation of this Asn1Object.</summary>
+    public override string ToString()
+    {
+        return ChoiceValue.ToString();
     }
 }

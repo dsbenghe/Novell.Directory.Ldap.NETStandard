@@ -7,218 +7,217 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 
-namespace Novell.Directory.Ldap.NETStandard.StressTests
+namespace Novell.Directory.Ldap.NETStandard.StressTests;
+
+public class MultiThreadTest
 {
-    public class MultiThreadTest
+    private const double PercentOfAcceptedLdapExceptions = 0.02;
+    private static readonly TimeSpan DefaultTestingThreadReportingPeriod = TimeSpan.FromMinutes(1);
+
+    private readonly int _noOfThreads;
+    private readonly TimeSpan _timeToRun;
+    private readonly ILoggerFactory _loggerFactory;
+    private readonly ILogger<MultiThreadTest> _logger;
+    private readonly TimeSpan _monitoringThreadReportingPeriod = TimeSpan.FromSeconds(300);
+
+    private static readonly List<ExceptionInfo> Exceptions = new List<ExceptionInfo>();
+
+    public MultiThreadTest(int noOfThreads, TimeSpan timeToRun, ILoggerFactory loggerFactory)
     {
-        private const double PercentOfAcceptedLdapExceptions = 0.02;
-        private static readonly TimeSpan DefaultTestingThreadReportingPeriod = TimeSpan.FromMinutes(1);
+        _noOfThreads = noOfThreads;
+        _timeToRun = timeToRun;
+        _loggerFactory = loggerFactory;
+        _logger = loggerFactory.CreateLogger<MultiThreadTest>();
+    }
 
-        private readonly int _noOfThreads;
-        private readonly TimeSpan _timeToRun;
-        private readonly ILoggerFactory _loggerFactory;
-        private readonly ILogger<MultiThreadTest> _logger;
-        private readonly TimeSpan _monitoringThreadReportingPeriod = TimeSpan.FromSeconds(300);
-
-        private static readonly List<ExceptionInfo> Exceptions = new List<ExceptionInfo>();
-
-        public MultiThreadTest(int noOfThreads, TimeSpan timeToRun, ILoggerFactory loggerFactory)
+    public int Run()
+    {
+        var threads = new Thread[_noOfThreads];
+        var threadDatas = new ThreadRunner[_noOfThreads];
+        for (var i = 0; i < _noOfThreads; i++)
         {
-            _noOfThreads = noOfThreads;
-            _timeToRun = timeToRun;
-            _loggerFactory = loggerFactory;
-            _logger = loggerFactory.CreateLogger<MultiThreadTest>();
+            var threadRunner = new ThreadRunner(DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
+            threads[i] = new Thread(threadRunner.RunLoop);
+            threadDatas[i] = threadRunner;
+            threads[i].Start();
         }
 
-        public int Run()
+        var monitoringThread = new Thread(MonitoringThread);
+        var monitoringThreadData = new MonitoringThreadData(threadDatas);
+        monitoringThread.Start(monitoringThreadData);
+
+        Thread.Sleep(_timeToRun);
+        _logger.LogInformation("Exiting worker threads");
+        foreach (var threadData in threadDatas)
         {
-            var threads = new Thread[_noOfThreads];
-            var threadDatas = new ThreadRunner[_noOfThreads];
-            for (var i = 0; i < _noOfThreads; i++)
-            {
-                var threadRunner = new ThreadRunner(DefaultTestingThreadReportingPeriod, _loggerFactory.CreateLogger<ThreadRunner>());
-                threads[i] = new Thread(threadRunner.RunLoop);
-                threadDatas[i] = threadRunner;
-                threads[i].Start();
-            }
-
-            var monitoringThread = new Thread(MonitoringThread);
-            var monitoringThreadData = new MonitoringThreadData(threadDatas);
-            monitoringThread.Start(monitoringThreadData);
-
-            Thread.Sleep(_timeToRun);
-            _logger.LogInformation("Exiting worker threads");
-            foreach (var threadData in threadDatas)
-            {
-                threadData.ShouldStop = true;
-            }
-
-            _logger.LogInformation("Exiting monitoring thread");
-            monitoringThreadData.WaitHandle.Set();
-            monitoringThread.Join();
-
-            Thread.Sleep(DefaultTestingThreadReportingPeriod.Multiply(2));
-
-            foreach (var thread in threads)
-            {
-                if (thread.IsAlive)
-                {
-                    _logger.LogWarning($"Worker thread {thread.ManagedThreadId} still alive");
-                }
-            }
-
-            var aliveThreads = threads.Any(x => x.IsAlive);
-            var failRun = ReportRunResult(threadDatas);
-
-            return failRun || aliveThreads ? 1 : 0;
+            threadData.ShouldStop = true;
         }
 
-        private bool ReportRunResult(ThreadRunner[] threadDatas)
+        _logger.LogInformation("Exiting monitoring thread");
+        monitoringThreadData.WaitHandle.Set();
+        monitoringThread.Join();
+
+        Thread.Sleep(DefaultTestingThreadReportingPeriod.Multiply(2));
+
+        foreach (var thread in threads)
         {
-            var noOfRuns = threadDatas.Sum(x => x.Count);
-            var noOfLdapExceptions = Exceptions.Count(x => (x.Ex as LdapException) != null);
-            var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
-            var percentOfLdapExceptions = (float)noOfLdapExceptions * 100 / noOfRuns;
-            var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
-            _logger.LogInformation(
-                $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
-            return failRun;
+            if (thread.IsAlive)
+            {
+                _logger.LogWarning($"Worker thread {thread.ManagedThreadId} still alive");
+            }
         }
 
-        private void MonitoringThread(object param)
-        {
-            var monitoringThreadData = (MonitoringThreadData)param;
+        var aliveThreads = threads.Any(x => x.IsAlive);
+        var failRun = ReportRunResult(threadDatas);
 
-            do
-            {
-                DumpStats(monitoringThreadData);
-            }
-            while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
+        return failRun || aliveThreads ? 1 : 0;
+    }
+
+    private bool ReportRunResult(ThreadRunner[] threadDatas)
+    {
+        var noOfRuns = threadDatas.Sum(x => x.Count);
+        var noOfLdapExceptions = Exceptions.Count(x => (x.Ex as LdapException) != null);
+        var noOfNonLdapExceptions = Exceptions.Count - noOfLdapExceptions;
+        var percentOfLdapExceptions = (float)noOfLdapExceptions * 100 / noOfRuns;
+        var failRun = noOfNonLdapExceptions > 0 || percentOfLdapExceptions > PercentOfAcceptedLdapExceptions;
+        _logger.LogInformation(
+            $"Number of test runs = {noOfRuns} on {_noOfThreads} threads, no of exceptions: {Exceptions.Count}, no of non ldap exceptions {noOfNonLdapExceptions}, fail {failRun}");
+        return failRun;
+    }
+
+    private void MonitoringThread(object param)
+    {
+        var monitoringThreadData = (MonitoringThreadData)param;
+
+        do
+        {
             DumpStats(monitoringThreadData);
         }
+        while (!monitoringThreadData.WaitHandle.WaitOne(_monitoringThreadReportingPeriod));
+        DumpStats(monitoringThreadData);
+    }
 
-        private void DumpStats(MonitoringThreadData monitoringThreadData)
+    private void DumpStats(MonitoringThreadData monitoringThreadData)
+    {
+        var logMessage = new StringBuilder();
+        logMessage.Append("Monitoring thread [threadId:noOfRuns:lastUpdateSecondsAgo:possibleHanging]:");
+        foreach (var threadRunner in monitoringThreadData.ThreadRunners)
         {
-            var logMessage = new StringBuilder();
-            logMessage.Append("Monitoring thread [threadId:noOfRuns:lastUpdateSecondsAgo:possibleHanging]:");
-            foreach (var threadRunner in monitoringThreadData.ThreadRunners)
+            int threadId;
+            int count;
+            DateTime lastDate;
+            lock (threadRunner)
             {
-                int threadId;
-                int count;
-                DateTime lastDate;
-                lock (threadRunner)
-                {
-                    threadId = threadRunner.ThreadId;
-                    count = threadRunner.Count;
-                    lastDate = threadRunner.LastPingDate;
-                }
-
-                var lastUpdateSecondsAgo = (int)(DateTime.Now - lastDate).TotalSeconds;
-                var possibleHanging = (lastUpdateSecondsAgo - (3 * DefaultTestingThreadReportingPeriod.TotalSeconds)) > 0;
-                logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
+                threadId = threadRunner.ThreadId;
+                count = threadRunner.Count;
+                lastDate = threadRunner.LastPingDate;
             }
 
-            _logger.LogInformation(logMessage.ToString());
+            var lastUpdateSecondsAgo = (int)(DateTime.Now - lastDate).TotalSeconds;
+            var possibleHanging = (lastUpdateSecondsAgo - (3 * DefaultTestingThreadReportingPeriod.TotalSeconds)) > 0;
+            logMessage.AppendFormat("[{0}-{1}-{2}-{3}]", threadId, count, lastUpdateSecondsAgo, possibleHanging ? "!!!!!!" : "_");
         }
 
-        private class ThreadRunner
+        _logger.LogInformation(logMessage.ToString());
+    }
+
+    private class ThreadRunner
+    {
+        public int ThreadId { get; private set; }
+
+        public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
         {
-            public int ThreadId { get; private set; }
+            _testingThreadReportingPeriod = testingThreadReportingPeriod;
+            _logger = logger;
+            Count = 0;
+            ShouldStop = false;
+            LastPingDate = DateTime.Now;
+        }
 
-            public ThreadRunner(TimeSpan testingThreadReportingPeriod, ILogger<ThreadRunner> logger)
+        public DateTime LastPingDate { get; private set; }
+        public int Count { get; private set; }
+        public bool ShouldStop { get; set; }
+        private readonly TimeSpan _testingThreadReportingPeriod;
+        private readonly ILogger<ThreadRunner> _logger;
+
+        public void RunLoop()
+        {
+            ThreadId = Thread.CurrentThread.ManagedThreadId;
+            var rnd = new Random();
+            var i = 0;
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+            while (!ShouldStop)
             {
-                _testingThreadReportingPeriod = testingThreadReportingPeriod;
-                _logger = logger;
-                Count = 0;
-                ShouldStop = false;
-                LastPingDate = DateTime.Now;
-            }
-
-            public DateTime LastPingDate { get; private set; }
-            public int Count { get; private set; }
-            public bool ShouldStop { get; set; }
-            private readonly TimeSpan _testingThreadReportingPeriod;
-            private readonly ILogger<ThreadRunner> _logger;
-
-            public void RunLoop()
-            {
-                ThreadId = Thread.CurrentThread.ManagedThreadId;
-                var rnd = new Random();
-                var i = 0;
-                var stopWatch = new Stopwatch();
-                stopWatch.Start();
-                while (!ShouldStop)
+                try
                 {
-                    try
-                    {
-                        var test = TestsToRun.Tests[rnd.Next() % TestsToRun.Tests.Count];
-                        test();
-                    }
-                    catch (Exception ex)
-                    {
-                        ReportException(ex);
-                    }
-
-                    i++;
-                    ReportAliveness(stopWatch, i);
+                    var test = TestsToRun.Tests[rnd.Next() % TestsToRun.Tests.Count];
+                    test();
                 }
-            }
-
-            private void ReportAliveness(Stopwatch stopWatch, int i)
-            {
-                if (stopWatch.Elapsed > _testingThreadReportingPeriod)
+                catch (Exception ex)
                 {
-                    stopWatch.Stop();
+                    ReportException(ex);
+                }
+
+                i++;
+                ReportAliveness(stopWatch, i);
+            }
+        }
+
+        private void ReportAliveness(Stopwatch stopWatch, int i)
+        {
+            if (stopWatch.Elapsed > _testingThreadReportingPeriod)
+            {
+                stopWatch.Stop();
 #pragma warning disable CA2002 // Do not lock on objects with weak identity
-                    lock (this)
+                lock (this)
 #pragma warning restore CA2002 // Do not lock on objects with weak identity
-                    {
-                        Count = i;
-                        LastPingDate = DateTime.Now;
-                    }
-
-                    stopWatch.Restart();
-                }
-            }
-
-            private void ReportException(Exception ex)
-            {
-                if (ex is TargetInvocationException && ex.InnerException != null)
                 {
-                    ex = ex.InnerException;
+                    Count = i;
+                    LastPingDate = DateTime.Now;
                 }
 
-                _logger.LogError("Error in runner thread - {0}", ex);
-
-                lock (Exceptions)
-                {
-                    Exceptions.Add(new ExceptionInfo
-                    {
-                        Ex = ex,
-                        ThreadId = Thread.CurrentThread.ManagedThreadId,
-                    });
-                }
+                stopWatch.Restart();
             }
         }
 
-        private class MonitoringThreadData
+        private void ReportException(Exception ex)
         {
-            public MonitoringThreadData(ThreadRunner[] threadRunners)
+            if (ex is TargetInvocationException && ex.InnerException != null)
             {
-                ThreadRunners = threadRunners;
-                WaitHandle = new AutoResetEvent(false);
+                ex = ex.InnerException;
             }
 
-            public EventWaitHandle WaitHandle { get; }
+            _logger.LogError("Error in runner thread - {0}", ex);
 
-            public ThreadRunner[] ThreadRunners { get; }
+            lock (Exceptions)
+            {
+                Exceptions.Add(new ExceptionInfo
+                {
+                    Ex = ex,
+                    ThreadId = Thread.CurrentThread.ManagedThreadId,
+                });
+            }
         }
+    }
 
-        public class ExceptionInfo
+    private class MonitoringThreadData
+    {
+        public MonitoringThreadData(ThreadRunner[] threadRunners)
         {
-            public Exception Ex { get; set; }
-
-            public long ThreadId { get; set; }
+            ThreadRunners = threadRunners;
+            WaitHandle = new AutoResetEvent(false);
         }
+
+        public EventWaitHandle WaitHandle { get; }
+
+        public ThreadRunner[] ThreadRunners { get; }
+    }
+
+    public class ExceptionInfo
+    {
+        public Exception Ex { get; set; }
+
+        public long ThreadId { get; set; }
     }
 }

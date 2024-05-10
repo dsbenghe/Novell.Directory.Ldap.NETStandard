@@ -24,37 +24,36 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Search Result Reference.
+///     <pre>
+///         SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LdapURL
+///     </pre>
+/// </summary>
+public class RfcSearchResultReference : Asn1SequenceOf
 {
+    // *************************************************************************
+    // Constructors for SearchResultReference
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents an Ldap Search Result Reference.
-    ///     <pre>
-    ///         SearchResultReference ::= [APPLICATION 19] SEQUENCE OF LdapURL
-    ///     </pre>
+    ///     The only time a client will create a SearchResultReference is when it is
+    ///     decoding it from an InputStream.
     /// </summary>
-    public class RfcSearchResultReference : Asn1SequenceOf
+    public RfcSearchResultReference(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        // *************************************************************************
-        // Constructors for SearchResultReference
-        // *************************************************************************
+    }
 
-        /// <summary>
-        ///     The only time a client will create a SearchResultReference is when it is
-        ///     decoding it from an InputStream.
-        /// </summary>
-        public RfcSearchResultReference(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResultReference);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResultReference);
     }
 }

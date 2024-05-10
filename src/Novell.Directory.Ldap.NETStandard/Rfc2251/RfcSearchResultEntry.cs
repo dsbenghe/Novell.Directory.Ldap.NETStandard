@@ -24,51 +24,50 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Search Result Entry.
+///     <pre>
+///         SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
+///         objectName      LdapDN,
+///         attributes      PartialAttributeList }
+///     </pre>
+/// </summary>
+public class RfcSearchResultEntry : Asn1Sequence
 {
+    // *************************************************************************
+    // Constructors for SearchResultEntry
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents an Ldap Search Result Entry.
-    ///     <pre>
-    ///         SearchResultEntry ::= [APPLICATION 4] SEQUENCE {
-    ///         objectName      LdapDN,
-    ///         attributes      PartialAttributeList }
-    ///     </pre>
+    ///     The only time a client will create a SearchResultEntry is when it is
+    ///     decoding it from an InputStream.
     /// </summary>
-    public class RfcSearchResultEntry : Asn1Sequence
+    public RfcSearchResultEntry(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        // *************************************************************************
-        // Constructors for SearchResultEntry
-        // *************************************************************************
+        // Decode objectName
+        //      set(0, new RfcLdapDN(((Asn1OctetString)get(0)).stringValue()));
 
-        /// <summary>
-        ///     The only time a client will create a SearchResultEntry is when it is
-        ///     decoding it from an InputStream.
-        /// </summary>
-        public RfcSearchResultEntry(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-            // Decode objectName
-            //      set(0, new RfcLdapDN(((Asn1OctetString)get(0)).stringValue()));
+        // Create PartitalAttributeList. This does not need to be decoded, only
+        // typecast.
+        //      set(1, new PartitalAttributeList());
+    }
 
-            // Create PartitalAttributeList. This does not need to be decoded, only
-            // typecast.
-            //      set(1, new PartitalAttributeList());
-        }
+    /// <summary> </summary>
+    public Asn1OctetString ObjectName => (Asn1OctetString)Get(0);
 
-        /// <summary> </summary>
-        public Asn1OctetString ObjectName => (Asn1OctetString)Get(0);
+    /// <summary> </summary>
+    public Asn1Sequence Attributes => (Asn1Sequence)Get(1);
 
-        /// <summary> </summary>
-        public Asn1Sequence Attributes => (Asn1Sequence)Get(1);
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResponse);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.SearchResponse);
     }
 }

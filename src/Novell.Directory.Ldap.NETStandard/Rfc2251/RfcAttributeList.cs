@@ -23,24 +23,23 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Attribute List.
+///     <pre>
+///         AttributeList ::= SEQUENCE OF SEQUENCE {
+///         type    AttributeDescription,
+///         vals    SET OF AttributeValue }
+///     </pre>
+/// </summary>
+public class RfcAttributeList : Asn1SequenceOf
 {
-    /// <summary>
-    ///     Represents an Ldap Attribute List.
-    ///     <pre>
-    ///         AttributeList ::= SEQUENCE OF SEQUENCE {
-    ///         type    AttributeDescription,
-    ///         vals    SET OF AttributeValue }
-    ///     </pre>
-    /// </summary>
-    public class RfcAttributeList : Asn1SequenceOf
+    // *************************************************************************
+    // Constructor for AttributeList
+    // *************************************************************************
+    public RfcAttributeList(int size)
+        : base(size)
     {
-        // *************************************************************************
-        // Constructor for AttributeList
-        // *************************************************************************
-        public RfcAttributeList(int size)
-            : base(size)
-        {
-        }
     }
 }

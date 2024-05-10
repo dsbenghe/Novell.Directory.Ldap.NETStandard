@@ -24,68 +24,67 @@
 using Novell.Directory.Ldap.Asn1;
 using System;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents and Ldap Compare Request.
+///     <pre>
+///         CompareRequest ::= [APPLICATION 14] SEQUENCE {
+///         entry           LdapDN,
+///         ava             AttributeValueAssertion }
+///     </pre>
+/// </summary>
+public class RfcCompareRequest : Asn1Sequence, IRfcRequest
 {
-    /// <summary>
-    ///     Represents and Ldap Compare Request.
-    ///     <pre>
-    ///         CompareRequest ::= [APPLICATION 14] SEQUENCE {
-    ///         entry           LdapDN,
-    ///         ava             AttributeValueAssertion }
-    ///     </pre>
-    /// </summary>
-    public class RfcCompareRequest : Asn1Sequence, IRfcRequest
+    // *************************************************************************
+    // Constructor for CompareRequest
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcCompareRequest(RfcLdapDn entry, RfcAttributeValueAssertion ava)
+        : base(2)
     {
-        // *************************************************************************
-        // Constructor for CompareRequest
-        // *************************************************************************
-
-        /// <summary> </summary>
-        public RfcCompareRequest(RfcLdapDn entry, RfcAttributeValueAssertion ava)
-            : base(2)
+        Add(entry);
+        Add(ava);
+        if (ava.AssertionValue == null)
         {
-            Add(entry);
-            Add(ava);
-            if (ava.AssertionValue == null)
-            {
-                throw new ArgumentException("compare: Attribute must have an assertion value");
-            }
+            throw new ArgumentException("compare: Attribute must have an assertion value");
         }
+    }
 
-        /// <summary>
-        ///     Constructs a new Compare Request copying from the data of
-        ///     an existing request.
-        /// </summary>
-        internal RfcCompareRequest(Asn1Object[] origRequest, string baseRenamed)
-            : base(origRequest, origRequest.Length)
+    /// <summary>
+    ///     Constructs a new Compare Request copying from the data of
+    ///     an existing request.
+    /// </summary>
+    internal RfcCompareRequest(Asn1Object[] origRequest, string baseRenamed)
+        : base(origRequest, origRequest.Length)
+    {
+        // Replace the base if specified, otherwise keep original base
+        if (baseRenamed != null)
         {
-            // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
-            {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
-            }
+            set_Renamed(0, new RfcLdapDn(baseRenamed));
         }
+    }
 
-        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)Get(1);
+    public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)Get(1);
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcCompareRequest(ToArray(), baseRenamed);
-        }
+    public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+    {
+        return new RfcCompareRequest(ToArray(), baseRenamed);
+    }
 
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn)Get(0)).StringValue();
-        }
+    public string GetRequestDn()
+    {
+        return ((RfcLdapDn)Get(0)).StringValue();
+    }
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.CompareRequest);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.CompareRequest);
     }
 }

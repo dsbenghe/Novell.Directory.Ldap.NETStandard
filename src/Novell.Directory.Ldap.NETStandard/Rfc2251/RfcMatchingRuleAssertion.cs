@@ -23,73 +23,72 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
-{
-    /// <summary>
-    ///     Represents an Ldap Matching Rule Assertion.
-    ///     <pre>
-    ///         MatchingRuleAssertion ::= SEQUENCE {
-    ///         matchingRule    [1] MatchingRuleId OPTIONAL,
-    ///         type            [2] AttributeDescription OPTIONAL,
-    ///         matchValue      [3] AssertionValue,
-    ///         dnAttributes    [4] BOOLEAN DEFAULT FALSE }
-    ///     </pre>
-    /// </summary>
-    public class RfcMatchingRuleAssertion : Asn1Sequence
-    {
-        // *************************************************************************
-        // Constructors for MatchingRuleAssertion
-        // *************************************************************************
+namespace Novell.Directory.Ldap.Rfc2251;
 
-        /// <summary>
-        ///     Creates a MatchingRuleAssertion with the only required parameter.
-        /// </summary>
-        /// <param name="matchValue">
-        ///     The assertion value.
-        /// </param>
-        public RfcMatchingRuleAssertion(RfcAssertionValue matchValue)
-            : this(null, null, matchValue, null)
+/// <summary>
+///     Represents an Ldap Matching Rule Assertion.
+///     <pre>
+///         MatchingRuleAssertion ::= SEQUENCE {
+///         matchingRule    [1] MatchingRuleId OPTIONAL,
+///         type            [2] AttributeDescription OPTIONAL,
+///         matchValue      [3] AssertionValue,
+///         dnAttributes    [4] BOOLEAN DEFAULT FALSE }
+///     </pre>
+/// </summary>
+public class RfcMatchingRuleAssertion : Asn1Sequence
+{
+    // *************************************************************************
+    // Constructors for MatchingRuleAssertion
+    // *************************************************************************
+
+    /// <summary>
+    ///     Creates a MatchingRuleAssertion with the only required parameter.
+    /// </summary>
+    /// <param name="matchValue">
+    ///     The assertion value.
+    /// </param>
+    public RfcMatchingRuleAssertion(RfcAssertionValue matchValue)
+        : this(null, null, matchValue, null)
+    {
+    }
+
+    /// <summary>
+    ///     Creates a MatchingRuleAssertion.
+    ///     The value null may be passed for an optional value that is not used.
+    /// </summary>
+    /// <param name="matchValue">
+    ///     The assertion value.
+    /// </param>
+    /// <param name="matchingRule">
+    ///     Optional matching rule.
+    /// </param>
+    /// <param name="type">
+    ///     Optional attribute description.
+    /// </param>
+    /// <param name="dnAttributes">
+    ///     Asn1Boolean value. (default false).
+    /// </param>
+    public RfcMatchingRuleAssertion(RfcMatchingRuleId matchingRule, RfcAttributeDescription type,
+        RfcAssertionValue matchValue, Asn1Boolean dnAttributes)
+        : base(4)
+    {
+        if (matchingRule != null)
         {
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 1), matchingRule, false));
         }
 
-        /// <summary>
-        ///     Creates a MatchingRuleAssertion.
-        ///     The value null may be passed for an optional value that is not used.
-        /// </summary>
-        /// <param name="matchValue">
-        ///     The assertion value.
-        /// </param>
-        /// <param name="matchingRule">
-        ///     Optional matching rule.
-        /// </param>
-        /// <param name="type">
-        ///     Optional attribute description.
-        /// </param>
-        /// <param name="dnAttributes">
-        ///     Asn1Boolean value. (default false).
-        /// </param>
-        public RfcMatchingRuleAssertion(RfcMatchingRuleId matchingRule, RfcAttributeDescription type,
-            RfcAssertionValue matchValue, Asn1Boolean dnAttributes)
-            : base(4)
+        if (type != null)
         {
-            if (matchingRule != null)
-            {
-                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 1), matchingRule, false));
-            }
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 2), type, false));
+        }
 
-            if (type != null)
-            {
-                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 2), type, false));
-            }
+        Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 3), matchValue, false));
 
-            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 3), matchValue, false));
-
-            // if dnAttributes if false, that is the default value and we must not
-            // encode it. (See RFC 2251 5.1 number 4)
-            if (dnAttributes != null && dnAttributes.BooleanValue())
-            {
-                Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 4), dnAttributes, false));
-            }
+        // if dnAttributes if false, that is the default value and we must not
+        // encode it. (See RFC 2251 5.1 number 4)
+        if (dnAttributes != null && dnAttributes.BooleanValue())
+        {
+            Add(new Asn1Tagged(new Asn1Identifier(Asn1Identifier.Context, false, 4), dnAttributes, false));
         }
     }
 }

@@ -23,87 +23,86 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary> This class encapsulates the ASN.1 ENUMERATED type.</summary>
+public class Asn1Enumerated : Asn1Numeric
 {
-    /// <summary> This class encapsulates the ASN.1 ENUMERATED type.</summary>
-    public class Asn1Enumerated : Asn1Numeric
+    /// <summary> ASN.1 tag definition for ENUMERATED.</summary>
+    public const int Tag = 0x0a;
+
+    /// <summary>
+    ///     ID is added for Optimization.
+    ///     ID needs only be one Value for every instance,
+    ///     thus we create it only once.
+    /// </summary>
+    private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+
+    /* Constructors for Asn1Enumerated
+            */
+
+    /// <summary>
+    ///     Call this constructor to construct an Asn1Enumerated
+    ///     object from an integer value.
+    /// </summary>
+    /// <param name="content">
+    ///     The integer value to be contained in the
+    ///     this Asn1Enumerated object.
+    /// </param>
+    public Asn1Enumerated(int content)
+        : base(Id, content)
     {
-        /// <summary> ASN.1 tag definition for ENUMERATED.</summary>
-        public const int Tag = 0x0a;
+    }
 
-        /// <summary>
-        ///     ID is added for Optimization.
-        ///     ID needs only be one Value for every instance,
-        ///     thus we create it only once.
-        /// </summary>
-        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+    /// <summary>
+    ///     Call this constructor to construct an Asn1Enumerated
+    ///     object from a long value.
+    /// </summary>
+    /// <param name="content">
+    ///     The long value to be contained in the
+    ///     this Asn1Enumerated object.
+    /// </param>
+    public Asn1Enumerated(long content)
+        : base(Id, content)
+    {
+    }
 
-        /* Constructors for Asn1Enumerated
-                */
+    /// <summary>
+    ///     Constructs an Asn1Enumerated object by decoding data from an
+    ///     input stream.
+    /// </summary>
+    /// <param name="dec">
+    ///     The decoder object to use when decoding the
+    ///     input stream.  Sometimes a developer might want to pass
+    ///     in his/her own decoder object.
+    /// </param>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public Asn1Enumerated(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
+    {
+    }
 
-        /// <summary>
-        ///     Call this constructor to construct an Asn1Enumerated
-        ///     object from an integer value.
-        /// </summary>
-        /// <param name="content">
-        ///     The integer value to be contained in the
-        ///     this Asn1Enumerated object.
-        /// </param>
-        public Asn1Enumerated(int content)
-            : base(Id, content)
-        {
-        }
+    /// <summary>
+    ///     Call this method to encode the current instance into the
+    ///     specified output stream using the specified encoder object.
+    /// </summary>
+    /// <param name="enc">
+    ///     Encoder object to use when encoding self.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the encoded byte
+    ///     stream is written.
+    /// </param>
+    public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+    {
+        enc.Encode(this, outRenamed);
+    }
 
-        /// <summary>
-        ///     Call this constructor to construct an Asn1Enumerated
-        ///     object from a long value.
-        /// </summary>
-        /// <param name="content">
-        ///     The long value to be contained in the
-        ///     this Asn1Enumerated object.
-        /// </param>
-        public Asn1Enumerated(long content)
-            : base(Id, content)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs an Asn1Enumerated object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Enumerated(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
-        {
-        }
-
-        /// <summary>
-        ///     Call this method to encode the current instance into the
-        ///     specified output stream using the specified encoder object.
-        /// </summary>
-        /// <param name="enc">
-        ///     Encoder object to use when encoding self.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the encoded byte
-        ///     stream is written.
-        /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
-        {
-            enc.Encode(this, outRenamed);
-        }
-
-        /// <summary> Return a String representation of this Asn1Enumerated.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "ENUMERATED: " + LongValue();
-        }
+    /// <summary> Return a String representation of this Asn1Enumerated.</summary>
+    public override string ToString()
+    {
+        return base.ToString() + "ENUMERATED: " + LongValue();
     }
 }

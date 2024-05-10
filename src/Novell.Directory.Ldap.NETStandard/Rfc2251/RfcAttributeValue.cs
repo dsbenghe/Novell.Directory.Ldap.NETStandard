@@ -23,24 +23,22 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+/*
+ * Represents an Ldap Attribute Value.
+ */
+
+public class RfcAttributeValue : Asn1OctetString
 {
-    /*
-        * Represents an Ldap Attribute Value.
-        */
-
-    public class RfcAttributeValue : Asn1OctetString
+    /// <summary> </summary>
+    public RfcAttributeValue(string valueRenamed)
+        : base(valueRenamed)
     {
-        /// <summary> </summary>
-        public RfcAttributeValue(string valueRenamed)
-            : base(valueRenamed)
-        {
-        }
+    }
 
-        /// <summary> </summary>
-        public RfcAttributeValue(byte[] valueRenamed)
-            : base(valueRenamed)
-        {
-        }
+    /// <summary> </summary>
+    public RfcAttributeValue(byte[] valueRenamed)
+        : base(valueRenamed)
+    {
     }
 }

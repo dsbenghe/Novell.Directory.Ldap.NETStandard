@@ -23,81 +23,80 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Modify Request.
+///     <pre>
+///         ModifyRequest ::= [APPLICATION 6] SEQUENCE {
+///         object          LdapDN,
+///         modification    SEQUENCE OF SEQUENCE {
+///         operation       ENUMERATED {
+///         add     (0),
+///         delete  (1),
+///         replace (2) },
+///         modification    AttributeTypeAndValues } }
+///     </pre>
+/// </summary>
+public class RfcModifyRequest : Asn1Sequence, IRfcRequest
 {
-    /// <summary>
-    ///     Represents an Ldap Modify Request.
-    ///     <pre>
-    ///         ModifyRequest ::= [APPLICATION 6] SEQUENCE {
-    ///         object          LdapDN,
-    ///         modification    SEQUENCE OF SEQUENCE {
-    ///         operation       ENUMERATED {
-    ///         add     (0),
-    ///         delete  (1),
-    ///         replace (2) },
-    ///         modification    AttributeTypeAndValues } }
-    ///     </pre>
-    /// </summary>
-    public class RfcModifyRequest : Asn1Sequence, IRfcRequest
+    // *************************************************************************
+    // Constructor for ModifyRequest
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcModifyRequest(RfcLdapDn objectRenamed, Asn1SequenceOf modification)
+        : base(2)
     {
-        // *************************************************************************
-        // Constructor for ModifyRequest
-        // *************************************************************************
+        Add(objectRenamed);
+        Add(modification);
+    }
 
-        /// <summary> </summary>
-        public RfcModifyRequest(RfcLdapDn objectRenamed, Asn1SequenceOf modification)
-            : base(2)
+    /// <summary>
+    ///     Constructs a new Modify Request copying from the ArrayList of
+    ///     an existing request.
+    /// </summary>
+    internal RfcModifyRequest(Asn1Object[] origRequest, string baseRenamed)
+        : base(origRequest, origRequest.Length)
+    {
+        // Replace the base if specified, otherwise keep original base
+        if (baseRenamed != null)
         {
-            Add(objectRenamed);
-            Add(modification);
+            set_Renamed(0, new RfcLdapDn(baseRenamed));
         }
+    }
 
-        /// <summary>
-        ///     Constructs a new Modify Request copying from the ArrayList of
-        ///     an existing request.
-        /// </summary>
-        internal RfcModifyRequest(Asn1Object[] origRequest, string baseRenamed)
-            : base(origRequest, origRequest.Length)
-        {
-            // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
-            {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
-            }
-        }
+    /// <summary>
+    ///     Return the Modifications for this request.
+    /// </summary>
+    /// <returns>
+    ///     the modifications for this request.
+    /// </returns>
+    public Asn1SequenceOf Modifications => (Asn1SequenceOf)Get(1);
 
-        /// <summary>
-        ///     Return the Modifications for this request.
-        /// </summary>
-        /// <returns>
-        ///     the modifications for this request.
-        /// </returns>
-        public Asn1SequenceOf Modifications => (Asn1SequenceOf)Get(1);
+    public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+    {
+        return new RfcModifyRequest(ToArray(), baseRenamed);
+    }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
-        {
-            return new RfcModifyRequest(ToArray(), baseRenamed);
-        }
+    /// <summary>
+    ///     Return the String value of the DN associated with this request.
+    /// </summary>
+    /// <returns>
+    ///     the DN for this request.
+    /// </returns>
+    public string GetRequestDn()
+    {
+        return ((RfcLdapDn)Get(0)).StringValue();
+    }
 
-        /// <summary>
-        ///     Return the String value of the DN associated with this request.
-        /// </summary>
-        /// <returns>
-        ///     the DN for this request.
-        /// </returns>
-        public string GetRequestDn()
-        {
-            return ((RfcLdapDn)Get(0)).StringValue();
-        }
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ModifyRequest);
     }
 }

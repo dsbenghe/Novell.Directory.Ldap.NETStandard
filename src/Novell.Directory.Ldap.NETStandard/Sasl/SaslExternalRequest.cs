@@ -1,10 +1,9 @@
-﻿namespace Novell.Directory.Ldap.Sasl
+﻿namespace Novell.Directory.Ldap.Sasl;
+
+public class SaslExternalRequest : SaslRequest
 {
-    public class SaslExternalRequest : SaslRequest
+    public SaslExternalRequest()
+        : base(SaslConstants.Mechanism.External)
     {
-        public SaslExternalRequest()
-            : base(SaslConstants.Mechanism.External)
-        {
-        }
     }
 }

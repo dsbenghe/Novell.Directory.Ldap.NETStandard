@@ -24,108 +24,107 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents an Ldap Extended Response.
+///     <pre>
+///         ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
+///         COMPONENTS OF LdapResult,
+///         responseName     [10] LdapOID OPTIONAL,
+///         response         [11] OCTET STRING OPTIONAL }
+///     </pre>
+/// </summary>
+public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
 {
+    /// <summary> Context-specific TAG for optional responseName.</summary>
+    public const int ResponseNameTag = 10;
+
+    /// <summary> Context-specific TAG for optional response.</summary>
+    public const int ResponseTag = 11;
+
+    private readonly int _referralIndex;
+    private readonly int _responseIndex;
+    private readonly int _responseNameIndex;
+
+    // *************************************************************************
+    // Constructors for ExtendedResponse
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents an Ldap Extended Response.
-    ///     <pre>
-    ///         ExtendedResponse ::= [APPLICATION 24] SEQUENCE {
-    ///         COMPONENTS OF LdapResult,
-    ///         responseName     [10] LdapOID OPTIONAL,
-    ///         response         [11] OCTET STRING OPTIONAL }
-    ///     </pre>
+    ///     The only time a client will create a ExtendedResponse is when it is
+    ///     decoding it from an InputStream.
     /// </summary>
-    public class RfcExtendedResponse : Asn1Sequence, IRfcResponse
+    public RfcExtendedResponse(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        /// <summary> Context-specific TAG for optional responseName.</summary>
-        public const int ResponseNameTag = 10;
-
-        /// <summary> Context-specific TAG for optional response.</summary>
-        public const int ResponseTag = 11;
-
-        private readonly int _referralIndex;
-        private readonly int _responseIndex;
-        private readonly int _responseNameIndex;
-
-        // *************************************************************************
-        // Constructors for ExtendedResponse
-        // *************************************************************************
-
-        /// <summary>
-        ///     The only time a client will create a ExtendedResponse is when it is
-        ///     decoding it from an InputStream.
-        /// </summary>
-        public RfcExtendedResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        // decode optional tagged elements
+        if (Size() > 3)
         {
-            // decode optional tagged elements
-            if (Size() > 3)
+            for (var i = 3; i < Size(); i++)
             {
-                for (var i = 3; i < Size(); i++)
+                var obj = (Asn1Tagged)Get(i);
+                var id = obj.GetIdentifier();
+                switch (id.Tag)
                 {
-                    var obj = (Asn1Tagged)Get(i);
-                    var id = obj.GetIdentifier();
-                    switch (id.Tag)
-                    {
-                        case RfcLdapResult.Referral:
-                            var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
-                            var bais = new MemoryStream(content);
-                            set_Renamed(i, new RfcReferral(dec, bais, content.Length));
-                            _referralIndex = i;
-                            break;
+                    case RfcLdapResult.Referral:
+                        var content = ((Asn1OctetString)obj.TaggedValue).ByteValue();
+                        var bais = new MemoryStream(content);
+                        set_Renamed(i, new RfcReferral(dec, bais, content.Length));
+                        _referralIndex = i;
+                        break;
 
-                        case ResponseNameTag:
-                            set_Renamed(i, new RfcLdapOid(((Asn1OctetString)obj.TaggedValue).ByteValue()));
-                            _responseNameIndex = i;
-                            break;
+                    case ResponseNameTag:
+                        set_Renamed(i, new RfcLdapOid(((Asn1OctetString)obj.TaggedValue).ByteValue()));
+                        _responseNameIndex = i;
+                        break;
 
-                        case ResponseTag:
-                            set_Renamed(i, obj.TaggedValue);
-                            _responseIndex = i;
-                            break;
-                    }
+                    case ResponseTag:
+                        set_Renamed(i, obj.TaggedValue);
+                        _responseIndex = i;
+                        break;
                 }
             }
         }
+    }
 
-        /// <summary> </summary>
-        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid)Get(_responseNameIndex) : null;
+    /// <summary> </summary>
+    public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid)Get(_responseNameIndex) : null;
 
-        /// <summary> </summary>
-        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString)Get(_responseIndex) : null;
+    /// <summary> </summary>
+    public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString)Get(_responseIndex) : null;
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        /// <summary> </summary>
-        public Asn1Enumerated GetResultCode()
-        {
-            return (Asn1Enumerated)Get(0);
-        }
+    /// <summary> </summary>
+    public Asn1Enumerated GetResultCode()
+    {
+        return (Asn1Enumerated)Get(0);
+    }
 
-        /// <summary> </summary>
-        public RfcLdapDn GetMatchedDn()
-        {
-            return new RfcLdapDn(((Asn1OctetString)Get(1)).ByteValue());
-        }
+    /// <summary> </summary>
+    public RfcLdapDn GetMatchedDn()
+    {
+        return new RfcLdapDn(((Asn1OctetString)Get(1)).ByteValue());
+    }
 
-        /// <summary> </summary>
-        public RfcLdapString GetErrorMessage()
-        {
-            return new RfcLdapString(((Asn1OctetString)Get(2)).ByteValue());
-        }
+    /// <summary> </summary>
+    public RfcLdapString GetErrorMessage()
+    {
+        return new RfcLdapString(((Asn1OctetString)Get(2)).ByteValue());
+    }
 
-        /// <summary> </summary>
-        public RfcReferral GetReferral()
-        {
-            return _referralIndex != 0 ? (RfcReferral)Get(_referralIndex) : null;
-        }
+    /// <summary> </summary>
+    public RfcReferral GetReferral()
+    {
+        return _referralIndex != 0 ? (RfcReferral)Get(_referralIndex) : null;
+    }
 
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ExtendedResponse);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.ExtendedResponse);
     }
 }

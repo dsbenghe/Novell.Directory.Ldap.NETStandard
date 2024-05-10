@@ -24,69 +24,68 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents Ldap Contreols.
+///     <pre>
+///         Controls ::= SEQUENCE OF Control
+///     </pre>
+/// </summary>
+public class RfcControls : Asn1SequenceOf
 {
+    /// <summary> Controls context specific tag.</summary>
+    public const int Controls = 0;
+
+    // *************************************************************************
+    // Constructors for Controls
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents Ldap Contreols.
-    ///     <pre>
-    ///         Controls ::= SEQUENCE OF Control
-    ///     </pre>
+    ///     Constructs a Controls object. This constructor is used in combination
+    ///     with the add() method to construct a set of Controls to send to the
+    ///     server.
     /// </summary>
-    public class RfcControls : Asn1SequenceOf
+    public RfcControls()
+        : base(5)
     {
-        /// <summary> Controls context specific tag.</summary>
-        public const int Controls = 0;
+    }
 
-        // *************************************************************************
-        // Constructors for Controls
-        // *************************************************************************
-
-        /// <summary>
-        ///     Constructs a Controls object. This constructor is used in combination
-        ///     with the add() method to construct a set of Controls to send to the
-        ///     server.
-        /// </summary>
-        public RfcControls()
-            : base(5)
+    /// <summary> Constructs a Controls object by decoding it from an InputStream.</summary>
+    public RfcControls(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
+    {
+        // Convert each SEQUENCE element to a Control
+        for (var i = 0; i < Size(); i++)
         {
+            var tempControl = new RfcControl((Asn1Sequence)Get(i));
+            set_Renamed(i, tempControl);
         }
+    }
 
-        /// <summary> Constructs a Controls object by decoding it from an InputStream.</summary>
-        public RfcControls(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-            // Convert each SEQUENCE element to a Control
-            for (var i = 0; i < Size(); i++)
-            {
-                var tempControl = new RfcControl((Asn1Sequence)Get(i));
-                set_Renamed(i, tempControl);
-            }
-        }
+    // *************************************************************************
+    // Mutators
+    // *************************************************************************
 
-        // *************************************************************************
-        // Mutators
-        // *************************************************************************
+    /// <summary> Override add() of Asn1SequenceOf to only accept a Control type.</summary>
+    public void Add(RfcControl control)
+    {
+        base.Add(control);
+    }
 
-        /// <summary> Override add() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void Add(RfcControl control)
-        {
-            base.Add(control);
-        }
+    /// <summary> Override set() of Asn1SequenceOf to only accept a Control type.</summary>
+    public void set_Renamed(int index, RfcControl control)
+    {
+        base.set_Renamed(index, control);
+    }
 
-        /// <summary> Override set() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void set_Renamed(int index, RfcControl control)
-        {
-            base.set_Renamed(index, control);
-        }
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return a context specific id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Context, true, Controls);
-        }
+    /// <summary> Override getIdentifier to return a context specific id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Context, true, Controls);
     }
 }

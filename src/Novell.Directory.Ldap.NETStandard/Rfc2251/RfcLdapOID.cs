@@ -23,24 +23,22 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+/*
+ * Represents an LdapOID.
+ */
+
+public class RfcLdapOid : Asn1OctetString
 {
-    /*
-        * Represents an LdapOID.
-        */
-
-    public class RfcLdapOid : Asn1OctetString
+    /// <summary> </summary>
+    public RfcLdapOid(string s)
+        : base(s)
     {
-        /// <summary> </summary>
-        public RfcLdapOid(string s)
-            : base(s)
-        {
-        }
+    }
 
-        /// <summary> </summary>
-        public RfcLdapOid(byte[] s)
-            : base(s)
-        {
-        }
+    /// <summary> </summary>
+    public RfcLdapOid(byte[] s)
+        : base(s)
+    {
     }
 }

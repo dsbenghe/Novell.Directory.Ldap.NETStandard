@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace Novell.Directory.Ldap.Sasl
+namespace Novell.Directory.Ldap.Sasl;
+
+public interface ISaslClientFactory
 {
-    public interface ISaslClientFactory
-    {
-        IReadOnlyList<string> SupportedMechanisms { get; }
-        ISaslClient CreateClient(SaslRequest saslRequest);
-    }
+    IReadOnlyList<string> SupportedMechanisms { get; }
+    ISaslClient CreateClient(SaslRequest saslRequest);
 }

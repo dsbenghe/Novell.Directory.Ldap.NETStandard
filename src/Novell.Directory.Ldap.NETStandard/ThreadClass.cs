@@ -28,61 +28,60 @@
 // the architecture of the resulting solution may differ somewhat.
 using System.Threading;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Support class used to handle threads.
+/// </summary>
+internal class ThreadClass
 {
     /// <summary>
-    ///     Support class used to handle threads.
+    ///     The instance of System.Threading.Thread.
     /// </summary>
-    internal class ThreadClass
+    private readonly Thread _threadField;
+
+    /// <summary>
+    ///     Initializes a new instance of the ThreadClass class.
+    /// </summary>
+    internal ThreadClass()
     {
-        /// <summary>
-        ///     The instance of System.Threading.Thread.
-        /// </summary>
-        private readonly Thread _threadField;
+        _threadField = new Thread(Run);
+    }
 
-        /// <summary>
-        ///     Initializes a new instance of the ThreadClass class.
-        /// </summary>
-        internal ThreadClass()
-        {
-            _threadField = new Thread(Run);
-        }
+    /// <summary>
+    ///     Gets or sets a value indicating whether or not a thread is a background thread.
+    /// </summary>
+    public bool IsBackground
+    {
+        set => _threadField.IsBackground = value;
+    }
 
-        /// <summary>
-        ///     Gets or sets a value indicating whether or not a thread is a background thread.
-        /// </summary>
-        public bool IsBackground
-        {
-            set => _threadField.IsBackground = value;
-        }
+    protected bool IsStopping { get; private set; }
 
-        protected bool IsStopping { get; private set; }
+    /// <summary>
+    ///     This method has no functionality unless the method is overridden.
+    /// </summary>
+    protected virtual void Run()
+    {
+    }
 
-        /// <summary>
-        ///     This method has no functionality unless the method is overridden.
-        /// </summary>
-        protected virtual void Run()
-        {
-        }
+    /// <summary>
+    ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running.
+    /// </summary>
+    public void Start()
+    {
+        _threadField.Start();
+    }
 
-        /// <summary>
-        ///     Causes the operating system to change the state of the current thread instance to ThreadState.Running.
-        /// </summary>
-        public void Start()
-        {
-            _threadField.Start();
-        }
-
-        ///// <summary>
-        ///// Interrupts a thread that is in the WaitSleepJoin thread state
-        ///// </summary>
-        // public virtual void Interrupt()
-        // {
-        // threadField.Interrupt();
-        // }
-        public void Stop()
-        {
-            IsStopping = true;
-        }
+    ///// <summary>
+    ///// Interrupts a thread that is in the WaitSleepJoin thread state
+    ///// </summary>
+    // public virtual void Interrupt()
+    // {
+    // threadField.Interrupt();
+    // }
+    public void Stop()
+    {
+        IsStopping = true;
     }
 }

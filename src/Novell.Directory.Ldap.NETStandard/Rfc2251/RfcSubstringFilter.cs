@@ -23,32 +23,31 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
-{
-    /// <summary>
-    ///     Represents an Ldap Substring Filter.
-    ///     <pre>
-    ///         SubstringFilter ::= SEQUENCE {
-    ///         type            AttributeDescription,
-    ///         -- at least one must be present
-    ///         substrings      SEQUENCE OF CHOICE {
-    ///         initial [0] LdapString,
-    ///         any     [1] LdapString,
-    ///         final   [2] LdapString } }
-    ///     </pre>
-    /// </summary>
-    public class RfcSubstringFilter : Asn1Sequence
-    {
-        // *************************************************************************
-        // Constructors for SubstringFilter
-        // *************************************************************************
+namespace Novell.Directory.Ldap.Rfc2251;
 
-        /// <summary> </summary>
-        public RfcSubstringFilter(RfcAttributeDescription type, Asn1SequenceOf substrings)
-            : base(2)
-        {
-            Add(type);
-            Add(substrings);
-        }
+/// <summary>
+///     Represents an Ldap Substring Filter.
+///     <pre>
+///         SubstringFilter ::= SEQUENCE {
+///         type            AttributeDescription,
+///         -- at least one must be present
+///         substrings      SEQUENCE OF CHOICE {
+///         initial [0] LdapString,
+///         any     [1] LdapString,
+///         final   [2] LdapString } }
+///     </pre>
+/// </summary>
+public class RfcSubstringFilter : Asn1Sequence
+{
+    // *************************************************************************
+    // Constructors for SubstringFilter
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcSubstringFilter(RfcAttributeDescription type, Asn1SequenceOf substrings)
+        : base(2)
+    {
+        Add(type);
+        Add(substrings);
     }
 }

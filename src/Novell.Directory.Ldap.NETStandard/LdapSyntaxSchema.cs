@@ -27,131 +27,130 @@ using System.Collections;
 using System.IO;
 using System.Text;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Represents a syntax definition in the directory schema.
+///     The LdapSyntaxSchema class represents the definition of a syntax.  It is
+///     used to discover the known set of syntaxes in effect for the subschema.
+///     Although this extends LdapSchemaElement, it does not use the name or
+///     obsolete members. Therefore, calls to the getName method always return
+///     null and to the isObsolete method always returns false. There is also no
+///     matching getSyntaxNames method in LdapSchema. Note also that adding and
+///     removing syntaxes is not typically a supported feature of Ldap servers.
+/// </summary>
+public class LdapSyntaxSchema : LdapSchemaElement
 {
     /// <summary>
-    ///     Represents a syntax definition in the directory schema.
-    ///     The LdapSyntaxSchema class represents the definition of a syntax.  It is
-    ///     used to discover the known set of syntaxes in effect for the subschema.
-    ///     Although this extends LdapSchemaElement, it does not use the name or
-    ///     obsolete members. Therefore, calls to the getName method always return
-    ///     null and to the isObsolete method always returns false. There is also no
-    ///     matching getSyntaxNames method in LdapSchema. Note also that adding and
-    ///     removing syntaxes is not typically a supported feature of Ldap servers.
+    ///     Constructs a syntax for adding to or deleting from the schema.
+    ///     Adding and removing syntaxes is not typically a supported
+    ///     feature of Ldap servers. Novell eDirectory does not allow syntaxes to
+    ///     be added or removed.
     /// </summary>
-    public class LdapSyntaxSchema : LdapSchemaElement
+    /// <param name="oid">
+    ///     The unique object identifier of the syntax - in
+    ///     dotted numerical format.
+    /// </param>
+    /// <param name="description">
+    ///     An optional description of the syntax.
+    /// </param>
+    public LdapSyntaxSchema(string oid, string description)
+        : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
     {
-        /// <summary>
-        ///     Constructs a syntax for adding to or deleting from the schema.
-        ///     Adding and removing syntaxes is not typically a supported
-        ///     feature of Ldap servers. Novell eDirectory does not allow syntaxes to
-        ///     be added or removed.
-        /// </summary>
-        /// <param name="oid">
-        ///     The unique object identifier of the syntax - in
-        ///     dotted numerical format.
-        /// </param>
-        /// <param name="description">
-        ///     An optional description of the syntax.
-        /// </param>
-        public LdapSyntaxSchema(string oid, string description)
-            : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
+        Id = oid;
+        Description = description;
+        Value = FormatString();
+    }
+
+    /// <summary>
+    ///     Constructs a syntax from the raw string value returned on a schema
+    ///     query for LdapSyntaxes.
+    /// </summary>
+    /// <param name="raw">
+    ///     The raw string value returned from a schema
+    ///     query for ldapSyntaxes.
+    /// </param>
+    public LdapSyntaxSchema(string raw)
+        : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
+    {
+        try
         {
-            Id = oid;
-            Description = description;
+            var parser = new SchemaParser(raw);
+
+            if (parser.Id != null)
+            {
+                Id = parser.Id;
+            }
+
+            if (parser.Description != null)
+            {
+                Description = parser.Description;
+            }
+
+            foreach (var attrQualifier in parser.Qualifiers)
+            {
+                SetQualifier(attrQualifier.Name, attrQualifier.Values);
+            }
+
             Value = FormatString();
         }
-
-        /// <summary>
-        ///     Constructs a syntax from the raw string value returned on a schema
-        ///     query for LdapSyntaxes.
-        /// </summary>
-        /// <param name="raw">
-        ///     The raw string value returned from a schema
-        ///     query for ldapSyntaxes.
-        /// </param>
-        public LdapSyntaxSchema(string raw)
-            : base(LdapSchema.SchemaTypeNames[LdapSchema.Syntax])
+        catch (IOException e)
         {
-            try
-            {
-                var parser = new SchemaParser(raw);
+            throw new Exception(e.ToString());
+        }
+    }
 
-                if (parser.Id != null)
-                {
-                    Id = parser.Id;
-                }
+    /// <summary>
+    ///     Returns a string in a format suitable for directly adding to a
+    ///     directory, as a value of the particular schema element class.
+    /// </summary>
+    /// <returns>
+    ///     A string representation of the syntax's definition.
+    /// </returns>
+    protected override string FormatString()
+    {
+        var valueBuffer = new StringBuilder("( ");
+        string token;
 
-                if (parser.Description != null)
-                {
-                    Description = parser.Description;
-                }
-
-                foreach (var attrQualifier in parser.Qualifiers)
-                {
-                    SetQualifier(attrQualifier.Name, attrQualifier.Values);
-                }
-
-                Value = FormatString();
-            }
-            catch (IOException e)
-            {
-                throw new Exception(e.ToString());
-            }
+        if ((token = Id) != null)
+        {
+            valueBuffer.Append(token);
         }
 
-        /// <summary>
-        ///     Returns a string in a format suitable for directly adding to a
-        ///     directory, as a value of the particular schema element class.
-        /// </summary>
-        /// <returns>
-        ///     A string representation of the syntax's definition.
-        /// </returns>
-        protected override string FormatString()
+        if ((token = Description) != null)
         {
-            var valueBuffer = new StringBuilder("( ");
-            string token;
+            valueBuffer.Append(" DESC ");
+            valueBuffer.Append("'" + token + "'");
+        }
 
-            if ((token = Id) != null)
+        foreach (var qualName in QualifierNames)
+        {
+            valueBuffer.Append(" " + qualName + " ");
+            var qualValue = GetQualifier(qualName);
+            if (qualValue != null)
             {
-                valueBuffer.Append(token);
-            }
-
-            if ((token = Description) != null)
-            {
-                valueBuffer.Append(" DESC ");
-                valueBuffer.Append("'" + token + "'");
-            }
-
-            foreach (var qualName in QualifierNames)
-            {
-                valueBuffer.Append(" " + qualName + " ");
-                var qualValue = GetQualifier(qualName);
-                if (qualValue != null)
+                if (qualValue.Length > 1)
                 {
+                    valueBuffer.Append("( ");
+                    for (var i = 0; i < qualValue.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            valueBuffer.Append(" ");
+                        }
+
+                        valueBuffer.Append("'" + qualValue[i] + "'");
+                    }
+
                     if (qualValue.Length > 1)
                     {
-                        valueBuffer.Append("( ");
-                        for (var i = 0; i < qualValue.Length; i++)
-                        {
-                            if (i > 0)
-                            {
-                                valueBuffer.Append(" ");
-                            }
-
-                            valueBuffer.Append("'" + qualValue[i] + "'");
-                        }
-
-                        if (qualValue.Length > 1)
-                        {
-                            valueBuffer.Append(" )");
-                        }
+                        valueBuffer.Append(" )");
                     }
                 }
             }
-
-            valueBuffer.Append(" )");
-            return valueBuffer.ToString();
         }
+
+        valueBuffer.Append(" )");
+        return valueBuffer.ToString();
     }
 }

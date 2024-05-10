@@ -24,71 +24,70 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Represents a simple bind request.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       BindRequest ::= [APPLICATION 0] SEQUENCE {
+ *               version                 INTEGER (1 .. 127),
+ *               name                    LdapDN,
+ *               authentication          AuthenticationChoice }
+ */
+public class LdapBindRequest : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapBindRequest>();
+
     /// <summary>
-    ///     Represents a simple bind request.
+    ///     Constructs a simple bind request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       BindRequest ::= [APPLICATION 0] SEQUENCE {
-     *               version                 INTEGER (1 .. 127),
-     *               name                    LdapDN,
-     *               authentication          AuthenticationChoice }
-     */
-    public class LdapBindRequest : LdapMessage
+    /// <param name="version">
+    ///     The Ldap protocol version, use Ldap_V3.
+    ///     Ldap_V2 is not supported.
+    /// </param>
+    /// <param name="dn">
+    ///     If non-null and non-empty, specifies that the
+    ///     connection and all operations through it should
+    ///     be authenticated with dn as the distinguished
+    ///     name.
+    /// </param>
+    /// <param name="passwd">
+    ///     If non-null and non-empty, specifies that the
+    ///     connection and all operations through it should
+    ///     be authenticated with dn as the distinguished
+    ///     name and passwd as password.
+    /// </param>
+    /// <param name="cont">
+    ///     Any controls that apply to the simple bind request,
+    ///     or null if none.
+    /// </param>
+    public LdapBindRequest(int version, string dn, byte[] passwd, LdapControl[] cont)
+        : base(
+            BindRequest,
+            new RfcBindRequest(new Asn1Integer(version), new RfcLdapDn(dn),
+                new RfcAuthenticationChoice(new Asn1Tagged(
+                    new Asn1Identifier(Asn1Identifier.Context, false, 0),
+                    new Asn1OctetString(passwd), false))), cont)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapBindRequest>();
+    }
 
-        /// <summary>
-        ///     Constructs a simple bind request.
-        /// </summary>
-        /// <param name="version">
-        ///     The Ldap protocol version, use Ldap_V3.
-        ///     Ldap_V2 is not supported.
-        /// </param>
-        /// <param name="dn">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name.
-        /// </param>
-        /// <param name="passwd">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name and passwd as password.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the simple bind request,
-        ///     or null if none.
-        /// </param>
-        public LdapBindRequest(int version, string dn, byte[] passwd, LdapControl[] cont)
-            : base(
-                BindRequest,
-                new RfcBindRequest(new Asn1Integer(version), new RfcLdapDn(dn),
-                    new RfcAuthenticationChoice(new Asn1Tagged(
-                        new Asn1Identifier(Asn1Identifier.Context, false, 0),
-                        new Asn1OctetString(passwd), false))), cont)
-        {
-        }
+    /// <summary>
+    ///     Retrieves the Authentication DN for a bind request.
+    /// </summary>
+    /// <returns>
+    ///     the Authentication DN for a bind request.
+    /// </returns>
+    public string AuthenticationDn => Asn1Object.RequestDn;
 
-        /// <summary>
-        ///     Retrieves the Authentication DN for a bind request.
-        /// </summary>
-        /// <returns>
-        ///     the Authentication DN for a bind request.
-        /// </returns>
-        public string AuthenticationDn => Asn1Object.RequestDn;
-
-        /// <summary>
-        ///     Return an Asn1 representation of this add request.
-        ///     #return an Asn1 representation of this object.
-        /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+    /// <summary>
+    ///     Return an Asn1 representation of this add request.
+    ///     #return an Asn1 representation of this object.
+    /// </summary>
+    public override string ToString()
+    {
+        return Asn1Object.ToString();
     }
 }

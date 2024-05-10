@@ -26,502 +26,501 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap.Utilclass;
+
+public class SchemaParser
 {
-    public class SchemaParser
+    private readonly int _result;
+    private string _objectClass;
+    private readonly List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
+
+    public SchemaParser(string aString)
     {
-        private readonly int _result;
-        private string _objectClass;
-        private readonly List<AttributeQualifier> _qualifiers = new List<AttributeQualifier>();
+        Usage = LdapAttributeSchema.UserApplications;
 
-        public SchemaParser(string aString)
+        int index;
+
+        if ((index = aString.IndexOf('\\')) != -1)
         {
-            Usage = LdapAttributeSchema.UserApplications;
-
-            int index;
-
-            if ((index = aString.IndexOf('\\')) != -1)
+            /*
+             * Unless we escape the slash, StreamTokenizer will interpret the
+             * single slash and convert it assuming octal values.
+             * Two successive back slashes are intrepreted as one backslash.
+             */
+            var newString = new StringBuilder(aString.Substring(0, index - 0));
+            for (var i = index; i < aString.Length; i++)
             {
-                /*
-                * Unless we escape the slash, StreamTokenizer will interpret the
-                * single slash and convert it assuming octal values.
-                * Two successive back slashes are intrepreted as one backslash.
-                */
-                var newString = new StringBuilder(aString.Substring(0, index - 0));
-                for (var i = index; i < aString.Length; i++)
+                newString.Append(aString[i]);
+                if (aString[i] == '\\')
                 {
-                    newString.Append(aString[i]);
-                    if (aString[i] == '\\')
-                    {
-                        newString.Append('\\');
-                    }
+                    newString.Append('\\');
+                }
+            }
+
+            RawString = newString.ToString();
+        }
+        else
+        {
+            RawString = aString;
+        }
+
+        var st2 = new SchemaTokenCreator(new StringReader(RawString));
+        st2.OrdinaryCharacter('.');
+        st2.OrdinaryCharacters('0', '9');
+        st2.OrdinaryCharacter('{');
+        st2.OrdinaryCharacter('}');
+        st2.OrdinaryCharacter('_');
+        st2.OrdinaryCharacter(';');
+        st2.WordCharacters('.', '9');
+        st2.WordCharacters('{', '}');
+        st2.WordCharacters('_', '_');
+        st2.WordCharacters(';', ';');
+
+        // First parse out the OID
+        string currName;
+        if (st2.NextToken() != (int)TokenTypes.Eof)
+        {
+            if (st2.LastType == '(')
+            {
+                if (st2.NextToken() == (int)TokenTypes.Word)
+                {
+                    Id = st2.StringValue;
                 }
 
-                RawString = newString.ToString();
-            }
-            else
-            {
-                RawString = aString;
-            }
-
-            var st2 = new SchemaTokenCreator(new StringReader(RawString));
-            st2.OrdinaryCharacter('.');
-            st2.OrdinaryCharacters('0', '9');
-            st2.OrdinaryCharacter('{');
-            st2.OrdinaryCharacter('}');
-            st2.OrdinaryCharacter('_');
-            st2.OrdinaryCharacter(';');
-            st2.WordCharacters('.', '9');
-            st2.WordCharacters('{', '}');
-            st2.WordCharacters('_', '_');
-            st2.WordCharacters(';', ';');
-
-            // First parse out the OID
-            string currName;
-            if (st2.NextToken() != (int)TokenTypes.Eof)
-            {
-                if (st2.LastType == '(')
+                while (st2.NextToken() != (int)TokenTypes.Eof)
                 {
-                    if (st2.NextToken() == (int)TokenTypes.Word)
+                    if (st2.LastType == (int)TokenTypes.Word)
                     {
-                        Id = st2.StringValue;
-                    }
-
-                    while (st2.NextToken() != (int)TokenTypes.Eof)
-                    {
-                        if (st2.LastType == (int)TokenTypes.Word)
+                        if (st2.StringValue.EqualsOrdinalCI("NAME"))
                         {
-                            if (st2.StringValue.EqualsOrdinalCI("NAME"))
+                            if (st2.NextToken() == '\'')
                             {
-                                if (st2.NextToken() == '\'')
-                                {
-                                    Names = new string[1];
-                                    Names[0] = st2.StringValue;
-                                }
-                                else
-                                {
-                                    if (st2.LastType == '(')
-                                    {
-                                        var nameList = new List<string>();
-                                        while (st2.NextToken() == '\'')
-                                        {
-                                            if (st2.StringValue != null)
-                                            {
-                                                nameList.Add(st2.StringValue);
-                                            }
-                                        }
-
-                                        if (nameList.Count > 0)
-                                        {
-                                            Names = nameList.ToArray();
-                                        }
-                                    }
-                                }
-
-                                continue;
+                                Names = new string[1];
+                                Names[0] = st2.StringValue;
                             }
-
-                            if (st2.StringValue.EqualsOrdinalCI("DESC"))
+                            else
                             {
-                                if (st2.NextToken() == '\'')
-                                {
-                                    Description = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("SYNTAX"))
-                            {
-                                _result = st2.NextToken();
-
-                                // Test for non-standard schema
-                                if (_result == (int)TokenTypes.Word || _result == '\'')
-                                {
-                                    Syntax = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("EQUALITY"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    Equality = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("ORDERING"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    Ordering = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("SUBSTR"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    Substring = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("FORM"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    NameForm = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("OC"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    _objectClass = st2.StringValue;
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("SUP"))
-                            {
-                                var values = new List<string>();
-                                st2.NextToken();
                                 if (st2.LastType == '(')
                                 {
-                                    st2.NextToken();
-                                    while (st2.LastType != ')')
+                                    var nameList = new List<string>();
+                                    while (st2.NextToken() == '\'')
                                     {
-                                        if (st2.LastType != '$')
+                                        if (st2.StringValue != null)
                                         {
-                                            values.Add(st2.StringValue);
+                                            nameList.Add(st2.StringValue);
                                         }
+                                    }
 
-                                        st2.NextToken();
+                                    if (nameList.Count > 0)
+                                    {
+                                        Names = nameList.ToArray();
                                     }
                                 }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                    Superior = st2.StringValue;
-                                }
-
-                                if (values.Count > 0)
-                                {
-                                    Superiors = values.ToArray();
-                                }
-
-                                continue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("SINGLE-VALUE"))
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("DESC"))
+                        {
+                            if (st2.NextToken() == '\'')
                             {
-                                Single = true;
-                                continue;
+                                Description = st2.StringValue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("OBSOLETE"))
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("SYNTAX"))
+                        {
+                            _result = st2.NextToken();
+
+                            // Test for non-standard schema
+                            if (_result == (int)TokenTypes.Word || _result == '\'')
                             {
-                                Obsolete = true;
-                                continue;
+                                Syntax = st2.StringValue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("COLLECTIVE"))
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("EQUALITY"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
                             {
-                                Collective = true;
-                                continue;
+                                Equality = st2.StringValue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("NO-USER-MODIFICATION"))
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("ORDERING"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
                             {
-                                UserMod = false;
-                                continue;
+                                Ordering = st2.StringValue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("MUST"))
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("SUBSTR"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
                             {
-                                var values = new List<string>();
+                                Substring = st2.StringValue;
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("FORM"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
+                            {
+                                NameForm = st2.StringValue;
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("OC"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
+                            {
+                                _objectClass = st2.StringValue;
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("SUP"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
+                            {
                                 st2.NextToken();
-                                if (st2.LastType == '(')
+                                while (st2.LastType != ')')
                                 {
-                                    st2.NextToken();
-                                    while (st2.LastType != ')')
+                                    if (st2.LastType != '$')
                                     {
-                                        if (st2.LastType != '$')
-                                        {
-                                            values.Add(st2.StringValue);
-                                        }
-
-                                        st2.NextToken();
+                                        values.Add(st2.StringValue);
                                     }
-                                }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                }
 
-                                if (values.Count > 0)
-                                {
-                                    Required = values.ToArray();
+                                    st2.NextToken();
                                 }
-
-                                continue;
+                            }
+                            else
+                            {
+                                values.Add(st2.StringValue);
+                                Superior = st2.StringValue;
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("MAY"))
+                            if (values.Count > 0)
                             {
-                                var values = new List<string>();
+                                Superiors = values.ToArray();
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("SINGLE-VALUE"))
+                        {
+                            Single = true;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("OBSOLETE"))
+                        {
+                            Obsolete = true;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("COLLECTIVE"))
+                        {
+                            Collective = true;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("NO-USER-MODIFICATION"))
+                        {
+                            UserMod = false;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("MUST"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
+                            {
                                 st2.NextToken();
-                                if (st2.LastType == '(')
+                                while (st2.LastType != ')')
                                 {
-                                    st2.NextToken();
-                                    while (st2.LastType != ')')
+                                    if (st2.LastType != '$')
                                     {
-                                        if (st2.LastType != '$')
-                                        {
-                                            values.Add(st2.StringValue);
-                                        }
-
-                                        st2.NextToken();
+                                        values.Add(st2.StringValue);
                                     }
-                                }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                }
 
-                                if (values.Count > 0)
-                                {
-                                    Optional = values.ToArray();
+                                    st2.NextToken();
                                 }
-
-                                continue;
+                            }
+                            else
+                            {
+                                values.Add(st2.StringValue);
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("NOT"))
+                            if (values.Count > 0)
                             {
-                                var values = new List<string>();
+                                Required = values.ToArray();
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("MAY"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
+                            {
                                 st2.NextToken();
-                                if (st2.LastType == '(')
+                                while (st2.LastType != ')')
                                 {
-                                    st2.NextToken();
-                                    while (st2.LastType != ')')
+                                    if (st2.LastType != '$')
                                     {
-                                        if (st2.LastType != '$')
-                                        {
-                                            values.Add(st2.StringValue);
-                                        }
-
-                                        st2.NextToken();
+                                        values.Add(st2.StringValue);
                                     }
-                                }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                }
 
-                                if (values.Count > 0)
-                                {
-                                    Precluded = values.ToArray();
+                                    st2.NextToken();
                                 }
-
-                                continue;
+                            }
+                            else
+                            {
+                                values.Add(st2.StringValue);
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("AUX"))
+                            if (values.Count > 0)
                             {
-                                var values = new List<string>();
+                                Optional = values.ToArray();
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("NOT"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
+                            {
                                 st2.NextToken();
-                                if (st2.LastType == '(')
+                                while (st2.LastType != ')')
                                 {
+                                    if (st2.LastType != '$')
+                                    {
+                                        values.Add(st2.StringValue);
+                                    }
+
                                     st2.NextToken();
-                                    while (st2.LastType != ')')
-                                    {
-                                        if (st2.LastType != '$')
-                                        {
-                                            values.Add(st2.StringValue);
-                                        }
-
-                                        st2.NextToken();
-                                    }
                                 }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                }
-
-                                if (values.Count > 0)
-                                {
-                                    Auxiliary = values.ToArray();
-                                }
-
-                                continue;
+                            }
+                            else
+                            {
+                                values.Add(st2.StringValue);
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("ABSTRACT"))
+                            if (values.Count > 0)
                             {
-                                Type = LdapObjectClassSchema.Abstract;
-                                continue;
+                                Precluded = values.ToArray();
                             }
 
-                            if (st2.StringValue.EqualsOrdinalCI("STRUCTURAL"))
-                            {
-                                Type = LdapObjectClassSchema.Structural;
-                                continue;
-                            }
+                            continue;
+                        }
 
-                            if (st2.StringValue.EqualsOrdinalCI("AUXILIARY"))
+                        if (st2.StringValue.EqualsOrdinalCI("AUX"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
                             {
-                                Type = LdapObjectClassSchema.Auxiliary;
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("USAGE"))
-                            {
-                                if (st2.NextToken() == (int)TokenTypes.Word)
-                                {
-                                    currName = st2.StringValue;
-                                    if (currName.EqualsOrdinalCI("directoryOperation"))
-                                    {
-                                        Usage = LdapAttributeSchema.DirectoryOperation;
-                                    }
-                                    else if (currName.EqualsOrdinalCI("distributedOperation"))
-                                    {
-                                        Usage = LdapAttributeSchema.DistributedOperation;
-                                    }
-                                    else if (currName.EqualsOrdinalCI("dSAOperation"))
-                                    {
-                                        Usage = LdapAttributeSchema.DsaOperation;
-                                    }
-                                    else if (currName.EqualsOrdinalCI("userApplications"))
-                                    {
-                                        Usage = LdapAttributeSchema.UserApplications;
-                                    }
-                                }
-
-                                continue;
-                            }
-
-                            if (st2.StringValue.EqualsOrdinalCI("APPLIES"))
-                            {
-                                var values = new List<string>();
                                 st2.NextToken();
-                                if (st2.LastType == '(')
+                                while (st2.LastType != ')')
                                 {
-                                    st2.NextToken();
-                                    while (st2.LastType != ')')
+                                    if (st2.LastType != '$')
                                     {
-                                        if (st2.LastType != '$')
-                                        {
-                                            values.Add(st2.StringValue);
-                                        }
-
-                                        st2.NextToken();
+                                        values.Add(st2.StringValue);
                                     }
-                                }
-                                else
-                                {
-                                    values.Add(st2.StringValue);
-                                }
 
-                                if (values.Count > 0)
-                                {
-                                    Applies = values.ToArray();
+                                    st2.NextToken();
                                 }
-
-                                continue;
                             }
-
-                            currName = st2.StringValue;
-                            var q = ParseQualifier(st2, currName);
-                            if (q != null)
+                            else
                             {
-                                _qualifiers.Add(q);
+                                values.Add(st2.StringValue);
                             }
+
+                            if (values.Count > 0)
+                            {
+                                Auxiliary = values.ToArray();
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("ABSTRACT"))
+                        {
+                            Type = LdapObjectClassSchema.Abstract;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("STRUCTURAL"))
+                        {
+                            Type = LdapObjectClassSchema.Structural;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("AUXILIARY"))
+                        {
+                            Type = LdapObjectClassSchema.Auxiliary;
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("USAGE"))
+                        {
+                            if (st2.NextToken() == (int)TokenTypes.Word)
+                            {
+                                currName = st2.StringValue;
+                                if (currName.EqualsOrdinalCI("directoryOperation"))
+                                {
+                                    Usage = LdapAttributeSchema.DirectoryOperation;
+                                }
+                                else if (currName.EqualsOrdinalCI("distributedOperation"))
+                                {
+                                    Usage = LdapAttributeSchema.DistributedOperation;
+                                }
+                                else if (currName.EqualsOrdinalCI("dSAOperation"))
+                                {
+                                    Usage = LdapAttributeSchema.DsaOperation;
+                                }
+                                else if (currName.EqualsOrdinalCI("userApplications"))
+                                {
+                                    Usage = LdapAttributeSchema.UserApplications;
+                                }
+                            }
+
+                            continue;
+                        }
+
+                        if (st2.StringValue.EqualsOrdinalCI("APPLIES"))
+                        {
+                            var values = new List<string>();
+                            st2.NextToken();
+                            if (st2.LastType == '(')
+                            {
+                                st2.NextToken();
+                                while (st2.LastType != ')')
+                                {
+                                    if (st2.LastType != '$')
+                                    {
+                                        values.Add(st2.StringValue);
+                                    }
+
+                                    st2.NextToken();
+                                }
+                            }
+                            else
+                            {
+                                values.Add(st2.StringValue);
+                            }
+
+                            if (values.Count > 0)
+                            {
+                                Applies = values.ToArray();
+                            }
+
+                            continue;
+                        }
+
+                        currName = st2.StringValue;
+                        var q = ParseQualifier(st2, currName);
+                        if (q != null)
+                        {
+                            _qualifiers.Add(q);
                         }
                     }
                 }
             }
         }
+    }
 
-        public string RawString { get; set; }
+    public string RawString { get; set; }
 
-        public string[] Names { get; }
+    public string[] Names { get; }
 
-        public IEnumerable<AttributeQualifier> Qualifiers => new ReadOnlyCollection<AttributeQualifier>(_qualifiers);
+    public IEnumerable<AttributeQualifier> Qualifiers => new ReadOnlyCollection<AttributeQualifier>(_qualifiers);
 
-        public string Id { get; }
+    public string Id { get; }
 
-        public string Description { get; }
+    public string Description { get; }
 
-        public string Syntax { get; }
+    public string Syntax { get; }
 
-        public string Superior { get; }
+    public string Superior { get; }
 
-        public bool Single { get; }
+    public bool Single { get; }
 
-        public bool Obsolete { get; }
+    public bool Obsolete { get; }
 
-        public string Equality { get; }
+    public string Equality { get; }
 
-        public string Ordering { get; }
+    public string Ordering { get; }
 
-        public string Substring { get; }
+    public string Substring { get; }
 
-        public bool Collective { get; }
+    public bool Collective { get; }
 
-        public bool UserMod { get; } = true;
+    public bool UserMod { get; } = true;
 
-        public int Usage { get; private set; }
+    public int Usage { get; private set; }
 
-        public int Type { get; } = -1;
+    public int Type { get; } = -1;
 
-        public string[] Superiors { get; }
+    public string[] Superiors { get; }
 
-        public string[] Required { get; }
+    public string[] Required { get; }
 
-        public string[] Optional { get; }
+    public string[] Optional { get; }
 
-        public string[] Auxiliary { get; }
+    public string[] Auxiliary { get; }
 
-        public string[] Precluded { get; }
+    public string[] Precluded { get; }
 
-        public string[] Applies { get; }
+    public string[] Applies { get; }
 
-        public string NameForm { get; }
+    public string NameForm { get; }
 
-        public string ObjectClass => NameForm;
+    public string ObjectClass => NameForm;
 
-        private AttributeQualifier ParseQualifier(SchemaTokenCreator st, string name)
+    private AttributeQualifier ParseQualifier(SchemaTokenCreator st, string name)
+    {
+        var values = new List<string>(5);
+        if (st.NextToken() == '\'')
         {
-            var values = new List<string>(5);
-            if (st.NextToken() == '\'')
+            values.Add(st.StringValue);
+        }
+        else
+        {
+            if (st.LastType == '(')
             {
-                values.Add(st.StringValue);
-            }
-            else
-            {
-                if (st.LastType == '(')
+                while (st.NextToken() == '\'')
                 {
-                    while (st.NextToken() == '\'')
-                    {
-                        values.Add(st.StringValue);
-                    }
+                    values.Add(st.StringValue);
                 }
             }
-
-            return new AttributeQualifier(name, values.ToArray());
         }
+
+        return new AttributeQualifier(name, values.ToArray());
     }
 }

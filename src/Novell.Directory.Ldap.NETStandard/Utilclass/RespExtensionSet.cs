@@ -26,65 +26,64 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
-namespace Novell.Directory.Ldap.Utilclass
+namespace Novell.Directory.Ldap.Utilclass;
+
+/// <summary>
+///     This  class implements a Set
+///     so that it can be used to maintain a list of currently
+///     registered extended responses.
+/// </summary>
+public class RespExtensionSet : IEnumerable<Type>
 {
-    /// <summary>
-    ///     This  class implements a Set
-    ///     so that it can be used to maintain a list of currently
-    ///     registered extended responses.
-    /// </summary>
-    public class RespExtensionSet : IEnumerable<Type>
+    private readonly ConcurrentDictionary<string, Type> _map;
+
+    public RespExtensionSet()
     {
-        private readonly ConcurrentDictionary<string, Type> _map;
+        _map = new ConcurrentDictionary<string, Type>();
+    }
 
-        public RespExtensionSet()
-        {
-            _map = new ConcurrentDictionary<string, Type>();
-        }
+    /// <summary>
+    ///     Returns the number of extensions in this set.
+    /// </summary>
+    /// <returns>
+    ///     number of extensions in this set.
+    /// </returns>
+    public int Count => _map.Count;
 
-        /// <summary>
-        ///     Returns the number of extensions in this set.
-        /// </summary>
-        /// <returns>
-        ///     number of extensions in this set.
-        /// </returns>
-        public int Count => _map.Count;
+    /* Adds a responseExtension to the current list of registered responses.
+     *
+     */
 
-        /* Adds a responseExtension to the current list of registered responses.
-        *
-        */
+    public void RegisterResponseExtension(string oid, Type extClass)
+    {
+        _map.TryAdd(oid, extClass);
+    }
 
-        public void RegisterResponseExtension(string oid, Type extClass)
-        {
-            _map.TryAdd(oid, extClass);
-        }
+    /// <summary>
+    ///     Returns an iterator over the responses in this set.  The responses
+    ///     returned from this iterator are not in any particular order.
+    /// </summary>
+    /// <returns>
+    ///     iterator over the responses in this set.
+    /// </returns>
+    public IEnumerator<Type> GetEnumerator()
+    {
+        return _map.Values.GetEnumerator();
+    }
 
-        /// <summary>
-        ///     Returns an iterator over the responses in this set.  The responses
-        ///     returned from this iterator are not in any particular order.
-        /// </summary>
-        /// <returns>
-        ///     iterator over the responses in this set.
-        /// </returns>
-        public IEnumerator<Type> GetEnumerator()
-        {
-            return _map.Values.GetEnumerator();
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    /* Searches the list of registered responses for a mathcing response.  We
+     * search using the OID string.  If a match is found we return the
+     * Class name that was provided to us on registration.
+     */
 
-        /* Searches the list of registered responses for a mathcing response.  We
-         * search using the OID string.  If a match is found we return the
-         * Class name that was provided to us on registration.
-         */
-
-        public Type FindResponseExtension(string searchOid)
-        {
-            _map.TryGetValue(searchOid, out var retValue);
-            return retValue;
-        }
+    public Type FindResponseExtension(string searchOid)
+    {
+        _map.TryGetValue(searchOid, out var retValue);
+        return retValue;
     }
 }

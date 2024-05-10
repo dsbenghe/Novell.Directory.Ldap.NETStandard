@@ -23,37 +23,36 @@
 
 using Novell.Directory.Ldap.Asn1;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents Ldap Sasl Credentials.
+///     <pre>
+///         SaslCredentials ::= SEQUENCE {
+///         mechanism               LdapString,
+///         credentials             OCTET STRING OPTIONAL }
+///     </pre>
+/// </summary>
+public class RfcSaslCredentials : Asn1Sequence
 {
-    /// <summary>
-    ///     Represents Ldap Sasl Credentials.
-    ///     <pre>
-    ///         SaslCredentials ::= SEQUENCE {
-    ///         mechanism               LdapString,
-    ///         credentials             OCTET STRING OPTIONAL }
-    ///     </pre>
-    /// </summary>
-    public class RfcSaslCredentials : Asn1Sequence
+    // *************************************************************************
+    // Constructors for SaslCredentials
+    // *************************************************************************
+
+    /// <summary> </summary>
+    public RfcSaslCredentials(RfcLdapString mechanism)
+        : this(mechanism, null)
     {
-        // *************************************************************************
-        // Constructors for SaslCredentials
-        // *************************************************************************
+    }
 
-        /// <summary> </summary>
-        public RfcSaslCredentials(RfcLdapString mechanism)
-            : this(mechanism, null)
+    /// <summary> </summary>
+    public RfcSaslCredentials(RfcLdapString mechanism, Asn1OctetString credentials)
+        : base(2)
+    {
+        Add(mechanism);
+        if (credentials != null)
         {
-        }
-
-        /// <summary> </summary>
-        public RfcSaslCredentials(RfcLdapString mechanism, Asn1OctetString credentials)
-            : base(2)
-        {
-            Add(mechanism);
-            if (credentials != null)
-            {
-                Add(credentials);
-            }
+            Add(credentials);
         }
     }
 }

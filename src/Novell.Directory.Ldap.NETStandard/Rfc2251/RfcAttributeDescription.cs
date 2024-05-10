@@ -24,24 +24,22 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+/*
+ * Represents the Ldap Attribute Description.
+ */
+
+public class RfcAttributeDescription : RfcLdapString
 {
-    /*
-        * Represents the Ldap Attribute Description.
-        */
-
-    public class RfcAttributeDescription : RfcLdapString
+    /// <summary> </summary>
+    public RfcAttributeDescription(string s)
+        : base(s)
     {
-        /// <summary> </summary>
-        public RfcAttributeDescription(string s)
-            : base(s)
-        {
-        }
+    }
 
-        /// <summary> </summary>
-        public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
+    /// <summary> </summary>
+    public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
+    {
     }
 }

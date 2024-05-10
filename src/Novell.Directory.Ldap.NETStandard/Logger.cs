@@ -2,37 +2,36 @@
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+public static class Logger
 {
-    public static class Logger
+    private static ILoggerFactory _loggerFactory;
+
+    static Logger()
     {
-        private static ILoggerFactory _loggerFactory;
+        Log = NullLogger.Instance;
+    }
 
-        static Logger()
+    public static ILoggerFactory Factory
+    {
+        get => _loggerFactory;
+        set
         {
-            Log = NullLogger.Instance;
+            _loggerFactory = value;
+            Init();
         }
+    }
 
-        public static ILoggerFactory Factory
-        {
-            get => _loggerFactory;
-            set
-            {
-                _loggerFactory = value;
-                Init();
-            }
-        }
+    public static ILogger Log { get; private set; }
 
-        public static ILogger Log { get; private set; }
+    public static void LogWarning(this ILogger logger, string message, Exception ex)
+    {
+        logger.LogWarning(message + " - {0}", ex.ToString());
+    }
 
-        public static void LogWarning(this ILogger logger, string message, Exception ex)
-        {
-            logger.LogWarning(message + " - {0}", ex.ToString());
-        }
-
-        private static void Init()
-        {
-            Log = _loggerFactory.CreateLogger("Ldap");
-        }
+    private static void Init()
+    {
+        Log = _loggerFactory.CreateLogger("Ldap");
     }
 }

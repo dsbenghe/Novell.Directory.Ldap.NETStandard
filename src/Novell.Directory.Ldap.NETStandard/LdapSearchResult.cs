@@ -25,103 +25,102 @@ using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using System;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Encapsulates a single search result that is in response to an asynchronous
+///     search operation.
+/// </summary>
+/// <seealso cref="LdapConnection.SearchAsync">
+/// </seealso>
+public class LdapSearchResult : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResult>();
+    private LdapEntry _entry;
+
     /// <summary>
-    ///     Encapsulates a single search result that is in response to an asynchronous
-    ///     search operation.
+    ///     Constructs an LdapSearchResult object.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync">
-    /// </seealso>
-    public class LdapSearchResult : LdapMessage
+    /// <param name="message">
+    ///     The RfcLdapMessage with a search result.
+    /// </param>
+    /*package*/
+    internal LdapSearchResult(RfcLdapMessage message)
+        : base(message)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResult>();
-        private LdapEntry _entry;
+    }
 
-        /// <summary>
-        ///     Constructs an LdapSearchResult object.
-        /// </summary>
-        /// <param name="message">
-        ///     The RfcLdapMessage with a search result.
-        /// </param>
-        /*package*/
-        internal LdapSearchResult(RfcLdapMessage message)
-            : base(message)
+    /// <summary>
+    ///     Constructs an LdapSearchResult object from an LdapEntry.
+    /// </summary>
+    /// <param name="entry">
+    ///     the LdapEntry represented by this search result.
+    /// </param>
+    /// <param name="cont">
+    ///     controls associated with the search result.
+    /// </param>
+    public LdapSearchResult(LdapEntry entry, LdapControl[] cont)
+    {
+        _entry = entry ?? throw new ArgumentException("Argument \"entry\" cannot be null");
+    }
+
+    /// <summary>
+    ///     Returns the entry of a server's search response.
+    /// </summary>
+    /// <returns>
+    ///     The LdapEntry associated with this LdapSearchResult.
+    /// </returns>
+    public LdapEntry Entry
+    {
+        get
         {
-        }
-
-        /// <summary>
-        ///     Constructs an LdapSearchResult object from an LdapEntry.
-        /// </summary>
-        /// <param name="entry">
-        ///     the LdapEntry represented by this search result.
-        /// </param>
-        /// <param name="cont">
-        ///     controls associated with the search result.
-        /// </param>
-        public LdapSearchResult(LdapEntry entry, LdapControl[] cont)
-        {
-            _entry = entry ?? throw new ArgumentException("Argument \"entry\" cannot be null");
-        }
-
-        /// <summary>
-        ///     Returns the entry of a server's search response.
-        /// </summary>
-        /// <returns>
-        ///     The LdapEntry associated with this LdapSearchResult.
-        /// </returns>
-        public LdapEntry Entry
-        {
-            get
-            {
-                if (_entry == null)
-                {
-                    var attrs = new LdapAttributeSet();
-
-                    var attrList = ((RfcSearchResultEntry)Message.Response).Attributes;
-
-                    var seqArray = attrList.ToArray();
-                    for (var i = 0; i < seqArray.Length; i++)
-                    {
-                        var seq = (Asn1Sequence)seqArray[i];
-                        var attr = new LdapAttribute(((Asn1OctetString)seq.Get(0)).StringValue());
-
-                        var setRenamed = (Asn1Set)seq.Get(1);
-                        object[] setArray = setRenamed.ToArray();
-                        for (var j = 0; j < setArray.Length; j++)
-                        {
-                            attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
-                        }
-
-                        attrs.Add(attr);
-                    }
-
-                    _entry = new LdapEntry(((RfcSearchResultEntry)Message.Response).ObjectName.StringValue(), attrs);
-                }
-
-                return _entry;
-            }
-        }
-
-        /// <summary>
-        ///     Return a String representation of this object.
-        /// </summary>
-        /// <returns>
-        ///     a String representing this object.
-        /// </returns>
-        public override string ToString()
-        {
-            string str;
             if (_entry == null)
             {
-                str = base.ToString();
-            }
-            else
-            {
-                str = _entry.ToString();
+                var attrs = new LdapAttributeSet();
+
+                var attrList = ((RfcSearchResultEntry)Message.Response).Attributes;
+
+                var seqArray = attrList.ToArray();
+                for (var i = 0; i < seqArray.Length; i++)
+                {
+                    var seq = (Asn1Sequence)seqArray[i];
+                    var attr = new LdapAttribute(((Asn1OctetString)seq.Get(0)).StringValue());
+
+                    var setRenamed = (Asn1Set)seq.Get(1);
+                    object[] setArray = setRenamed.ToArray();
+                    for (var j = 0; j < setArray.Length; j++)
+                    {
+                        attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
+                    }
+
+                    attrs.Add(attr);
+                }
+
+                _entry = new LdapEntry(((RfcSearchResultEntry)Message.Response).ObjectName.StringValue(), attrs);
             }
 
-            return str;
+            return _entry;
         }
+    }
+
+    /// <summary>
+    ///     Return a String representation of this object.
+    /// </summary>
+    /// <returns>
+    ///     a String representing this object.
+    /// </returns>
+    public override string ToString()
+    {
+        string str;
+        if (_entry == null)
+        {
+            str = base.ToString();
+        }
+        else
+        {
+            str = _entry.ToString();
+        }
+
+        return str;
     }
 }

@@ -23,59 +23,58 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary> This class represents the ASN.1 NULL type.</summary>
+public class Asn1Null : Asn1Object
 {
-    /// <summary> This class represents the ASN.1 NULL type.</summary>
-    public class Asn1Null : Asn1Object
+    /// <summary> ASN.1 NULL tag definition.</summary>
+    public const int Tag = 0x05;
+
+    /// <summary> ID is added for Optimization.</summary>
+    /// <summary>
+    ///     ID needs only be one Value for every instance,
+    ///     thus we create it only once.
+    /// </summary>
+    private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+
+    /* Constructor for Asn1Null
+            */
+
+    /// <summary>
+    ///     Call this constructor to construct a new Asn1Null
+    ///     object.
+    /// </summary>
+    public Asn1Null()
+        : base(Id)
     {
-        /// <summary> ASN.1 NULL tag definition.</summary>
-        public const int Tag = 0x05;
+    }
 
-        /// <summary> ID is added for Optimization.</summary>
-        /// <summary>
-        ///     ID needs only be one Value for every instance,
-        ///     thus we create it only once.
-        /// </summary>
-        private static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, false, Tag);
+    /* Asn1Object implementation
+    */
 
-        /* Constructor for Asn1Null
-                */
+    /// <summary>
+    ///     Call this method to encode the current instance into the
+    ///     specified output stream using the specified encoder object.
+    /// </summary>
+    /// <param name="enc">
+    ///     Encoder object to use when encoding self.
+    /// </param>
+    /// <param name="out">
+    ///     The output stream onto which the encoded byte
+    ///     stream is written.
+    /// </param>
+    public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+    {
+        enc.Encode(this, outRenamed);
+    }
 
-        /// <summary>
-        ///     Call this constructor to construct a new Asn1Null
-        ///     object.
-        /// </summary>
-        public Asn1Null()
-            : base(Id)
-        {
-        }
+    /* Asn1Null specific methods
+    */
 
-        /* Asn1Object implementation
-        */
-
-        /// <summary>
-        ///     Call this method to encode the current instance into the
-        ///     specified output stream using the specified encoder object.
-        /// </summary>
-        /// <param name="enc">
-        ///     Encoder object to use when encoding self.
-        /// </param>
-        /// <param name="out">
-        ///     The output stream onto which the encoded byte
-        ///     stream is written.
-        /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
-        {
-            enc.Encode(this, outRenamed);
-        }
-
-        /* Asn1Null specific methods
-        */
-
-        /// <summary> Return a String representation of this Asn1Null object.</summary>
-        public override string ToString()
-        {
-            return base.ToString() + "NULL: \"\"";
-        }
+    /// <summary> Return a String representation of this Asn1Null object.</summary>
+    public override string ToString()
+    {
+        return base.ToString() + "NULL: \"\"";
     }
 }

@@ -24,105 +24,104 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+/// <summary>
+///     Represents an Ldap Add Request.
+/// </summary>
+/// <seealso cref="LdapConnection.SendRequestAsync">
+/// </seealso>
+/*
+ *       AddRequest ::= [APPLICATION 8] SEQUENCE {
+ *               entry           LdapDN,
+ *               attributes      AttributeList }
+ */
+public class LdapAddRequest : LdapMessage
 {
+    public override DebugId DebugId { get; } = DebugId.ForType<LdapAddRequest>();
+
     /// <summary>
-    ///     Represents an Ldap Add Request.
+    ///     Constructs a request to add an entry to the directory.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
-    /*
-     *       AddRequest ::= [APPLICATION 8] SEQUENCE {
-     *               entry           LdapDN,
-     *               attributes      AttributeList }
-     */
-    public class LdapAddRequest : LdapMessage
+    /// <param name="entry">
+    ///     The LdapEntry to add to the directory.
+    /// </param>
+    /// <param name="cont">
+    ///     Any controls that apply to the add request,
+    ///     or null if none.
+    /// </param>
+    public LdapAddRequest(LdapEntry entry, LdapControl[] cont)
+        : base(AddRequest, new RfcAddRequest(new RfcLdapDn(entry.Dn), MakeRfcAttrList(entry)), cont)
     {
-        public override DebugId DebugId { get; } = DebugId.ForType<LdapAddRequest>();
+    }
 
-        /// <summary>
-        ///     Constructs a request to add an entry to the directory.
-        /// </summary>
-        /// <param name="entry">
-        ///     The LdapEntry to add to the directory.
-        /// </param>
-        /// <param name="cont">
-        ///     Any controls that apply to the add request,
-        ///     or null if none.
-        /// </param>
-        public LdapAddRequest(LdapEntry entry, LdapControl[] cont)
-            : base(AddRequest, new RfcAddRequest(new RfcLdapDn(entry.Dn), MakeRfcAttrList(entry)), cont)
+    /// <summary>
+    ///     Constructs an LdapEntry that represents the add request.
+    /// </summary>
+    /// <returns>
+    ///     an LdapEntry that represents the add request.
+    /// </returns>
+    public LdapEntry Entry
+    {
+        get
         {
-        }
+            var addreq = (RfcAddRequest)Asn1Object.GetRequest();
 
-        /// <summary>
-        ///     Constructs an LdapEntry that represents the add request.
-        /// </summary>
-        /// <returns>
-        ///     an LdapEntry that represents the add request.
-        /// </returns>
-        public LdapEntry Entry
-        {
-            get
+            var attrs = new LdapAttributeSet();
+
+            // Build the list of attributes
+            var seqArray = addreq.Attributes.ToArray();
+            for (var i = 0; i < seqArray.Length; i++)
             {
-                var addreq = (RfcAddRequest)Asn1Object.GetRequest();
+                var seq = (RfcAttributeTypeAndValues)seqArray[i];
+                var attr = new LdapAttribute(((Asn1OctetString)seq.Get(0)).StringValue());
 
-                var attrs = new LdapAttributeSet();
-
-                // Build the list of attributes
-                var seqArray = addreq.Attributes.ToArray();
-                for (var i = 0; i < seqArray.Length; i++)
+                // Add the values to the attribute
+                var setRenamed = (Asn1SetOf)seq.Get(1);
+                object[] setArray = setRenamed.ToArray();
+                for (var j = 0; j < setArray.Length; j++)
                 {
-                    var seq = (RfcAttributeTypeAndValues)seqArray[i];
-                    var attr = new LdapAttribute(((Asn1OctetString)seq.Get(0)).StringValue());
-
-                    // Add the values to the attribute
-                    var setRenamed = (Asn1SetOf)seq.Get(1);
-                    object[] setArray = setRenamed.ToArray();
-                    for (var j = 0; j < setArray.Length; j++)
-                    {
-                        attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
-                    }
-
-                    attrs.Add(attr);
+                    attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
                 }
 
-                return new LdapEntry(Asn1Object.RequestDn, attrs);
+                attrs.Add(attr);
             }
-        }
 
-        /// <summary>
-        ///     Build the attribuite list from an LdapEntry.
-        /// </summary>
-        /// <param name="entry">
-        ///     The LdapEntry associated with this add request.
-        /// </param>
-        private static RfcAttributeList MakeRfcAttrList(LdapEntry entry)
+            return new LdapEntry(Asn1Object.RequestDn, attrs);
+        }
+    }
+
+    /// <summary>
+    ///     Build the attribuite list from an LdapEntry.
+    /// </summary>
+    /// <param name="entry">
+    ///     The LdapEntry associated with this add request.
+    /// </param>
+    private static RfcAttributeList MakeRfcAttrList(LdapEntry entry)
+    {
+        // convert Java-API LdapEntry to RFC2251 AttributeList
+        var attrSet = entry.GetAttributeSet();
+        var attrList = new RfcAttributeList(attrSet.Count);
+        foreach (var attr in attrSet)
         {
-            // convert Java-API LdapEntry to RFC2251 AttributeList
-            var attrSet = entry.GetAttributeSet();
-            var attrList = new RfcAttributeList(attrSet.Count);
-            foreach (var attr in attrSet)
+            var vals = new Asn1SetOf(attr.Size());
+            foreach (var byteValue in attr.ByteValueArray)
             {
-                var vals = new Asn1SetOf(attr.Size());
-                foreach (var byteValue in attr.ByteValueArray)
-                {
-                    vals.Add(new RfcAttributeValue(byteValue));
-                }
-
-                attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
+                vals.Add(new RfcAttributeValue(byteValue));
             }
 
-            return attrList;
+            attrList.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
         }
 
-        /// <summary>
-        ///     Return an Asn1 representation of this add request.
-        ///     #return an Asn1 representation of this object.
-        /// </summary>
-        public override string ToString()
-        {
-            return Asn1Object.ToString();
-        }
+        return attrList;
+    }
+
+    /// <summary>
+    ///     Return an Asn1 representation of this add request.
+    ///     #return an Asn1 representation of this object.
+    /// </summary>
+    public override string ToString()
+    {
+        return Asn1Object.ToString();
     }
 }

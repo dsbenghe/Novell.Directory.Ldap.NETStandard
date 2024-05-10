@@ -8,178 +8,177 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Novell.Directory.Ldap
+namespace Novell.Directory.Ldap;
+
+public partial class LdapConnection : ILdapConnection
 {
-    public partial class LdapConnection : ILdapConnection
+    private readonly ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
+
+    public IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories()
+        => _saslClientFactories.Values.ToList();
+
+    public void RegisterSaslClientFactory(ISaslClientFactory saslClientFactory)
     {
-        private readonly ConcurrentDictionary<string, ISaslClientFactory> _saslClientFactories;
-
-        public IReadOnlyCollection<ISaslClientFactory> GetRegisteredSaslClientFactories()
-            => _saslClientFactories.Values.ToList();
-
-        public void RegisterSaslClientFactory(ISaslClientFactory saslClientFactory)
+        if (saslClientFactory == null)
         {
-            if (saslClientFactory == null)
+            throw new ArgumentNullException(nameof(saslClientFactory));
+        }
+
+        var mechanisms = saslClientFactory.SupportedMechanisms;
+        if (mechanisms.IsEmpty())
+        {
+            throw new ArgumentException("A SASL Client Factory must support at least one mechanism.", nameof(saslClientFactory));
+        }
+
+        foreach (var mechanism in mechanisms)
+        {
+            var factoryInDict = _saslClientFactories.GetOrAdd(mechanism, saslClientFactory);
+            if (factoryInDict != saslClientFactory)
             {
-                throw new ArgumentNullException(nameof(saslClientFactory));
+                var typeName = factoryInDict.GetType().Name;
+                var msg = $"There is already a SASL Client Factory registered for '{mechanism}': {typeName}";
+                throw new InvalidOperationException(msg);
+            }
+        }
+    }
+
+    public bool IsSaslMechanismSupported(string mechanism)
+    {
+        // Registered Mechanisms always take precedence over the default
+        if (_saslClientFactories?.ContainsKey(mechanism) == true)
+        {
+            return true;
+        }
+
+        return DefaultSaslClientFactory.IsSaslMechanismSupported(mechanism);
+    }
+
+    /// <summary>
+    /// Internal for Unit-Test purposes only.
+    /// </summary>
+    internal ISaslClient CreateClient(SaslRequest saslRequest)
+    {
+        if (saslRequest == null)
+        {
+            throw new ArgumentNullException(nameof(saslRequest));
+        }
+
+        if (_saslClientFactories.TryGetValue(saslRequest.SaslMechanism, out var factory))
+        {
+            return factory.CreateClient(saslRequest);
+        }
+
+        return DefaultSaslClientFactory.CreateClient(saslRequest);
+    }
+
+    /// <summary>
+    ///     Returns the properties if any specified on binding with a
+    ///     SASL mechanism.
+    ///     Null is returned if no authentication has been performed
+    ///     or no authentication Map is present.
+    /// </summary>
+    /// <returns>
+    ///     The bind properties Map Object used for SASL bind or null if
+    ///     the connection is not present or not authenticated.
+    /// </returns>
+    /// <remarks>
+    ///     TODO: Can this be a strong class rather than a Hashtable/IDictionary?.
+    /// </remarks>
+    public virtual IDictionary SaslBindProperties
+        => Connection?.BindProperties?.SaslBindProperties;
+
+    public virtual async Task BindAsync(SaslRequest saslRequest)
+    {
+        if (saslRequest == null)
+        {
+            throw new ArgumentNullException(nameof(saslRequest));
+        }
+
+        Hashtable saslBindProperties = null;
+
+        using (var saslClient = CreateClient(saslRequest))
+        {
+            if (saslClient == null)
+            {
+                throw new ArgumentException("Unsupported Sasl Authentication mechanism: " + saslRequest.SaslMechanism);
             }
 
-            var mechanisms = saslClientFactory.SupportedMechanisms;
-            if (mechanisms.IsEmpty())
-            {
-                throw new ArgumentException("A SASL Client Factory must support at least one mechanism.", nameof(saslClientFactory));
-            }
+            var constraints = saslRequest.Constraints ?? _defSearchCons;
 
-            foreach (var mechanism in mechanisms)
+            try
             {
-                var factoryInDict = _saslClientFactories.GetOrAdd(mechanism, saslClientFactory);
-                if (factoryInDict != saslClientFactory)
+                var bindProps = new BindProperties(LdapV3, saslRequest.AuthorizationId, "sasl", anonymous: false, bindProperties: saslBindProperties);
+                var bindSemId = Connection.AcquireWriteSemaphore();
+                Connection.SetBindSemId(bindSemId);
+
+                byte[] clientResponse = null;
+                if (saslClient.HasInitialResponse)
                 {
-                    var typeName = factoryInDict.GetType().Name;
-                    var msg = $"There is already a SASL Client Factory registered for '{mechanism}': {typeName}";
-                    throw new InvalidOperationException(msg);
+                    clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                 }
-            }
-        }
 
-        public bool IsSaslMechanismSupported(string mechanism)
-        {
-            // Registered Mechanisms always take precedence over the default
-            if (_saslClientFactories?.ContainsKey(mechanism) == true)
-            {
-                return true;
-            }
-
-            return DefaultSaslClientFactory.IsSaslMechanismSupported(mechanism);
-        }
-
-        /// <summary>
-        /// Internal for Unit-Test purposes only.
-        /// </summary>
-        internal ISaslClient CreateClient(SaslRequest saslRequest)
-        {
-            if (saslRequest == null)
-            {
-                throw new ArgumentNullException(nameof(saslRequest));
-            }
-
-            if (_saslClientFactories.TryGetValue(saslRequest.SaslMechanism, out var factory))
-            {
-                return factory.CreateClient(saslRequest);
-            }
-
-            return DefaultSaslClientFactory.CreateClient(saslRequest);
-        }
-
-        /// <summary>
-        ///     Returns the properties if any specified on binding with a
-        ///     SASL mechanism.
-        ///     Null is returned if no authentication has been performed
-        ///     or no authentication Map is present.
-        /// </summary>
-        /// <returns>
-        ///     The bind properties Map Object used for SASL bind or null if
-        ///     the connection is not present or not authenticated.
-        /// </returns>
-        /// <remarks>
-        ///     TODO: Can this be a strong class rather than a Hashtable/IDictionary?.
-        /// </remarks>
-        public virtual IDictionary SaslBindProperties
-            => Connection?.BindProperties?.SaslBindProperties;
-
-        public virtual async Task BindAsync(SaslRequest saslRequest)
-        {
-            if (saslRequest == null)
-            {
-                throw new ArgumentNullException(nameof(saslRequest));
-            }
-
-            Hashtable saslBindProperties = null;
-
-            using (var saslClient = CreateClient(saslRequest))
-            {
-                if (saslClient == null)
+                while (!saslClient.IsComplete)
                 {
-                    throw new ArgumentException("Unsupported Sasl Authentication mechanism: " + saslRequest.SaslMechanism);
-                }
-
-                var constraints = saslRequest.Constraints ?? _defSearchCons;
-
-                try
-                {
-                    var bindProps = new BindProperties(LdapV3, saslRequest.AuthorizationId, "sasl", anonymous: false, bindProperties: saslBindProperties);
-                    var bindSemId = Connection.AcquireWriteSemaphore();
-                    Connection.SetBindSemId(bindSemId);
-
-                    byte[] clientResponse = null;
-                    if (saslClient.HasInitialResponse)
+                    try
                     {
-                        clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
-                    }
+                        var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints).ConfigureAwait(false);
 
-                    while (!saslClient.IsComplete)
-                    {
-                        try
+                        if (replyBuf != null)
                         {
-                            var replyBuf = await SendLdapSaslBindRequestAsync(clientResponse, saslClient.MechanismName, bindProps, constraints).ConfigureAwait(false);
-
-                            if (replyBuf != null)
-                            {
-                                clientResponse = saslClient.EvaluateChallenge(replyBuf);
-                            }
-                            else
-                            {
-                                clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
-                            }
+                            clientResponse = saslClient.EvaluateChallenge(replyBuf);
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            throw new LdapException("Unexpected SASL error.", LdapException.Other, null, ex);
+                            clientResponse = saslClient.EvaluateChallenge(Array.Empty<byte>());
                         }
                     }
-                }
-                catch (Exception e)
-                {
-                    throw new LdapException(e);
+                    catch (Exception ex)
+                    {
+                        throw new LdapException("Unexpected SASL error.", LdapException.Other, null, ex);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                throw new LdapException(e);
+            }
         }
+    }
 
-        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
+    private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
+    {
+        constraints ??= _defSearchCons;
+        var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
+
+        var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps).ConfigureAwait(false);
+        if (!(queue.GetResponse() is LdapResponse ldapResponse))
         {
-            constraints ??= _defSearchCons;
-            var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
-
-            var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps).ConfigureAwait(false);
-            if (!(queue.GetResponse() is LdapResponse ldapResponse))
-            {
-                throw new LdapException("Bind failure, no response received.");
-            }
-
-            var bindResponse = (RfcBindResponse)ldapResponse.Asn1Object.Get(1);
-            lock (_responseCtlSemaphore)
-            {
-                _responseCtls = ldapResponse.Controls;
-            }
-
-            var serverCreds = bindResponse.ServerSaslCreds;
-            var resultCode = ldapResponse.ResultCode;
-
-            byte[] replyBuf = null;
-            if (resultCode == LdapException.SaslBindInProgress || resultCode == LdapException.Success)
-            {
-                if (serverCreds != null)
-                {
-                    replyBuf = serverCreds.ByteValue();
-                }
-            }
-            else
-            {
-                ldapResponse.ChkResultCode();
-                throw new LdapException("SASL Bind Error.", resultCode, null);
-            }
-
-            return replyBuf;
+            throw new LdapException("Bind failure, no response received.");
         }
+
+        var bindResponse = (RfcBindResponse)ldapResponse.Asn1Object.Get(1);
+        lock (_responseCtlSemaphore)
+        {
+            _responseCtls = ldapResponse.Controls;
+        }
+
+        var serverCreds = bindResponse.ServerSaslCreds;
+        var resultCode = ldapResponse.ResultCode;
+
+        byte[] replyBuf = null;
+        if (resultCode == LdapException.SaslBindInProgress || resultCode == LdapException.Success)
+        {
+            if (serverCreds != null)
+            {
+                replyBuf = serverCreds.ByteValue();
+            }
+        }
+        else
+        {
+            ldapResponse.ChkResultCode();
+            throw new LdapException("SASL Bind Error.", resultCode, null);
+        }
+
+        return replyBuf;
     }
 }

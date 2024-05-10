@@ -24,58 +24,57 @@
 using Novell.Directory.Ldap.Asn1;
 using System.IO;
 
-namespace Novell.Directory.Ldap.Rfc2251
+namespace Novell.Directory.Ldap.Rfc2251;
+
+/// <summary>
+///     Represents and Ldap Compare Response.
+///     <pre>
+///         CompareResponse ::= [APPLICATION 15] LdapResult
+///     </pre>
+/// </summary>
+public class RfcCompareResponse : RfcLdapResult
 {
+    // *************************************************************************
+    // Constructor for CompareResponse
+    // *************************************************************************
+
     /// <summary>
-    ///     Represents and Ldap Compare Response.
-    ///     <pre>
-    ///         CompareResponse ::= [APPLICATION 15] LdapResult
-    ///     </pre>
+    ///     The only time a client will create a CompareResponse is when it is
+    ///     decoding it from an InputStream.
     /// </summary>
-    public class RfcCompareResponse : RfcLdapResult
+    public RfcCompareResponse(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(dec, inRenamed, len)
     {
-        // *************************************************************************
-        // Constructor for CompareResponse
-        // *************************************************************************
+    }
 
-        /// <summary>
-        ///     The only time a client will create a CompareResponse is when it is
-        ///     decoding it from an InputStream.
-        /// </summary>
-        public RfcCompareResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
-        {
-        }
+    /// <summary>
+    ///     Constructs an RfcCompareResponse from parameters.
+    /// </summary>
+    /// <param name="resultCode">
+    ///     the result code of the operation.
+    /// </param>
+    /// <param name="matchedDn">
+    ///     the matched DN returned from the server.
+    /// </param>
+    /// <param name="errorMessage">
+    ///     the diagnostic message returned from the server.
+    /// </param>
+    /// <param name="referral">
+    ///     the referral(s) returned by the server.
+    /// </param>
+    public RfcCompareResponse(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
+        RfcReferral referral)
+        : base(resultCode, matchedDn, errorMessage, referral)
+    {
+    }
 
-        /// <summary>
-        ///     Constructs an RfcCompareResponse from parameters.
-        /// </summary>
-        /// <param name="resultCode">
-        ///     the result code of the operation.
-        /// </param>
-        /// <param name="matchedDn">
-        ///     the matched DN returned from the server.
-        /// </param>
-        /// <param name="errorMessage">
-        ///     the diagnostic message returned from the server.
-        /// </param>
-        /// <param name="referral">
-        ///     the referral(s) returned by the server.
-        /// </param>
-        public RfcCompareResponse(Asn1Enumerated resultCode, RfcLdapDn matchedDn, RfcLdapString errorMessage,
-            RfcReferral referral)
-            : base(resultCode, matchedDn, errorMessage, referral)
-        {
-        }
+    // *************************************************************************
+    // Accessors
+    // *************************************************************************
 
-        // *************************************************************************
-        // Accessors
-        // *************************************************************************
-
-        /// <summary> Override getIdentifier to return an application-wide id.</summary>
-        public override Asn1Identifier GetIdentifier()
-        {
-            return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.CompareResponse);
-        }
+    /// <summary> Override getIdentifier to return an application-wide id.</summary>
+    public override Asn1Identifier GetIdentifier()
+    {
+        return new Asn1Identifier(Asn1Identifier.Application, true, LdapMessage.CompareResponse);
     }
 }

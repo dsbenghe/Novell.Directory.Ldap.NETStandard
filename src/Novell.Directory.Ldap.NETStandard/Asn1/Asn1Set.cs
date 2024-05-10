@@ -23,75 +23,74 @@
 
 using System.IO;
 
-namespace Novell.Directory.Ldap.Asn1
+namespace Novell.Directory.Ldap.Asn1;
+
+/// <summary>
+///     The Asn1Set class can hold an unordered collection of components with
+///     distinct type. This class inherits from the Asn1Structured class
+///     which already provides functionality to hold multiple Asn1 components.
+/// </summary>
+public class Asn1Set : Asn1Structured
 {
+    /// <summary> ASN.1 SET tag definition.</summary>
+    public const int Tag = 0x11;
+
+    /// <summary> ID is added for Optimization.</summary>
     /// <summary>
-    ///     The Asn1Set class can hold an unordered collection of components with
-    ///     distinct type. This class inherits from the Asn1Structured class
-    ///     which already provides functionality to hold multiple Asn1 components.
+    ///     ID needs only be one Value for every instance,
+    ///     thus we create it only once.
     /// </summary>
-    public class Asn1Set : Asn1Structured
+    public static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
+
+    /* Constructors for Asn1Set
+            */
+
+    /// <summary>
+    ///     Constructs an Asn1Set object with no actual
+    ///     Asn1Objects in it. Assumes a default size of 5 elements.
+    /// </summary>
+    public Asn1Set()
+        : base(Id)
     {
-        /// <summary> ASN.1 SET tag definition.</summary>
-        public const int Tag = 0x11;
+    }
 
-        /// <summary> ID is added for Optimization.</summary>
-        /// <summary>
-        ///     ID needs only be one Value for every instance,
-        ///     thus we create it only once.
-        /// </summary>
-        public static readonly Asn1Identifier Id = new Asn1Identifier(Asn1Identifier.Universal, true, Tag);
+    /// <summary>
+    ///     Constructs an Asn1Set object with the specified
+    ///     number of placeholders for Asn1Objects. However there
+    ///     are no actual Asn1Objects in this SequenceOf object.
+    /// </summary>
+    /// <param name="size">
+    ///     Specifies the initial size of the collection.
+    /// </param>
+    public Asn1Set(int size)
+        : base(Id, size)
+    {
+    }
 
-        /* Constructors for Asn1Set
-                */
+    /// <summary>
+    ///     Constructs an Asn1Set object by decoding data from an
+    ///     input stream.
+    /// </summary>
+    /// <param name="dec">
+    ///     The decoder object to use when decoding the
+    ///     input stream.  Sometimes a developer might want to pass
+    ///     in his/her own decoder object.
+    /// </param>
+    /// <param name="in">
+    ///     A byte stream that contains the encoded ASN.1.
+    /// </param>
+    public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len)
+        : base(Id)
+    {
+        DecodeStructured(dec, inRenamed, len);
+    }
 
-        /// <summary>
-        ///     Constructs an Asn1Set object with no actual
-        ///     Asn1Objects in it. Assumes a default size of 5 elements.
-        /// </summary>
-        public Asn1Set()
-            : base(Id)
-        {
-        }
+    /* Asn1Set specific methods
+    */
 
-        /// <summary>
-        ///     Constructs an Asn1Set object with the specified
-        ///     number of placeholders for Asn1Objects. However there
-        ///     are no actual Asn1Objects in this SequenceOf object.
-        /// </summary>
-        /// <param name="size">
-        ///     Specifies the initial size of the collection.
-        /// </param>
-        public Asn1Set(int size)
-            : base(Id, size)
-        {
-        }
-
-        /// <summary>
-        ///     Constructs an Asn1Set object by decoding data from an
-        ///     input stream.
-        /// </summary>
-        /// <param name="dec">
-        ///     The decoder object to use when decoding the
-        ///     input stream.  Sometimes a developer might want to pass
-        ///     in his/her own decoder object.
-        /// </param>
-        /// <param name="in">
-        ///     A byte stream that contains the encoded ASN.1.
-        /// </param>
-        public Asn1Set(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id)
-        {
-            DecodeStructured(dec, inRenamed, len);
-        }
-
-        /* Asn1Set specific methods
-        */
-
-        /// <summary> Returns a String representation of this Asn1Set.</summary>
-        public override string ToString()
-        {
-            return ToString("SET: { ");
-        }
+    /// <summary> Returns a String representation of this Asn1Set.</summary>
+    public override string ToString()
+    {
+        return ToString("SET: { ");
     }
 }
