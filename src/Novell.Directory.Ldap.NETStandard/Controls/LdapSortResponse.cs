@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Controls
                 throw new IOException("Decoding error");
             }
 
-            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(0);
+            var asn1Enum = ((Asn1Sequence)asnObj).Get(0);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
             {
                 ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap.Controls
             // Second element is the attributeType
             if (((Asn1Sequence)asnObj).Size() > 1)
             {
-                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(1);
+                var asn1String = ((Asn1Sequence)asnObj).Get(1);
                 if (asn1String != null && asn1String is Asn1OctetString)
                 {
                     FailedAttribute = ((Asn1OctetString)asn1String).StringValue();

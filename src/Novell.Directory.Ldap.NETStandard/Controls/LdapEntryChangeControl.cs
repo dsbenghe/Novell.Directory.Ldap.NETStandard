@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap.Controls
             var sequence = (Asn1Sequence)asnObj;
 
             // The first element in the sequence should be an enumerated type
-            var asn1Obj = sequence.get_Renamed(0);
+            var asn1Obj = sequence.Get(0);
             if (asn1Obj == null || !(asn1Obj is Asn1Enumerated))
             {
                 throw new IOException("Decoding error.");
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.Controls
             if (sequence.Size() > 1 && ChangeType == 8)
             {
                 // get the previous DN - it is encoded as an octet string
-                asn1Obj = sequence.get_Renamed(1);
+                asn1Obj = sequence.Get(1);
                 if (asn1Obj == null || !(asn1Obj is Asn1OctetString))
                 {
                     throw new IOException("Decoding error get previous DN");
@@ -112,7 +112,7 @@ namespace Novell.Directory.Ldap.Controls
             // check for change number
             if (sequence.Size() == 3)
             {
-                asn1Obj = sequence.get_Renamed(2);
+                asn1Obj = sequence.Get(2);
                 if (asn1Obj == null || !(asn1Obj is Asn1Integer))
                 {
                     throw new IOException("Decoding error getting change number");

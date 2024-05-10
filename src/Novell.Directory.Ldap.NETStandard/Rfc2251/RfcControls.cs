@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Convert each SEQUENCE element to a Control
             for (var i = 0; i < Size(); i++)
             {
-                var tempControl = new RfcControl((Asn1Sequence)get_Renamed(i));
+                var tempControl = new RfcControl((Asn1Sequence)Get(i));
                 set_Renamed(i, tempControl);
             }
         }

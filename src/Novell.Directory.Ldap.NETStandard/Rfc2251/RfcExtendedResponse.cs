@@ -63,7 +63,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 for (var i = 3; i < Size(); i++)
                 {
-                    var obj = (Asn1Tagged)get_Renamed(i);
+                    var obj = (Asn1Tagged)Get(i);
                     var id = obj.GetIdentifier();
                     switch (id.Tag)
                     {
@@ -89,10 +89,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid)get_Renamed(_responseNameIndex) : null;
+        public RfcLdapOid ResponseName => _responseNameIndex != 0 ? (RfcLdapOid)Get(_responseNameIndex) : null;
 
         /// <summary> </summary>
-        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString)get_Renamed(_responseIndex) : null;
+        public Asn1OctetString Response => _responseIndex != 0 ? (Asn1OctetString)Get(_responseIndex) : null;
 
         // *************************************************************************
         // Accessors
@@ -101,25 +101,25 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> </summary>
         public Asn1Enumerated GetResultCode()
         {
-            return (Asn1Enumerated)get_Renamed(0);
+            return (Asn1Enumerated)Get(0);
         }
 
         /// <summary> </summary>
         public RfcLdapDn GetMatchedDn()
         {
-            return new RfcLdapDn(((Asn1OctetString)get_Renamed(1)).ByteValue());
+            return new RfcLdapDn(((Asn1OctetString)Get(1)).ByteValue());
         }
 
         /// <summary> </summary>
         public RfcLdapString GetErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString)get_Renamed(2)).ByteValue());
+            return new RfcLdapString(((Asn1OctetString)Get(2)).ByteValue());
         }
 
         /// <summary> </summary>
         public RfcReferral GetReferral()
         {
-            return _referralIndex != 0 ? (RfcReferral)get_Renamed(_referralIndex) : null;
+            return _referralIndex != 0 ? (RfcReferral)Get(_referralIndex) : null;
         }
 
         /// <summary> Override getIdentifier to return an application-wide id.</summary>

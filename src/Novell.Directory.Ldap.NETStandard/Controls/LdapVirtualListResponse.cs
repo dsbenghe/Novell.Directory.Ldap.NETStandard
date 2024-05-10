@@ -105,7 +105,7 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 1st element which should be an integer containing the
             * targetPosition (firstPosition)
             */
-            var asn1FirstPosition = ((Asn1Sequence)asnObj).get_Renamed(0);
+            var asn1FirstPosition = ((Asn1Sequence)asnObj).Get(0);
             if (asn1FirstPosition != null && asn1FirstPosition is Asn1Integer)
             {
                 FirstPosition = ((Asn1Integer)asn1FirstPosition).IntValue();
@@ -118,7 +118,7 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 2nd element which should be an integer containing the
             * current estimate of the contentCount
             */
-            var asn1ContentCount = ((Asn1Sequence)asnObj).get_Renamed(1);
+            var asn1ContentCount = ((Asn1Sequence)asnObj).Get(1);
             if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
             {
                 ContentCount = ((Asn1Integer)asn1ContentCount).IntValue();
@@ -129,7 +129,7 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             /* The 3rd element is an enum containing the errorcode */
-            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(2);
+            var asn1Enum = ((Asn1Sequence)asnObj).Get(2);
             if (asn1Enum != null && asn1Enum is Asn1Enumerated)
             {
                 ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
@@ -144,7 +144,7 @@ namespace Novell.Directory.Ldap.Controls
             */
             if (((Asn1Sequence)asnObj).Size() > 3)
             {
-                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(3);
+                var asn1String = ((Asn1Sequence)asnObj).Get(3);
                 if (asn1String != null && asn1String is Asn1OctetString)
                 {
                     Context = ((Asn1OctetString)asn1String).StringValue();

@@ -86,12 +86,12 @@ namespace Novell.Directory.Ldap.Rfc2251
             var len = seqObj.Size();
             for (var i = 0; i < len; i++)
             {
-                Add(seqObj.get_Renamed(i));
+                Add(seqObj.Get(i));
             }
         }
 
         /// <summary> </summary>
-        public Asn1OctetString ControlType => (Asn1OctetString)get_Renamed(0);
+        public Asn1OctetString ControlType => (Asn1OctetString)Get(0);
 
         /// <summary>
         ///     Returns criticality.
@@ -104,7 +104,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (Size() > 1)
                 {
                     // MAY be a criticality
-                    var obj = get_Renamed(1);
+                    var obj = Get(1);
                     if (obj is Asn1Boolean)
                     {
                         return (Asn1Boolean)obj;
@@ -131,13 +131,13 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (Size() > 2)
                 {
                     // MUST be a control value
-                    return (Asn1OctetString)get_Renamed(2);
+                    return (Asn1OctetString)Get(2);
                 }
 
                 if (Size() > 1)
                 {
                     // MAY be a control value
-                    var obj = get_Renamed(1);
+                    var obj = Get(1);
                     if (obj is Asn1OctetString)
                     {
                         return (Asn1OctetString)obj;
@@ -164,7 +164,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 if (Size() == 2)
                 {
                     // Get the second element
-                    var obj = get_Renamed(1);
+                    var obj = Get(1);
 
                     // Is this a control value
                     if (obj is Asn1OctetString)

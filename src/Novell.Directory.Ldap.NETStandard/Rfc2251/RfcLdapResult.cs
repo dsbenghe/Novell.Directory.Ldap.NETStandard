@@ -144,7 +144,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Decode optional referral from Asn1OctetString to Referral.
             if (Size() > 3)
             {
-                var obj = (Asn1Tagged)get_Renamed(3);
+                var obj = (Asn1Tagged)Get(3);
                 var id = obj.GetIdentifier();
                 if (id.Tag == Referral)
                 {
@@ -167,7 +167,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public Asn1Enumerated GetResultCode()
         {
-            return (Asn1Enumerated)get_Renamed(0);
+            return (Asn1Enumerated)Get(0);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcLdapDn GetMatchedDn()
         {
-            return new RfcLdapDn(((Asn1OctetString)get_Renamed(1)).ByteValue());
+            return new RfcLdapDn(((Asn1OctetString)Get(1)).ByteValue());
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcLdapString GetErrorMessage()
         {
-            return new RfcLdapString(((Asn1OctetString)get_Renamed(2)).ByteValue());
+            return new RfcLdapString(((Asn1OctetString)Get(2)).ByteValue());
         }
 
         /// <summary>
@@ -200,7 +200,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public RfcReferral GetReferral()
         {
-            return Size() > 3 ? (RfcReferral)get_Renamed(3) : null;
+            return Size() > 3 ? (RfcReferral)Get(3) : null;
         }
     }
 }
