@@ -63,14 +63,14 @@ namespace Novell.Directory.Ldap
             OtherAttributes = otherAttributes;
 
             // Don't want any of those properties be null
-            ServerName = ServerName ?? string.Empty;
-            DefaultNamingContext = DefaultNamingContext ?? string.Empty;
-            NamingContexts = NamingContexts ?? Array.Empty<string>();
-            SupportedSaslMechanisms = SupportedSaslMechanisms ?? Array.Empty<string>();
-            SupportedCapabilities = SupportedCapabilities ?? Array.Empty<string>();
-            SupportedControls = SupportedControls ?? Array.Empty<string>();
-            SupportedExtensions = SupportedExtensions ?? Array.Empty<string>();
-            SupportedLDAPPolicies = SupportedLDAPPolicies ?? Array.Empty<string>();
+            ServerName ??= string.Empty;
+            DefaultNamingContext ??= string.Empty;
+            NamingContexts ??= Array.Empty<string>();
+            SupportedSaslMechanisms ??= Array.Empty<string>();
+            SupportedCapabilities ??= Array.Empty<string>();
+            SupportedControls ??= Array.Empty<string>();
+            SupportedExtensions ??= Array.Empty<string>();
+            SupportedLDAPPolicies ??= Array.Empty<string>();
         }
 
         public bool SupportsExtension(string oid)

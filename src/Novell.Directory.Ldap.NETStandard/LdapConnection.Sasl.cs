@@ -147,7 +147,7 @@ namespace Novell.Directory.Ldap
 
         private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints)
         {
-            constraints = constraints ?? _defSearchCons;
+            constraints ??= _defSearchCons;
             var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);
 
             var queue = await SendRequestToServerAsync(msg, constraints.TimeLimit, null, bindProps).ConfigureAwait(false);
