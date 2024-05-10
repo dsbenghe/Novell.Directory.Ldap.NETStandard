@@ -380,7 +380,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         tempvar--;
                     }
 
-                    dvar = dvar / divby;
+                    dvar /= divby;
                 }
 
                 _numberValue = checkb ? -dvar : dvar;
@@ -432,7 +432,7 @@ namespace Novell.Directory.Ldap.Utilclass
                         var first = curc;
                         if (curc >= '0' && curc <= '7')
                         {
-                            curc = curc - '0';
+                            curc -= '0';
                             var loopchar = Read();
                             if (loopchar >= '0' && loopchar <= '7')
                             {

@@ -513,7 +513,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                             // copy utf8 encoded character into octets
                             Array.Copy(utf8Bytes, 0, octets, iOctets, utf8Bytes.Length);
-                            iOctets = iOctets + utf8Bytes.Length;
+                            iOctets += utf8Bytes.Length;
                         }
 
                         escape = false;

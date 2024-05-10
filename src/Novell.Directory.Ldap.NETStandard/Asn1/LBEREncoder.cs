@@ -268,7 +268,7 @@ namespace Novell.Directory.Ldap.Asn1
             for (n = 0; valueRenamed != 0; n++)
             {
                 octets[n] = (byte)(valueRenamed & 0x7F);
-                valueRenamed = valueRenamed >> 7;
+                valueRenamed >>= 7;
             }
 
             for (var i = n - 1; i > 0; i--)
