@@ -402,7 +402,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     An enumeration of syntax definitions.
         /// </returns>
-        public IEnumerable<LdapSchemaElement> SyntaxSchemas => _syntaxIdTable.Values;
+        public IEnumerable<LdapSyntaxSchema> SyntaxSchemas => _syntaxIdTable.Values;
 
         /// <summary>
         ///     Returns an enumeration of attribute names.
@@ -476,7 +476,7 @@ namespace Novell.Directory.Ldap
         /// <param name="element">
         ///     Schema element definition.
         /// </param>
-        private void AddElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, T element)
+        private static void AddElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, T element)
             where T : LdapSchemaElement
         {
             idTable[element.Id] = element;
@@ -511,7 +511,7 @@ namespace Novell.Directory.Ldap
         /// <param name="key">
         ///     The key can be either an OID or a name string.
         /// </param>
-        private T GetSchemaElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, string key)
+        private static T GetSchemaElement<T>(Dictionary<string, T> idTable, Dictionary<string, T> nameTable, string key)
             where T : LdapSchemaElement
         {
             if (string.IsNullOrEmpty(key))
