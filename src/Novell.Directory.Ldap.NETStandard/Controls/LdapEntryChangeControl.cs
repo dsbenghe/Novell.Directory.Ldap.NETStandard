@@ -59,7 +59,7 @@ namespace Novell.Directory.Ldap.Controls
         ///     the control is not supported. False if
         ///     the operation can be processed without the control.
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     The control-specific data.
         /// </param>
         public LdapEntryChangeControl(string oid, bool critical, byte[] valueRenamed)

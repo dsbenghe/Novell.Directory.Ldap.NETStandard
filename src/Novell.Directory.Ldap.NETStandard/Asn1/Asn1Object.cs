@@ -42,7 +42,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     class to encode itself ( an Asn1Object) directly intto
         ///     a output stream.
         /// </summary>
-        /// <param name="out">
+        /// <param name="outRenamed">
         ///     The output stream onto which the encoded
         ///     Asn1Object will be placed.
         /// </param>

@@ -636,13 +636,6 @@ namespace Novell.Directory.Ldap
         ///     on that connection will wake with an LdapException indicating
         ///     the connection is closed.
         /// </summary>
-        /// <param name="apiCall">
-        ///     <code>true</code> indicates the application is closing the
-        ///     connection or or creating a new one by calling either the.
-        ///     <code>connect</code> or. <code>disconnect</code> methods
-        ///     of. <code>LdapConnection</code>.  <code>false</code>
-        ///     indicates that. <code>LdapConnection</code> is being finalized.
-        /// </param>
         /// <returns>
         ///     a Connection object or null if finalizing.
         /// </returns>
@@ -682,15 +675,6 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        /// <summary>
-        ///     sets the default socket factory.
-        /// </summary>
-        /// <param name="factory">
-        ///     the default factory to set.
-        /// </param>
-        /// <summary>
-        ///     gets the socket factory used for this connection.
-        /// </summary>
         /// <summary> clears the writeSemaphore id used for active bind operation.</summary>
         internal void ClearBindSemId()
         {

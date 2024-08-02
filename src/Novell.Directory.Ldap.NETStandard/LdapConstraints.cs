@@ -84,7 +84,7 @@ namespace Novell.Directory.Ldap
         ///     authentication is performed when following referrals.
         ///     It is ignored for asynchronous operations.
         /// </param>
-        /// <param name="hop_limit">
+        /// <param name="hopLimit">
         ///     The maximum number of referrals to follow in a
         ///     sequence during automatic referral following.
         ///     The default value is 10. A value of 0 means no limit.
@@ -115,24 +115,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns the maximum number of referrals to follow during automatic
-        ///     referral following.  The operation will be abandoned and terminated by
-        ///     the API with a result code of LdapException.REFERRAL_LIMIT_EXCEEDED
-        ///     if the number of referrals in a sequence exceeds the limit.
-        ///     It is ignored for asynchronous operations.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of referrals to follow in sequence.
-        /// </returns>
-        /// <seealso cref="HopLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.ReferralLimitExceeded">
-        /// </seealso>
-        /// <summary>
-        ///     Sets the maximum number of referrals to follow in sequence during
-        ///     automatic referral following.
-        /// </summary>
-        /// <param name="hop_limit">
         ///     The maximum number of referrals to follow in a
         ///     sequence during automatic referral following.
         ///     The default value is 10. A value of 0 means no limit.
@@ -141,7 +123,7 @@ namespace Novell.Directory.Ldap
         ///     LdapException.REFERRAL_LIMIT_EXCEEDED if the
         ///     number of referrals in a sequence exceeds the limit.
         ///     It is ignored for asynchronous operations.
-        /// </param>
+        /// </summary>
         /// <seealso cref="LdapException.ReferralLimitExceeded">
         /// </seealso>
         public int HopLimit { get; set; } = 10;
@@ -151,16 +133,6 @@ namespace Novell.Directory.Ldap
         ///     assigned with {@link #setProperty(String, Object)}.
         ///     A value of. <code>null</code> is returned if no properties are defined.
         /// </summary>
-        /// <seealso cref="object">
-        /// </seealso>
-        /// <seealso cref="LdapConnection.GetProperty">
-        /// </seealso>
-        /// <summary>
-        ///     Sets all the properties of the constraints object.
-        /// </summary>
-        /// <param name="props">
-        ///     the properties represented by the Hashtable object to set.
-        /// </param>
         internal Hashtable Properties
         {
             get => _properties;
@@ -169,13 +141,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Specified whether or not referrals are followed automatically.
-        /// </summary>
-        /// <returns>
-        ///     True if referrals are followed automatically, or
-        ///     false if referrals throw an LdapReferralException.
-        /// </returns>
-        /// <summary>
         ///     Specifies whether referrals are followed automatically or if
         ///     referrals throw an LdapReferralException.
         ///     Referrals of any type other than to an Ldap server (for example, a
@@ -183,29 +148,8 @@ namespace Novell.Directory.Ldap
         ///     referral following.
         ///     The default is false.
         /// </summary>
-        /// <param name="doReferrals">
-        ///     True to follow referrals automatically.
-        ///     False to throw an LdapReferralException if
-        ///     the server returns a referral.
-        /// </param>
         public bool ReferralFollowing { get; set; }
 
-        /// <summary>
-        ///     Returns the maximum number of milliseconds to wait for any operation
-        ///     under these constraints.
-        ///     If the value is 0, there is no maximum time limit on waiting
-        ///     for operation results. The actual granularity of the timeout depends
-        ///     platform.  This limit is enforced the the API on an
-        ///     operation, not by the server.
-        ///     The operation will be abandoned and terminated by the
-        ///     API with a result code of LdapException.Ldap_TIMEOUT if the
-        ///     operation exceeds the time limit.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of milliseconds to wait for the operation.
-        /// </returns>
-        /// <seealso cref="LdapException.LdapTimeout">
-        /// </seealso>
         /// <summary>
         ///     Sets the maximum number of milliseconds the client waits for
         ///     any operation under these constraints to complete.
@@ -216,11 +160,6 @@ namespace Novell.Directory.Ldap
         ///     API with a result code of LdapException.Ldap_TIMEOUT if the
         ///     operation exceeds the time limit.
         /// </summary>
-        /// <param name="msLimit">
-        ///     The maximum milliseconds to wait.
-        /// </param>
-        /// <seealso cref="LdapException.LdapTimeout">
-        /// </seealso>
         public int TimeLimit { get; set; }
 
         /// <summary>
@@ -325,7 +264,7 @@ namespace Novell.Directory.Ldap
         /// <param name="name">
         ///     Name of the property to set.
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     Value to assign to the property.
         ///     property is not supported.
         ///     @throws NullPointerException if name or value are null.

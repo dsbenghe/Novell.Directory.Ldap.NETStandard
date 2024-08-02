@@ -123,7 +123,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
         /// </summary>
-        /// <param name="attrName">
+        /// <param name="attributeName">
         ///     The name of the attribute to return.
         /// </param>
         /// <returns>
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
         /// </summary>
-        /// <param name="attrName">
+        /// <param name="attributeName">
         ///     The name of the attribute to return.
         /// </param>
         /// <returns>
@@ -151,7 +151,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
         /// </summary>
-        /// <param name="attrName">
+        /// <param name="attributeName">
         ///     The name of the attribute to return.
         /// </param>
         /// <returns>

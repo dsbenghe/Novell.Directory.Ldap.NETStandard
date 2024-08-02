@@ -28,8 +28,8 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents a request to delete an entry.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
     /*
      *       DelRequest ::= [APPLICATION 10] LdapDN
      */

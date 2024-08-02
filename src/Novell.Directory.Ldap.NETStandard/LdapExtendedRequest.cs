@@ -29,8 +29,8 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap Extended Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
     /*
      *       ExtendedRequest ::= [APPLICATION 23] SEQUENCE {
      *               requestName      [0] LdapOID,

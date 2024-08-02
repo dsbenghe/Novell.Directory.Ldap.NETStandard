@@ -30,8 +30,8 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Modification Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
     /*
      *       ModifyRequest ::= [APPLICATION 6] SEQUENCE {
      *               object          LdapDN,

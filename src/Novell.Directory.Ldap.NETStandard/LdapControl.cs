@@ -39,8 +39,8 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapConstraints.GetControls">
     /// </seealso>
-    /// <seealso cref="LdapConstraints.SetControls">
-    /// </seealso>
+    /// <seealso cref="LdapConstraints.SetControls(Novell.Directory.Ldap.LdapControl)"/>
+    /// <seealso cref="LdapConstraints.SetControls(Novell.Directory.Ldap.LdapControl[])"/>
     public class LdapControl
     {
         static LdapControl()

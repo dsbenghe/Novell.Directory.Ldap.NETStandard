@@ -433,7 +433,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     V2: \*,  \(,  \),  \\.
         ///     V3: \2A, \28, \29, \5C, \00.
         /// </summary>
-        /// <param name="string">
+        /// <param name="stringRenamed">
         ///     A part of the input filter string to be converted.
         /// </param>
         /// <returns>
@@ -655,7 +655,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="type">
         ///     Substring type: INITIAL | ANY | FINAL].
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     Value to use for matching
         ///     @throws LdapLocalException   Occurs if this method is called out of
         ///     sequence or the type added is out of sequence.
@@ -737,7 +737,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="attrName">
         ///     Name of the attribute to be asserted.
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     Value of the attribute to be asserted
         ///     @throws LdapLocalException
         ///     Occurs when the filter type is not a valid attribute assertion.
@@ -793,7 +793,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="attrName">
         ///     Name of the attribute to match.
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     Value of the attribute to match against.
         /// </param>
         /// <param name="useDnMatching">

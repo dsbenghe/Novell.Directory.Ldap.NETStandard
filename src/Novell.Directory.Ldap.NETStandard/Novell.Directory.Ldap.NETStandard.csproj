@@ -25,13 +25,9 @@
     <LangVersion>11.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <!-- CS1570 XML comment has badly formed XML -->
-    <!-- CS1572 XML comment has a param tag for 'xxx', but there is no parameter by that name -->
     <!-- CS1573: Parameter 'xxx' has no matching param tag in the XML comment for 'yyy' (but other parameters do) -->
     <!-- CS1591: Missing XML comment for publicly visible type or member 'xxx' -->
-    <!-- CS0419: Ambiguous reference in cref attribute -->
-    <!-- CS0675: Bitwise-or operator used on a sign-extended operand; consider casting to a smaller unsigned type first -->
-    <NoWarn>CS1570;CS1572;CS1573;CS1591;CS0419;CS0675</NoWarn>
+    <NoWarn>CS1573;CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

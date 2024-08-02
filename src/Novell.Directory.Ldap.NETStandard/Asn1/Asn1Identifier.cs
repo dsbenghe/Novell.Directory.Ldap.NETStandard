@@ -115,7 +115,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an Asn1Identifier directly from an InputStream and
         ///     save the encoded length of the Asn1Identifier.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     The input stream to decode from.
         /// </param>
         public Asn1Identifier(Stream inRenamed)
@@ -189,7 +189,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an Asn1Identifier directly from an InputStream and
         ///     save the encoded length of the Asn1Identifier, but reuse the object.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     The input stream to decode from.
         /// </param>
         public void Reset(Stream inRenamed)

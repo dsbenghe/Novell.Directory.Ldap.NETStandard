@@ -148,15 +148,6 @@ namespace Novell.Directory.Ldap
         ///     If locale is null, a basic String.compareTo method is used for
         ///     collation.  If non-null, a locale-specific collation is used.
         /// </summary>
-        /// <returns>
-        ///     The locale if one has been specified.
-        /// </returns>
-        /// <summary>
-        ///     Sets the locale to be used for sorting.
-        /// </summary>
-        /// <param name="locale">
-        ///     The locale to be used for sorting.
-        /// </param>
         public virtual CultureInfo Locale
         {
             get => _location;
