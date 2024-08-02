@@ -234,17 +234,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         public string RequestDn => ((IRfcRequest)_op).GetRequestDn();
 
         /// <summary>
-        ///     returns the original request in this message.
+        ///     The original request in this message.
         /// </summary>
+        /// <param name="value">
+        ///     the original request for this response.
+        /// </param>
         /// <returns>
         ///     the original msg request for this response.
         /// </returns>
-        /// <summary>
-        ///     sets the original request in this message.
-        /// </summary>
-        /// <param name="msg">
-        ///     the original request for this response.
-        /// </param>
         public LdapMessage RequestingMessage { get; set; }
 
         // *************************************************************************

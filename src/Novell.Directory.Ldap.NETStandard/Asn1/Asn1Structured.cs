@@ -119,7 +119,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Adds a new Asn1Object to the end of this Asn1Structured
         ///     object.
         /// </summary>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     The Asn1Object to add to this Asn1Structured
         ///     object.
         /// </param>
@@ -145,7 +145,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The index into the Asn1Structured object where
         ///     this new ANS1Object will be placed.
         /// </param>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     The Asn1Object to set in this Asn1Structured
         ///     object.
         /// </param>

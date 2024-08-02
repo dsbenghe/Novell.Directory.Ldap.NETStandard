@@ -15,7 +15,7 @@ namespace Novell.Directory.Ldap.NETStandard.StressTests
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
                 .Enrich.WithThreadId()
-                .WriteTo.LiterateConsole(LogEventLevel.Verbose, "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
+                .WriteTo.Console(LogEventLevel.Verbose, "{Timestamp:HH:mm} [{Level}] ({ThreadId}) {Message}{NewLine}{Exception}")
                 .CreateLogger();
             var loggerFactory = new LoggerFactory().AddSerilog();
             Logger.Factory = loggerFactory;

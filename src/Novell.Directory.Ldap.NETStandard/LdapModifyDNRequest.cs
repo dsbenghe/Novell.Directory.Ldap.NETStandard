@@ -29,8 +29,8 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap ModifyDN request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
     /*
      *       ModifyDNRequest ::= [APPLICATION 12] SEQUENCE {
      *               entry           LdapDN,

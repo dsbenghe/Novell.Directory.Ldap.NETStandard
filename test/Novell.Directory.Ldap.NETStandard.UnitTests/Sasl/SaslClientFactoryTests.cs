@@ -58,8 +58,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests.Sasl
             conn.RegisterSaslClientFactory(factory);
 
             var factories = conn.GetRegisteredSaslClientFactories();
-            Assert.NotNull(factories);
-            Assert.Equal(1, factories.Count);
+            Assert.Single(factories);
             Assert.Equal(mechanism, factories.Single().SupportedMechanisms.Single());
         }
 

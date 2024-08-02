@@ -29,12 +29,12 @@ namespace Novell.Directory.Ldap
         internal static bool IsNotEmpty<T>(this IReadOnlyCollection<T> coll) => !IsEmpty(coll);
 
         /// <summary>
-        /// Shortcut for <see cref="UTF8Encoding.GetBytes"/>.
+        /// Shortcut for <see cref="Encoding.GetBytes(string)">UTF8Encoding.GetBytes</see>.
         /// </summary>
         internal static byte[] ToUtf8Bytes(this string input) => Encoding.UTF8.GetBytes(input);
 
         /// <summary>
-        /// Shortcut for <see cref="UTF8Encoding.GetString"/>
+        /// Shortcut for <see cref="Encoding.GetString(byte[])">UTF8Encoding.GetString</see>.
         /// Will return an empty string if <paramref name="input"/> is null or empty.
         /// </summary>
         internal static string ToUtf8String(this byte[] input)

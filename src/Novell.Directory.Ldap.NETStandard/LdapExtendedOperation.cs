@@ -30,8 +30,10 @@ namespace Novell.Directory.Ldap
     ///     operation, known to a particular server, and the data associated
     ///     with that extended operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapResponseQueue)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints,LdapResponseQueue)"/>
     public class LdapExtendedOperation
     {
         public virtual DebugId DebugId { get; } = DebugId.ForType<LdapExtendedOperation>();

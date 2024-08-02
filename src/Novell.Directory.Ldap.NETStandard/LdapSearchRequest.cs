@@ -30,8 +30,8 @@ namespace Novell.Directory.Ldap
     /// <summary>
     ///     Represents an Ldap Search request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
     /*
      *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
      *               baseObject      LdapDN,
@@ -109,7 +109,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request.
         /// </summary>
-        /// <param name="base">
+        /// <param name="baseRenamed">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -159,10 +159,13 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="LdapConnection.SearchAsync">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints">
-        /// </seealso>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapSearchConstraints"/>
         public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
@@ -176,7 +179,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request with a filter in Asn1 format.
         /// </summary>
-        /// <param name="base">
+        /// <param name="baseRenamed">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -226,10 +229,13 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="LdapConnection.SearchAsync">
-        /// </seealso>
-        /// <seealso cref="LdapSearchConstraints">
-        /// </seealso>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapSearchConstraints"/>
         public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(

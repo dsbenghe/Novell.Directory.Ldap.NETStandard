@@ -199,21 +199,14 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Sets a referral that could not be processed.
+        /// Gets the referral that could not be processed.  If multiple referrals
+        /// could not be processed, the method returns one of them.
         /// </summary>
-        /// <param name="url">
+        /// <param name="value">
         ///     The referral URL that could not be processed.
         /// </param>
-        public string FailedReferral
-        {
-            /* Gets the referral that could not be processed.  If multiple referrals
-            * could not be processed, the method returns one of them.
-            *
-            * @return the referral that could not be followed.
-            */
-            get;
-            set;
-        }
+        /// <returns>the referral that could not be followed.</returns>
+        public string FailedReferral { get; set; }
 
         /// <summary>
         ///     Gets the list of referral URLs (Ldap URLs to other servers) returned by

@@ -467,18 +467,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Retrieves the identifier tag for this message.
-        ///     An identifier can be associated with a message with the.
-        ///     <code>setTag</code> method.
-        ///     Tags are set by the application and not by the API or the server.
-        ///     If a server response. <code>isRequest() == false</code> has no tag,
-        ///     the tag associated with the corresponding server request is used.
-        /// </summary>
-        /// <returns>
-        ///     the identifier associated with this message or. <code>null</code>
-        ///     if none.
-        /// </returns>
-        /// <summary>
         ///     Sets a string identifier tag for this message.
         ///     This method allows an API to set a tag and later identify messages
         ///     by retrieving the tag associated with the message.
@@ -491,14 +479,11 @@ namespace Novell.Directory.Ldap
         ///     The application can explicitly set a different value in a
         ///     response message.
         ///     To set a value in a server request, for example an
-        ///     {@link LdapSearchRequest}, you must create the object,
+        ///     <see cref="LdapSearchRequest"/>, you must create the object,
         ///     set the tag, and use the
-        ///     {@link LdapConnection.SendRequest LdapConnection.sendRequest()}
+        ///     <see cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
         ///     method to send it to the server.
         /// </summary>
-        /// <param name="stringTag">
-        ///     the String assigned to identify this message.
-        /// </param>
         public string Tag
         {
             get

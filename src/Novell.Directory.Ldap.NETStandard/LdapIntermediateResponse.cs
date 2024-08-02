@@ -52,19 +52,17 @@ namespace Novell.Directory.Ldap
         {
         }
 
-        /**
-         * Registers a class to be instantiated on receipt of a extendedresponse
-         * with the given OID.
-         *
-         * <p>Any previous registration for the OID is overridden. The
-         *  extendedResponseClass object MUST be an extension of
-         *  LdapIntermediateResponse. </p>
-         *
-         * @param oid            The object identifier of the control.
-         * <br><br>
-         * @param extendedResponseClass  A class which can instantiate an
-         *                                LdapIntermediateResponse.
-         */
+        /// <summary>
+        /// Registers a class to be instantiated on receipt of a extendedresponse
+        /// with the given OID.
+        /// </summary>
+        /// <remarks>
+        /// Any previous registration for the OID is overridden. The
+        /// extendedResponseClass object MUST be an extension of
+        /// LdapIntermediateResponse.
+        /// </remarks>
+        /// <param name="oid">The object identifier of the control.</param>
+        /// <param name="extendedResponseClass">A class which can instantiate an LdapIntermediateResponse.</param>
         public static void Register(string oid, Type extendedResponseClass)
         {
             RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
@@ -75,11 +73,8 @@ namespace Novell.Directory.Ldap
             return RegisteredResponses;
         }
 
-        /**
-         * Returns the message identifier of the response.
-         *
-         * @return OID of the response.
-         */
+        /// <summary>Returns the message identifier of the response.</summary>
+        /// <returns>OID of the response.</returns>
         public string GetId()
         {
             var respOid =
@@ -92,11 +87,8 @@ namespace Novell.Directory.Ldap
             return respOid.StringValue();
         }
 
-        /**
-         * Returns the value part of the response in raw bytes.
-         *
-         * @return The value of the response.
-         */
+        /// <summary>Returns the value part of the response in raw bytes.</summary>
+        /// <returns>The value of the response.</returns>
         public byte[] GetValue()
         {
             var tempString =

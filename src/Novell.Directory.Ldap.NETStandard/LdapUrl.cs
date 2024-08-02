@@ -33,8 +33,12 @@ namespace Novell.Directory.Ldap
     ///     An LdapUrl object can be passed to LdapConnection.search to retrieve
     ///     search results.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
     public class LdapUrl
     {
         private const int DefaultScope = LdapConnection.ScopeBase;

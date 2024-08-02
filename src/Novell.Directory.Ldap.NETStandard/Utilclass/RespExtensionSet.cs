@@ -50,10 +50,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         public int Count => _map.Count;
 
-        /* Adds a responseExtension to the current list of registered responses.
-        *
-        */
-
+        /// <summary>
+        ///     Adds a responseExtension to the current list of registered responses.
+        /// </summary>
         public void RegisterResponseExtension(string oid, Type extClass)
         {
             _map.TryAdd(oid, extClass);
@@ -76,11 +75,11 @@ namespace Novell.Directory.Ldap.Utilclass
             return GetEnumerator();
         }
 
-        /* Searches the list of registered responses for a mathcing response.  We
-         * search using the OID string.  If a match is found we return the
-         * Class name that was provided to us on registration.
-         */
-
+        /// <summary>
+        /// Searches the list of registered responses for a matching response.  We
+        /// search using the OID string.  If a match is found we return the
+        /// Class name that was provided to us on registration.
+        /// </summary>
         public Type FindResponseExtension(string searchOid)
         {
             _map.TryGetValue(searchOid, out var retValue);

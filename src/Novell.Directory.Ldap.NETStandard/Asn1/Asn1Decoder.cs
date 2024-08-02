@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from a byte array.
         /// </summary>
-        /// <param name="value">
+        /// <param name="valueRenamed">
         ///     A byte array that points to the encoded Asn1 data.
         /// </param>
         Asn1Object Decode(byte[] valueRenamed);
@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         Asn1Object Decode(Stream inRenamed);
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     the number of bytes decoded, so you know when the structured
         ///     type has decoded all of its components.
         /// </param>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         Asn1Object Decode(Stream inRenamed, int[] length);
@@ -77,7 +77,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode a BOOLEAN directly from a stream. Call this method when you
         ///     know that the next ASN.1 encoded element is a BOOLEAN.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     know that the next ASN.1 encoded element is a Numeric
         ///     Can be used to decodes INTEGER and ENUMERATED types.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
@@ -113,7 +113,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an OCTET_STRING directly from a stream. Call this method when you
         ///     know that the next ASN.1 encoded element is a OCTET_STRING.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
@@ -131,7 +131,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode a CharacterString directly from a stream.
         ///     Decodes any of the specialized character strings.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">

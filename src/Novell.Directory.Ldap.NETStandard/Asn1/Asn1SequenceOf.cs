@@ -91,7 +91,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.  Sometimes a developer might want to pass
         ///     in his/her own decoder object.
         /// </param>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len)

@@ -188,20 +188,9 @@ namespace Novell.Directory.Ldap.Controls
         }
 
         /// <summary>
-        ///     Returns true if entry change controls are to be returned with the
-        ///     search results.
-        /// </summary>
-        /// <returns>
-        ///     true if entry change controls are to be returned with the
-        ///     search results. Otherwise, false is returned.
-        /// </returns>
-        /// <summary>
         ///     When set to true, requests that entry change controls be returned with
         ///     the search results.
         /// </summary>
-        /// <param name="returnControls">
-        ///     true to return entry change controls.
-        /// </param>
         public bool ReturnControls
         {
             get => _mReturnControls;
@@ -215,19 +204,9 @@ namespace Novell.Directory.Ldap.Controls
         }
 
         /// <summary>
-        ///     getChangesOnly returns true if only changes are to be returned.
-        ///     Results from the initial search are not returned.
-        /// </summary>
-        /// <returns>
-        ///     true of only changes are to be returned.
-        /// </returns>
-        /// <summary>
         ///     When set to true, requests that only changes be returned, results from
         ///     the initial search are not returned.
         /// </summary>
-        /// <param name="changesOnly">
-        ///     true to skip results for the initial search.
-        /// </param>
         public bool ChangesOnly
         {
             get => _mChangesOnly;

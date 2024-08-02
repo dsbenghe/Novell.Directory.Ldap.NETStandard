@@ -13,18 +13,6 @@ namespace Novell.Directory.Ldap
         ///     The Ldap protocol version, use Ldap_V3.
         ///     Ldap_V2 is not supported.
         /// </param>
-        /// <param name="dn">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name.
-        /// </param>
-        /// <param name="passwd">
-        ///     If non-null and non-empty, specifies that the
-        ///     connection and all operations through it should
-        ///     be authenticated with dn as the distinguished
-        ///     name and passwd as password.
-        /// </param>
         /// <param name="cont">
         ///     Any controls that apply to the simple bind request,
         ///     or null if none.

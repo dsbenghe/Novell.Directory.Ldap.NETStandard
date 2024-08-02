@@ -31,8 +31,12 @@ namespace Novell.Directory.Ldap
     ///     Encapsulates a single search result that is in response to an asynchronous
     ///     search operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync">
-    /// </seealso>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
     public class LdapSearchResult : LdapMessage
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResult>();
