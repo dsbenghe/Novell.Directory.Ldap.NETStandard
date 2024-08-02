@@ -171,9 +171,6 @@ namespace Novell.Directory.Ldap
         ///     class factory to construct a socket connection during
         ///     LdapConnection.connect method.
         /// </summary>
-        /// <param name="factory">
-        ///     An object capable of producing a Socket.
-        /// </param>
         public LdapConnection()
             : this(new LdapConnectionOptions())
         {
@@ -272,9 +269,6 @@ namespace Novell.Directory.Ldap
         ///     through this connection (unless a different set of constraints is
         ///     specified when calling an operation method).
         /// </summary>
-        /// <returns>
-        ///     The set of default constraints that apply to this connection.
-        /// </returns>
         /// <summary>
         ///     Sets the constraints that apply to all operations performed through
         ///     this connection (unless a different set of constraints is specified
@@ -282,14 +276,6 @@ namespace Novell.Directory.Ldap
         ///     which is passed to this method sets all constraints, while an
         ///     LdapConstraints object passed to this method sets only base constraints.
         /// </summary>
-        /// <param name="cons">
-        ///     An LdapConstraints or LdapSearchConstraints Object
-        ///     containing the constraints values to set.
-        /// </param>
-        /// <seealso cref="Constraints()">
-        /// </seealso>
-        /// <seealso cref="SearchConstraints()">
-        /// </seealso>
         public LdapConstraints Constraints
         {
             get => (LdapConstraints)_defSearchCons.Clone();
@@ -1578,9 +1564,6 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Synchronously disconnect from the server.
         /// </summary>
-        /// <param name="how">
-        ///     true if application call disconnect API, false if finalize.
-        /// </param>
         private void DisconnectImpl()
         {
             // disconnect doesn't affect other clones
@@ -2830,10 +2813,8 @@ namespace Novell.Directory.Ldap
         ///     LDAPException     This exception occurs if the schema entry
         ///     cannot be retrieved with this connection.
         /// </exception>
-        /// <seealso cref="GetSchemaDnAsync">
-        /// </seealso>
-        /// <seealso cref="GetSchemaDnAsync">
-        /// </seealso>
+        /// <seealso cref="GetSchemaDnAsync()"/>
+        /// <seealso cref="GetSchemaDnAsync(string)"/>
         public async Task<LdapSchema> FetchSchemaAsync(string schemaDn)
         {
             var ent = await ReadAsync(schemaDn, LdapSchema.SchemaTypeNames).ConfigureAwait(false);
@@ -2858,10 +2839,7 @@ namespace Novell.Directory.Ldap
         ///     cannot be retrieved, or if the subschemaSubentry attribute associated
         ///     with the root DSE contains multiple values.
         /// </exception>
-        /// <seealso cref="FetchSchemaAsync">
-        /// </seealso>
-        /// <seealso cref="ModifyAsync">
-        /// </seealso>
+        /// <seealso cref="FetchSchemaAsync"/>
         public Task<string> GetSchemaDnAsync()
         {
             return GetSchemaDnAsync(string.Empty);
@@ -2887,10 +2865,7 @@ namespace Novell.Directory.Ldap
         ///     value is passed as dn, if the subschemasubentry attribute cannot
         ///     be retrieved, or the subschemasubentry contains multiple values.
         /// </exception>
-        /// <seealso cref="FetchSchemaAsync">
-        /// </seealso>
-        /// <seealso cref="ModifyAsync">
-        /// </seealso>
+        /// <seealso cref="FetchSchemaAsync"/>
         public async Task<string> GetSchemaDnAsync(string dn)
         {
             string[] attrSubSchema = { "subschemaSubentry" };

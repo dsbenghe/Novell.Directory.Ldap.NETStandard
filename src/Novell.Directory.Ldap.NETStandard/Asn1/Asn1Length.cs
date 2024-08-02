@@ -46,7 +46,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1Length object by decoding data from an
         ///     input stream.
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public Asn1Length(Stream inRenamed)
@@ -65,7 +65,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.
         ///     Note: this was added for optimization of Asn1.LBERdecoder.decode().
         /// </summary>
-        /// <param name="in">
+        /// <param name="inRenamed">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public void Reset(Stream inRenamed)

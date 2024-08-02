@@ -61,7 +61,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="origRequest">
         ///     the original request data.
         /// </param>
-        /// <param name="base">
+        /// <param name="baseRenamed">
         ///     if not null, replaces the dn of the original request.
         /// </param>
         internal RfcAddRequest(Asn1Object[] origRequest, string baseRenamed)

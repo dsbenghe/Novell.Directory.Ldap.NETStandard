@@ -187,7 +187,7 @@ namespace Novell.Directory.Ldap
         ///     the LdapBindHandler or LdapAuthHandler interface.
         ///     It is ignored for asynchronous operations.
         /// </param>
-        /// <param name="hop_limit">
+        /// <param name="hopLimit">
         ///     The maximum number of referrals to follow in a
         ///     sequence during automatic referral following.
         ///     The default value is 10. A value of 0 means no limit.
@@ -216,18 +216,6 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
-        ///     Returns the number of results to block on during receipt of search
-        ///     results.
-        ///     This should be 0 if intermediate reults are not needed,
-        ///     and 1 if results are to be processed as they come in. A value of
-        ///     indicates block until all results are received.  Default:.
-        /// </summary>
-        /// <returns>
-        ///     The the number of results to block on.
-        /// </returns>
-        /// <seealso cref="BatchSize">
-        /// </seealso>
-        /// <summary>
         ///     Specifies the number of results to return in a batch.
         ///     Specifying 0 means to block until all results are received.
         ///     Specifying 1 means to return results one result at a time.  Default: 1
@@ -235,11 +223,12 @@ namespace Novell.Directory.Ldap
         ///     and 1 if results are to be processed as they come in.  The
         ///     default is 1.
         /// </summary>
-        /// <param name="batchSize">
+        /// <param name="value">
         ///     The number of results to block on.
         /// </param>
-        /// <seealso cref="BatchSize">
-        /// </seealso>
+        /// <returns>
+        ///     The the number of results to block on.
+        /// </returns>
         public int BatchSize { get; set; } = 1;
 
         /// <summary>
@@ -252,16 +241,7 @@ namespace Novell.Directory.Ldap
         ///         <li>DEREF_ALWAYS</li>
         ///     </ul>
         /// </summary>
-        /// <returns>
-        ///     The setting for dereferencing aliases.
-        /// </returns>
-        /// <seealso cref="Dereference">
-        /// </seealso>
-        /// <summary>
-        ///     Sets a preference indicating whether or not aliases should be
-        ///     dereferenced, and if so, when.
-        /// </summary>
-        /// <param name="dereference">
+        /// <param name="value">
         ///     Specifies how aliases are dereference and can be set
         ///     to one of the following:.
         ///     <ul>
@@ -281,24 +261,11 @@ namespace Novell.Directory.Ldap
         ///         </li>
         ///     </ul>
         /// </param>
-        /// <seealso cref="Dereference">
-        /// </seealso>
+        /// <returns>
+        ///     The setting for dereferencing aliases.
+        /// </returns>
         public int Dereference { get; set; } = DerefNever;
 
-        /// <summary>
-        ///     Returns the maximum number of search results to be returned for
-        ///     a search operation. A value of 0 means no limit.  Default: 1000
-        ///     The search operation will be terminated with an
-        ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
-        ///     exceed the maximum.
-        /// </summary>
-        /// <returns>
-        ///     The value for the maximum number of results to return.
-        /// </returns>
-        /// <seealso cref="MaxResults">
-        /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
-        /// </seealso>
         /// <summary>
         ///     Sets the maximum number of search results to be returned from a
         ///     search operation. The value 0 means no limit.  The default is 1000.
@@ -306,30 +273,15 @@ namespace Novell.Directory.Ldap
         ///     LdapException.SIZE_LIMIT_EXCEEDED if the number of results
         ///     exceed the maximum.
         /// </summary>
-        /// <param name="maxResults">
+        /// <param name="value">
         ///     Maximum number of search results to return.
         /// </param>
-        /// <seealso cref="MaxResults">
-        /// </seealso>
-        /// <seealso cref="LdapException.SizeLimitExceeded">
-        /// </seealso>
+        /// <returns>
+        ///     The value for the maximum number of results to return.
+        /// </returns>
+        /// <seealso cref="LdapException.SizeLimitExceeded"/>
         public int MaxResults { get; set; } = 1000;
 
-        /// <summary>
-        ///     Returns the maximum number of seconds that the server waits when
-        ///     returning search results.
-        ///     The search operation will be terminated with an
-        ///     LdapException.TIME_LIMIT_EXCEEDED if the operation exceeds the time
-        ///     limit.
-        /// </summary>
-        /// <returns>
-        ///     The maximum number of seconds the server waits for search'
-        ///     results.
-        /// </returns>
-        /// <seealso cref="ServerTimeLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
-        /// </seealso>
         /// <summary>
         ///     Sets the maximum number of seconds that the server is to wait when
         ///     returning search results.
@@ -338,13 +290,14 @@ namespace Novell.Directory.Ldap
         ///     limit.
         ///     The parameter is only recognized on search operations.
         /// </summary>
-        /// <param name="seconds">
+        /// <param name="value">
         ///     The number of seconds to wait for search results.
         /// </param>
-        /// <seealso cref="ServerTimeLimit">
-        /// </seealso>
-        /// <seealso cref="LdapException.TimeLimitExceeded">
-        /// </seealso>
+        /// <returns>
+        ///     The maximum number of seconds the server waits for search'
+        ///     results.
+        /// </returns>
+        /// <seealso cref="LdapException.TimeLimitExceeded"/>
         public int ServerTimeLimit { get; set; }
     }
 }
