@@ -7,8 +7,8 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
     public class RDNTests
     {
-        private readonly MethodInfo _equalAttrTypeMethod = typeof(Rdn).GetMethod("EqualAttrType", BindingFlags.Instance | BindingFlags.NonPublic);
-        private bool EqualAttrTypeCheck(string val1, string val2) => (bool)_equalAttrTypeMethod.Invoke(new Rdn(), new object[] { val1, val2 });
+        private static readonly Func<string, string, bool> _equalAttrTypeCheck = typeof(Rdn).GetMethod("EqualAttrType", BindingFlags.Static | BindingFlags.NonPublic)
+            !.CreateDelegate<Func<string, string, bool>>();
 
         [Fact]
         public void EqualAttrType_OIDs_CompareTrue()
@@ -16,7 +16,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             var val1 = "1.3.6.1.4.1.1466.20036";
             var val2 = "1.3.6.1.4.1.1466.20036";
 
-            var result = EqualAttrTypeCheck(val1, val2);
+            var result = _equalAttrTypeCheck(val1, val2);
 
             Assert.True(result);
         }
@@ -27,7 +27,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             var val1 = "Name";
             var val2 = "Name";
 
-            var result = EqualAttrTypeCheck(val1, val2);
+            var result = _equalAttrTypeCheck(val1, val2);
 
             Assert.True(result);
         }
@@ -38,7 +38,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             var val1 = "NAME";
             var val2 = "Name";
 
-            var result = EqualAttrTypeCheck(val1, val2);
+            var result = _equalAttrTypeCheck(val1, val2);
 
             Assert.True(result);
         }
@@ -49,8 +49,7 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
             var val1 = "Name";
             var val2 = "1.3.6.1.4.1.1466.20036";
 
-            var ex = Assert.Throws<TargetInvocationException>(() => { EqualAttrTypeCheck(val1, val2); });
-            Assert.IsType<ArgumentException>(ex.InnerException);
+            Assert.Throws<ArgumentException>(() => { _equalAttrTypeCheck(val1, val2); });
         }
 
         [Fact]

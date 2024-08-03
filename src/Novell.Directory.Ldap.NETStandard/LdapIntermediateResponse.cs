@@ -1,4 +1,5 @@
-﻿/******************************************************************************
+﻿#nullable enable
+/******************************************************************************
  * The MIT License
  * Copyright (c) 2003 Novell Inc.  www.novell.com
  *
@@ -38,7 +39,7 @@ namespace Novell.Directory.Ldap
     public class LdapIntermediateResponse : LdapResponse
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapIntermediateResponse>();
-        private static readonly RespExtensionSet RegisteredResponses = new RespExtensionSet();
+        private static readonly RespExtensionSet<LdapIntermediateResponse> RegisteredResponses = new ();
 
         /**
          * Creates an LdapIntermediateResponse object which encapsulates
@@ -62,43 +63,39 @@ namespace Novell.Directory.Ldap
         /// LdapIntermediateResponse.
         /// </remarks>
         /// <param name="oid">The object identifier of the control.</param>
-        /// <param name="extendedResponseClass">A class which can instantiate an LdapIntermediateResponse.</param>
-        public static void Register(string oid, Type extendedResponseClass)
+        /// <param name="responseFactory">A factory to translate <see cref="RfcLdapMessage"/> into <typeparamref name="TIntermediateResponseClass"/>.</param>
+        /// <typeparam name="TIntermediateResponseClass">A class extending <see cref="LdapIntermediateResponse"/>, that will be used for <paramref name="oid"/>.</typeparam>
+        public static void Register<TIntermediateResponseClass>(string oid, Func<RfcLdapMessage, TIntermediateResponseClass> responseFactory)
+            where TIntermediateResponseClass : LdapIntermediateResponse
         {
-            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
+            RegisteredResponses.RegisterResponseExtension(oid, responseFactory);
         }
 
-        public static RespExtensionSet GetRegisteredResponses()
+        public static RespExtensionSet<LdapIntermediateResponse> GetRegisteredResponses()
         {
             return RegisteredResponses;
         }
 
         /// <summary>Returns the message identifier of the response.</summary>
         /// <returns>OID of the response.</returns>
-        public string GetId()
+        public string? GetId()
         {
             var respOid =
                 ((RfcIntermediateResponse)Message.Response).GetResponseName();
-            if (respOid == null)
-            {
-                return null;
-            }
 
-            return respOid.StringValue();
+            return respOid?.StringValue();
         }
 
         /// <summary>Returns the value part of the response in raw bytes.</summary>
         /// <returns>The value of the response.</returns>
-        public byte[] GetValue()
+#pragma warning disable SA1011 // Closing square brackets should be spaced correctly
+        public byte[]? GetValue()
+#pragma warning restore SA1011
         {
             var tempString =
                 ((RfcIntermediateResponse)Message.Response).GetResponse();
-            if (tempString == null)
-            {
-                return null;
-            }
 
-            return tempString.ByteValue();
+            return tempString?.ByteValue();
         }
     }
 }

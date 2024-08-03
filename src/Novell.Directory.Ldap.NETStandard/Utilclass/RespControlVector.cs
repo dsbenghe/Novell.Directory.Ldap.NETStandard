@@ -1,4 +1,5 @@
-﻿/******************************************************************************
+﻿#nullable enable
+/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -22,8 +23,8 @@
 *******************************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -34,20 +35,18 @@ namespace Novell.Directory.Ldap.Utilclass
     /// </summary>
     public class RespControlVector
     {
-        private readonly object _lockObject = new object();
-        private readonly List<RegisteredControl> _controls = new List<RegisteredControl>();
+        public delegate LdapControl LdapControlFactory(string oid, bool critical, byte[] value);
+
+        private readonly ConcurrentDictionary<string, LdapControlFactory> _controls = new (StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Adds a control to the current list of registered response controls.
         /// </summary>
         /// <param name="oid"></param>
-        /// <param name="controlClass"></param>
-        public void RegisterResponseControl(string oid, Type controlClass)
+        /// <param name="controlFactory"></param>
+        public void RegisterResponseControl(string oid, LdapControlFactory controlFactory)
         {
-            lock (_lockObject)
-            {
-                _controls.Add(new RegisteredControl(oid, controlClass));
-            }
+            _controls[oid] = controlFactory;
         }
 
         /// <summary>
@@ -57,32 +56,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </summary>
         /// <param name="searchOid"></param>
         /// <returns></returns>
-        public Type FindResponseControl(string searchOid)
+        public bool TryFindResponseControlFactory(string searchOid, [MaybeNullWhen(false)] out LdapControlFactory responseFactory)
         {
-            lock (_lockObject)
-            {
-                return _controls
-                    .SingleOrDefault(x => x.MyOid.Equals(searchOid, StringComparison.OrdinalIgnoreCase))
-                    ?.MyClass;
-            }
-        }
-
-        /// <summary>
-        ///     Inner class defined to create a temporary object to encapsulate
-        ///     all registration information about a response control.  This class
-        ///     cannot be used outside this class.
-        /// </summary>
-        private class RegisteredControl
-        {
-            public Type MyClass { get; }
-
-            public string MyOid { get; }
-
-            public RegisteredControl(string oid, Type controlClass)
-            {
-                MyOid = oid;
-                MyClass = controlClass;
-            }
+            return _controls.TryGetValue(searchOid, out responseFactory);
         }
     }
 }

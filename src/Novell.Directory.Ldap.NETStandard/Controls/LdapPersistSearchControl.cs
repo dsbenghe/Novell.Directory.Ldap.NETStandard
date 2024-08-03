@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.Controls
                 /* Register the Entry Change control class which is returned by the
                 * server in response to a persistent search request
                 */
-                Register(ResponseOid, typeof(LdapEntryChangeControl));
+                Register(ResponseOid, (oid, critical, value) => new LdapEntryChangeControl(oid, critical, value));
             }
         }
 

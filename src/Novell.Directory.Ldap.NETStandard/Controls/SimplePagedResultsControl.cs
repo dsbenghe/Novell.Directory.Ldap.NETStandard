@@ -25,7 +25,7 @@ namespace Novell.Directory.Ldap.Controls
         {
             try
             {
-                Register(RequestOid, typeof(SimplePagedResultsControl));
+                Register(RequestOid, (oid, critical, value) => new SimplePagedResultsControl(oid, critical, value));
             }
             catch (Exception ex)
             {
@@ -49,7 +49,6 @@ namespace Novell.Directory.Ldap.Controls
             SetValue(_request.GetEncoding(new LberEncoder()));
         }
 
-        [UsedImplicitly]
         public SimplePagedResultsControl(string oid, bool critical, byte[] values)
             : base(oid, critical, values)
         {

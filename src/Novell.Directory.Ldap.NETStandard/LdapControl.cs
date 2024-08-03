@@ -189,12 +189,12 @@ namespace Novell.Directory.Ldap
         /// <param name="oid">
         ///     The object identifier of the control.
         /// </param>
-        /// <param name="controlClass">
-        ///     A class which can instantiate an LdapControl.
+        /// <param name="controlFactory">
+        ///     A factory which can instantiate an LdapControl.
         /// </param>
-        public static void Register(string oid, Type controlClass)
+        public static void Register(string oid, RespControlVector.LdapControlFactory controlFactory)
         {
-            RegisteredControls.RegisterResponseControl(oid, controlClass);
+            RegisteredControls.RegisterResponseControl(oid, controlFactory);
         }
     }
 }

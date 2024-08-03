@@ -37,11 +37,6 @@ namespace Novell.Directory.Ldap
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapExtendedResponse>();
 
-        static LdapExtendedResponse()
-        {
-            RegisteredResponses = new RespExtensionSet();
-        }
-
         /// <summary>
         ///     Creates an LdapExtendedResponse object which encapsulates
         ///     a server response to an asynchronous extended operation request.
@@ -70,7 +65,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        public static RespExtensionSet RegisteredResponses { get; }
+        public static RespExtensionSet<LdapExtendedResponse> RegisteredResponses { get; } = new ();
 
         /// <summary>
         ///     Returns the value part of the response in raw bytes.
@@ -99,13 +94,16 @@ namespace Novell.Directory.Ldap
         /// <param name="oid">
         ///     The object identifier of the control.
         /// </param>
-        /// <param name="extendedResponseClass">
-        ///     A class which can instantiate an
-        ///     LDAPExtendedResponse.
+        /// <param name="responseFactory">
+        ///     A delegate which can instantiate a <see cref="LdapExtendedResponse"/>.
         /// </param>
-        public static void Register(string oid, Type extendedResponseClass)
+        /// <typeparam name="TExtendedResponseClass">
+        ///     A class extending <see cref="LdapExtendedResponse"/>.
+        /// </typeparam>
+        public static void Register<TExtendedResponseClass>(string oid, Func<RfcLdapMessage, TExtendedResponseClass> responseFactory)
+            where TExtendedResponseClass : LdapExtendedResponse
         {
-            RegisteredResponses.RegisterResponseExtension(oid, extendedResponseClass);
+            RegisteredResponses.RegisterResponseExtension(oid, responseFactory);
         }
     }
 }

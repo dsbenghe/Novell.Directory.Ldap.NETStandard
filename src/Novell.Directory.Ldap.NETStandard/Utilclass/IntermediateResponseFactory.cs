@@ -22,8 +22,6 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Rfc2251;
-using System;
-using System.Reflection;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -55,51 +53,16 @@ namespace Novell.Directory.Ldap.Utilclass
 
             // Get the oid stored in the Extended response
             var inOid = tempResponse.GetId();
+            if (inOid == null)
+            {
+                return tempResponse;
+            }
 
             var regExtResponses =
                 LdapIntermediateResponse.GetRegisteredResponses();
-            try
+            if (regExtResponses.TryFindResponseExtension(inOid, out var extRespFactory))
             {
-                var extRespClass = regExtResponses.FindResponseExtension(inOid);
-                if (extRespClass == null)
-                {
-                    return tempResponse;
-                }
-
-                Type[] argsClass = { typeof(RfcLdapMessage) };
-                object[] args = { inResponse };
-                Exception ex;
-                try
-                {
-                    var extConstructor = extRespClass.GetConstructor(argsClass);
-
-                    try
-                    {
-                        object resp = null;
-                        resp = extConstructor.Invoke(args);
-                        return (LdapIntermediateResponse)resp;
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        ex = e;
-                    }
-                    catch (TargetInvocationException e)
-                    {
-                        ex = e;
-                    }
-                }
-                catch (MissingMethodException e)
-                {
-                    // bad class was specified, fall through and return a
-                    // default  LDAPIntermediateResponse object
-                    ex = e;
-                }
-            }
-            catch (MissingFieldException ex)
-            {
-                // No match with the OID
-                // Do nothing. Fall through and construct a default LDAPControl object.
-                Logger.Log.LogWarning("Exception swallowed", ex);
+                return extRespFactory(inResponse);
             }
 
             // If we get here we did not have a registered extendedresponse
