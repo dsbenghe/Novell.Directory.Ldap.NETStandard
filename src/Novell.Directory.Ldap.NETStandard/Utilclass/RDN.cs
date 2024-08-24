@@ -167,7 +167,8 @@ namespace Novell.Directory.Ldap.Utilclass
         ///     thrown, either one or the other must used.  In the future an OID to name
         ///     translation can be used.
         /// </summary>
-        private bool EqualAttrType(string attr1, string attr2)
+        // Novell.Directory.Ldap.NETStandard.UnitTests.RDNTests uses reflection to access this! Change carefully!
+        private static bool EqualAttrType(string attr1, string attr2)
         {
             // If it starts with a number, it's considered an OID
             if (char.IsDigit(attr1[0]) != char.IsDigit(attr2[0]))

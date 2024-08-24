@@ -23,7 +23,6 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 using System;
-using System.Reflection;
 
 namespace Novell.Directory.Ldap
 {
@@ -540,62 +539,23 @@ namespace Novell.Directory.Ldap
         private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
         {
             var regControls = LdapControl.RegisteredControls;
-            try
+            /*
+            * search through the registered extension list to find the
+            * response control class
+            */
+            if (regControls.TryFindResponseControlFactory(oid, out var responseFactory))
             {
-                /*
-                * search through the registered extension list to find the
-                * response control class
-                */
-                var respCtlClass = regControls.FindResponseControl(oid);
-
-                // Did not find a match so return default LDAPControl
-                if (respCtlClass == null)
-                {
-                    return new LdapControl(oid, critical, valueRenamed);
-                }
-
-                /* If found, get LDAPControl constructor */
-                Type[] argsClass = { typeof(string), typeof(bool), typeof(byte[]) };
-                object[] args = { oid, critical, valueRenamed };
-                Exception ex = null;
                 try
                 {
-                    var ctlConstructor = respCtlClass.GetConstructor(argsClass);
-
-                    try
-                    {
-                        /* Call the control constructor for a registered Class*/
-                        object ctl = ctlConstructor.Invoke(args);
-                        return (LdapControl)ctl;
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        ex = e;
-                    }
-                    catch (TargetInvocationException e)
-                    {
-                        ex = e;
-                    }
-                    catch (Exception e)
-                    {
-                        // Could not create the ResponseControl object
-                        // All possible exceptions are ignored. We fall through
-                        // and create a default LDAPControl object
-                        ex = e;
-                    }
+                    return responseFactory(oid, critical, valueRenamed);
                 }
-                catch (MethodAccessException e)
+                catch (Exception e)
                 {
-                    // bad class was specified, fall through and return a
-                    // default LDAPControl object
-                    ex = e;
+                    // Could not create the ResponseControl object
+                    // All possible exceptions are ignored. We fall through
+                    // and create a default LDAPControl object
+                    Logger.Log.LogWarning("Exception swallowed", e);
                 }
-            }
-            catch (FieldAccessException ex)
-            {
-                // No match with the OID
-                // Do nothing. Fall through and construct a default LDAPControl object.
-                Logger.Log.LogWarning("Exception swallowed", ex);
             }
 
             // If we get here we did not have a registered response control

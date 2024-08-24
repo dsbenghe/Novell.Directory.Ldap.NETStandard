@@ -1,4 +1,5 @@
-﻿/******************************************************************************
+﻿#nullable enable
+/******************************************************************************
 * The MIT License
 * Copyright (c) 2003 Novell Inc.  www.novell.com
 *
@@ -21,10 +22,12 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Novell.Directory.Ldap.Rfc2251;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -33,13 +36,14 @@ namespace Novell.Directory.Ldap.Utilclass
     ///     so that it can be used to maintain a list of currently
     ///     registered extended responses.
     /// </summary>
-    public class RespExtensionSet : IEnumerable<Type>
+    /// <typeparam name="TOut">The base-class of the output.</typeparam>
+    public class RespExtensionSet<TOut> : IEnumerable<KeyValuePair<string, Func<RfcLdapMessage, TOut>>>
     {
-        private readonly ConcurrentDictionary<string, Type> _map;
+        private readonly ConcurrentDictionary<string, Func<RfcLdapMessage, TOut>> _map;
 
         public RespExtensionSet()
         {
-            _map = new ConcurrentDictionary<string, Type>();
+            _map = new ConcurrentDictionary<string, Func<RfcLdapMessage, TOut>>();
         }
 
         /// <summary>
@@ -51,11 +55,11 @@ namespace Novell.Directory.Ldap.Utilclass
         public int Count => _map.Count;
 
         /// <summary>
-        ///     Adds a responseExtension to the current list of registered responses.
+        ///     Adds or replaces <paramref name="responseFactory"/> to the current list of registered responses.
         /// </summary>
-        public void RegisterResponseExtension(string oid, Type extClass)
+        public void RegisterResponseExtension(string oid, Func<RfcLdapMessage, TOut> responseFactory)
         {
-            _map.TryAdd(oid, extClass);
+            _map[oid] = responseFactory;
         }
 
         /// <summary>
@@ -65,9 +69,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// <returns>
         ///     iterator over the responses in this set.
         /// </returns>
-        public IEnumerator<Type> GetEnumerator()
+        public IEnumerator<KeyValuePair<string, Func<RfcLdapMessage, TOut>>> GetEnumerator()
         {
-            return _map.Values.GetEnumerator();
+            return _map.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -80,10 +84,9 @@ namespace Novell.Directory.Ldap.Utilclass
         /// search using the OID string.  If a match is found we return the
         /// Class name that was provided to us on registration.
         /// </summary>
-        public Type FindResponseExtension(string searchOid)
+        public bool TryFindResponseExtension(string searchOid, [MaybeNullWhen(false)] out Func<RfcLdapMessage, TOut> responseFactory)
         {
-            _map.TryGetValue(searchOid, out var retValue);
-            return retValue;
+            return _map.TryGetValue(searchOid, out responseFactory);
         }
     }
 }

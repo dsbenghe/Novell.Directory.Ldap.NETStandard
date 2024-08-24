@@ -1,6 +1,5 @@
 ﻿using Novell.Directory.Ldap.Rfc2251;
 using System;
-using System.Reflection;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
@@ -42,52 +41,19 @@ namespace Novell.Directory.Ldap.Utilclass
             }
 
             var regExtResponses = LdapExtendedResponse.RegisteredResponses;
-            try
+            if (regExtResponses.TryFindResponseExtension(inOid, out var responseFactory))
             {
-                var extRespClass = regExtResponses.FindResponseExtension(inOid);
-                if (extRespClass == null)
-                {
-                    return tempResponse;
-                }
-
-                Type[] argsClass = { typeof(RfcLdapMessage) };
-                object[] args = { inResponse };
-                Exception ex;
                 try
                 {
-                    var extConstructor = extRespClass.GetConstructor(argsClass);
-                    try
-                    {
-                        object resp = null;
-                        resp = extConstructor.Invoke(args);
-                        return (LdapExtendedResponse)resp;
-                    }
-                    catch (UnauthorizedAccessException e)
-                    {
-                        ex = e;
-                    }
-                    catch (TargetInvocationException e)
-                    {
-                        ex = e;
-                    }
-                    catch (Exception e)
-                    {
-                        // Could not create the ResponseControl object
-                        // All possible exceptions are ignored. We fall through
-                        // and create a default LdapControl object
-                        ex = e;
-                    }
+                    return responseFactory(inResponse);
                 }
-                catch (MethodAccessException e)
+                catch (Exception e)
                 {
-                    // bad class was specified, fall through and return a
-                    // default  LdapExtendedResponse object
-                    ex = e;
+                    // Could not create the ResponseControl object
+                    // All possible exceptions are ignored. We fall through
+                    // and create a default LdapControl object
+                    Logger.Log.LogWarning("Exception swallowed", e);
                 }
-            }
-            catch (FieldAccessException ex)
-            {
-                Logger.Log.LogWarning("Exception swallowed", ex);
             }
 
             // If we get here we did not have a registered extendedresponse

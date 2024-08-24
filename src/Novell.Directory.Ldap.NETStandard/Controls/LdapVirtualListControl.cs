@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.Controls
                 */
                 try
                 {
-                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapVirtualListResponse"));
+                    Register(ResponseOid, (oid, critical, value) => new LdapVirtualListResponse(oid, critical, value));
                 }
                 catch (Exception e)
                 {

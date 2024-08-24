@@ -60,7 +60,7 @@ namespace Novell.Directory.Ldap.Controls
                 Reverse = true;
             }
 
-            var pos = myKey.IndexOf(":");
+            var pos = myKey.IndexOf(':');
             if (pos != -1)
             {
                 Key = myKey.Substring(0, pos - 0);

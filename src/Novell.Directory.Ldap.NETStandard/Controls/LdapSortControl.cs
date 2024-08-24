@@ -58,7 +58,7 @@ namespace Novell.Directory.Ldap.Controls
                 */
                 try
                 {
-                    Register(ResponseOid, Type.GetType("Novell.Directory.Ldap.Controls.LdapSortResponse"));
+                    Register(ResponseOid, (oid, critical, value) => new LdapSortResponse(oid, critical, value));
                 }
                 catch (Exception e)
                 {

@@ -6,7 +6,7 @@ namespace Novell.Directory.Ldap
     {
         static ExtensionRegistrations()
         {
-            LdapExtendedResponse.Register(LdapKnownOids.Extensions.WhoAmI, typeof(LdapWhoAmIResponse));
+            LdapExtendedResponse.Register(LdapKnownOids.Extensions.WhoAmI, message => new LdapWhoAmIResponse(message));
         }
 
         public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons = null)
