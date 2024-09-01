@@ -62,11 +62,11 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Replace the base if specified, otherwise keep original base
             if (baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
+                this[0] = new RfcLdapDn(baseRenamed);
             }
         }
 
-        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)get_Renamed(1);
+        public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)this[1];
 
         public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
         {
@@ -75,7 +75,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)this[0]).StringValue();
         }
 
         // *************************************************************************

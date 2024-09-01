@@ -262,8 +262,8 @@ namespace Novell.Directory.Ldap
                 // convert from RFC 2251 Controls to LDAPControl[].
                 if (asn1Ctrls != null)
                 {
-                    controls = new LdapControl[asn1Ctrls.Size()];
-                    for (var i = 0; i < asn1Ctrls.Size(); i++)
+                    controls = new LdapControl[asn1Ctrls.Count];
+                    for (var i = 0; i < asn1Ctrls.Count; i++)
                     {
                         /*
                                                 * At this point we have an RfcControl which needs to be
@@ -278,7 +278,7 @@ namespace Novell.Directory.Ldap
                                                 * we were parsing the control. Answer: By the time the
                                                 * code realizes that we have a control it is already too late.
                                                 */
-                        var rfcCtl = (RfcControl)asn1Ctrls.get_Renamed(i);
+                        var rfcCtl = asn1Ctrls[i];
                         var oid = rfcCtl.ControlType.StringValue();
                         var valueRenamed = rfcCtl.ControlValue.ByteValue();
                         var critical = rfcCtl.Criticality.BooleanValue();

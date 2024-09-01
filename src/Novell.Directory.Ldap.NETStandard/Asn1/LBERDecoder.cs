@@ -21,6 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -165,25 +166,25 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Decode a boolean directly from a stream.</summary>
-        public object DecodeBoolean(Stream inRenamed, int len)
+        public bool DecodeBoolean(Stream inRenamed, int len)
         {
             var lber = new byte[len];
 
-            var i = ReadInput(inRenamed, ref lber, 0, lber.Length);
+            var i = ReadInput(inRenamed, lber, 0, lber.Length);
 
             if (i != len)
             {
                 throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
             }
 
-            return lber[0] == 0x00 ? false : true;
+            return lber[0] != 0x00;
         }
 
         /// <summary>
         ///     Decode a Numeric type directly from a stream. Decodes INTEGER
         ///     and ENUMERATED types.
         /// </summary>
-        public object DecodeNumeric(Stream inRenamed, int len)
+        public long DecodeNumeric(Stream inRenamed, int len)
         {
             long l = 0;
             var r = (long)inRenamed.ReadByte();
@@ -216,7 +217,7 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an OctetString directly from a stream.</summary>
-        public object DecodeOctetString(Stream inRenamed, int len)
+        public byte[] DecodeOctetString(Stream inRenamed, int len)
         {
             var octets = new byte[len];
             var totalLen = 0;
@@ -224,7 +225,7 @@ namespace Novell.Directory.Ldap.Asn1
             while (totalLen < len)
             {
                 // Make sure we have read all the data
-                var inLen = ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
+                var inLen = ReadInput(inRenamed, octets, totalLen, len - totalLen);
                 totalLen += inLen;
             }
 
@@ -232,7 +233,7 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode a CharacterString directly from a stream.</summary>
-        public object DecodeCharacterString(Stream inRenamed, int len)
+        public string DecodeCharacterString(Stream inRenamed, int len)
         {
             var octets = new byte[len];
 
@@ -264,7 +265,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The number of characters read. The number will be less than or equal to count depending on the data available
         ///     in the source Stream. Returns -1 if the end of the stream is reached.
         /// </returns>
-        private static int ReadInput(Stream sourceStream, ref byte[] target, int start, int count)
+        private static int ReadInput(Stream sourceStream, byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
@@ -272,13 +273,16 @@ namespace Novell.Directory.Ldap.Asn1
                 return 0;
             }
 
-            var receiver = new byte[target.Length];
             var bytesRead = 0;
             var startIndex = start;
             var bytesToRead = count;
             while (bytesToRead > 0)
             {
-                var n = sourceStream.Read(receiver, startIndex, bytesToRead);
+#if NETSTANDARD2_0
+                var n = sourceStream.Read(target, startIndex, bytesToRead);
+#else
+                var n = sourceStream.Read(target.AsSpan(startIndex, bytesToRead));
+#endif
                 if (n == 0)
                 {
                     break;
@@ -293,11 +297,6 @@ namespace Novell.Directory.Ldap.Asn1
             if (bytesRead == 0)
             {
                 return -1;
-            }
-
-            for (var i = start; i < start + bytesRead; i++)
-            {
-                target[i] = receiver[i];
             }
 
             return bytesRead;

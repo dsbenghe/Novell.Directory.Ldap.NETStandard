@@ -80,7 +80,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
         public Asn1Enumerated(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(Id, (long)dec.DecodeNumeric(inRenamed, len))
+            : base(Id, dec.DecodeNumeric(inRenamed, len))
         {
         }
 

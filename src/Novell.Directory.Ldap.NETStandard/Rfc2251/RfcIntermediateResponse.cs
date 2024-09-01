@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // have decoded these elements as ASN1Tagged objects with the value
             // stored as an ASN1OctectString object.
             // the incorrectly encoded case, LDAPResult contains
-            if (Size() >= 3)
+            if (Count >= 3)
             {
                 i = 3; // at least 3 components
             }
@@ -104,20 +104,20 @@ namespace Novell.Directory.Ldap.Rfc2251
                 i = 0; // correctly encoded case, can have zero components
             }
 
-            for (; i < Size(); i++)
+            for (; i < Count; i++)
             {
-                var obj = (Asn1Tagged)get_Renamed(i);
+                var obj = (Asn1Tagged)this[i];
                 var id = obj.GetIdentifier();
                 switch (id.Tag)
                 {
                     case TagResponseName:
-                        set_Renamed(i, new RfcLdapOid(
-                            ((Asn1OctetString)obj.TaggedValue).ByteValue()));
+                        this[i] = new RfcLdapOid(
+                            ((Asn1OctetString)obj.TaggedValue).ByteValue());
                         _mResponseNameIndex = i;
                         break;
 
                     case TagResponse:
-                        set_Renamed(i, obj.TaggedValue);
+                        this[i] = obj.TaggedValue;
                         _mResponseValueIndex = i;
                         break;
                 }
@@ -126,9 +126,9 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public Asn1Enumerated GetResultCode()
         {
-            if (Size() > 3)
+            if (Count > 3)
             {
-                return (Asn1Enumerated)get_Renamed(0);
+                return (Asn1Enumerated)this[0];
             }
 
             return null;
@@ -136,9 +136,9 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public RfcLdapDn GetMatchedDn()
         {
-            if (Size() > 3)
+            if (Count > 3)
             {
-                return new RfcLdapDn(((Asn1OctetString)get_Renamed(1)).ByteValue());
+                return new RfcLdapDn(((Asn1OctetString)this[1]).ByteValue());
             }
 
             return null;
@@ -146,9 +146,9 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public RfcLdapString GetErrorMessage()
         {
-            if (Size() > 3)
+            if (Count > 3)
             {
-                return new RfcLdapString(((Asn1OctetString)get_Renamed(2)).ByteValue());
+                return new RfcLdapString(((Asn1OctetString)this[2]).ByteValue());
             }
 
             return null;
@@ -156,20 +156,20 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public RfcReferral GetReferral()
         {
-            return Size() > 3 ? (RfcReferral)get_Renamed(3) : null;
+            return Count > 3 ? (RfcReferral)this[3] : null;
         }
 
         public RfcLdapOid GetResponseName()
         {
             return _mResponseNameIndex >= 0
-                ? (RfcLdapOid)get_Renamed(_mResponseNameIndex)
+                ? (RfcLdapOid)this[_mResponseNameIndex]
                 : null;
         }
 
         public Asn1OctetString GetResponse()
         {
             return _mResponseValueIndex != 0
-                ? (Asn1OctetString)get_Renamed(_mResponseValueIndex)
+                ? (Asn1OctetString)this[_mResponseValueIndex]
                 : null;
         }
 

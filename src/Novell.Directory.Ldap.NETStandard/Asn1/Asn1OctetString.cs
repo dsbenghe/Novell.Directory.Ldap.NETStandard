@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Asn1
         public Asn1OctetString(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
-            _content = len > 0 ? (byte[])dec.DecodeOctetString(inRenamed, len) : new byte[0];
+            _content = len > 0 ? dec.DecodeOctetString(inRenamed, len) : Array.Empty<byte>();
         }
 
         /* Asn1Object implementation

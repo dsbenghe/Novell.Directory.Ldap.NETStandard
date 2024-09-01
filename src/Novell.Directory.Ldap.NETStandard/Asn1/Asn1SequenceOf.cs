@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Asn1Sequence.
         /// </summary>
         public Asn1SequenceOf(Asn1Sequence sequence)
-            : base(Id, sequence.ToArray(), sequence.Size())
+            : base(Id, sequence.ToArray(), sequence.Count)
         {
         }
 

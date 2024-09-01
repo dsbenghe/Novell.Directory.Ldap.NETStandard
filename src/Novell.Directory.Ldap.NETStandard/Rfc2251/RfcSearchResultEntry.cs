@@ -56,10 +56,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        public Asn1OctetString ObjectName => (Asn1OctetString)get_Renamed(0);
+        public Asn1OctetString ObjectName => (Asn1OctetString)this[0];
 
         /// <summary> </summary>
-        public Asn1Sequence Attributes => (Asn1Sequence)get_Renamed(1);
+        public Asn1Sequence Attributes => (Asn1Sequence)this[1];
 
         // *************************************************************************
         // Accessors

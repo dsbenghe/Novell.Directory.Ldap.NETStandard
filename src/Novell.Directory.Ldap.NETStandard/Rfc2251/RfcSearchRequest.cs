@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // Replace the base if specified, otherwise keep original base
             if (baseRenamed != null)
             {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
+                this[0] = new RfcLdapDn(baseRenamed);
             }
 
             // If this is a reencode of a search continuation reference
@@ -89,14 +89,14 @@ namespace Novell.Directory.Ldap.Rfc2251
                 var scope = ((Asn1Enumerated)origRequest[1]).IntValue();
                 if (scope == LdapConnection.ScopeOne)
                 {
-                    set_Renamed(1, new Asn1Enumerated(LdapConnection.ScopeBase));
+                    this[1] = new Asn1Enumerated(LdapConnection.ScopeBase);
                 }
             }
 
             // Replace the filter if specified, otherwise keep original filter
             if (filter != null)
             {
-                set_Renamed(6, new RfcFilter(filter));
+                this[6] = new RfcFilter(filter);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)this[0]).StringValue();
         }
 
         // *************************************************************************

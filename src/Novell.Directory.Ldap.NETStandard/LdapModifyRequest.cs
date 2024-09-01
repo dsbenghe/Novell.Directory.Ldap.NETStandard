@@ -95,9 +95,9 @@ namespace Novell.Directory.Ldap
                 // Each modification consists of a mod type and a sequence
                 // containing the attr name and a set of values
                 var opSeq = (Asn1Sequence)mods[m];
-                if (opSeq.Size() != 2)
+                if (opSeq.Count != 2)
                 {
-                    throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Size());
+                    throw new Exception("LdapModifyRequest: modification " + m + " is wrong size: " + opSeq.Count);
                 }
 
                 // Contains operation and sequence for the attribute
@@ -154,9 +154,11 @@ namespace Novell.Directory.Ldap
                 }
 
                 // create SEQUENCE containing mod operation and attr type and vals
-                var rfcMod = new Asn1Sequence(2);
-                rfcMod.Add(new Asn1Enumerated(mod.Op));
-                rfcMod.Add(new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals));
+                var rfcMod = new Asn1Sequence(2)
+                {
+                    new Asn1Enumerated(mod.Op),
+                    new RfcAttributeTypeAndValues(new RfcAttributeDescription(attr.Name), vals),
+                };
 
                 // place SEQUENCE into SEQUENCE OF
                 rfcMods.Add(rfcMod);

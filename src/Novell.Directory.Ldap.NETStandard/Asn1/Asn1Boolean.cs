@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Asn1
         public Asn1Boolean(IAsn1Decoder dec, Stream inRenamed, int len)
             : base(Id)
         {
-            _content = (bool)dec.DecodeBoolean(inRenamed, len);
+            _content = dec.DecodeBoolean(inRenamed, len);
         }
 
         /* Asn1Object implementation

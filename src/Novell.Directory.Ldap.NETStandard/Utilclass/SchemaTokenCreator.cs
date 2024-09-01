@@ -356,7 +356,7 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         checkdec = 1;
                     }
-                    else if (curc >= '0' && curc <= '9')
+                    else if (curc is >= '0' and <= '9')
                     {
                         dvar = (dvar * 10) + (curc - '0');
                         tempvar += checkdec;
@@ -430,15 +430,15 @@ namespace Novell.Directory.Ldap.Utilclass
                     {
                         curc = Read();
                         var first = curc;
-                        if (curc >= '0' && curc <= '7')
+                        if (curc is >= '0' and <= '7')
                         {
                             curc = curc - '0';
                             var loopchar = Read();
-                            if (loopchar >= '0' && loopchar <= '7')
+                            if (loopchar is >= '0' and <= '7')
                             {
                                 curc = (curc << 3) + (loopchar - '0');
                                 loopchar = Read();
-                                if (loopchar >= '0' && loopchar <= '7' && first <= '3')
+                                if (loopchar is >= '0' and <= '7' && first <= '3')
                                 {
                                     curc = (curc << 3) + (loopchar - '0');
                                     rc = Read();

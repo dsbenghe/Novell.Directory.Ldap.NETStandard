@@ -199,11 +199,11 @@ namespace Novell.Directory.Ldap
                 else
                 {
                     // convert RFC 2251 Referral to String[]
-                    var size = refRenamed.Size();
+                    var size = refRenamed.Count;
                     referrals = new string[size];
                     for (var i = 0; i < size; i++)
                     {
-                        var aRef = ((Asn1OctetString)refRenamed.get_Renamed(i)).StringValue();
+                        var aRef = ((Asn1OctetString)refRenamed[i]).StringValue();
                         try
                         {
                             // get the referral URL

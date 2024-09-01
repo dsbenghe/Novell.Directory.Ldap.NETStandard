@@ -83,7 +83,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeBoolean(Stream inRenamed, int len);
+        bool DecodeBoolean(Stream inRenamed, int len);
 
         /// <summary>
         ///     Decode a Numeric value directly from a stream.  Call this method when you
@@ -96,7 +96,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeNumeric(Stream inRenamed, int len);
+        long DecodeNumeric(Stream inRenamed, int len);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode a REAL directly from a stream.
@@ -119,7 +119,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeOctetString(Stream inRenamed, int len);
+        byte[] DecodeOctetString(Stream inRenamed, int len);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode an OBJECT_IDENTIFIER directly from a stream.
@@ -137,7 +137,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        object DecodeCharacterString(Stream inRenamed, int len);
+        string DecodeCharacterString(Stream inRenamed, int len);
 
         /* No Decoders for ASN.1 structured types. A structured type's value is a
         * collection of other types.

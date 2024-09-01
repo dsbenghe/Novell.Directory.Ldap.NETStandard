@@ -83,15 +83,15 @@ namespace Novell.Directory.Ldap.Rfc2251
         public RfcControl(Asn1Sequence seqObj)
             : base(3)
         {
-            var len = seqObj.Size();
+            var len = seqObj.Count;
             for (var i = 0; i < len; i++)
             {
-                Add(seqObj.get_Renamed(i));
+                Add(seqObj[i]);
             }
         }
 
         /// <summary> </summary>
-        public Asn1OctetString ControlType => (Asn1OctetString)get_Renamed(0);
+        public Asn1OctetString ControlType => (Asn1OctetString)this[0];
 
         /// <summary>
         ///     Returns criticality.
@@ -101,13 +101,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (Size() > 1)
+                if (Count > 1)
                 {
                     // MAY be a criticality
-                    var obj = get_Renamed(1);
-                    if (obj is Asn1Boolean)
+                    var obj = this[1];
+                    if (obj is Asn1Boolean boolean)
                     {
-                        return (Asn1Boolean)obj;
+                        return boolean;
                     }
                 }
 
@@ -128,19 +128,19 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                if (Size() > 2)
+                if (Count > 2)
                 {
                     // MUST be a control value
-                    return (Asn1OctetString)get_Renamed(2);
+                    return (Asn1OctetString)this[2];
                 }
 
-                if (Size() > 1)
+                if (Count > 1)
                 {
                     // MAY be a control value
-                    var obj = get_Renamed(1);
-                    if (obj is Asn1OctetString)
+                    var obj = this[1];
+                    if (obj is Asn1OctetString octetString)
                     {
-                        return (Asn1OctetString)obj;
+                        return octetString;
                     }
                 }
 
@@ -154,23 +154,23 @@ namespace Novell.Directory.Ldap.Rfc2251
                     return;
                 }
 
-                if (Size() == 3)
+                if (Count == 3)
                 {
                     // We already have a control value, replace it
-                    set_Renamed(2, value);
+                    this[2] = value;
                     return;
                 }
 
-                if (Size() == 2)
+                if (Count == 2)
                 {
                     // Get the second element
-                    var obj = get_Renamed(1);
+                    var obj = this[1];
 
                     // Is this a control value
                     if (obj is Asn1OctetString)
                     {
                         // replace this one
-                        set_Renamed(1, value);
+                        this[1] = value;
                     }
                     else
                     {

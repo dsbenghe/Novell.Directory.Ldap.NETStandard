@@ -56,10 +56,10 @@ namespace Novell.Directory.Ldap.Rfc2251
             : base(dec, inRenamed, len)
         {
             // Convert each SEQUENCE element to a Control
-            for (var i = 0; i < Size(); i++)
+            for (var i = 0; i < Count; i++)
             {
-                var tempControl = new RfcControl((Asn1Sequence)get_Renamed(i));
-                set_Renamed(i, tempControl);
+                var tempControl = new RfcControl((Asn1Sequence)base[i]);
+                this[i] = tempControl;
             }
         }
 
@@ -73,10 +73,10 @@ namespace Novell.Directory.Ldap.Rfc2251
             base.Add(control);
         }
 
-        /// <summary> Override set() of Asn1SequenceOf to only accept a Control type.</summary>
-        public void set_Renamed(int index, RfcControl control)
+        public new RfcControl this[int index]
         {
-            base.set_Renamed(index, control);
+            get => (RfcControl)base[index];
+            set => base[index] = value;
         }
 
         // *************************************************************************

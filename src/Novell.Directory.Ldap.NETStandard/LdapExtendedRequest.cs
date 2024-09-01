@@ -71,17 +71,17 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var xreq = (RfcExtendedRequest)Asn1Object.get_Renamed(1);
+                var xreq = (RfcExtendedRequest)Asn1Object[1];
 
                 // Zeroth element is the OID, element one is the value
-                var tag = (Asn1Tagged)xreq.get_Renamed(0);
+                var tag = (Asn1Tagged)xreq[0];
                 var oid = (RfcLdapOid)tag.TaggedValue;
                 var requestId = oid.StringValue();
 
                 byte[] requestValue = null;
-                if (xreq.Size() >= 2)
+                if (xreq.Count >= 2)
                 {
-                    tag = (Asn1Tagged)xreq.get_Renamed(1);
+                    tag = (Asn1Tagged)xreq[1];
                     var valueRenamed = (Asn1OctetString)tag.TaggedValue;
                     requestValue = valueRenamed.ByteValue();
                 }

@@ -418,11 +418,11 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         internal static int Hex2Int(char c)
         {
-            return c >= '0' && c <= '9'
+            return c is >= '0' and <= '9'
                 ? c - '0'
-                : c >= 'A' && c <= 'F'
+                : c is >= 'A' and <= 'F'
                     ? c - 'A' + 10
-                    : c >= 'a' && c <= 'f'
+                    : c is >= 'a' and <= 'f'
                         ? c - 'a' + 10
                         : -1;
         }
@@ -527,7 +527,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         for (var i = 0; i < utf8Bytes.Length; i++)
                         {
                             var u = utf8Bytes[i];
-                            if (u >= 0 && u < 0x10)
+                            if (u < 0x10)
                             {
                                 escString = escString + "\\0" + Convert.ToString(u & 0xff, 16);
                             }
@@ -588,27 +588,27 @@ namespace Novell.Directory.Ldap.Rfc2251
             else
             {
                 var topOfStack = (Asn1Tagged)_filterStack.Peek();
-                var valueRenamed = topOfStack.TaggedValue;
-                if (valueRenamed == null)
+                var value = topOfStack.TaggedValue;
+                if (value == null)
                 {
                     topOfStack.TaggedValue = current;
                     _filterStack.Push(current);
 
                     // filterStack.Add(current);
                 }
-                else if (valueRenamed is Asn1SetOf)
+                else if (value is Asn1SetOf setOf)
                 {
-                    ((Asn1SetOf)valueRenamed).Add(current);
+                    setOf.Add(current);
 
                     // don't add this to the stack:
                 }
-                else if (valueRenamed is Asn1Set)
+                else if (value is Asn1Set set)
                 {
-                    ((Asn1Set)valueRenamed).Add(current);
+                    set.Add(current);
 
                     // don't add this to the stack:
                 }
-                else if (valueRenamed.GetIdentifier().Tag == LdapSearchRequest.Not)
+                else if (value.GetIdentifier().Tag == LdapSearchRequest.Not)
                 {
                     throw new LdapLocalException(
                         "Attemp to create more than one 'not' sub-filter",
@@ -672,7 +672,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                         LdapException.FilterError);
                 }
 
-                if (type == Initial && substringSeq.Size() != 0)
+                if (type == Initial && substringSeq.Count != 0)
                 {
                     throw new LdapLocalException(
                         "Attempt to add an initial " + "substring match after the first substring",
@@ -714,7 +714,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             {
                 _finalFound = false;
                 var substringSeq = (Asn1SequenceOf)_filterStack.Peek();
-                if (substringSeq.Size() == 0)
+                if (substringSeq.Count == 0)
                 {
                     throw new LdapLocalException("Empty substring filter", LdapException.FilterError);
                 }
@@ -1112,15 +1112,14 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                 case RfcSubstringFilter filter:
                     {
-                        var sub = filter;
                         {
                             // return attribute name
-                            var attr = (RfcAttributeDescription)sub.get_Renamed(0);
+                            var attr = (RfcAttributeDescription)filter[0];
                             yield return attr.StringValue();
                         }
 
-                        var substrs = (Asn1SequenceOf)sub.get_Renamed(1);
-                        foreach (Asn1Tagged tag in substrs.RenamedEnumerable)
+                        var substrs = (Asn1SequenceOf)filter[1];
+                        foreach (Asn1Tagged tag in substrs)
                         {
                             // return substring identifier
                             yield return tag.GetIdentifier().Tag;
@@ -1149,20 +1148,20 @@ namespace Novell.Directory.Ldap.Rfc2251
                         // Extensible match
                         var exMatch = assertion;
 
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(0)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch[0]).TaggedValue)
                             .StringValue();
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(1)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch[1]).TaggedValue)
                             .StringValue();
-                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch.get_Renamed(2)).TaggedValue)
+                        yield return ((Asn1OctetString)((Asn1Tagged)exMatch[2]).TaggedValue)
                             .StringValue();
 
                         yield break;
                     }
 
-                case Asn1SetOf of:
+                case Asn1SetOf setOf:
                     {
                         // AND and OR nested components
-                        foreach (Asn1Tagged renamed in of.RenamedEnumerable)
+                        foreach (Asn1Tagged renamed in setOf)
                         {
                             yield return FilterEnumerable(renamed);
                         }
