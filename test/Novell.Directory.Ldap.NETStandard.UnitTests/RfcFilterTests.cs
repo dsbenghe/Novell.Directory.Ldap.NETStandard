@@ -87,15 +87,17 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
         [InlineData("(objectCategory=groupPolicyContainer)")]
         [InlineData("(objectClass=serviceConnectionPoint)")]
         [InlineData("(userAccountControl:1.2.840.113556.1.4.803:=67108864)")]
-        [InlineData("(sAMAccountName=user🐉👽✨)")]
+
+        [InlineData("(sAMAccountName=user🐉👽✨)", Skip = "Emojis need at least 3 bytes - filter gets fully escaped")]
+        [InlineData("(sAMAccountName=\\75\\73\\65\\72\\F0\\9F\\90\\89\\F0\\9F\\91\\BD\\E2\\9C\\A8)")]
 
         [InlineData("(description=East\\5CWest Sales)", Skip="Not equals")]
         [InlineData("(cn=Jim \\2A Smith)", Skip = "Not equals")]
 
         [InlineData("(telephoneNumber=(*)*-*)", Skip = "Parse fails")]
-        [InlineData(@"(objectGUID=\90\39\5F\19\1A\B5\1B\4A\9E\96\86\C6\6C\B1\8D\11)", Skip = "Not equals escaping")]
+        [InlineData(@"(objectGUID=\90\39\5F\19\1A\B5\1B\4A\9E\96\86\C6\6C\B1\8D\11)")]
         [InlineData(@"(objectGUID=\90\39\5F\19\1A\B5\1B\4A*)", Skip = "Not equals escaping")]
-        [InlineData(@"(objectSID=\01\05\00\00\00\00\00\05\15\00\00\00\6b\d6\62\04\13\16\10\09\43\17\0a\32\57\04\00\00)", Skip = "Not equals escaping")]
+        [InlineData(@"(objectSID=\01\05\00\00\00\00\00\05\15\00\00\00\6B\D6\62\04\13\16\10\09\43\17\0A\32\57\04\00\00)")]
         [InlineData("(&(objectCategory=computer)(operatingSystem=*server*))", Skip = "Not equals mask")]
         [InlineData("(&(objectCategory=computer)(operatingSystem=*server*)(!(userAccountControl:1.2.840.113556.1.4.803:=8192)))", Skip = "Not equals mask")]
         [InlineData("(&(objectCategory=person)(objectClass=user)(|(proxyAddresses=*:jsmith@company.com)(mail=jsmith@company.com)))", Skip = "Not equals mask")]

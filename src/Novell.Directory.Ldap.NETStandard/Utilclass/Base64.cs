@@ -621,7 +621,7 @@ namespace Novell.Directory.Ldap.Utilclass
         /// </returns>
         private static int GetByteCount(byte b)
         {
-            if (b > 0)
+            if (b < 0x80)
             {
                 return 0;
             }
