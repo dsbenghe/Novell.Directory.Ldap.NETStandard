@@ -253,7 +253,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                 default:
                     var filterType = _ft.FilterType;
-                    var valueRenamed = _ft.Value;
+                    var value = _ft.Value;
 
                     switch (filterType)
                     {
@@ -264,22 +264,22 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 new Asn1Identifier(Asn1Identifier.Context, true, filterType),
                                 new RfcAttributeValueAssertion(
                                     new RfcAttributeDescription(_ft.Attr),
-                                    new RfcAssertionValue(UnescapeString(valueRenamed))), false);
+                                    new RfcAssertionValue(UnescapeString(value))), false);
                             break;
 
                         case EqualityMatch:
-                            if (valueRenamed.Equals("*"))
+                            if (value.Equals("*"))
                             {
                                 // present
                                 tag = new Asn1Tagged(
                                     new Asn1Identifier(Asn1Identifier.Context, false, Present),
                                     new RfcAttributeDescription(_ft.Attr), false);
                             }
-                            else if (valueRenamed.IndexOf('*') != -1)
+                            else if (value.IndexOf('*') != -1)
                             {
                                 // substrings parse:
                                 //    [initial], *any*, [final] into an Asn1SequenceOf
-                                var sub = new Tokenizer(valueRenamed, "*", true);
+                                var sub = new Tokenizer(value, "*", true);
 
                                 // SupportClass.Tokenizer sub = new SupportClass.Tokenizer(value_Renamed, "*");//, true);
                                 var seq = new Asn1SequenceOf(5);
@@ -348,7 +348,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                     new Asn1Identifier(Asn1Identifier.Context, true, EqualityMatch),
                                     new RfcAttributeValueAssertion(
                                         new RfcAttributeDescription(_ft.Attr),
-                                        new RfcAssertionValue(UnescapeString(valueRenamed))), false);
+                                        new RfcAssertionValue(UnescapeString(value))), false);
                             }
 
                             break;
@@ -387,7 +387,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 new RfcMatchingRuleAssertion(
                                     matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
                                     type == null ? null : new RfcAttributeDescription(type),
-                                    new RfcAssertionValue(UnescapeString(valueRenamed)),
+                                    new RfcAssertionValue(UnescapeString(value)),
                                     dnAttributes == false ? null : new Asn1Boolean(true)), false);
                             break;
                     }
@@ -433,16 +433,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     V2: \*,  \(,  \),  \\.
         ///     V3: \2A, \28, \29, \5C, \00.
         /// </summary>
-        /// <param name="stringRenamed">
+        /// <param name="inputString">
         ///     A part of the input filter string to be converted.
         /// </param>
         /// <returns>
         ///     octet-string encoding of the specified string.
         /// </returns>
-        private byte[] UnescapeString(string stringRenamed)
+        private byte[] UnescapeString(string inputString)
         {
             // give octets enough space to grow
-            var octets = new byte[stringRenamed.Length * 3];
+            var octets = new byte[inputString.Length * 3];
 
             // index for string and octets
             int iString, iOctets;
@@ -453,7 +453,7 @@ namespace Novell.Directory.Ldap.Rfc2251
             // escStart==true means we are reading the first character of an escape.
             var escStart = false;
 
-            int ival, length = stringRenamed.Length;
+            int ival, length = inputString.Length;
             byte[] utf8Bytes;
             char ch; // Character we are adding to the octet string
             var temp = (char)0; // holds the value of the escaped sequence
@@ -462,8 +462,8 @@ namespace Novell.Directory.Ldap.Rfc2251
             // converting escaped sequences when needed
             for (iString = 0, iOctets = 0; iString < length; iString++)
             {
-                ch = stringRenamed[iString];
-                var codePoint = char.ConvertToUtf32(stringRenamed, iString);
+                ch = inputString[iString];
+                var codePoint = char.ConvertToUtf32(inputString, iString);
                 if (codePoint > 0xffff)
                 {
                     iString++;
@@ -655,12 +655,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="type">
         ///     Substring type: INITIAL | ANY | FINAL].
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     Value to use for matching
         ///     @throws LdapLocalException   Occurs if this method is called out of
         ///     sequence or the type added is out of sequence.
         /// </param>
-        public void AddSubstring(int type, byte[] valueRenamed)
+        public void AddSubstring(int type, byte[] value)
         {
             try
             {
@@ -693,7 +693,7 @@ namespace Novell.Directory.Ldap.Rfc2251
 
                 substringSeq.Add(new Asn1Tagged(
                     new Asn1Identifier(Asn1Identifier.Context, false, type),
-                    new RfcLdapString(valueRenamed), false));
+                    new RfcLdapString(value), false));
             }
             catch (InvalidCastException e)
             {
@@ -737,14 +737,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="attrName">
         ///     Name of the attribute to be asserted.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     Value of the attribute to be asserted
         ///     @throws LdapLocalException
         ///     Occurs when the filter type is not a valid attribute assertion.
         /// </param>
-        public void AddAttributeValueAssertion(int rfcType, string attrName, byte[] valueRenamed)
+        public void AddAttributeValueAssertion(int rfcType, string attrName, byte[] value)
         {
-            if (_filterStack != null && !(_filterStack.Count == 0) && _filterStack.Peek() is Asn1SequenceOf)
+            if (_filterStack != null && _filterStack.Count != 0 && _filterStack.Peek() is Asn1SequenceOf)
             {
                 // If a sequenceof is on the stack then substring is left on the stack
                 throw new LdapLocalException(
@@ -764,7 +764,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 new Asn1Identifier(Asn1Identifier.Context, true, rfcType),
                 new RfcAttributeValueAssertion(
                     new RfcAttributeDescription(attrName),
-                    new RfcAssertionValue(valueRenamed)), false);
+                    new RfcAssertionValue(value)), false);
             AddObject(current);
         }
 
@@ -793,7 +793,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="attrName">
         ///     Name of the attribute to match.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     Value of the attribute to match against.
         /// </param>
         /// <param name="useDnMatching">
@@ -801,14 +801,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     @throws LdapLocalException
         ///     Occurs when addExtensibleMatch is called out of sequence.
         /// </param>
-        public void AddExtensibleMatch(string matchingRule, string attrName, byte[] valueRenamed, bool useDnMatching)
+        public void AddExtensibleMatch(string matchingRule, string attrName, byte[] value, bool useDnMatching)
         {
             Asn1Object current = new Asn1Tagged(
                 new Asn1Identifier(Asn1Identifier.Context, true, ExtensibleMatch),
                 new RfcMatchingRuleAssertion(
                     matchingRule == null ? null : new RfcMatchingRuleId(matchingRule),
                     attrName == null ? null : new RfcAttributeDescription(attrName),
-                    new RfcAssertionValue(valueRenamed), useDnMatching == false ? null : new Asn1Boolean(true)), false);
+                    new RfcAssertionValue(value), useDnMatching == false ? null : new Asn1Boolean(true)), false);
             AddObject(current);
         }
 
@@ -932,8 +932,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 filter.Append('=');
 
                                 itr.MoveNext();
-                                var valueRenamed = (byte[])itr.Current;
-                                filter.Append(ByteString(valueRenamed));
+                                var value = (byte[])itr.Current;
+                                filter.Append(ByteString(value));
                                 break;
                             }
 
@@ -945,8 +945,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 filter.Append(">=");
 
                                 itr.MoveNext();
-                                var valueRenamed = (byte[])itr.Current;
-                                filter.Append(ByteString(valueRenamed));
+                                var value = (byte[])itr.Current;
+                                filter.Append(ByteString(value));
                                 break;
                             }
 
@@ -958,8 +958,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 filter.Append("<=");
 
                                 itr.MoveNext();
-                                var valueRenamed = (byte[])itr.Current;
-                                filter.Append(ByteString(valueRenamed));
+                                var value = (byte[])itr.Current;
+                                filter.Append(ByteString(value));
                                 break;
                             }
 
@@ -970,28 +970,32 @@ namespace Novell.Directory.Ldap.Rfc2251
                             break;
 
                         case ApproxMatch:
-                            itr.MoveNext();
-                            filter.Append((string)itr.Current);
+                            {
+                                itr.MoveNext();
+                                filter.Append((string)itr.Current);
 
-                            filter.Append("~=");
+                                filter.Append("~=");
 
-                            itr.MoveNext();
-                            var valueRenamed2 = (byte[])itr.Current;
-                            filter.Append(ByteString(valueRenamed2));
-                            break;
+                                itr.MoveNext();
+                                var value = (byte[])itr.Current;
+                                filter.Append(ByteString(value));
+                                break;
+                            }
 
                         case ExtensibleMatch:
-                            itr.MoveNext();
-                            var oid = (string)itr.Current;
+                            {
+                                itr.MoveNext();
+                                var oid = (string)itr.Current;
 
-                            itr.MoveNext();
-                            filter.Append((string)itr.Current);
-                            filter.Append(':');
-                            filter.Append(oid);
-                            filter.Append(":=");
-                            itr.MoveNext();
-                            filter.Append((string)itr.Current);
-                            break;
+                                itr.MoveNext();
+                                filter.Append((string)itr.Current);
+                                filter.Append(':');
+                                filter.Append(oid);
+                                filter.Append(":=");
+                                itr.MoveNext();
+                                filter.Append((string)itr.Current);
+                                break;
+                            }
 
                         case Substrings:
                             {
@@ -1125,8 +1129,8 @@ namespace Novell.Directory.Ldap.Rfc2251
                             yield return tag.GetIdentifier().Tag;
 
                             // return substring value
-                            var valueRenamed = (RfcLdapString)tag.TaggedValue;
-                            yield return valueRenamed.StringValue();
+                            var value = (RfcLdapString)tag.TaggedValue;
+                            yield return value.StringValue();
                         }
 
                         yield break;
@@ -1161,9 +1165,9 @@ namespace Novell.Directory.Ldap.Rfc2251
                 case Asn1SetOf setOf:
                     {
                         // AND and OR nested components
-                        foreach (Asn1Tagged renamed in setOf)
+                        foreach (Asn1Tagged tagged in setOf)
                         {
-                            yield return FilterEnumerable(renamed);
+                            yield return FilterEnumerable(tagged);
                         }
 
                         yield break;

@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request.
         /// </summary>
-        /// <param name="baseRenamed">
+        /// <param name="baseDn">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -167,11 +167,11 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
-        public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseDn, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
                 SearchRequest,
-                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
+                new RfcSearchRequest(new RfcLdapDn(baseDn), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), new RfcFilter(filter), new RfcAttributeDescriptionList(attrs)), cont)
         {
@@ -180,7 +180,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request with a filter in Asn1 format.
         /// </summary>
-        /// <param name="baseRenamed">
+        /// <param name="baseDn">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -237,11 +237,11 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
-        public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseDn, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
                 SearchRequest,
-                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
+                new RfcSearchRequest(new RfcLdapDn(baseDn), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), filter, new RfcAttributeDescriptionList(attrs)), cont)
         {

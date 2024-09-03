@@ -66,13 +66,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Bind Request copying the original data from
         ///     an existing request.
         /// </summary>
-        internal RfcBindRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcBindRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                this[1] = new RfcLdapDn(baseRenamed);
+                this[1] = new RfcLdapDn(baseDn);
             }
         }
 
@@ -103,9 +103,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             set => this[2] = value;
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcBindRequest(ToArray(), baseRenamed);
+            return new RfcBindRequest(ToArray(), baseDn);
         }
 
         public string GetRequestDn()

@@ -78,11 +78,10 @@ namespace Novell.Directory.Ldap
                     var attr = new LdapAttribute(((Asn1OctetString)seq[0]).StringValue());
 
                     // Add the values to the attribute
-                    var setRenamed = (Asn1SetOf)seq[1];
-                    object[] setArray = setRenamed.ToArray();
-                    for (var j = 0; j < setArray.Length; j++)
+                    var set = (Asn1SetOf)seq[1];
+                    foreach (Asn1OctetString octetString in set)
                     {
-                        attr.AddValue(((Asn1OctetString)setArray[j]).ByteValue());
+                        attr.AddValue(octetString.ByteValue());
                     }
 
                     attrs.Add(attr);

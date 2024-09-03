@@ -56,21 +56,21 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Compare Request copying from the data of
         ///     an existing request.
         /// </summary>
-        internal RfcCompareRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcCompareRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                this[0] = new RfcLdapDn(baseRenamed);
+                this[0] = new RfcLdapDn(baseDn);
             }
         }
 
         public RfcAttributeValueAssertion AttributeValueAssertion => (RfcAttributeValueAssertion)this[1];
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcCompareRequest(ToArray(), baseRenamed);
+            return new RfcCompareRequest(ToArray(), baseDn);
         }
 
         public string GetRequestDn()

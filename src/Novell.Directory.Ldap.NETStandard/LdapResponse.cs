@@ -190,20 +190,20 @@ namespace Novell.Directory.Ldap
             get
             {
                 string[] referrals;
-                var refRenamed = ((IRfcResponse)Message.Response).GetReferral();
+                var referral = ((IRfcResponse)Message.Response).GetReferral();
 
-                if (refRenamed == null)
+                if (referral == null)
                 {
                     referrals = new string[0];
                 }
                 else
                 {
                     // convert RFC 2251 Referral to String[]
-                    var size = refRenamed.Count;
+                    var size = referral.Count;
                     referrals = new string[size];
                     for (var i = 0; i < size; i++)
                     {
-                        var aRef = ((Asn1OctetString)refRenamed[i]).StringValue();
+                        var aRef = ((Asn1OctetString)referral[i]).StringValue();
                         try
                         {
                             // get the referral URL

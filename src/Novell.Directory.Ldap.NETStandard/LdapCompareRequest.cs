@@ -50,21 +50,21 @@ namespace Novell.Directory.Ldap
         /// <param name="name">
         ///     The name of the attribute to compare.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     The value of the attribute to compare.
         /// </param>
         /// <param name="cont">
         ///     Any controls that apply to the compare request,
         ///     or null if none.
         /// </param>
-        public LdapCompareRequest(string dn, string name, byte[] valueRenamed, LdapControl[] cont)
+        public LdapCompareRequest(string dn, string name, byte[] value, LdapControl[] cont)
             : base(
                 CompareRequest,
                 new RfcCompareRequest(
                     new RfcLdapDn(dn),
                     new RfcAttributeValueAssertion(
                         new RfcAttributeDescription(name),
-                        new RfcAssertionValue(valueRenamed))), cont)
+                        new RfcAssertionValue(value))), cont)
         {
         }
 

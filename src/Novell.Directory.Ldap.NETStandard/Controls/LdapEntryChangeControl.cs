@@ -59,11 +59,11 @@ namespace Novell.Directory.Ldap.Controls
         ///     the control is not supported. False if
         ///     the operation can be processed without the control.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     The control-specific data.
         /// </param>
-        public LdapEntryChangeControl(string oid, bool critical, byte[] valueRenamed)
-            : base(oid, critical, valueRenamed)
+        public LdapEntryChangeControl(string oid, bool critical, byte[] value)
+            : base(oid, critical, value)
         {
             // Create a decoder objet
             var decoder = new LberDecoder();
@@ -73,7 +73,7 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             // We should get a sequence initially
-            var asnObj = decoder.Decode(valueRenamed);
+            var asnObj = decoder.Decode(value);
 
             if (asnObj is not Asn1Sequence sequence)
             {

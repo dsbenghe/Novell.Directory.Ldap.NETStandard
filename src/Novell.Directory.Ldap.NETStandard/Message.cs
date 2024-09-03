@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap
         private readonly Queue<object> _replies; // place to store replies
         private string _stackTraceCleanup;
         private ThreadClass _timer; // Timeout thread
-        private bool _waitForReplyRenamedField = true; // true if wait for reply
+        private bool _waitForReply = true; // true if wait for reply
 
         internal Message(LdapMessage msg, int mslimit, Connection conn, MessageAgent agent, BindProperties bindprops)
         {
@@ -190,12 +190,12 @@ namespace Novell.Directory.Ldap
             // sync on message so don't confuse with timer thread
             lock (_replies)
             {
-                while (_waitForReplyRenamedField)
+                while (_waitForReply)
                 {
                     if (_replies.Count == 0)
                     {
                         Monitor.Wait(_replies, _mslimit);
-                        if (_waitForReplyRenamedField)
+                        if (_waitForReply)
                         {
                             continue;
                         }
@@ -257,13 +257,13 @@ namespace Novell.Directory.Ldap
 
         internal void Abandon(LdapConstraints cons, InterThreadException informUserEx)
         {
-            if (!_waitForReplyRenamedField)
+            if (!_waitForReply)
             {
                 return;
             }
 
             _acceptReplies = false; // don't listen to anyone
-            _waitForReplyRenamedField = false; // don't let sleeping threads lie
+            _waitForReply = false; // don't let sleeping threads lie
             if (!Complete)
             {
                 try

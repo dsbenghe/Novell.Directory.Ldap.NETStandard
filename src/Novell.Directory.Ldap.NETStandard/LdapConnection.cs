@@ -2670,8 +2670,8 @@ namespace Novell.Directory.Ldap
                     var rex = new LdapReferralException(ExceptionMessages.ReferralSend, LdapException.ConnectError,
                         null, ex);
                     rex.SetReferrals(initialReferrals);
-                    var refRenamed = rconn.Connection.ActiveReferral;
-                    rex.FailedReferral = refRenamed.ReferralUrl.ToString();
+                    var referral = rconn.Connection.ActiveReferral;
+                    rex.FailedReferral = referral.ReferralUrl.ToString();
                     throw rex;
                 }
 

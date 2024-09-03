@@ -42,8 +42,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a Referral object is constructed, is when we are
         ///     decoding an RfcLdapResult or COMPONENTS OF RfcLdapResult.
         /// </summary>
-        public RfcReferral(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcReferral(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
             // convert from Asn1OctetString to RfcLdapURL here (then look at
             // LdapResponse.getReferrals())

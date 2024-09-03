@@ -43,18 +43,18 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from a byte array.
         /// </summary>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     A byte array that points to the encoded Asn1 data.
         /// </param>
-        Asn1Object Decode(byte[] valueRenamed);
+        Asn1Object Decode(byte[] value);
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object Decode(Stream inRenamed);
+        Asn1Object Decode(Stream input);
 
         /// <summary>
         ///     Decode an encoded value into an Asn1Object from an InputStream.
@@ -65,10 +65,10 @@ namespace Novell.Directory.Ldap.Asn1
         ///     the number of bytes decoded, so you know when the structured
         ///     type has decoded all of its components.
         /// </param>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
-        Asn1Object Decode(Stream inRenamed, int[] length);
+        Asn1Object Decode(Stream input, int[] length);
 
         /* Decoders for ASN.1 simple types
         */
@@ -77,26 +77,26 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode a BOOLEAN directly from a stream. Call this method when you
         ///     know that the next ASN.1 encoded element is a BOOLEAN.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        bool DecodeBoolean(Stream inRenamed, int len);
+        bool DecodeBoolean(Stream input, int len);
 
         /// <summary>
         ///     Decode a Numeric value directly from a stream.  Call this method when you
         ///     know that the next ASN.1 encoded element is a Numeric
         ///     Can be used to decodes INTEGER and ENUMERATED types.
         /// </summary>
-        /// <param name="inRenamed">
-        ///     An input stream containig the encoded ASN.1 data.
+        /// <param name="input">
+        ///     An input stream containing the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        long DecodeNumeric(Stream inRenamed, int len);
+        long DecodeNumeric(Stream input, int len);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode a REAL directly from a stream.
@@ -113,13 +113,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an OCTET_STRING directly from a stream. Call this method when you
         ///     know that the next ASN.1 encoded element is a OCTET_STRING.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        byte[] DecodeOctetString(Stream inRenamed, int len);
+        byte[] DecodeOctetString(Stream input, int len);
 
         /* Asn1 TYPE NOT YET SUPPORTED
                     * Decode an OBJECT_IDENTIFIER directly from a stream.
@@ -131,13 +131,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode a CharacterString directly from a stream.
         ///     Decodes any of the specialized character strings.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     An input stream containig the encoded ASN.1 data.
         /// </param>
         /// <param name="len">
         ///     Length in bytes.
         /// </param>
-        string DecodeCharacterString(Stream inRenamed, int len);
+        string DecodeCharacterString(Stream input, int len);
 
         /* No Decoders for ASN.1 structured types. A structured type's value is a
         * collection of other types.

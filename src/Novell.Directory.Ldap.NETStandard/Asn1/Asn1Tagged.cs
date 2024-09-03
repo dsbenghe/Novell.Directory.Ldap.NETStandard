@@ -48,19 +48,19 @@ namespace Novell.Directory.Ldap.Asn1
         ///     AN1Identifier and the Asn1Object.
         ///     The explicit flag defaults to true as per the spec.
         /// </summary>
-        public Asn1Tagged(Asn1Identifier identifier, Asn1Object objectRenamed)
-            : this(identifier, objectRenamed, true)
+        public Asn1Tagged(Asn1Identifier identifier, Asn1Object asn1Object)
+            : this(identifier, asn1Object, true)
         {
         }
 
         /// <summary> Constructs an Asn1Tagged object.</summary>
-        public Asn1Tagged(Asn1Identifier identifier, Asn1Object objectRenamed, bool explicitRenamed)
+        public Asn1Tagged(Asn1Identifier identifier, Asn1Object asn1Object, bool explicitTagging)
             : base(identifier)
         {
-            _content = objectRenamed;
-            Explicit = explicitRenamed;
+            _content = asn1Object;
+            Explicit = explicitTagging;
 
-            if (!explicitRenamed && _content != null)
+            if (!explicitTagging && _content != null)
             {
                 // replace object's id with new tag.
                 _content.SetIdentifier(identifier);
@@ -76,17 +76,17 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.  Sometimes a developer might want to pass
         ///     in his/her own decoder object.
         /// </param>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        public Asn1Tagged(IAsn1Decoder dec, Stream inRenamed, int len, Asn1Identifier identifier)
+        public Asn1Tagged(IAsn1Decoder dec, Stream input, int len, Asn1Identifier identifier)
             : base(identifier)
         {
             // If we are decoding an implicit tag, there is no way to know at this
             // low level what the base type really is. We can place the content
             // into an Asn1OctetString type and pass it back to the application who
             // will be able to create the appropriate ASN.1 type for this tag.
-            _content = new Asn1OctetString(dec, inRenamed, len);
+            _content = new Asn1OctetString(dec, input, len);
         }
 
         /// <summary> Sets the Asn1Object tagged value.</summary>
@@ -120,13 +120,13 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="enc">
         ///     Encoder object to use when encoding self.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            enc.Encode(this, outRenamed);
+            enc.Encode(this, output);
         }
 
         /* Asn1Tagged specific methods

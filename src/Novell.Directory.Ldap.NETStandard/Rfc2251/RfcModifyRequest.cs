@@ -45,10 +45,10 @@ namespace Novell.Directory.Ldap.Rfc2251
         // *************************************************************************
 
         /// <summary> </summary>
-        public RfcModifyRequest(RfcLdapDn objectRenamed, Asn1SequenceOf modification)
+        public RfcModifyRequest(RfcLdapDn objectToModify, Asn1SequenceOf modification)
             : base(2)
         {
-            Add(objectRenamed);
+            Add(objectToModify);
             Add(modification);
         }
 
@@ -56,13 +56,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Modify Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        internal RfcModifyRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcModifyRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                this[0] = new RfcLdapDn(baseRenamed);
+                this[0] = new RfcLdapDn(baseDn);
             }
         }
 
@@ -74,9 +74,9 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </returns>
         public Asn1SequenceOf Modifications => (Asn1SequenceOf)this[1];
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcModifyRequest(ToArray(), baseRenamed);
+            return new RfcModifyRequest(ToArray(), baseDn);
         }
 
         /// <summary>

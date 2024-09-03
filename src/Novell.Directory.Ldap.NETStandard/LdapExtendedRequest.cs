@@ -82,8 +82,8 @@ namespace Novell.Directory.Ldap
                 if (xreq.Count >= 2)
                 {
                     tag = (Asn1Tagged)xreq[1];
-                    var valueRenamed = (Asn1OctetString)tag.TaggedValue;
-                    requestValue = valueRenamed.ByteValue();
+                    var value = (Asn1OctetString)tag.TaggedValue;
+                    requestValue = value.ByteValue();
                 }
 
                 return new LdapExtendedOperation(requestId, requestValue);

@@ -66,13 +66,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.  Sometimes a developer might want to pass
         ///     in his/her own decoder object.
         /// </param>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        public Asn1Boolean(IAsn1Decoder dec, Stream inRenamed, int len)
+        public Asn1Boolean(IAsn1Decoder dec, Stream input, int len)
             : base(Id)
         {
-            _content = dec.DecodeBoolean(inRenamed, len);
+            _content = dec.DecodeBoolean(input, len);
         }
 
         /* Asn1Object implementation
@@ -85,13 +85,13 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="enc">
         ///     Encoder object to use when encoding self.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            enc.Encode(this, outRenamed);
+            enc.Encode(this, output);
         }
 
         /* Asn1Boolean specific methods

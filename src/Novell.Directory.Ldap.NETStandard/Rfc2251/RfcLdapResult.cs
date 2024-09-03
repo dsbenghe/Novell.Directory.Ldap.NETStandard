@@ -138,8 +138,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs an RfcLdapResult from the inputstream.</summary>
-        public RfcLdapResult(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcLdapResult(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
             // Decode optional referral from Asn1OctetString to Referral.
             if (Count > 3)

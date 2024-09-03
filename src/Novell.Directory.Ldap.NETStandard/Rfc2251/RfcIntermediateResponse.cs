@@ -84,8 +84,8 @@ namespace Novell.Directory.Ldap.Rfc2251
          * oid of the response. The element at m_responseValueIndex will be set
          * to an ASN1OctetString containing the value bytes.
          */
-        public RfcIntermediateResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcIntermediateResponse(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
             _mResponseNameIndex = _mResponseValueIndex = 0;
 

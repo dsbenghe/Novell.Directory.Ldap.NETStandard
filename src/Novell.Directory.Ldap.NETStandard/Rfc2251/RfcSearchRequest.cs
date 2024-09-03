@@ -72,13 +72,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs a new Search Request copying from an existing request.</summary>
-        internal RfcSearchRequest(Asn1Object[] origRequest, string baseRenamed, string filter, bool request)
+        internal RfcSearchRequest(Asn1Object[] origRequest, string baseDn, string filter, bool request)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                this[0] = new RfcLdapDn(baseRenamed);
+                this[0] = new RfcLdapDn(baseDn);
             }
 
             // If this is a reencode of a search continuation reference
@@ -100,9 +100,9 @@ namespace Novell.Directory.Ldap.Rfc2251
             }
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcSearchRequest(ToArray(), baseRenamed, filter, request);
+            return new RfcSearchRequest(ToArray(), baseDn, filter, request);
         }
 
         public string GetRequestDn()

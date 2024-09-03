@@ -60,13 +60,13 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="enc">
         ///     Encoder object to use when encoding self.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            enc.Encode(this, outRenamed);
+            enc.Encode(this, output);
         }
 
         /* Asn1Null specific methods

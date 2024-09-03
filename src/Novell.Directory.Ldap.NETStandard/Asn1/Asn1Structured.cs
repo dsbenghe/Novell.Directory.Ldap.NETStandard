@@ -86,19 +86,19 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Encodes the contents of this Asn1Structured directly to an output
         ///     stream.
         /// </summary>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            enc.Encode(this, outRenamed);
+            enc.Encode(this, output);
         }
 
         /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
-        protected internal void DecodeStructured(IAsn1Decoder dec, Stream inRenamed, int len)
+        protected internal void DecodeStructured(IAsn1Decoder dec, Stream input, int len)
         {
             var componentLen = new int[1]; // collects length of component
 
             while (len > 0)
             {
-                Add(dec.Decode(inRenamed, componentLen));
+                Add(dec.Decode(input, componentLen));
                 len -= componentLen[0];
             }
         }

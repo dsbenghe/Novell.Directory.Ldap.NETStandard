@@ -44,7 +44,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool reference)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool reference)
         {
             throw new LdapException(ExceptionMessages.NoDupRequest, new object[] { "Abandon" },
                 LdapException.LdapNotSupported, null);
