@@ -998,7 +998,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 itr.MoveNext();
                                 filter.Append((string)itr.Current);
                                 filter.Append('=');
-                                var noStarLast = false;
+                                var noStarLast = true;
                                 while (itr.MoveNext())
                                 {
                                     op = (int)itr.Current;
