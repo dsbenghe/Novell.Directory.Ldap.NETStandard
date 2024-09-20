@@ -21,6 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
+#nullable enable
+
 using System;
 using System.Text;
 
@@ -55,7 +57,7 @@ namespace Novell.Directory.Ldap
         ///     The initial set of attributes assigned to the
         ///     entry.
         /// </param>
-        public LdapEntry(string dn = null, LdapAttributeSet attrs = null)
+        public LdapEntry(string? dn = null, LdapAttributeSet? attrs = null)
         {
             dn ??= string.Empty;
 
@@ -87,8 +89,13 @@ namespace Novell.Directory.Ldap
         ///     A negative integer, zero, or a positive integer as this
         ///     object is less than, equal to, or greater than the specified object.
         /// </returns>
-        public virtual int CompareTo(object entry)
+        public virtual int CompareTo(object? entry)
         {
+            if (entry == null)
+            {
+                return 1;
+            }
+
             return LdapDn.Normalize(Dn).CompareTo(LdapDn.Normalize(((LdapEntry)entry).Dn));
         }
 
@@ -129,7 +136,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A LdapAttribute.
         /// </returns>
-        public LdapAttribute GetOrDefault(string attributeName, LdapAttribute fallback = default)
+        public LdapAttribute? GetOrDefault(string attributeName, LdapAttribute? fallback = default)
         {
             return !Attrs.TryGetValue(attributeName, out var attribute) ? fallback : attribute;
         }
@@ -143,7 +150,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string attribute value.
         /// </returns>
-        public string GetStringValueOrDefault(string attributeName, string fallback = default)
+        public string? GetStringValueOrDefault(string attributeName, string? fallback = default)
         {
             return GetOrDefault(attributeName)?.StringValue ?? fallback;
         }
@@ -157,7 +164,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The byte[] attribute value.
         /// </returns>
-        public byte[] GetBytesValueOrDefault(string attributeName, byte[] fallback = default)
+        public byte[]? GetBytesValueOrDefault(string attributeName, byte[]? fallback = default)
         {
             return GetOrDefault(attributeName)?.ByteValue ?? fallback;
         }
