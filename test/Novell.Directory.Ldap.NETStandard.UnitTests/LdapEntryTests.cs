@@ -37,6 +37,12 @@ public class LdapEntryTests
     }
 
     [Fact]
+    public void GetOrDefault_when_not_exists_without_fallback_returns_null()
+    {
+        Assert.Null(_ldapEntry.GetOrDefault("givenName_1"));
+    }
+
+    [Fact]
     public void GetStringValueOrDefault_when_exists_returns_string_value()
     {
         Assert.Equal("Lionel", _ldapEntry.GetStringValueOrDefault("givenName"));
@@ -50,6 +56,12 @@ public class LdapEntryTests
     }
 
     [Fact]
+    public void GetStringValueOrDefault_when_not_exists_without_fallback_returns_null()
+    {
+        Assert.Null(_ldapEntry.GetStringValueOrDefault("givenName_1"));
+    }
+
+    [Fact]
     public void GetBytesOrDefault_when_exists_returns_string_value()
     {
         Assert.Equal(new byte[] { 1, 2 }, _ldapEntry.GetBytesValueOrDefault("bytes"));
@@ -60,6 +72,12 @@ public class LdapEntryTests
     {
         var fallback = new byte[] { 1, 2, 3 };
         Assert.Equal(fallback, _ldapEntry.GetBytesValueOrDefault("bytes_1", fallback));
+    }
+
+    [Fact]
+    public void GetBytesOrDefault_when_not_exists_without_fallback_returns_null()
+    {
+        Assert.Null(_ldapEntry.GetBytesValueOrDefault("bytes_1"));
     }
 
     public static LdapEntry NewLdapEntry(string cnPrefix = null)

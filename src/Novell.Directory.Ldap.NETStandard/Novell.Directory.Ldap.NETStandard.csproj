@@ -7,6 +7,7 @@
     <VersionPrefix>4.0.0-beta6</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6;net7;net8</TargetFrameworks>
+    <Nullable>disable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
     <PackageId>Novell.Directory.Ldap.NETStandard</PackageId>

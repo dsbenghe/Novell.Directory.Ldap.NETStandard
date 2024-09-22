@@ -69,6 +69,7 @@
     <Rule Id="CA2242" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1011" Action="None" />  <!-- A closing square bracket within a C# statement is not spaced correctly. -->
     <Rule Id="SA1024" Action="None" />  <!-- Colon must not be preceded by a space. -->
     <Rule Id="SA1101" Action="None" />  <!-- A call to an instance member of the local class or a base class is not prefixed with ‘this.’, within a C# code file; this is conflicting with the Varian style guidelines. -->
     <Rule Id="SX1101" Action="Error" /> <!-- Do not prefix local calls with 'this.' -->
