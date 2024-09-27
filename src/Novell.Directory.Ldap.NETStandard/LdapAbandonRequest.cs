@@ -22,14 +22,15 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Rfc2251;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     Represents an Ldap Abandon Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints,CancellationToken)"/>
     /*
      *       AbandonRequest ::= [APPLICATION 16] MessageID
      */

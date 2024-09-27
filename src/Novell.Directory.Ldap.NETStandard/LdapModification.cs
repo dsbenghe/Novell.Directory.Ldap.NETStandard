@@ -21,6 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System.Threading;
+
 namespace Novell.Directory.Ldap
 {
     /// <summary>
@@ -54,14 +56,14 @@ namespace Novell.Directory.Ldap
     ///     Additional information on Ldap modifications is available in section 4.6
     ///     of. <a href="http://www.ietf.org/rfc/rfc2251.txt">rfc2251.txt</a>
     /// </summary>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[])"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapResponseQueue)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapResponseQueue)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapConstraints)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapConstraints)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapResponseQueue,LdapConstraints)"/>
-    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapResponseQueue,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapResponseQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapResponseQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification,LdapResponseQueue,LdapConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ModifyAsync(string,LdapModification[],LdapResponseQueue,LdapConstraints,CancellationToken)"/>
     /// <seealso cref="LdapAttribute"/>
     public class LdapModification
     {

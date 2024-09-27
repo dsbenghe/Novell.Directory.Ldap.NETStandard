@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -13,10 +14,10 @@ namespace Novell.Directory.Ldap
         /// This is really just a specialized <see cref="LdapSearchRequest"/>
         /// to handle getting some commonly requested information.
         /// </summary>
-        public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn)
+        public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn, CancellationToken ct = default)
         {
             var searchResults = await conn
-                .SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false)
+                .SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false, ct)
                 .ConfigureAwait(false);
 
             await foreach (var searchResult in searchResults.ConfigureAwait(false))

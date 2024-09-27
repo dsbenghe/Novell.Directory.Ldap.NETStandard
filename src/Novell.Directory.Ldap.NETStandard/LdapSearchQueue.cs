@@ -21,14 +21,16 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System.Threading;
+
 namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     A mechanism for queuing asynchronous search results
     ///     received from a server.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
     /// <seealso cref="LdapResponseQueue"/>
     public class LdapSearchQueue : LdapMessageQueue
     {

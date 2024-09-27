@@ -26,7 +26,7 @@ namespace Novell.Directory.Ldap
         public Task<List<LdapEntry>> SearchWithSimplePagingAsync(
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (options == null)
             {
@@ -38,14 +38,14 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentOutOfRangeException(nameof(pageSize));
             }
 
-            return SearchWithSimplePagingAsync(entry => entry, options, pageSize, cancellationToken);
+            return SearchWithSimplePagingAsync(entry => entry, options, pageSize, ct);
         }
 
         public async Task<List<T>> SearchWithSimplePagingAsync<T>(
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (converter == null)
             {
@@ -62,7 +62,7 @@ namespace Novell.Directory.Ldap
             var isNextPageAvailable = PrepareForNextPage(null, pageSize, true, ref searchConstraints);
             while (isNextPageAvailable)
             {
-                var responseControls = await RetrievePageAsync(options, searchConstraints, searchResult, converter, cancellationToken).ConfigureAwait(false);
+                var responseControls = await RetrievePageAsync(options, searchConstraints, searchResult, converter, ct).ConfigureAwait(false);
                 isNextPageAvailable = PrepareForNextPage(responseControls, pageSize, false, ref searchConstraints);
             }
 
@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap
             [NotNull] LdapSearchConstraints searchConstraints,
             [NotNull] List<T> mappedResultsAccumulator,
             [NotNull] Func<LdapEntry, T> converter,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (searchConstraints == null)
             {
@@ -128,10 +128,11 @@ namespace Novell.Directory.Ldap
                     options.Filter,
                     options.TargetAttributes,
                     false,
-                    searchConstraints
+                    searchConstraints,
+                    ct
                 ).ConfigureAwait(false);
 
-            var searchResults = await asyncSearchResults.ToListAsync(cancellationToken).ConfigureAwait(false);
+            var searchResults = await asyncSearchResults.ToListAsync(ct).ConfigureAwait(false);
 
             mappedResultsAccumulator.AddRange(searchResults.Select(converter));
 

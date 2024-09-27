@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken cancellationToken = default)
+            CancellationToken ct = default)
         {
             if (sortControl == null)
             {
@@ -91,9 +91,10 @@ namespace Novell.Directory.Ldap.SearchExtensions
                     options.Filter,
                     options.TargetAttributes,
                     options.TypesOnly,
-                    searchConstraints).ConfigureAwait(false);
+                    searchConstraints,
+                    ct).ConfigureAwait(false);
 
-                var searchResults = await asyncSearchResults.ToListAsync(cancellationToken).ConfigureAwait(false);
+                var searchResults = await asyncSearchResults.ToListAsync(ct).ConfigureAwait(false);
 
                 entries.AddRange(searchResults.Select(converter));
 
