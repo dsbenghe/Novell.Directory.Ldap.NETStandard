@@ -1054,7 +1054,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         private static string ByteString(byte[] valueRenamed)
         {
-            if (Base64.IsValidUtf8(valueRenamed, true))
+            if (IsValidUtf8(valueRenamed))
             {
                 return valueRenamed.ToUtf8String();
             }
@@ -1074,6 +1074,22 @@ namespace Novell.Directory.Ldap.Rfc2251
                 {
                     // negative (eight character) hex string
                     binary.Append("\\" + Convert.ToString(valueRenamed[i], 16).Substring(6));
+                }
+            }
+
+            bool IsValidUtf8(byte[] bytes)
+            {
+                try
+                {
+                    var utf8ThrowException = new UTF8Encoding(
+                        encoderShouldEmitUTF8Identifier: false,
+                        throwOnInvalidBytes: true);
+                    _ = utf8ThrowException.GetString(bytes);
+                    return true;
+                }
+                catch (DecoderFallbackException)
+                {
+                    return false;
                 }
             }
 

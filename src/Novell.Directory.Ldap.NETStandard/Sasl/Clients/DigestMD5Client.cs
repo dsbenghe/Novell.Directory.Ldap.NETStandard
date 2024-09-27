@@ -152,7 +152,7 @@ namespace Novell.Directory.Ldap.Sasl.Clients
 
             var cnonce = new byte[32];
             _rng.GetBytes(cnonce);
-            result.CNonce = Base64.Encode(cnonce);
+            result.CNonce = Convert.ToBase64String(cnonce);
 
             var ha1 = DigestCalcHa1(result);
             result.Response = DigestCalcResponse(result, ha1);
