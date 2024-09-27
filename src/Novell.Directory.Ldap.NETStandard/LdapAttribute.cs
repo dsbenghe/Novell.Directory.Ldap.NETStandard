@@ -468,32 +468,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            Add(Base64.Decode(attrString));
-        }
-
-        /// <summary>
-        ///     Adds a base64 encoded value to the attribute.
-        ///     The value will be decoded and stored as bytes.  Character
-        ///     data encoded as a base64 value must be UTF-8 characters.
-        /// </summary>
-        /// <param name="attrString">
-        ///     The base64 value of the attribute as a StringBuffer.
-        /// </param>
-        /// <param name="start">
-        ///     The start index of base64 encoded part, inclusive.
-        /// </param>
-        /// <param name="end">
-        ///     The end index of base encoded part, exclusive.
-        ///     @throws IllegalArgumentException if attrString is null.
-        /// </param>
-        public void AddBase64Value(StringBuilder attrString, int start, int end)
-        {
-            if (attrString == null)
-            {
-                throw new ArgumentException("Attribute value cannot be null");
-            }
-
-            Add(Base64.Decode(attrString, start, end));
+            Add(Convert.FromBase64String(attrString));
         }
 
         /// <summary>
@@ -513,7 +488,7 @@ namespace Novell.Directory.Ldap
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
-            Add(Base64.Decode(attrChars));
+            Add(Convert.FromBase64String(new string(attrChars)));
         }
 
         /// <summary>
