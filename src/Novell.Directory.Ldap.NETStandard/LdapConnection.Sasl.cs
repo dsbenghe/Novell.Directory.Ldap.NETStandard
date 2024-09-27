@@ -88,7 +88,7 @@ namespace Novell.Directory.Ldap
         public virtual IDictionary SaslBindProperties
             => Connection?.BindProperties?.SaslBindProperties;
 
-        public virtual async Task BindAsync(SaslRequest saslRequest, CancellationToken ct)
+        public virtual async Task BindAsync(SaslRequest saslRequest, CancellationToken ct = default)
         {
             if (saslRequest == null)
             {
@@ -147,7 +147,7 @@ namespace Novell.Directory.Ldap
             }
         }
 
-        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints, CancellationToken ct)
+        private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints, CancellationToken ct = default)
         {
             constraints = constraints ?? _defSearchCons;
             var msg = new LdapSaslBindRequest(LdapV3, mechanism, constraints.GetControls(), toWrite);

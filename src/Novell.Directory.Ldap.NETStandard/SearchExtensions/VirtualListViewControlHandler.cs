@@ -51,7 +51,7 @@ namespace Novell.Directory.Ldap.SearchExtensions
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken ct)
+            CancellationToken ct = default)
         {
             if (sortControl == null)
             {

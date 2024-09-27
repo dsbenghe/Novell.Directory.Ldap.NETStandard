@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap
         public LdapControl[] ResponseControls { get; private set; }
 
         /// <inheritdoc/>
-        public async Task<bool> HasMoreAsync(CancellationToken ct)
+        public async Task<bool> HasMoreAsync(CancellationToken ct = default)
         {
             var ret = false;
             if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc/>
-        public async Task<LdapEntry> NextAsync(CancellationToken ct)
+        public async Task<LdapEntry> NextAsync(CancellationToken ct = default)
         {
             if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
@@ -164,7 +164,7 @@ namespace Novell.Directory.Ldap
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
         /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
         /// <filterpriority>2.</filterpriority>
-        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken ct)
+        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken ct = default)
         {
             while (await HasMoreAsync(ct).ConfigureAwait(false))
             {
@@ -181,7 +181,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
-        internal async Task AbandonAsync(CancellationToken ct)
+        internal async Task AbandonAsync(CancellationToken ct = default)
         {
             // first, remove message ID and timer and any responses in the queue
             _queue.MessageAgent.AbandonAll();
@@ -204,7 +204,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if all search results have been placed in the vector.
         /// </returns>
-        private async Task<bool> GetBatchOfResultsAsync(CancellationToken ct)
+        private async Task<bool> GetBatchOfResultsAsync(CancellationToken ct = default)
         {
             // <=batchSize so that we can pick up the result-done message
             for (var i = 0; i < _batchSize;)
@@ -302,7 +302,7 @@ namespace Novell.Directory.Ldap
         /*
         * If both of the vectors are empty, get more data for them.
         */
-        private async Task ResetVectorsAsync(CancellationToken ct)
+        private async Task ResetVectorsAsync(CancellationToken ct = default)
         {
             // If we're done, no further checking needed
             if (_completed)

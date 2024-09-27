@@ -229,7 +229,7 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal async Task SendMessageAsync(CancellationToken ct)
+        internal async Task SendMessageAsync(CancellationToken ct = default)
         {
             await _conn.WriteMessageAsync(this, ct).ConfigureAwait(false);
 

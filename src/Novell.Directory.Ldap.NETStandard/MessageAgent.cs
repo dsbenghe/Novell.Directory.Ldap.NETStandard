@@ -223,7 +223,7 @@ namespace Novell.Directory.Ldap
         ///     the interval to wait for the message to complete or.
         ///     <code>null</code> if infinite.
         /// </param>
-        internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps, CancellationToken ct)
+        internal Task SendMessageAsync(Connection conn, LdapMessage msg, int timeOut, BindProperties bindProps, CancellationToken ct = default)
         {
             Debug.WriteLine(msg.ToString());
 

@@ -14,7 +14,7 @@ namespace Novell.Directory.Ldap
         /// This is really just a specialized <see cref="LdapSearchRequest"/>
         /// to handle getting some commonly requested information.
         /// </summary>
-        public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn, CancellationToken ct)
+        public static async Task<RootDseInfo> GetRootDseInfoAsync(this ILdapConnection conn, CancellationToken ct = default)
         {
             var searchResults = await conn
                 .SearchAsync(string.Empty, LdapConnection.ScopeBase, "(objectClass=*)", new string[] { "*", "+", "supportedExtension" }, false, ct)

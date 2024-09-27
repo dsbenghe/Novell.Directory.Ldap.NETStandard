@@ -31,7 +31,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if there are more search results.
         /// </returns>
-        Task<bool> HasMoreAsync(CancellationToken ct);
+        Task<bool> HasMoreAsync(CancellationToken ct = default);
 
         /// <summary>
         ///     Returns the next result as an LdapEntry.
@@ -50,6 +50,6 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException A referral was received and not
         ///     followed.
         /// </exception>
-        Task<LdapEntry> NextAsync(CancellationToken ct);
+        Task<LdapEntry> NextAsync(CancellationToken ct = default);
     }
 }

@@ -435,7 +435,7 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal Task ConnectAsync(string host, int port, CancellationToken ct)
+        internal Task ConnectAsync(string host, int port, CancellationToken ct = default)
         {
             return ConnectAsync(host, port, 0, ct);
         }
@@ -502,7 +502,7 @@ namespace Novell.Directory.Ldap
         /// <param name="semaphoreId">
         ///     The write semaphore ID to use for the connect.
         /// </param>
-        private async Task ConnectAsync(string host, int port, int semaphoreId, CancellationToken ct)
+        private async Task ConnectAsync(string host, int port, int semaphoreId, CancellationToken ct = default)
         {
             /* Synchronized so all variables are in a consistant state and
             * so that another thread isn't doing a connect, disconnect, or clone
@@ -723,7 +723,7 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        internal async Task WriteMessageAsync(Message info, CancellationToken ct)
+        internal async Task WriteMessageAsync(Message info, CancellationToken ct = default)
         {
             _messages.Add(info);
 
@@ -1005,7 +1005,7 @@ namespace Novell.Directory.Ldap
         ///     stop and start the reader thread.  Connection.StopTLS will stop
         ///     and start the reader thread.
         /// </summary>
-        internal async Task StartTlsAsync(CancellationToken ct)
+        internal async Task StartTlsAsync(CancellationToken ct = default)
         {
             try
             {

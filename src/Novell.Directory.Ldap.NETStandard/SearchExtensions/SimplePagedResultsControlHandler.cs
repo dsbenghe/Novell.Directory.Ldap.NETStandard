@@ -26,7 +26,7 @@ namespace Novell.Directory.Ldap
         public Task<List<LdapEntry>> SearchWithSimplePagingAsync(
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken ct)
+            CancellationToken ct = default)
         {
             if (options == null)
             {
@@ -45,7 +45,7 @@ namespace Novell.Directory.Ldap
             [NotNull] Func<LdapEntry, T> converter,
             [NotNull] SearchOptions options,
             int pageSize,
-            CancellationToken ct)
+            CancellationToken ct = default)
         {
             if (converter == null)
             {
