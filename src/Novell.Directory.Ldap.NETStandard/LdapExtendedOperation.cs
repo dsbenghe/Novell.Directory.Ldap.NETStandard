@@ -22,6 +22,7 @@
 *******************************************************************************/
 
 using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -30,10 +31,10 @@ namespace Novell.Directory.Ldap
     ///     operation, known to a particular server, and the data associated
     ///     with that extended operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation)"/>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints)"/>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapResponseQueue)"/>
-    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints,LdapResponseQueue)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapResponseQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.ExtendedOperationAsync(LdapExtendedOperation,LdapConstraints,LdapResponseQueue,CancellationToken)"/>
     public class LdapExtendedOperation
     {
         public virtual DebugId DebugId { get; } = DebugId.ForType<LdapExtendedOperation>();

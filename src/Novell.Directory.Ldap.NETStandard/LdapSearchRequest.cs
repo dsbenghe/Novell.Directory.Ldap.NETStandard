@@ -24,14 +24,15 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     Represents an Ldap Search request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints,CancellationToken)"/>
     /*
      *       SearchRequest ::= [APPLICATION 3] SEQUENCE {
      *               baseObject      LdapDN,
@@ -159,12 +160,12 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
         public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
@@ -229,12 +230,12 @@ namespace Novell.Directory.Ldap
         ///     Any controls that apply to the search request.
         ///     or null if none.
         /// </param>
-        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
-        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
+        /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
         public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)

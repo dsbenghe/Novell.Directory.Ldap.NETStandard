@@ -25,6 +25,7 @@ using Novell.Directory.Ldap.Utilclass;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -33,12 +34,12 @@ namespace Novell.Directory.Ldap
     ///     An LdapUrl object can be passed to LdapConnection.search to retrieve
     ///     search results.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
     public class LdapUrl
     {
         private const int DefaultScope = LdapConnection.ScopeBase;

@@ -23,6 +23,7 @@
 
 using Novell.Directory.Ldap.Rfc2251;
 using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -480,7 +481,7 @@ namespace Novell.Directory.Ldap
         ///     To set a value in a server request, for example an
         ///     <see cref="LdapSearchRequest"/>, you must create the object,
         ///     set the tag, and use the
-        ///     <see cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
+        ///     <see cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,CancellationToken)"/>
         ///     method to send it to the server.
         /// </summary>
         public string Tag

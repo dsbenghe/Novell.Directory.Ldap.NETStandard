@@ -2814,8 +2814,8 @@ namespace Novell.Directory.Ldap
         ///     LDAPException     This exception occurs if the schema entry
         ///     cannot be retrieved with this connection.
         /// </exception>
-        /// <seealso cref="GetSchemaDnAsync()"/>
-        /// <seealso cref="GetSchemaDnAsync(string)"/>
+        /// <seealso cref="GetSchemaDnAsync(CancellationToken)"/>
+        /// <seealso cref="GetSchemaDnAsync(string,CancellationToken)"/>
         public async Task<LdapSchema> FetchSchemaAsync(string schemaDn, CancellationToken ct)
         {
             var ent = await ReadAsync(schemaDn, LdapSchema.SchemaTypeNames, ct).ConfigureAwait(false);

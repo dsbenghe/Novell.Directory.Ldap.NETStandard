@@ -24,14 +24,15 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     Modification Request.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints,CancellationToken)"/>
     /*
      *       ModifyRequest ::= [APPLICATION 6] SEQUENCE {
      *               object          LdapDN,
