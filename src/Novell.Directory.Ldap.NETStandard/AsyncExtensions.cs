@@ -6,6 +6,11 @@ namespace Novell.Directory.Ldap
 {
     public static class AsyncExtensions
     {
+        public static Task TimeoutAfterAsync(this ValueTask task, int timeout)
+        {
+            return task.AsTask().TimeoutAfterAsync(timeout);
+        }
+
         public static async Task TimeoutAfterAsync(this Task task, int timeout)
         {
             try
