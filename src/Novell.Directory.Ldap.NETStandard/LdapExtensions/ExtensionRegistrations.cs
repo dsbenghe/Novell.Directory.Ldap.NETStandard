@@ -12,7 +12,7 @@ namespace Novell.Directory.Ldap
 
         public static Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, CancellationToken ct = default)
         {
-            return WhoAmIAsync(null, ct);
+            return conn.WhoAmIAsync(null, ct);
         }
 
         public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons, CancellationToken ct = default)
