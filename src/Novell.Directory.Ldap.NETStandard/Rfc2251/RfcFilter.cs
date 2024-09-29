@@ -998,7 +998,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                                 itr.MoveNext();
                                 filter.Append((string)itr.Current);
                                 filter.Append('=');
-                                var noStarLast = false;
+                                var noStarLast = true;
                                 while (itr.MoveNext())
                                 {
                                     op = (int)itr.Current;
@@ -1052,29 +1052,23 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Convert a UTF8 encoded string, or binary data, into a String encoded for
         ///     a string filter.
         /// </summary>
-        private static string ByteString(byte[] valueRenamed)
+        private static string ByteString(byte[] value)
         {
-            if (Base64.IsValidUtf8(valueRenamed, true))
+            if (Base64.IsValidUtf8(value, true))
             {
-                return valueRenamed.ToUtf8String();
+                return value.ToUtf8String();
             }
 
-            var binary = new StringBuilder();
-            for (var i = 0; i < valueRenamed.Length; i++)
+            var binary = new StringBuilder(value.Length * 3);
+            for (var i = 0; i < value.Length; i++)
             {
-                // TODO repair binary output
                 // Every octet needs to be escaped
-                if (valueRenamed[i] >= 0)
-                {
-                    // one character hex string
-                    binary.Append("\\0");
-                    binary.Append(Convert.ToString(valueRenamed[i], 16));
-                }
-                else
-                {
-                    // negative (eight character) hex string
-                    binary.Append("\\" + Convert.ToString(valueRenamed[i], 16).Substring(6));
-                }
+                binary.Append('\\');
+#if NET6_0_OR_GREATER
+                binary.Append($"{value[i]:X2}");
+#else
+                binary.AppendFormat("{0:X2}", value[i]);
+#endif
             }
 
             return binary.ToString();
