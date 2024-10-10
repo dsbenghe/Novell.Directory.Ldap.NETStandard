@@ -128,10 +128,7 @@ namespace Novell.Directory.Ldap.Asn1
             if (_contentIndex == _content.Length)
             {
                 // Array too small, need to expand it, double length
-                var newSize = _contentIndex + _contentIndex;
-                var newArray = new Asn1Object[newSize];
-                Array.Copy(_content, 0, newArray, 0, _contentIndex);
-                _content = newArray;
+                Array.Resize(ref _content, _contentIndex + _contentIndex);
             }
 
             _content[_contentIndex++] = valueRenamed;

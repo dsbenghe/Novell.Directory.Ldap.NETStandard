@@ -23,8 +23,8 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Novell.Directory.Ldap
@@ -43,7 +43,7 @@ namespace Novell.Directory.Ldap
     /// </seealso>
     /// <seealso cref="LdapModification">
     /// </seealso>
-    public class LdapAttribute : IComparable
+    public class LdapAttribute : IComparable<LdapAttribute>
     {
         private readonly string _baseName; // cn of cn;lang-ja;phonetic
 
@@ -70,15 +70,13 @@ namespace Novell.Directory.Ldap
             _baseName = attr._baseName;
             if (attr._subTypes != null)
             {
-                _subTypes = new string[attr._subTypes.Length];
-                Array.Copy(attr._subTypes, 0, _subTypes, 0, _subTypes.Length);
+                _subTypes = (string[])attr._subTypes.Clone();
             }
 
             // OK to just copy attributes, as the app only sees a deep copy of them
             if (attr._values != null)
             {
-                _values = new byte[attr._values.Length][];
-                Array.Copy(attr._values, 0, _values, 0, _values.Length);
+                _values = (byte[][])attr._values.Clone();
             }
         }
 
@@ -116,8 +114,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Make our own copy of the byte array to prevent app from changing it
-            var tmp = new byte[attrBytes.Length];
-            Array.Copy(attrBytes, 0, tmp, 0, attrBytes.Length);
+            var tmp = (byte[])attrBytes.Clone();
             Add(tmp);
         }
 
@@ -196,7 +193,7 @@ namespace Novell.Directory.Ldap
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );.
         /// </returns>
-        public IEnumerable<byte[]> ByteValues => ByteValueArray;
+        public ByteArrayView ByteValues => new ByteArrayView(_values);
 
         /// <summary>
         ///     Returns an enumerable for the string values of an attribute.
@@ -204,7 +201,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public IEnumerable<string> StringValues => StringValueArray;
+        public ByteArrayAsUtf8StringView StringValues => new ByteArrayAsUtf8StringView(_values);
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -219,17 +216,16 @@ namespace Novell.Directory.Ldap
             {
                 if (_values == null)
                 {
-                    return new byte[0][];
+                    return Array.Empty<byte[]>();
                 }
 
                 var size = _values.Length;
                 var bva = new byte[size][];
 
                 // Deep copy so application cannot change values
-                for (int i = 0, u = size; i < u; i++)
+                for (int i = 0; i < size; i++)
                 {
-                    bva[i] = new byte[_values[i].Length];
-                    Array.Copy(_values[i], 0, bva[i], 0, bva[i].Length);
+                    bva[i] = (byte[])_values[i].Clone();
                 }
 
                 return bva;
@@ -249,7 +245,7 @@ namespace Novell.Directory.Ldap
             {
                 if (_values == null)
                 {
-                    return new string[0];
+                    return Array.Empty<string>();
                 }
 
                 var size = _values.Length;
@@ -279,20 +275,7 @@ namespace Novell.Directory.Ldap
         ///     value may vary from one call to another.
         ///     If the attribute has no values. <code>null</code> is returned.
         /// </returns>
-        public string StringValue
-        {
-            get
-            {
-                string rval = null;
-                if (_values != null)
-                {
-                    var valueBytes = _values[0];
-                    rval = valueBytes.ToUtf8String();
-                }
-
-                return rval;
-            }
-        }
+        public string StringValue => _values?[0].ToUtf8String();
 
         /// <summary>
         ///     Returns the the first value of the attribute as a byte array.
@@ -302,21 +285,7 @@ namespace Novell.Directory.Ldap
         ///     <code>null</code> if. <code>this</code> attribute doesn't have a value.
         ///     If the attribute has no values. <code>null</code> is returned.
         /// </returns>
-        public byte[] ByteValue
-        {
-            get
-            {
-                byte[] bva = null;
-                if (_values != null)
-                {
-                    // Deep copy so app can't change the value
-                    bva = new byte[_values[0].Length];
-                    Array.Copy(_values[0], 0, bva, 0, bva.Length);
-                }
-
-                return bva;
-            }
-        }
+        public byte[] ByteValue => (byte[])_values?[0].Clone();
 
         /// <summary>
         ///     Returns the language subtype of the attribute, if any.
@@ -388,9 +357,9 @@ namespace Novell.Directory.Ldap
         ///     integer as this object is less than, equal to, or greater than the
         ///     specified object.
         /// </returns>
-        public virtual int CompareTo(object attribute)
+        public virtual int CompareTo(LdapAttribute attribute)
         {
-            return Name.CompareTo(((LdapAttribute)attribute).Name);
+            return Name.CompareTo(attribute.Name);
         }
 
         /// <summary>
@@ -406,7 +375,7 @@ namespace Novell.Directory.Ldap
                 var newObj = (LdapAttribute)MemberwiseClone();
                 if (_values != null)
                 {
-                    Array.Copy(_values, 0, newObj._values, 0, _values.Length);
+                    newObj._values = (byte[][])_values.Clone();
                 }
 
                 return newObj;
@@ -671,7 +640,7 @@ namespace Novell.Directory.Ldap
                 {
                     if (_subTypes[j] == null)
                     {
-                        throw new ArgumentException("subtype " + "at array index " + i + " cannot be null");
+                        throw new ArgumentException("subtype at array index " + i + " cannot be null");
                     }
 
                     if (_subTypes[j].EqualsOrdinalCI(subtypes[i]))
@@ -726,7 +695,7 @@ gotSubType:;
 
             for (var i = 0; i < _values.Length; i++)
             {
-                if (Equals(attrBytes, _values[i]))
+                if (attrBytes.SequenceEqual(_values[i]))
                 {
                     if (i == 0 && _values.Length == 1)
                     {
@@ -792,64 +761,15 @@ gotSubType:;
                 // Duplicate attribute values not allowed
                 for (var i = 0; i < _values.Length; i++)
                 {
-                    if (Equals(bytes, _values[i]))
+                    if (bytes.SequenceEqual(_values[i]))
                     {
                         return; // Duplicate, don't add
                     }
                 }
 
-                var tmp = new byte[_values.Length + 1][];
-                Array.Copy(_values, 0, tmp, 0, _values.Length);
-                tmp[_values.Length] = bytes;
-                _values = tmp;
+                Array.Resize(ref _values, _values.Length + 1);
+                _values[_values.Length - 1] = bytes;
             }
-        }
-
-        /// <summary>
-        ///     Returns true if the two specified arrays of bytes are equal to each
-        ///     another.  Matches the logic of Arrays.equals which is not available
-        ///     in jdk 1.1.x.
-        /// </summary>
-        /// <param name="e1">
-        ///     the first array to be tested.
-        /// </param>
-        /// <param name="e2">
-        ///     the second array to be tested.
-        /// </param>
-        /// <returns>
-        ///     true if the two arrays are equal.
-        /// </returns>
-        private bool Equals(byte[] e1, byte[] e2)
-        {
-            // If same object, they compare true
-            if (e1 == e2)
-            {
-                return true;
-            }
-
-            // If either but not both are null, they compare false
-            if (e1 == null || e2 == null)
-            {
-                return false;
-            }
-
-            // If arrays have different length, they compare false
-            var length = e1.Length;
-            if (e2.Length != length)
-            {
-                return false;
-            }
-
-            // If any of the bytes are different, they compare false
-            for (var i = 0; i < length; i++)
-            {
-                if (e1[i] != e2[i])
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         /// <summary>
@@ -862,7 +782,7 @@ gotSubType:;
         {
             var result = new StringBuilder("LdapAttribute: ");
 
-            result.Append("{type='" + Name + "'");
+            result.Append("{type='").Append(Name).Append('\'');
             if (_values != null)
             {
                 result.Append(", ");
@@ -893,17 +813,17 @@ gotSubType:;
                     if (sval.Length == 0)
                     {
                         // didn't decode well, must be binary
-                        result.Append("<binary value, length:" + sval.Length);
+                        result.Append("<binary value, length:").Append(sval.Length).Append('>');
                         continue;
                     }
 
                     result.Append(sval);
                 }
 
-                result.Append("'");
+                result.Append('\'');
             }
 
-            result.Append("}");
+            result.Append('}');
             return result.ToString();
         }
     }
