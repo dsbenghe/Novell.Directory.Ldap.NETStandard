@@ -62,14 +62,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     clone of this object.
         /// </returns>
-        public object Clone()
+        public LdapExtendedOperation Clone()
         {
             try
             {
-                var newObj = MemberwiseClone();
+                var newObj = (LdapExtendedOperation)MemberwiseClone();
 
                 // Array.Copy((System.Array)SupportClass.ToByteArray( this.vals), 0, (System.Array)SupportClass.ToByteArray( ((LdapExtendedOperation) newObj).vals), 0, this.vals.Length);
-                Array.Copy(_vals, 0, ((LdapExtendedOperation)newObj)._vals, 0, _vals.Length);
+                newObj._vals = (byte[])_vals.Clone();
                 return newObj;
             }
             catch (Exception ce)
