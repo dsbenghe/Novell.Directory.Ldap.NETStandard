@@ -435,9 +435,9 @@ namespace Novell.Directory.Ldap
         /// <param name="port">
         ///     The port on the host to connect to.
         /// </param>
-        internal Task ConnectAsync(string host, int port)
+        internal Task ConnectAsync(string host, int port, CancellationToken ct = default)
         {
-            return ConnectAsync(host, port, 0);
+            return ConnectAsync(host, port, 0, ct);
         }
 
         /****************************************************************************/
@@ -502,7 +502,7 @@ namespace Novell.Directory.Ldap
         /// <param name="semaphoreId">
         ///     The write semaphore ID to use for the connect.
         /// </param>
-        private async Task ConnectAsync(string host, int port, int semaphoreId)
+        private async Task ConnectAsync(string host, int port, int semaphoreId, CancellationToken ct = default)
         {
             /* Synchronized so all variables are in a consistant state and
             * so that another thread isn't doing a connect, disconnect, or clone
@@ -534,7 +534,11 @@ namespace Novell.Directory.Ldap
 
                         if (!IPAddress.TryParse(host, out var ipAddress))
                         {
+#if NETSTANDARD2_0 || NETSTANDARD2_1
                             var ipAddresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
+#else
+                            var ipAddresses = await Dns.GetHostAddressesAsync(host, ct).ConfigureAwait(false);
+#endif
                             ipAddress = ipAddresses
                                 .Where(x => _ldapConnectionOptions.IpAddressFilter(x))
                                 .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork
@@ -550,18 +554,36 @@ namespace Novell.Directory.Ldap
                         {
                             _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
                             var ipEndPoint = new IPEndPoint(ipAddress, port);
+#if NETSTANDARD2_0 || NETSTANDARD2_1
                             await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+#else
+                            await _sock.ConnectAsync(ipEndPoint, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+#endif
 
                             var sslStream = new SslStream(
                                 new NetworkStream(_sock, true),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
+#if NETSTANDARD2_0
                             await sslStream.AuthenticateAsClientAsync(
                                     host,
                                     new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                                     _ldapConnectionOptions.SslProtocols,
                                     _ldapConnectionOptions.CheckCertificateRevocationEnabled)
+#else
+                            await sslStream.AuthenticateAsClientAsync(
+                                    new SslClientAuthenticationOptions()
+                                    {
+                                        TargetHost = host,
+                                        ClientCertificates = new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
+                                        EnabledSslProtocols = _ldapConnectionOptions.SslProtocols,
+                                        CertificateRevocationCheckMode = _ldapConnectionOptions.CheckCertificateRevocationEnabled ?
+                                            X509RevocationMode.Online :
+                                            X509RevocationMode.NoCheck,
+                                    },
+                                    ct)
+#endif
                                 .TimeoutAfterAsync(ConnectionTimeout)
                                 .ConfigureAwait(false);
 
@@ -571,7 +593,11 @@ namespace Novell.Directory.Ldap
                         else
                         {
                             _socket = new TcpClient(ipAddress.AddressFamily);
+#if NETSTANDARD2_0 || NETSTANDARD2_1
                             await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+#else
+                            await _socket.ConnectAsync(host, port, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+#endif
 
                             _inStream = _socket.GetStream();
                             _outStream = _socket.GetStream();
@@ -697,14 +723,14 @@ namespace Novell.Directory.Ldap
         /// <param name="info">
         ///     the Message containing the message to write.
         /// </param>
-        internal async Task WriteMessageAsync(Message info)
+        internal async Task WriteMessageAsync(Message info, CancellationToken ct = default)
         {
             _messages.Add(info);
 
             // For bind requests, if not connected, attempt to reconnect
             if (info.BindRequest && Connected == false && Host != null)
             {
-                await ConnectAsync(Host, Port, info.MessageId).ConfigureAwait(false);
+                await ConnectAsync(Host, Port, info.MessageId, ct).ConfigureAwait(false);
             }
 
             if (Connected)
@@ -979,7 +1005,7 @@ namespace Novell.Directory.Ldap
         ///     stop and start the reader thread.  Connection.StopTLS will stop
         ///     and start the reader thread.
         /// </summary>
-        internal async Task StartTlsAsync()
+        internal async Task StartTlsAsync(CancellationToken ct = default)
         {
             try
             {
@@ -990,14 +1016,27 @@ namespace Novell.Directory.Ldap
                     true,
                     RemoteCertificateValidationCallback,
                     LocalCertificateSelectionCallback);
+                #if NETSTANDARD2_0
                 await sslStream.AuthenticateAsClientAsync(
                         Host,
                         new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
                         _ldapConnectionOptions.SslProtocols,
                         _ldapConnectionOptions.CheckCertificateRevocationEnabled)
+                #else
+                await sslStream.AuthenticateAsClientAsync(
+                        new SslClientAuthenticationOptions()
+                        {
+                            TargetHost = Host,
+                            ClientCertificates = new X509CertificateCollection(_ldapConnectionOptions.ClientCertificates.ToArray()),
+                            EnabledSslProtocols = _ldapConnectionOptions.SslProtocols,
+                            CertificateRevocationCheckMode = _ldapConnectionOptions.CheckCertificateRevocationEnabled ?
+                                X509RevocationMode.Online :
+                                X509RevocationMode.NoCheck,
+                        },
+                        ct)
+                #endif
                     .TimeoutAfterAsync(ConnectionTimeout)
                     .ConfigureAwait(false);
-
                 _inStream = sslStream;
                 _outStream = sslStream;
                 StartReader();

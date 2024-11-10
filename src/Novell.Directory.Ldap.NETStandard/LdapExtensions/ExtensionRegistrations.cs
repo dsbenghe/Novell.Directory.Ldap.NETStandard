@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
 {
@@ -9,9 +10,14 @@ namespace Novell.Directory.Ldap
             LdapExtendedResponse.Register(LdapKnownOids.Extensions.WhoAmI, message => new LdapWhoAmIResponse(message));
         }
 
-        public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons = null)
+        public static Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, CancellationToken ct = default)
         {
-            var result = await conn.ExtendedOperationAsync(new LdapWhoAmIOperation(), cons).ConfigureAwait(false);
+            return conn.WhoAmIAsync(null, ct);
+        }
+
+        public static async Task<LdapWhoAmIResponse> WhoAmIAsync(this LdapConnection conn, LdapConstraints cons, CancellationToken ct = default)
+        {
+            var result = await conn.ExtendedOperationAsync(new LdapWhoAmIOperation(), cons, ct).ConfigureAwait(false);
             if (result is LdapWhoAmIResponse whoami)
             {
                 return whoami;

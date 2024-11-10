@@ -24,6 +24,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -59,8 +60,8 @@ namespace Novell.Directory.Ldap
     /// </summary>
     /// <seealso cref="LdapSchemaElement" />
     /// <seealso cref="LdapConnection.FetchSchemaAsync" />
-    /// <seealso cref="LdapConnection.GetSchemaDnAsync()" />
-    /// <seealso cref="LdapConnection.GetSchemaDnAsync(string)" />
+    /// <seealso cref="LdapConnection.GetSchemaDnAsync(CancellationToken)" />
+    /// <seealso cref="LdapConnection.GetSchemaDnAsync(string,CancellationToken)" />
     public class LdapSchema : LdapEntry
     {
         /// <summary>An index into the the arrays schemaTypeNames, idTable, and nameTable. </summary>

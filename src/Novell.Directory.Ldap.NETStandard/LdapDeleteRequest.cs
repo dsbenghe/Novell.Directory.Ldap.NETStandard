@@ -22,14 +22,15 @@
 *******************************************************************************/
 
 using Novell.Directory.Ldap.Rfc2251;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
     /// <summary>
     ///     Represents a request to delete an entry.
     /// </summary>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue)"/>
-    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SendRequestAsync(LdapMessage,LdapMessageQueue,LdapConstraints,CancellationToken)"/>
     /*
      *       DelRequest ::= [APPLICATION 10] LdapDN
      */

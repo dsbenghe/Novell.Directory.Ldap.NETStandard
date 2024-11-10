@@ -229,9 +229,9 @@ namespace Novell.Directory.Ldap
             return _acceptReplies;
         }
 
-        internal async Task SendMessageAsync()
+        internal async Task SendMessageAsync(CancellationToken ct = default)
         {
-            await _conn.WriteMessageAsync(this).ConfigureAwait(false);
+            await _conn.WriteMessageAsync(this, ct).ConfigureAwait(false);
 
             // Start the timer thread
             if (_mslimit != 0)

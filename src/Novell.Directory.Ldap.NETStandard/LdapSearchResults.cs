@@ -79,7 +79,7 @@ namespace Novell.Directory.Ldap
         public LdapControl[] ResponseControls { get; private set; }
 
         /// <inheritdoc/>
-        public async Task<bool> HasMoreAsync()
+        public async Task<bool> HasMoreAsync(CancellationToken ct = default)
         {
             var ret = false;
             if (_entryIndex < _entryCount || _referenceIndex < _referenceCount)
@@ -90,7 +90,7 @@ namespace Novell.Directory.Ldap
             else if (_completed == false)
             {
                 // reload the Vector by getting more results
-                await ResetVectorsAsync().ConfigureAwait(false);
+                await ResetVectorsAsync(ct).ConfigureAwait(false);
                 ret = _entryIndex < _entryCount || _referenceIndex < _referenceCount;
             }
 
@@ -98,7 +98,7 @@ namespace Novell.Directory.Ldap
         }
 
         /// <inheritdoc/>
-        public async Task<LdapEntry> NextAsync()
+        public async Task<LdapEntry> NextAsync(CancellationToken ct = default)
         {
             if (_completed && _entryIndex >= _entryCount && _referenceIndex >= _referenceCount)
             {
@@ -106,7 +106,7 @@ namespace Novell.Directory.Ldap
             }
 
             // Check if the enumeration is empty and must be reloaded
-            await ResetVectorsAsync().ConfigureAwait(false);
+            await ResetVectorsAsync(ct).ConfigureAwait(false);
 
             // Check for Search References & deliver to app as they come in
             // We only get here if not following referrals/references
@@ -164,11 +164,11 @@ namespace Novell.Directory.Ldap
         /// <summary>Returns an enumerator that iterates through a collection.</summary>
         /// <returns>An <see cref="T:System.Collections.IAsyncEnumerator" /> object that can be used to iterate through the collection.</returns>
         /// <filterpriority>2.</filterpriority>
-        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        public async IAsyncEnumerator<LdapEntry> GetAsyncEnumerator(CancellationToken ct = default)
         {
-            while (await HasMoreAsync().ConfigureAwait(false))
+            while (await HasMoreAsync(ct).ConfigureAwait(false))
             {
-                yield return await NextAsync().ConfigureAwait(false);
+                yield return await NextAsync(ct).ConfigureAwait(false);
             }
         }
 
@@ -181,13 +181,13 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary> Cancels the search request and clears the message and enumeration.</summary>
-        internal async Task AbandonAsync()
+        internal async Task AbandonAsync(CancellationToken ct = default)
         {
             // first, remove message ID and timer and any responses in the queue
             _queue.MessageAgent.AbandonAll();
 
             // next, clear out enumeration
-            await ResetVectorsAsync().ConfigureAwait(false);
+            await ResetVectorsAsync(ct).ConfigureAwait(false);
             _completed = true;
         }
 
@@ -204,7 +204,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     true if all search results have been placed in the vector.
         /// </returns>
-        private async Task<bool> GetBatchOfResultsAsync()
+        private async Task<bool> GetBatchOfResultsAsync(CancellationToken ct = default)
         {
             // <=batchSize so that we can pick up the result-done message
             for (var i = 0; i < _batchSize;)
@@ -235,7 +235,7 @@ namespace Novell.Directory.Ldap
 
                             if (_cons.ReferralFollowing)
                             {
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, ldapMessage, refs, 0, true, _referralConn).ConfigureAwait(false);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, ldapMessage, refs, 0, true, _referralConn, ct).ConfigureAwait(false);
                             }
                             else
                             {
@@ -259,7 +259,7 @@ namespace Novell.Directory.Ldap
                             if (resultCode == LdapException.Referral && _cons.ReferralFollowing)
                             {
                                 // Following referrals
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn).ConfigureAwait(false);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, resp, resp.Referrals, 0, false, _referralConn, ct).ConfigureAwait(false);
                             }
                             else if (resultCode != LdapException.Success)
                             {
@@ -302,7 +302,7 @@ namespace Novell.Directory.Ldap
         /*
         * If both of the vectors are empty, get more data for them.
         */
-        private async Task ResetVectorsAsync()
+        private async Task ResetVectorsAsync(CancellationToken ct = default)
         {
             // If we're done, no further checking needed
             if (_completed)
@@ -329,7 +329,7 @@ namespace Novell.Directory.Ldap
             // If no data at all, must reload enumeration
             if (_referenceIndex == 0 && _referenceCount == 0 && _entryIndex == 0 && _entryCount == 0)
             {
-                _completed = await GetBatchOfResultsAsync().ConfigureAwait(false);
+                _completed = await GetBatchOfResultsAsync(ct).ConfigureAwait(false);
             }
         }
     }

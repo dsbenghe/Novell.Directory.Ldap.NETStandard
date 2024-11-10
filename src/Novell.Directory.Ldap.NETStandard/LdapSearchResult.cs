@@ -24,6 +24,7 @@
 using Novell.Directory.Ldap.Asn1;
 using Novell.Directory.Ldap.Rfc2251;
 using System;
+using System.Threading;
 
 namespace Novell.Directory.Ldap
 {
@@ -31,12 +32,12 @@ namespace Novell.Directory.Ldap
     ///     Encapsulates a single search result that is in response to an asynchronous
     ///     search operation.
     /// </summary>
-    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints)"/>
-    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(LdapUrl,LdapSearchConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
+    /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
     public class LdapSearchResult : LdapMessage
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapSearchResult>();
