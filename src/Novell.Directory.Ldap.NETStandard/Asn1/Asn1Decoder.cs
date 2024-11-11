@@ -66,9 +66,9 @@ namespace Novell.Directory.Ldap.Asn1
         ///     type has decoded all of its components.
         /// </param>
         /// <param name="input">
-        ///     An input stream containig the encoded ASN.1 data.
+        ///     An input stream containing the encoded ASN.1 data.
         /// </param>
-        Asn1Object Decode(Stream input, int[] length);
+        Asn1Object Decode(Stream input, out int length);
 
         /* Decoders for ASN.1 simple types
         */

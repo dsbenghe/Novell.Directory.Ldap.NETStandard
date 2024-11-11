@@ -94,12 +94,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
         protected internal void DecodeStructured(IAsn1Decoder dec, Stream input, int len)
         {
-            var componentLen = new int[1]; // collects length of component
-
             while (len > 0)
             {
-                Add(dec.Decode(input, componentLen));
-                len -= componentLen[0];
+                Add(dec.Decode(input, out var componentLen));
+                len -= componentLen;
             }
         }
 

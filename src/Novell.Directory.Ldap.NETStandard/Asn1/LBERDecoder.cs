@@ -83,8 +83,7 @@ namespace Novell.Directory.Ldap.Asn1
         /// <summary> Decode an LBER encoded value into an Asn1Type from an InputStream.</summary>
         public Asn1Object Decode(Stream input)
         {
-            var len = new int[1];
-            return Decode(input, len);
+            return Decode(input, out _);
         }
 
         /// <summary>
@@ -94,13 +93,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the parameter len. This information is helpful when decoding
         ///     structured types.
         /// </summary>
-        public Asn1Object Decode(Stream input, int[] len)
+        public Asn1Object Decode(Stream input, out int len)
         {
             _asn1Id.Reset(input);
             _asn1Len.Reset(input);
 
             var length = _asn1Len.Length;
-            len[0] = _asn1Id.EncodedLength + _asn1Len.EncodedLength + length;
+            len = _asn1Id.EncodedLength + _asn1Len.EncodedLength + length;
 
             if (_asn1Id.IsUniversal)
             {
