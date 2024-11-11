@@ -32,24 +32,17 @@ namespace Novell.Directory.Ldap.Asn1
     {
         private readonly long _content;
 
-        internal Asn1Numeric(Asn1Identifier id, int valueRenamed)
+        internal Asn1Numeric(Asn1Identifier id, int content)
             : base(id)
         {
-            _content = valueRenamed;
+            _content = content;
         }
 
-        internal Asn1Numeric(Asn1Identifier id, long valueRenamed)
+        internal Asn1Numeric(Asn1Identifier id, long content)
             : base(id)
         {
-            _content = valueRenamed;
+            _content = content;
         }
-
-        /*      internal Asn1Numeric(Asn1Identifier id, System.Int64 value_Renamed):base(id)
-                {
-                    content = value_Renamed;
-                    return ;
-                }
-        */
 
         /// <summary> Returns the content of this Asn1Numeric object as an int.</summary>
         public int IntValue()

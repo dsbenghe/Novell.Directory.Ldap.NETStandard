@@ -59,12 +59,12 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             var asn1Object = lberDecoder.Decode(values);
-            if (!(asn1Object is Asn1Sequence))
+            if (asn1Object is not Asn1Sequence sequence)
             {
                 throw new InvalidCastException(DecodedNotSequence);
             }
 
-            var size = ((Asn1Structured)asn1Object).get_Renamed(0);
+            var size = sequence[0];
             if (!(size is Asn1Integer integerSize))
             {
                 throw new InvalidOperationException(DecodedNotInteger);
@@ -72,7 +72,7 @@ namespace Novell.Directory.Ldap.Controls
 
             Size = integerSize.IntValue();
 
-            var cookie = ((Asn1Structured)asn1Object).get_Renamed(1);
+            var cookie = sequence[1];
             if (!(cookie is Asn1OctetString octetCookie))
             {
                 throw new InvalidOperationException(DecodedNotOctetString);
@@ -114,9 +114,11 @@ namespace Novell.Directory.Ldap.Controls
 
         private void BuildTypedPagedRequest()
         {
-            _request = new Asn1Sequence(2);
-            _request.Add(new Asn1Integer(Size));
-            _request.Add(new Asn1OctetString(Cookie));
+            _request = new Asn1Sequence(2)
+            {
+                new Asn1Integer(Size),
+                new Asn1OctetString(Cookie),
+            };
         }
     }
 }

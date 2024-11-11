@@ -42,11 +42,11 @@ namespace Novell.Directory.Ldap.Asn1
         ///     class to encode itself ( an Asn1Object) directly intto
         ///     a output stream.
         /// </summary>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the encoded
         ///     Asn1Object will be placed.
         /// </param>
-        public abstract void Encode(IAsn1Encoder enc, Stream outRenamed);
+        public abstract void Encode(IAsn1Encoder enc, Stream output);
 
         /// <summary>
         ///     Returns the identifier for this Asn1Object as an Asn1Identifier.
@@ -75,23 +75,23 @@ namespace Novell.Directory.Ldap.Asn1
         ///     This method returns a byte array representing the encoded
         ///     Asn1Object.  It in turn calls the encode method that is
         ///     defined in Asn1Object but will usually be implemented
-        ///     in the child Asn1 classses.
+        ///     in the child Asn1 classes.
         /// </summary>
         public byte[] GetEncoding(IAsn1Encoder enc)
         {
-            var outRenamed = new MemoryStream();
+            var output = new MemoryStream();
             try
             {
-                Encode(enc, outRenamed);
+                Encode(enc, output);
             }
             catch (IOException e)
             {
                 // Should never happen - the current Asn1Object does not have
-                // a encode method.
+                // an encode method.
                 throw new Exception("IOException while encoding to byte array: " + e);
             }
 
-            return outRenamed.ToArray();
+            return output.ToArray();
         }
 
         /// <summary> Return a String representation of this Asn1Object.</summary>

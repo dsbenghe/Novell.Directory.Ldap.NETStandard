@@ -78,7 +78,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Asn1Sequence.
         /// </summary>
         public Asn1SequenceOf(Asn1Sequence sequence)
-            : base(Id, sequence.ToArray(), sequence.Size())
+            : base(Id, sequence.ToArray(), sequence.Count)
         {
         }
 
@@ -91,13 +91,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.  Sometimes a developer might want to pass
         ///     in his/her own decoder object.
         /// </param>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        public Asn1SequenceOf(IAsn1Decoder dec, Stream inRenamed, int len)
+        public Asn1SequenceOf(IAsn1Decoder dec, Stream input, int len)
             : base(Id)
         {
-            DecodeStructured(dec, inRenamed, len);
+            DecodeStructured(dec, input, len);
         }
 
         /* Asn1SequenceOf specific methods

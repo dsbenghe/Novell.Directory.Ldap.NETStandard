@@ -30,7 +30,7 @@ namespace Novell.Directory.Ldap.Rfc2251
     public interface IRfcRequest
     {
         /// <summary> Builds a new request using the data from the this object.</summary>
-        IRfcRequest DupRequest(string baseRenamed, string filter, bool reference);
+        IRfcRequest DupRequest(string baseDn, string filter, bool reference);
 
         /// <summary> Builds a new request using the data from the this object.</summary>
         string GetRequestDn();

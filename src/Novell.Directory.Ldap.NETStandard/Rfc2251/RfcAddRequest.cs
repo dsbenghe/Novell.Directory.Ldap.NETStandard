@@ -61,30 +61,30 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <param name="origRequest">
         ///     the original request data.
         /// </param>
-        /// <param name="baseRenamed">
+        /// <param name="baseDn">
         ///     if not null, replaces the dn of the original request.
         /// </param>
-        internal RfcAddRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcAddRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
+                this[0] = new RfcLdapDn(baseDn);
             }
         }
 
         /// <summary> Gets the attributes of the entry.</summary>
-        public RfcAttributeList Attributes => (RfcAttributeList)get_Renamed(1);
+        public RfcAttributeList Attributes => (RfcAttributeList)this[1];
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcAddRequest(ToArray(), baseRenamed);
+            return new RfcAddRequest(ToArray(), baseDn);
         }
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)this[0]).StringValue();
         }
 
         // *************************************************************************

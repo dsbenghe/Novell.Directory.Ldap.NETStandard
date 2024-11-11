@@ -101,9 +101,10 @@ namespace Novell.Directory.Ldap.Controls
 
             for (var i = 0; i < keys.Length; i++)
             {
-                var key = new Asn1Sequence();
-
-                key.Add(new Asn1OctetString(keys[i].Key));
+                var key = new Asn1Sequence
+                {
+                    new Asn1OctetString(keys[i].Key),
+                };
 
                 if (keys[i].MatchRule != null)
                 {

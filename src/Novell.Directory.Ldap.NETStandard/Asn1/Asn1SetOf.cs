@@ -73,8 +73,8 @@ namespace Novell.Directory.Ldap.Asn1
         ///     able to construct this object when knowingly receiving an
         ///     Asn1Set.
         /// </summary>
-        public Asn1SetOf(Asn1Set setRenamed)
-            : base(Id, setRenamed.ToArray(), setRenamed.Size())
+        public Asn1SetOf(Asn1Set set)
+            : base(Id, set.ToArray(), set.Count)
         {
         }
 

@@ -66,24 +66,24 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Delete Request copying from the ArrayList of
         ///     an existing request.
         /// </summary>
-        internal RfcModifyDnRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcModifyDnRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
+                this[0] = new RfcLdapDn(baseDn);
             }
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcModifyDnRequest(ToArray(), baseRenamed);
+            return new RfcModifyDnRequest(ToArray(), baseDn);
         }
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)this[0]).StringValue();
         }
 
         // *************************************************************************

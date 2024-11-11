@@ -226,7 +226,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public override void RemoveValue(string valueRenamed)
+        public override void RemoveValue(string value)
         {
             throw new NotSupportedException("removeValue is not supported by LdapSchemaElement");
         }
@@ -237,7 +237,7 @@ namespace Novell.Directory.Ldap
         ///     @throws UnsupportedOperationException always thrown since
         ///     LdapSchemaElement is read-only.
         /// </summary>
-        public override void RemoveValue(byte[] valueRenamed)
+        public override void RemoveValue(byte[] value)
         {
             throw new NotSupportedException("removeValue is not supported by LdapSchemaElement");
         }

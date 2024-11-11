@@ -57,7 +57,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the attribute description.
         /// </returns>
-        public string AttributeDescription => ((RfcAttributeDescription)get_Renamed(0)).StringValue();
+        public string AttributeDescription => ((RfcAttributeDescription)this[0]).StringValue();
 
         /// <summary>
         ///     Returns the assertion value.
@@ -65,6 +65,6 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <returns>
         ///     the assertion value.
         /// </returns>
-        public byte[] AssertionValue => ((RfcAssertionValue)get_Renamed(1)).ByteValue();
+        public byte[] AssertionValue => ((RfcAssertionValue)this[1]).ByteValue();
     }
 }

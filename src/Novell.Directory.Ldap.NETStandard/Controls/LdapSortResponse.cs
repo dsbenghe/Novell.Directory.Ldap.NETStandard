@@ -90,24 +90,24 @@ namespace Novell.Directory.Ldap.Controls
             // We should get back an enumerated type
             var asnObj = decoder.Decode(values);
 
-            if (asnObj == null || !(asnObj is Asn1Sequence))
+            if (asnObj is not Asn1Sequence sequence)
             {
                 throw new IOException("Decoding error");
             }
 
-            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(0);
-            if (asn1Enum != null && asn1Enum is Asn1Enumerated)
+            var asn1Enum = sequence[0];
+            if (asn1Enum is Asn1Enumerated enumerated)
             {
-                ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
+                ResultCode = enumerated.IntValue();
             }
 
             // Second element is the attributeType
-            if (((Asn1Sequence)asnObj).Size() > 1)
+            if (sequence.Count > 1)
             {
-                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(1);
-                if (asn1String != null && asn1String is Asn1OctetString)
+                var asn1String = sequence[1];
+                if (asn1String is Asn1OctetString octetString)
                 {
-                    FailedAttribute = ((Asn1OctetString)asn1String).StringValue();
+                    FailedAttribute = octetString.StringValue();
                 }
             }
         }

@@ -151,11 +151,12 @@ namespace Novell.Directory.Ldap.Controls
             _mChangesOnly = changesOnly;
             _mReturnControls = returnControls;
 
-            _mSequence = new Asn1Sequence(SequenceSize);
-
-            _mSequence.Add(new Asn1Integer(_mChangeTypes));
-            _mSequence.Add(new Asn1Boolean(_mChangesOnly));
-            _mSequence.Add(new Asn1Boolean(_mReturnControls));
+            _mSequence = new Asn1Sequence(SequenceSize)
+            {
+                new Asn1Integer(_mChangeTypes),
+                new Asn1Boolean(_mChangesOnly),
+                new Asn1Boolean(_mReturnControls),
+            };
 
             SetValue();
         }
@@ -182,7 +183,7 @@ namespace Novell.Directory.Ldap.Controls
             set
             {
                 _mChangeTypes = value;
-                _mSequence.set_Renamed(ChangetypesIndex, new Asn1Integer(_mChangeTypes));
+                _mSequence[ChangetypesIndex] = new Asn1Integer(_mChangeTypes);
                 SetValue();
             }
         }
@@ -198,7 +199,7 @@ namespace Novell.Directory.Ldap.Controls
             set
             {
                 _mReturnControls = value;
-                _mSequence.set_Renamed(ReturncontrolsIndex, new Asn1Boolean(_mReturnControls));
+                _mSequence[ReturncontrolsIndex] = new Asn1Boolean(_mReturnControls);
                 SetValue();
             }
         }
@@ -214,7 +215,7 @@ namespace Novell.Directory.Ldap.Controls
             set
             {
                 _mChangesOnly = value;
-                _mSequence.set_Renamed(ChangesonlyIndex, new Asn1Boolean(_mChangesOnly));
+                _mSequence[ChangesonlyIndex] = new Asn1Boolean(_mChangesOnly);
                 SetValue();
             }
         }
@@ -223,15 +224,19 @@ namespace Novell.Directory.Ldap.Controls
         {
             var data = _mSequence.GetEncoding(SEncoder);
 
+            if (data.Length < 1)
+            {
+                return string.Empty;
+            }
+
             var buf = new StringBuilder(data.Length);
 
-            for (var i = 0; i < data.Length; i++)
+            buf.Append(data[0]);
+
+            for (var i = 1; i < data.Length; i++)
             {
-                buf.Append(data[i].ToString());
-                if (i < data.Length - 1)
-                {
-                    buf.Append(",");
-                }
+                buf.Append(',');
+                buf.Append(data[i]);
             }
 
             return buf.ToString();

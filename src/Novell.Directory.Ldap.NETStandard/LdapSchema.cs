@@ -254,12 +254,12 @@ namespace Novell.Directory.Ldap
 
                 if (attrName.EqualsOrdinalCI(SchemaTypeNames[ObjectClass]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
                         LdapObjectClassSchema classSchema;
                         try
                         {
-                            classSchema = new LdapObjectClassSchema(valueRenamed);
+                            classSchema = new LdapObjectClassSchema(value);
                         }
                         catch (Exception e)
                         {
@@ -272,12 +272,12 @@ namespace Novell.Directory.Ldap
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Attribute]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
                         LdapAttributeSchema attrSchema;
                         try
                         {
-                            attrSchema = new LdapAttributeSchema(valueRenamed);
+                            attrSchema = new LdapAttributeSchema(value);
                         }
                         catch (Exception e)
                         {
@@ -290,49 +290,49 @@ namespace Novell.Directory.Ldap
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Syntax]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var syntaxSchema = new LdapSyntaxSchema(valueRenamed);
+                        var syntaxSchema = new LdapSyntaxSchema(value);
                         AddElement(_syntaxIdTable, _syntaxNameTable, syntaxSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Matching]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var matchingRuleSchema = new LdapMatchingRuleSchema(valueRenamed, null);
+                        var matchingRuleSchema = new LdapMatchingRuleSchema(value, null);
                         AddElement(_matchingIdTable, _matchingNameTable, matchingRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[MatchingUse]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var matchingRuleUseSchema = new LdapMatchingRuleUseSchema(valueRenamed);
+                        var matchingRuleUseSchema = new LdapMatchingRuleUseSchema(value);
                         AddElement(_matchingUseIdTable, _matchingUseNameTable, matchingRuleUseSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditcontent]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var dItContentRuleSchema = new LdapDitContentRuleSchema(valueRenamed);
+                        var dItContentRuleSchema = new LdapDitContentRuleSchema(value);
                         AddElement(_ditcontentIdTable, _ditcontentNameTable, dItContentRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[Ditstructure]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var dItStructureRuleSchema = new LdapDitStructureRuleSchema(valueRenamed);
+                        var dItStructureRuleSchema = new LdapDitStructureRuleSchema(value);
                         AddElement(_ditstructureIdTable, _ditstructureNameTable, dItStructureRuleSchema);
                     }
                 }
                 else if (attrName.EqualsOrdinalCI(SchemaTypeNames[NameForm]))
                 {
-                    foreach (var valueRenamed in attr.StringValueArray)
+                    foreach (var value in attr.StringValueArray)
                     {
-                        var nameFormSchema = new LdapNameFormSchema(valueRenamed);
+                        var nameFormSchema = new LdapNameFormSchema(value);
                         AddElement(_nameFormIdTable, _nameFormNameTable, nameFormSchema);
                     }
                 }
@@ -521,7 +521,7 @@ namespace Novell.Directory.Ldap
             }
 
             var c = key[0];
-            if (c >= '0' && c <= '9')
+            if (c is >= '0' and <= '9')
             {
                 // oid lookup
                 return idTable[key];

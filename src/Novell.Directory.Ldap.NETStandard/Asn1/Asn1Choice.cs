@@ -60,17 +60,15 @@ namespace Novell.Directory.Ldap.Asn1
             ChoiceValue = null;
         }
 
-#pragma warning disable CS1572 // XML comment has a param tag, but there is no parameter by that name
         /// <summary>
         ///     Sets the CHOICE value stored in this Asn1Choice.
         /// </summary>
-        /// <param name="content">
+        /// <param name="value">
         ///     The Asn1Object that this Asn1Choice will
         ///     encode.  Since all Asn1 objects are derived from Asn1Object
         ///     any basic type can be passed in.
         /// </param>
         protected Asn1Object ChoiceValue { get; set; }
-#pragma warning restore CS1572 // XML comment has a param tag, but there is no parameter by that name
 
         /* Asn1Object implementation
         */
@@ -83,13 +81,13 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="enc">
         ///     Encoder object to use when encoding self.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the encoded byte
         ///     stream is written.
         /// </param>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            ChoiceValue.Encode(enc, outRenamed);
+            ChoiceValue.Encode(enc, output);
         }
 
         /* Asn1Choice specific methods

@@ -116,9 +116,8 @@ namespace Novell.Directory.Ldap
                 Properties = (Hashtable)lp.Clone();
             }
 
-            if (cons is LdapSearchConstraints)
+            if (cons is LdapSearchConstraints scons)
             {
-                var scons = (LdapSearchConstraints)cons;
                 ServerTimeLimit = scons.ServerTimeLimit;
                 Dereference = scons.Dereference;
                 MaxResults = scons.MaxResults;

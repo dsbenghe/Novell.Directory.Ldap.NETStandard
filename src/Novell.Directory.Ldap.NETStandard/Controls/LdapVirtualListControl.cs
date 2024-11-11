@@ -329,12 +329,12 @@ namespace Novell.Directory.Ldap.Controls
 
                 /* Is there a context field that is already in the ber
                 */
-                if (_mVlvRequest.Size() == 4)
+                if (_mVlvRequest.Count == 4)
                 {
                     /* If YES then replace it */
-                    _mVlvRequest.set_Renamed(contextidindex, new Asn1OctetString(_mContext));
+                    _mVlvRequest[contextidindex] = new Asn1OctetString(_mContext);
                 }
-                else if (_mVlvRequest.Size() == 3)
+                else if (_mVlvRequest.Count == 3)
                 {
                     /* If no then add a new one */
                     _mVlvRequest.Add(new Asn1OctetString(_mContext));
@@ -355,21 +355,21 @@ namespace Novell.Directory.Ldap.Controls
         private void BuildTypedVlvRequest()
         {
             /* Create a new Asn1Sequence object */
-            _mVlvRequest = new Asn1Sequence(4);
-
-            /* Add the beforeCount and afterCount fields to the sequence */
-            _mVlvRequest.Add(new Asn1Integer(_mBeforeCount));
-            _mVlvRequest.Add(new Asn1Integer(_mAfterCount));
-
-            /* The next field is dependent on the type of indexing being used.
-            * A "typed" VLV request uses a ASN.1 OCTET STRING to index to the
-            * correct object in the list.  Encode the ASN.1 CHOICE corresponding
-            * to this option (as indicated by the greaterthanOrEqual field)
-            * in the ASN.1.
-            */
-            _mVlvRequest.Add(new Asn1Tagged(
-                new Asn1Identifier(Asn1Identifier.Context, false, Greaterthanorequal),
-                new Asn1OctetString(_mJumpTo), false));
+            _mVlvRequest = new Asn1Sequence(4)
+            {
+                /* Add the beforeCount and afterCount fields to the sequence */
+                new Asn1Integer(_mBeforeCount),
+                new Asn1Integer(_mAfterCount),
+                /* The next field is dependent on the type of indexing being used.
+                * A "typed" VLV request uses a ASN.1 OCTET STRING to index to the
+                * correct object in the list.  Encode the ASN.1 CHOICE corresponding
+                * to this option (as indicated by the greaterthanOrEqual field)
+                * in the ASN.1.
+                */
+                new Asn1Tagged(
+                    new Asn1Identifier(Asn1Identifier.Context, false, Greaterthanorequal),
+                    new Asn1OctetString(_mJumpTo), false),
+            };
 
             /* Add the optional context string if one is available.
             */
@@ -386,20 +386,23 @@ namespace Novell.Directory.Ldap.Controls
         private void BuildIndexedVlvRequest()
         {
             /* Create a new Asn1Sequence object */
-            _mVlvRequest = new Asn1Sequence(4);
-
-            /* Add the beforeCount and afterCount fields to the sequence */
-            _mVlvRequest.Add(new Asn1Integer(_mBeforeCount));
-            _mVlvRequest.Add(new Asn1Integer(_mAfterCount));
+            _mVlvRequest = new Asn1Sequence(4)
+            {
+                /* Add the beforeCount and afterCount fields to the sequence */
+                new Asn1Integer(_mBeforeCount),
+                new Asn1Integer(_mAfterCount),
+            };
 
             /* The next field is dependent on the type of indexing being used.
             * An "indexed" VLV request uses a ASN.1 SEQUENCE to index to the
             * correct object in the list.  Encode the ASN.1 CHOICE corresponding
             * to this option (as indicated by the byoffset fieldin the ASN.1.
             */
-            var byoffset = new Asn1Sequence(2);
-            byoffset.Add(new Asn1Integer(_mStartIndex));
-            byoffset.Add(new Asn1Integer(_mContentCount));
+            var byoffset = new Asn1Sequence(2)
+            {
+                new Asn1Integer(_mStartIndex),
+                new Asn1Integer(_mContentCount),
+            };
 
             /* Add the ASN.1 sequence to the encoded data
             */

@@ -33,16 +33,16 @@ namespace Novell.Directory.Ldap.Utilclass
     {
         private readonly string[] _values;
 
-        public AttributeQualifier(string name, string[] valueRenamed)
+        public AttributeQualifier(string name, string[] value)
         {
-            if (name == null || valueRenamed == null)
+            if (name == null || value == null)
             {
                 throw new ArgumentException("A null name or value " +
                                             "was passed in for a schema definition qualifier");
             }
 
             Name = name;
-            _values = (string[])valueRenamed.Clone();
+            _values = (string[])value.Clone();
         }
 
         public string Name { get; }

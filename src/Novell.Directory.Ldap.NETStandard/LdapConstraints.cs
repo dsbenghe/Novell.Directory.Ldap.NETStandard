@@ -264,21 +264,21 @@ namespace Novell.Directory.Ldap
         /// <param name="name">
         ///     Name of the property to set.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     Value to assign to the property.
         ///     property is not supported.
         ///     @throws NullPointerException if name or value are null.
         /// </param>
         /// <seealso cref="LdapConnection.GetProperty">
         /// </seealso>
-        public void SetProperty(string name, object valueRenamed)
+        public void SetProperty(string name, object value)
         {
             if (_properties == null)
             {
                 _properties = new Hashtable();
             }
 
-            _properties.Add(name, valueRenamed);
+            _properties.Add(name, value);
         }
 
         /// <summary>

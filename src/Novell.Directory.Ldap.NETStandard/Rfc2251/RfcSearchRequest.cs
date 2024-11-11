@@ -72,13 +72,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Constructs a new Search Request copying from an existing request.</summary>
-        internal RfcSearchRequest(Asn1Object[] origRequest, string baseRenamed, string filter, bool request)
+        internal RfcSearchRequest(Asn1Object[] origRequest, string baseDn, string filter, bool request)
             : base(origRequest, origRequest.Length)
         {
             // Replace the base if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                set_Renamed(0, new RfcLdapDn(baseRenamed));
+                this[0] = new RfcLdapDn(baseDn);
             }
 
             // If this is a reencode of a search continuation reference
@@ -89,25 +89,25 @@ namespace Novell.Directory.Ldap.Rfc2251
                 var scope = ((Asn1Enumerated)origRequest[1]).IntValue();
                 if (scope == LdapConnection.ScopeOne)
                 {
-                    set_Renamed(1, new Asn1Enumerated(LdapConnection.ScopeBase));
+                    this[1] = new Asn1Enumerated(LdapConnection.ScopeBase);
                 }
             }
 
             // Replace the filter if specified, otherwise keep original filter
             if (filter != null)
             {
-                set_Renamed(6, new RfcFilter(filter));
+                this[6] = new RfcFilter(filter);
             }
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcSearchRequest(ToArray(), baseRenamed, filter, request);
+            return new RfcSearchRequest(ToArray(), baseDn, filter, request);
         }
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(0)).StringValue();
+            return ((RfcLdapDn)this[0]).StringValue();
         }
 
         // *************************************************************************

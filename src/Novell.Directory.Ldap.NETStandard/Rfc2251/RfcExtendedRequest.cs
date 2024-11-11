@@ -87,7 +87,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
             // Just dup the original request
             return new RfcExtendedRequest(ToArray());

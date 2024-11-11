@@ -1106,7 +1106,7 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                if (_serverMessage != null && _serverMessage.Length == 0)
+                if (_serverMessage is { Length: 0 })
                 {
                     return null;
                 }

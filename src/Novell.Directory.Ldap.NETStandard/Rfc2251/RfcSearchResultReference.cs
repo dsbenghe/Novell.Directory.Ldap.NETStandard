@@ -42,8 +42,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a SearchResultReference is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        public RfcSearchResultReference(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcSearchResultReference(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
         }
 
