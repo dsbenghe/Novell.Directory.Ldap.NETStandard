@@ -1367,5 +1367,13 @@ namespace Novell.Directory.Ldap
                 _listenerObj.MessageReceived(_unsolicitedMsg);
             }
         }
+
+        /// <summary>
+        /// Resets the connection to a state where it can be reused.
+        /// </summary>
+        public void Reset()
+        {
+            AbandonMessages(null);
+        }
     }
 }
