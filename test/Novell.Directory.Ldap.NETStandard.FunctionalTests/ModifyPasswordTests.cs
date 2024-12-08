@@ -25,14 +25,18 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 {
                     await ldapConnection.BindAsync(existingEntry.Dn, newPassword);
 
-                    // Check to see if the other password modify extension is supported and test that too
+                    // Check to see if the password modify extension is supported and test that too
                     var rootDse = await ldapConnection.GetRootDseInfoAsync();
                     if (rootDse.SupportsExtension(LdapKnownOids.Extensions.PasswordModify))
                     {
                         var oldPassword = newPassword;
                         newPassword = "password" + new Random().Next();
 
+                        // Users don't have permission to change their own passwords in the
+                        // test environment so perform the change as the RootUserDn
+                        await ldapConnection.BindAsync(TestsConfig.LdapServer.RootUserDn, TestsConfig.LdapServer.RootUserPassword);
                         await ldapConnection.PasswordModifyAsync(existingEntry.Dn, oldPassword, newPassword);
+
                         await ldapConnection.BindAsync(existingEntry.Dn, newPassword);
                     }
                 });
