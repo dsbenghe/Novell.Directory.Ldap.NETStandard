@@ -7,13 +7,13 @@ namespace Novell.Directory.Ldap
     /// <summary>
     /// RFC 3063: LDAP Password Modify Extended Operation
     /// https://tools.ietf.org/html/rfc3062.
+    ///   <pre>
+    ///     PasswdModifyRequestValue::= SEQUENCE {
+    ///       userIdentity[0]  OCTET STRING OPTIONAL,
+    ///       oldPasswd[1]     OCTET STRING OPTIONAL,
+    ///       newPasswd[2]     OCTET STRING OPTIONAL }
+    ///   </pre>
     /// </summary>
-    /// <pre>
-    /// PasswdModifyRequestValue::= SEQUENCE {
-    ///   userIdentity[0]  OCTET STRING OPTIONAL,
-    ///   oldPasswd[1]     OCTET STRING OPTIONAL,
-    ///   newPasswd[2]     OCTET STRING OPTIONAL }
-    /// </pre>
     public class LdapPasswordModifyOperation : LdapExtendedOperation
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapPasswordModifyOperation>();
@@ -100,11 +100,11 @@ namespace Novell.Directory.Ldap
     /// <summary>
     /// RFC 3063: LDAP Password Modify Extended Operation
     /// https://tools.ietf.org/html/rfc3062.
+    ///   <pre>
+    ///     PasswdModifyResponseValue ::= SEQUENCE {
+    ///       genPasswd[0] OCTET STRING OPTIONAL }
+    ///   </pre>
     /// </summary>
-    /// <pre>
-    /// PasswdModifyResponseValue ::= SEQUENCE {
-    ///   genPasswd[0] OCTET STRING OPTIONAL }
-    /// </pre>
     public class LdapPasswordModifyResponse : LdapExtendedResponse
     {
         public override DebugId DebugId { get; } = DebugId.ForType<LdapPasswordModifyResponse>();
