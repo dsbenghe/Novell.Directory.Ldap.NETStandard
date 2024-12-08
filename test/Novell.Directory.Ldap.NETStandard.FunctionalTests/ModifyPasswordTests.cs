@@ -24,6 +24,17 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
                 async ldapConnection =>
                 {
                     await ldapConnection.BindAsync(existingEntry.Dn, newPassword);
+
+                    // Check to see if the other password modify extension is supported and test that too
+                    var rootDse = await ldapConnection.GetRootDseInfoAsync();
+                    if (rootDse.SupportsExtension(LdapKnownOids.Extensions.PasswordModify))
+                    {
+                        var oldPassword = newPassword;
+                        newPassword = "password" + new Random().Next();
+
+                        await ldapConnection.PasswordModifyAsync(existingEntry.Dn, oldPassword, newPassword);
+                        await ldapConnection.BindAsync(existingEntry.Dn, newPassword);
+                    }
                 });
         }
     }
