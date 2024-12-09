@@ -115,12 +115,12 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an Asn1Identifier directly from an InputStream and
         ///     save the encoded length of the Asn1Identifier.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     The input stream to decode from.
         /// </param>
-        public Asn1Identifier(Stream inRenamed)
+        public Asn1Identifier(Stream input)
         {
-            Reset(inRenamed);
+            Reset(input);
         }
 
         public Asn1Identifier()
@@ -189,13 +189,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Decode an Asn1Identifier directly from an InputStream and
         ///     save the encoded length of the Asn1Identifier, but reuse the object.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     The input stream to decode from.
         /// </param>
-        public void Reset(Stream inRenamed)
+        public void Reset(Stream input)
         {
             EncodedLength = 0;
-            var r = inRenamed.ReadByte();
+            var r = input.ReadByte();
             EncodedLength++;
             if (r < 0)
             {
@@ -209,7 +209,7 @@ namespace Novell.Directory.Ldap.Asn1
             // if true, its a multiple octet identifier.
             if (Tag == 0x1F)
             {
-                Tag = DecodeTagNumber(inRenamed);
+                Tag = DecodeTagNumber(input);
             }
         }
 
@@ -217,12 +217,12 @@ namespace Novell.Directory.Ldap.Asn1
         ///     In the case that we have a tag number that is greater than 30, we need
         ///     to decode a multiple octet tag number.
         /// </summary>
-        private int DecodeTagNumber(Stream inRenamed)
+        private int DecodeTagNumber(Stream input)
         {
             var n = 0;
             while (true)
             {
-                var r = inRenamed.ReadByte();
+                var r = input.ReadByte();
                 EncodedLength++;
                 if (r < 0)
                 {

@@ -59,11 +59,11 @@ namespace Novell.Directory.Ldap.Controls
         ///     the control is not supported. False if
         ///     the operation can be processed without the control.
         /// </param>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     The control-specific data.
         /// </param>
-        public LdapEntryChangeControl(string oid, bool critical, byte[] valueRenamed)
-            : base(oid, critical, valueRenamed)
+        public LdapEntryChangeControl(string oid, bool critical, byte[] value)
+            : base(oid, critical, value)
         {
             // Create a decoder objet
             var decoder = new LberDecoder();
@@ -73,36 +73,34 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             // We should get a sequence initially
-            var asnObj = decoder.Decode(valueRenamed);
+            var asnObj = decoder.Decode(value);
 
-            if (asnObj == null || !(asnObj is Asn1Sequence))
+            if (asnObj is not Asn1Sequence sequence)
             {
                 throw new IOException("Decoding error.");
             }
-
-            var sequence = (Asn1Sequence)asnObj;
 
             // The first element in the sequence should be an enumerated type
-            var asn1Obj = sequence.get_Renamed(0);
-            if (asn1Obj == null || !(asn1Obj is Asn1Enumerated))
+            var asn1Obj = sequence[0];
+            if (asn1Obj is not Asn1Enumerated enumerated)
             {
                 throw new IOException("Decoding error.");
             }
 
-            ChangeType = ((Asn1Enumerated)asn1Obj).IntValue();
+            ChangeType = enumerated.IntValue();
 
             // check for optional elements
             // 8 means modifyDN
-            if (sequence.Size() > 1 && ChangeType == 8)
+            if (sequence.Count > 1 && ChangeType == 8)
             {
                 // get the previous DN - it is encoded as an octet string
-                asn1Obj = sequence.get_Renamed(1);
-                if (asn1Obj == null || !(asn1Obj is Asn1OctetString))
+                asn1Obj = sequence[1];
+                if (asn1Obj is not Asn1OctetString octetString)
                 {
                     throw new IOException("Decoding error get previous DN");
                 }
 
-                PreviousDn = ((Asn1OctetString)asn1Obj).StringValue();
+                PreviousDn = octetString.StringValue();
             }
             else
             {
@@ -110,15 +108,15 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             // check for change number
-            if (sequence.Size() == 3)
+            if (sequence.Count == 3)
             {
-                asn1Obj = sequence.get_Renamed(2);
-                if (asn1Obj == null || !(asn1Obj is Asn1Integer))
+                asn1Obj = sequence[2];
+                if (asn1Obj is not Asn1Integer integer)
                 {
                     throw new IOException("Decoding error getting change number");
                 }
 
-                ChangeNumber = ((Asn1Integer)asn1Obj).IntValue();
+                ChangeNumber = integer.IntValue();
                 HasChangeNumber = true;
             }
             else

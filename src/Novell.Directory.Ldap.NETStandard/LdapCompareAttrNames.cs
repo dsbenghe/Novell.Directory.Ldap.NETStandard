@@ -249,12 +249,10 @@ namespace Novell.Directory.Ldap
         /// </returns>
         public override bool Equals(object comparator)
         {
-            if (!(comparator is LdapCompareAttrNames))
+            if (comparator is not LdapCompareAttrNames comp)
             {
                 return false;
             }
-
-            var comp = (LdapCompareAttrNames)comparator;
 
             // Test to see if the attribute to compare are the same length
             if (comp._sortByNames.Length != _sortByNames.Length || comp._sortAscending.Length != _sortAscending.Length)

@@ -42,8 +42,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     The only time a client will create a CompareResponse is when it is
         ///     decoding it from an InputStream.
         /// </summary>
-        public RfcCompareResponse(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcCompareResponse(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
         }
 

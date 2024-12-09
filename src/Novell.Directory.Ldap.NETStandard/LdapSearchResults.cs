@@ -123,12 +123,11 @@ namespace Novell.Directory.Ldap
             {
                 // Check for Search Entries and the Search Result
                 element = _entries[_entryIndex++];
-                if (element is LdapResponse)
+                if (element is LdapResponse lr)
                 {
                     // Search done w/bad status
-                    if (((LdapResponse)element).HasException())
+                    if (lr.HasException())
                     {
-                        var lr = (LdapResponse)element;
                         var ri = lr.ActiveReferral;
 
                         if (ri != null)
@@ -142,11 +141,11 @@ namespace Novell.Directory.Ldap
                     }
 
                     // Throw an exception if not success
-                    ((LdapResponse)element).ChkResultCode();
+                    lr.ChkResultCode();
                 }
-                else if (element is LdapException)
+                else if (element is LdapException exception)
                 {
-                    throw (LdapException)element;
+                    throw exception;
                 }
             }
             else
@@ -220,22 +219,22 @@ namespace Novell.Directory.Ldap
                             ResponseControls = ldapMessage.Controls;
                         }
 
-                        if (ldapMessage is LdapSearchResult)
+                        if (ldapMessage is LdapSearchResult result)
                         {
                             // Search Entry
-                            object entry = ((LdapSearchResult)ldapMessage).Entry;
+                            object entry = result.Entry;
                             _entries.Add(entry);
                             i++;
                             _entryCount++;
                         }
-                        else if (ldapMessage is LdapSearchResultReference)
+                        else if (ldapMessage is LdapSearchResultReference reference)
                         {
                             // Search Ref
-                            var refs = ((LdapSearchResultReference)ldapMessage).Referrals;
+                            var refs = reference.Referrals;
 
                             if (_cons.ReferralFollowing)
                             {
-                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, ldapMessage, refs, 0, true, _referralConn, ct).ConfigureAwait(false);
+                                _referralConn = await _conn.ChaseReferralAsync(_queue, _cons, reference, refs, 0, true, _referralConn, ct).ConfigureAwait(false);
                             }
                             else
                             {

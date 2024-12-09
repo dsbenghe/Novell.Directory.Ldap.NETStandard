@@ -32,14 +32,14 @@ namespace Novell.Directory.Ldap.Rfc2251
     public class RfcAttributeValue : Asn1OctetString
     {
         /// <summary> </summary>
-        public RfcAttributeValue(string valueRenamed)
-            : base(valueRenamed)
+        public RfcAttributeValue(string value)
+            : base(value)
         {
         }
 
         /// <summary> </summary>
-        public RfcAttributeValue(byte[] valueRenamed)
-            : base(valueRenamed)
+        public RfcAttributeValue(byte[] value)
+            : base(value)
         {
         }
     }

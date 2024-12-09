@@ -95,7 +95,7 @@ namespace Novell.Directory.Ldap.Controls
 
             /* We should get back an ASN.1 Sequence object */
             var asnObj = decoder.Decode(values);
-            if (asnObj == null || !(asnObj is Asn1Sequence))
+            if (asnObj is not Asn1Sequence sequence)
             {
                 throw new IOException("Decoding error");
             }
@@ -105,10 +105,10 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 1st element which should be an integer containing the
             * targetPosition (firstPosition)
             */
-            var asn1FirstPosition = ((Asn1Sequence)asnObj).get_Renamed(0);
-            if (asn1FirstPosition != null && asn1FirstPosition is Asn1Integer)
+            var asn1FirstPosition = sequence[0];
+            if (asn1FirstPosition is Asn1Integer integer)
             {
-                FirstPosition = ((Asn1Integer)asn1FirstPosition).IntValue();
+                FirstPosition = integer.IntValue();
             }
             else
             {
@@ -118,10 +118,10 @@ namespace Novell.Directory.Ldap.Controls
             /* Get the 2nd element which should be an integer containing the
             * current estimate of the contentCount
             */
-            var asn1ContentCount = ((Asn1Sequence)asnObj).get_Renamed(1);
-            if (asn1ContentCount != null && asn1ContentCount is Asn1Integer)
+            var asn1ContentCount = sequence[1];
+            if (asn1ContentCount is Asn1Integer asn1Integer)
             {
-                ContentCount = ((Asn1Integer)asn1ContentCount).IntValue();
+                ContentCount = asn1Integer.IntValue();
             }
             else
             {
@@ -129,10 +129,10 @@ namespace Novell.Directory.Ldap.Controls
             }
 
             /* The 3rd element is an enum containing the errorcode */
-            var asn1Enum = ((Asn1Sequence)asnObj).get_Renamed(2);
-            if (asn1Enum != null && asn1Enum is Asn1Enumerated)
+            var asn1Enum = sequence[2];
+            if (asn1Enum is Asn1Enumerated enumerated)
             {
-                ResultCode = ((Asn1Enumerated)asn1Enum).IntValue();
+                ResultCode = enumerated.IntValue();
             }
             else
             {
@@ -142,12 +142,12 @@ namespace Novell.Directory.Ldap.Controls
             /* Optional 4th element could be the context string that the server
             * wants the client to send back with each subsequent VLV request
             */
-            if (((Asn1Sequence)asnObj).Size() > 3)
+            if (sequence.Count > 3)
             {
-                var asn1String = ((Asn1Sequence)asnObj).get_Renamed(3);
-                if (asn1String != null && asn1String is Asn1OctetString)
+                var asn1String = sequence[3];
+                if (asn1String is Asn1OctetString octetString)
                 {
-                    Context = ((Asn1OctetString)asn1String).StringValue();
+                    Context = octetString.StringValue();
                 }
             }
         }

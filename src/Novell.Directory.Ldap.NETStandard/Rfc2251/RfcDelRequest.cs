@@ -59,14 +59,14 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            if (baseRenamed == null)
+            if (baseDn == null)
             {
                 return new RfcDelRequest(ByteValue());
             }
 
-            return new RfcDelRequest(baseRenamed);
+            return new RfcDelRequest(baseDn);
         }
 
         public string GetRequestDn()

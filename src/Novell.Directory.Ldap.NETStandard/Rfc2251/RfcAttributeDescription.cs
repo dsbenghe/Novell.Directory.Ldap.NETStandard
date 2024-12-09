@@ -39,8 +39,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> </summary>
-        public RfcAttributeDescription(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcAttributeDescription(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
         }
     }
