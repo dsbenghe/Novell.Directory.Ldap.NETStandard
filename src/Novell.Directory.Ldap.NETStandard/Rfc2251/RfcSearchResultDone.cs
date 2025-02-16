@@ -39,8 +39,8 @@ namespace Novell.Directory.Ldap.Rfc2251
         // *************************************************************************
 
         /// <summary> Decode a search result done from the input stream.</summary>
-        public RfcSearchResultDone(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcSearchResultDone(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
         }
 

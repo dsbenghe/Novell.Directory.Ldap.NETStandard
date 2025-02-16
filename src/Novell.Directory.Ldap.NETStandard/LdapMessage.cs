@@ -262,8 +262,8 @@ namespace Novell.Directory.Ldap
                 // convert from RFC 2251 Controls to LDAPControl[].
                 if (asn1Ctrls != null)
                 {
-                    controls = new LdapControl[asn1Ctrls.Size()];
-                    for (var i = 0; i < asn1Ctrls.Size(); i++)
+                    controls = new LdapControl[asn1Ctrls.Count];
+                    for (var i = 0; i < asn1Ctrls.Count; i++)
                     {
                         /*
                                                 * At this point we have an RfcControl which needs to be
@@ -278,16 +278,16 @@ namespace Novell.Directory.Ldap
                                                 * we were parsing the control. Answer: By the time the
                                                 * code realizes that we have a control it is already too late.
                                                 */
-                        var rfcCtl = (RfcControl)asn1Ctrls.get_Renamed(i);
+                        var rfcCtl = asn1Ctrls[i];
                         var oid = rfcCtl.ControlType.StringValue();
-                        var valueRenamed = rfcCtl.ControlValue.ByteValue();
+                        var value = rfcCtl.ControlValue.ByteValue();
                         var critical = rfcCtl.Criticality.BooleanValue();
 
                         /* Return from this call should return either an LDAPControl
                         * or a class extending LDAPControl that implements the
                         * appropriate registered response control
                         */
-                        controls[i] = ControlFactory(oid, critical, valueRenamed);
+                        controls[i] = ControlFactory(oid, critical, value);
                     }
                 }
 
@@ -537,7 +537,7 @@ namespace Novell.Directory.Ldap
         ///     that control by calling its contructor.  Otherwise we default to
         ///     returning a regular LdapControl object.
         /// </summary>
-        private LdapControl ControlFactory(string oid, bool critical, byte[] valueRenamed)
+        private LdapControl ControlFactory(string oid, bool critical, byte[] value)
         {
             var regControls = LdapControl.RegisteredControls;
             /*
@@ -548,7 +548,7 @@ namespace Novell.Directory.Ldap
             {
                 try
                 {
-                    return responseFactory(oid, critical, valueRenamed);
+                    return responseFactory(oid, critical, value);
                 }
                 catch (Exception e)
                 {
@@ -561,7 +561,7 @@ namespace Novell.Directory.Ldap
 
             // If we get here we did not have a registered response control
             // for this oid.  Return a default LDAPControl object.
-            return new LdapControl(oid, critical, valueRenamed);
+            return new LdapControl(oid, critical, value);
         }
 
         /// <summary>

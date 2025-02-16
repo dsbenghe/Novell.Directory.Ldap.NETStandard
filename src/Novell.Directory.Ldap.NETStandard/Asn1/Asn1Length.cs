@@ -46,12 +46,12 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Constructs an Asn1Length object by decoding data from an
         ///     input stream.
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        public Asn1Length(Stream inRenamed)
+        public Asn1Length(Stream input)
         {
-            Reset(inRenamed);
+            Reset(input);
         }
 
         /// <summary> Returns the length of this Asn1Length.</summary>
@@ -65,13 +65,13 @@ namespace Novell.Directory.Ldap.Asn1
         ///     input stream.
         ///     Note: this was added for optimization of Asn1.LBERdecoder.decode().
         /// </summary>
-        /// <param name="inRenamed">
+        /// <param name="input">
         ///     A byte stream that contains the encoded ASN.1.
         /// </param>
-        public void Reset(Stream inRenamed)
+        public void Reset(Stream input)
         {
             EncodedLength = 0;
-            var r = inRenamed.ReadByte();
+            var r = input.ReadByte();
             EncodedLength++;
             if (r == 0x80)
             {
@@ -86,7 +86,7 @@ namespace Novell.Directory.Ldap.Asn1
                 Length = 0;
                 for (r = r & 0x7F; r > 0; r--)
                 {
-                    var part = inRenamed.ReadByte();
+                    var part = input.ReadByte();
                     EncodedLength++;
                     if (part < 0)
                     {

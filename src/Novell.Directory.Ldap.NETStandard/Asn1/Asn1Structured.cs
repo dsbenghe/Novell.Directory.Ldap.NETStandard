@@ -22,8 +22,10 @@
 *******************************************************************************/
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -32,14 +34,14 @@ namespace Novell.Directory.Ldap.Asn1
     ///     This class serves as the base type for all ASN.1
     ///     structured types.
     /// </summary>
-    public abstract class Asn1Structured : Asn1Object
+    public abstract class Asn1Structured : Asn1Object, IReadOnlyList<Asn1Object>
     {
         private Asn1Object[] _content;
 
         private int _contentIndex;
 
         /*
-        * Create a an Asn1 structured type with default size of 10
+        * Create an Asn1 structured type with default size of 10
         *
         * @param the Asn1Identifier containing the tag for this structured type
         */
@@ -84,20 +86,18 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Encodes the contents of this Asn1Structured directly to an output
         ///     stream.
         /// </summary>
-        public override void Encode(IAsn1Encoder enc, Stream outRenamed)
+        public override void Encode(IAsn1Encoder enc, Stream output)
         {
-            enc.Encode(this, outRenamed);
+            enc.Encode(this, output);
         }
 
         /// <summary> Decode an Asn1Structured type from an InputStream.</summary>
-        protected internal void DecodeStructured(IAsn1Decoder dec, Stream inRenamed, int len)
+        protected internal void DecodeStructured(IAsn1Decoder dec, Stream input, int len)
         {
-            var componentLen = new int[1]; // collects length of component
-
             while (len > 0)
             {
-                Add(dec.Decode(inRenamed, componentLen));
-                len -= componentLen[0];
+                Add(dec.Decode(input, out var componentLen));
+                len -= componentLen;
             }
         }
 
@@ -119,73 +119,62 @@ namespace Novell.Directory.Ldap.Asn1
         ///     Adds a new Asn1Object to the end of this Asn1Structured
         ///     object.
         /// </summary>
-        /// <param name="valueRenamed">
+        /// <param name="value">
         ///     The Asn1Object to add to this Asn1Structured
         ///     object.
         /// </param>
-        public void Add(Asn1Object valueRenamed)
+        public void Add(Asn1Object value)
         {
             if (_contentIndex == _content.Length)
             {
                 // Array too small, need to expand it, double length
-                Array.Resize(ref _content, _contentIndex + _contentIndex);
+                var newSize = Math.Max(_contentIndex + _contentIndex, 1);
+                Array.Resize(ref _content, newSize);
             }
 
-            _content[_contentIndex++] = valueRenamed;
+            _content[_contentIndex++] = value;
         }
 
-        /// <summary>
-        ///     Replaces the Asn1Object in the specified index position of
-        ///     this Asn1Structured object.
-        /// </summary>
-        /// <param name="index">
-        ///     The index into the Asn1Structured object where
-        ///     this new ANS1Object will be placed.
-        /// </param>
-        /// <param name="valueRenamed">
-        ///     The Asn1Object to set in this Asn1Structured
-        ///     object.
-        /// </param>
-        public void set_Renamed(int index, Asn1Object valueRenamed)
+        public Asn1Object this[int index]
         {
-            if (index >= _contentIndex || index < 0)
+            get
             {
-                throw new IndexOutOfRangeException("Asn1Structured: get: index " + index + ", size " + _contentIndex);
+                if (index >= _contentIndex || index < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(index),
+                        index,
+                        "Asn1Structured: get: index " + index + ", size " + _contentIndex);
+                }
+
+                return _content[index];
             }
-
-            _content[index] = valueRenamed;
-        }
-
-        /// <summary>
-        ///     Gets a specific Asn1Object in this structred object.
-        /// </summary>
-        /// <param name="index">
-        ///     The index of the Asn1Object to get from
-        ///     this Asn1Structured object.
-        /// </param>
-        public Asn1Object get_Renamed(int index)
-        {
-            if (index >= _contentIndex || index < 0)
+            set
             {
-                throw new IndexOutOfRangeException("Asn1Structured: set: index " + index + ", size " + _contentIndex);
-            }
+                if (index >= _contentIndex || index < 0)
+                {
+                    throw new ArgumentOutOfRangeException(
+                        nameof(index),
+                        index,
+                        "Asn1Structured: set: index " + index + ", size " + _contentIndex);
+                }
 
-            return _content[index];
+                _content[index] = value;
+            }
         }
 
         /// <summary>
         ///     Returns the number of Asn1Obejcts that have been encoded
         ///     into this Asn1Structured class.
         /// </summary>
-        public int Size()
-        {
-            return _contentIndex;
-        }
+        public int Count => _contentIndex;
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
-        ///     Gets an enumerable of Asn1Objects in this structred object.
+        ///     Gets an enumerator of Asn1Objects in this structred object.
         /// </summary>
-        public IEnumerable<Asn1Object> RenamedEnumerable => new ArraySegment<Asn1Object>(_content, 0, _contentIndex);
+        public IEnumerator<Asn1Object> GetEnumerator() => new ArraySegment<Asn1Object>(_content, 0, _contentIndex).AsEnumerable().GetEnumerator();
 
         /// <summary>
         ///     Creates a String representation of this Asn1Structured.

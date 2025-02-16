@@ -48,11 +48,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="b">
         ///     The Asn1Boolean object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Boolean b, Stream outRenamed);
+        void Encode(Asn1Boolean b, Stream output);
 
         /// <summary>
         ///     Encode an Asn1Numeric directly to a stream.
@@ -63,11 +63,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="n">
         ///     The Asn1Numeric object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Numeric n, Stream outRenamed);
+        void Encode(Asn1Numeric n, Stream output);
 
         /* Asn1 TYPE NOT YET SUPPORTED
         * Encode an Asn1Real directly to a stream.
@@ -81,11 +81,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="n">
         ///     The Asn1Null object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Null n, Stream outRenamed);
+        void Encode(Asn1Null n, Stream output);
 
         /* Asn1 TYPE NOT YET SUPPORTED
         * Encode an Asn1BitString directly to a stream.
@@ -99,11 +99,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="os">
         ///     The Asn1OctetString object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1OctetString os, Stream outRenamed);
+        void Encode(Asn1OctetString os, Stream output);
 
         /* Asn1 TYPE NOT YET SUPPORTED
         * Encode an Asn1ObjectIdentifier directly to a stream.
@@ -126,11 +126,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="c">
         ///     The Asn1Structured object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Structured c, Stream outRenamed);
+        void Encode(Asn1Structured c, Stream output);
 
         /// <summary>
         ///     Encode an Asn1Tagged directly to a stream.
@@ -138,11 +138,11 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="t">
         ///     The Asn1Tagged object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Tagged t, Stream outRenamed);
+        void Encode(Asn1Tagged t, Stream output);
 
         /* Encoders for ASN.1 useful types
         */
@@ -156,10 +156,10 @@ namespace Novell.Directory.Ldap.Asn1
         /// <param name="id">
         ///     The Asn1Identifier object to encode.
         /// </param>
-        /// <param name="outRenamed">
+        /// <param name="output">
         ///     The output stream onto which the ASN.1 object is
         ///     to be encoded.
         /// </param>
-        void Encode(Asn1Identifier id, Stream outRenamed);
+        void Encode(Asn1Identifier id, Stream output);
     }
 }

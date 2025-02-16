@@ -66,13 +66,13 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     Constructs a new Bind Request copying the original data from
         ///     an existing request.
         /// </summary>
-        internal RfcBindRequest(Asn1Object[] origRequest, string baseRenamed)
+        internal RfcBindRequest(Asn1Object[] origRequest, string baseDn)
             : base(origRequest, origRequest.Length)
         {
             // Replace the dn if specified, otherwise keep original base
-            if (baseRenamed != null)
+            if (baseDn != null)
             {
-                set_Renamed(1, new RfcLdapDn(baseRenamed));
+                this[1] = new RfcLdapDn(baseDn);
             }
         }
 
@@ -80,37 +80,37 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// <summary> Sets the protocol version.</summary>
         public Asn1Integer Version
         {
-            get => (Asn1Integer)get_Renamed(0);
+            get => (Asn1Integer)this[0];
 
-            set => set_Renamed(0, value);
+            set => this[0] = value;
         }
 
         /// <summary> </summary>
         /// <summary> </summary>
         public RfcLdapDn Name
         {
-            get => (RfcLdapDn)get_Renamed(1);
+            get => (RfcLdapDn)this[1];
 
-            set => set_Renamed(1, value);
+            set => this[1] = value;
         }
 
         /// <summary> </summary>
         /// <summary> </summary>
         public RfcAuthenticationChoice AuthenticationChoice
         {
-            get => (RfcAuthenticationChoice)get_Renamed(2);
+            get => (RfcAuthenticationChoice)this[2];
 
-            set => set_Renamed(2, value);
+            set => this[2] = value;
         }
 
-        public IRfcRequest DupRequest(string baseRenamed, string filter, bool request)
+        public IRfcRequest DupRequest(string baseDn, string filter, bool request)
         {
-            return new RfcBindRequest(ToArray(), baseRenamed);
+            return new RfcBindRequest(ToArray(), baseDn);
         }
 
         public string GetRequestDn()
         {
-            return ((RfcLdapDn)get_Renamed(1)).StringValue();
+            return ((RfcLdapDn)this[1]).StringValue();
         }
 
         // *************************************************************************

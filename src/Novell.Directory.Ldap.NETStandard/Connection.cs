@@ -858,7 +858,7 @@ namespace Novell.Directory.Ldap
             try
             {
                 // Now send unbind if socket not closed
-                if (BindProperties != null && _outStream != null && _outStream.CanWrite && !BindProperties.Anonymous)
+                if (BindProperties is { Anonymous: false } && _outStream is { CanWrite: true })
                 {
                     try
                     {

@@ -127,26 +127,19 @@ namespace Novell.Directory.Ldap
             {
                 valueBuffer.Append(" " + qualName + " ");
                 var qualValue = GetQualifier(qualName);
-                if (qualValue != null)
+                if (qualValue is { Length: > 1 })
                 {
-                    if (qualValue.Length > 1)
+                    valueBuffer.Append("( '");
+
+                    valueBuffer.Append(qualValue[0]);
+
+                    for (var i = 1; i < qualValue.Length; i++)
                     {
-                        valueBuffer.Append("( ");
-                        for (var i = 0; i < qualValue.Length; i++)
-                        {
-                            if (i > 0)
-                            {
-                                valueBuffer.Append(" ");
-                            }
-
-                            valueBuffer.Append("'" + qualValue[i] + "'");
-                        }
-
-                        if (qualValue.Length > 1)
-                        {
-                            valueBuffer.Append(" )");
-                        }
+                        valueBuffer.Append("' '");
+                        valueBuffer.Append(qualValue[i]);
                     }
+
+                    valueBuffer.Append("' )");
                 }
             }
 

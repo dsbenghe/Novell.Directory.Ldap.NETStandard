@@ -41,11 +41,11 @@ namespace Novell.Directory.Ldap.Rfc2251
     internal class RfcMessageId : Asn1Integer
     {
         private static int _messageId;
-        private static readonly object LockRenamed;
+        private static readonly object Lock;
 
         static RfcMessageId()
         {
-            LockRenamed = new object();
+            Lock = new object();
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace Novell.Directory.Ldap.Rfc2251
         {
             get
             {
-                lock (LockRenamed)
+                lock (Lock)
                 {
                     return _messageId < int.MaxValue ? ++_messageId : (_messageId = 1);
                 }

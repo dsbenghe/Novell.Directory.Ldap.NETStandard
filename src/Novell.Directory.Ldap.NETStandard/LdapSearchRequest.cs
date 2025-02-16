@@ -110,7 +110,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request.
         /// </summary>
-        /// <param name="baseRenamed">
+        /// <param name="baseDn">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -167,11 +167,11 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
-        public LdapSearchRequest(string baseRenamed, int scope, string filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseDn, int scope, string filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
                 SearchRequest,
-                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
+                new RfcSearchRequest(new RfcLdapDn(baseDn), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), new RfcFilter(filter), new RfcAttributeDescriptionList(attrs)), cont)
         {
@@ -180,7 +180,7 @@ namespace Novell.Directory.Ldap
         /// <summary>
         ///     Constructs an Ldap Search Request with a filter in Asn1 format.
         /// </summary>
-        /// <param name="baseRenamed">
+        /// <param name="baseDn">
         ///     The base distinguished name to search from.
         /// </param>
         /// <param name="scope">
@@ -237,11 +237,11 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapConnection.SearchAsync(string,int,string,string[],bool,LdapSearchQueue,LdapSearchConstraints,CancellationToken)"/>
         /// <seealso cref="LdapSearchConstraints"/>
-        public LdapSearchRequest(string baseRenamed, int scope, RfcFilter filter, string[] attrs, int dereference,
+        public LdapSearchRequest(string baseDn, int scope, RfcFilter filter, string[] attrs, int dereference,
             int maxResults, int serverTimeLimit, bool typesOnly, LdapControl[] cont)
             : base(
                 SearchRequest,
-                new RfcSearchRequest(new RfcLdapDn(baseRenamed), new Asn1Enumerated(scope),
+                new RfcSearchRequest(new RfcLdapDn(baseDn), new Asn1Enumerated(scope),
                     new Asn1Enumerated(dereference), new Asn1Integer(maxResults), new Asn1Integer(serverTimeLimit),
                     new Asn1Boolean(typesOnly), filter, new RfcAttributeDescriptionList(attrs)), cont)
         {
@@ -265,7 +265,7 @@ namespace Novell.Directory.Ldap
         /// </seealso>
         /// <seealso cref="LdapConnection.ScopeSub">
         /// </seealso>
-        public int Scope => ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(1)).IntValue();
+        public int Scope => ((Asn1Enumerated)((RfcSearchRequest)Asn1Object[1])[1]).IntValue();
 
         /// <summary> Retrieves the behaviour of dereferencing aliases on a search request.</summary>
         /// <returns>
@@ -280,7 +280,7 @@ namespace Novell.Directory.Ldap
         /// <seealso cref="LdapSearchConstraints.DerefSearching">
         /// </seealso>
         public int Dereference =>
-            ((Asn1Enumerated)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(2)).IntValue();
+            ((Asn1Enumerated)((RfcSearchRequest)Asn1Object[1])[2]).IntValue();
 
         /// <summary>
         ///     Retrieves the maximum number of entries to be returned on a search.
@@ -289,7 +289,7 @@ namespace Novell.Directory.Ldap
         ///     Maximum number of search entries.
         /// </returns>
         public int MaxResults =>
-            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(3)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object[1])[3]).IntValue();
 
         /// <summary>
         ///     Retrieves the server time limit for a search request.
@@ -298,7 +298,7 @@ namespace Novell.Directory.Ldap
         ///     server time limit in nanoseconds.
         /// </returns>
         public int ServerTimeLimit =>
-            ((Asn1Integer)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(4)).IntValue();
+            ((Asn1Integer)((RfcSearchRequest)Asn1Object[1])[4]).IntValue();
 
         /// <summary>
         ///     Retrieves whether attribute values or only attribute types(names) should
@@ -309,7 +309,7 @@ namespace Novell.Directory.Ldap
         ///     attributes types and values are to be returned.
         /// </returns>
         public bool TypesOnly =>
-            ((Asn1Boolean)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(5)).BooleanValue();
+            ((Asn1Boolean)((RfcSearchRequest)Asn1Object[1])[5]).BooleanValue();
 
         /// <summary> Retrieves an array of attribute names to request for in a search.</summary>
         /// <returns>
@@ -319,12 +319,12 @@ namespace Novell.Directory.Ldap
         {
             get
             {
-                var attrs = (RfcAttributeDescriptionList)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(7);
+                var attrs = (RfcAttributeDescriptionList)((RfcSearchRequest)Asn1Object[1])[7];
 
-                var rAttrs = new string[attrs.Size()];
+                var rAttrs = new string[attrs.Count];
                 for (var i = 0; i < rAttrs.Length; i++)
                 {
-                    rAttrs[i] = ((RfcAttributeDescription)attrs.get_Renamed(i)).StringValue();
+                    rAttrs[i] = ((RfcAttributeDescription)attrs[i]).StringValue();
                 }
 
                 return rAttrs;
@@ -341,7 +341,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     filter object for a search request.
         /// </returns>
-        private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object.get_Renamed(1)).get_Renamed(6);
+        private RfcFilter RfcFilter => (RfcFilter)((RfcSearchRequest)Asn1Object[1])[6];
 
         /// <summary>
         ///     Retrieves an IEnumerable object representing the parsed filter for

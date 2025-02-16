@@ -21,6 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System;
 using System.IO;
 
 namespace Novell.Directory.Ldap.Asn1
@@ -64,28 +65,25 @@ namespace Novell.Directory.Ldap.Asn1
         */
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from a byte array.</summary>
-        public Asn1Object Decode(byte[] valueRenamed)
+        public Asn1Object Decode(byte[] value)
         {
-            Asn1Object asn1 = null;
-
-            var inRenamed = new MemoryStream(valueRenamed);
+            var input = new MemoryStream(value);
             try
             {
-                asn1 = Decode(inRenamed);
+                return Decode(input);
             }
             catch (IOException ioe)
             {
                 Logger.Log.LogWarning("Exception swallowed", ioe);
             }
 
-            return asn1;
+            return null;
         }
 
         /// <summary> Decode an LBER encoded value into an Asn1Type from an InputStream.</summary>
-        public Asn1Object Decode(Stream inRenamed)
+        public Asn1Object Decode(Stream input)
         {
-            var len = new int[1];
-            return Decode(inRenamed, len);
+            return Decode(input, out _);
         }
 
         /// <summary>
@@ -95,35 +93,35 @@ namespace Novell.Directory.Ldap.Asn1
         ///     in the parameter len. This information is helpful when decoding
         ///     structured types.
         /// </summary>
-        public Asn1Object Decode(Stream inRenamed, int[] len)
+        public Asn1Object Decode(Stream input, out int len)
         {
-            _asn1Id.Reset(inRenamed);
-            _asn1Len.Reset(inRenamed);
+            _asn1Id.Reset(input);
+            _asn1Len.Reset(input);
 
             var length = _asn1Len.Length;
-            len[0] = _asn1Id.EncodedLength + _asn1Len.EncodedLength + length;
+            len = _asn1Id.EncodedLength + _asn1Len.EncodedLength + length;
 
             if (_asn1Id.IsUniversal)
             {
                 switch (_asn1Id.Tag)
                 {
                     case Asn1Sequence.Tag:
-                        return new Asn1Sequence(this, inRenamed, length);
+                        return new Asn1Sequence(this, input, length);
 
                     case Asn1Set.Tag:
-                        return new Asn1Set(this, inRenamed, length);
+                        return new Asn1Set(this, input, length);
 
                     case Asn1Boolean.Tag:
-                        return new Asn1Boolean(this, inRenamed, length);
+                        return new Asn1Boolean(this, input, length);
 
                     case Asn1Integer.Tag:
-                        return new Asn1Integer(this, inRenamed, length);
+                        return new Asn1Integer(this, input, length);
 
                     case Asn1OctetString.Tag:
-                        return new Asn1OctetString(this, inRenamed, length);
+                        return new Asn1OctetString(this, input, length);
 
                     case Asn1Enumerated.Tag:
-                        return new Asn1Enumerated(this, inRenamed, length);
+                        return new Asn1Enumerated(this, input, length);
 
                     case Asn1Null.Tag:
                         return new Asn1Null(); // has no content to decode.
@@ -158,35 +156,35 @@ namespace Novell.Directory.Ldap.Asn1
             }
 
             // APPLICATION or CONTEXT-SPECIFIC tag
-            return new Asn1Tagged(this, inRenamed, length, (Asn1Identifier)_asn1Id.Clone());
+            return new Asn1Tagged(this, input, length, (Asn1Identifier)_asn1Id.Clone());
         }
 
         /* Decoders for ASN.1 simple type Contents
         */
 
         /// <summary> Decode a boolean directly from a stream.</summary>
-        public object DecodeBoolean(Stream inRenamed, int len)
+        public bool DecodeBoolean(Stream input, int len)
         {
             var lber = new byte[len];
 
-            var i = ReadInput(inRenamed, ref lber, 0, lber.Length);
+            var i = ReadInput(input, lber, 0, lber.Length);
 
             if (i != len)
             {
                 throw new EndOfStreamException("LBER: BOOLEAN: decode error: EOF");
             }
 
-            return lber[0] == 0x00 ? false : true;
+            return lber[0] != 0x00;
         }
 
         /// <summary>
         ///     Decode a Numeric type directly from a stream. Decodes INTEGER
         ///     and ENUMERATED types.
         /// </summary>
-        public object DecodeNumeric(Stream inRenamed, int len)
+        public long DecodeNumeric(Stream input, int len)
         {
             long l = 0;
-            var r = (long)inRenamed.ReadByte();
+            var r = (long)input.ReadByte();
 
             if (r < 0)
             {
@@ -203,7 +201,7 @@ namespace Novell.Directory.Ldap.Asn1
 
             for (var i = 1; i < len; i++)
             {
-                r = inRenamed.ReadByte();
+                r = input.ReadByte();
                 if (r < 0)
                 {
                     throw new EndOfStreamException("LBER: NUMERIC: decode error: EOF");
@@ -216,7 +214,7 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode an OctetString directly from a stream.</summary>
-        public object DecodeOctetString(Stream inRenamed, int len)
+        public byte[] DecodeOctetString(Stream input, int len)
         {
             var octets = new byte[len];
             var totalLen = 0;
@@ -224,7 +222,7 @@ namespace Novell.Directory.Ldap.Asn1
             while (totalLen < len)
             {
                 // Make sure we have read all the data
-                var inLen = ReadInput(inRenamed, ref octets, totalLen, len - totalLen);
+                var inLen = ReadInput(input, octets, totalLen, len - totalLen);
                 totalLen += inLen;
             }
 
@@ -232,13 +230,13 @@ namespace Novell.Directory.Ldap.Asn1
         }
 
         /// <summary> Decode a CharacterString directly from a stream.</summary>
-        public object DecodeCharacterString(Stream inRenamed, int len)
+        public string DecodeCharacterString(Stream input, int len)
         {
             var octets = new byte[len];
 
             for (var i = 0; i < len; i++)
             {
-                var ret = inRenamed.ReadByte(); // blocks
+                var ret = input.ReadByte(); // blocks
                 if (ret == -1)
                 {
                     throw new EndOfStreamException("LBER: CHARACTER STRING: decode error: EOF");
@@ -264,7 +262,7 @@ namespace Novell.Directory.Ldap.Asn1
         ///     The number of characters read. The number will be less than or equal to count depending on the data available
         ///     in the source Stream. Returns -1 if the end of the stream is reached.
         /// </returns>
-        private static int ReadInput(Stream sourceStream, ref byte[] target, int start, int count)
+        private static int ReadInput(Stream sourceStream, byte[] target, int start, int count)
         {
             // Returns 0 bytes if not enough space in target
             if (target.Length == 0)
@@ -272,13 +270,16 @@ namespace Novell.Directory.Ldap.Asn1
                 return 0;
             }
 
-            var receiver = new byte[target.Length];
             var bytesRead = 0;
             var startIndex = start;
             var bytesToRead = count;
             while (bytesToRead > 0)
             {
-                var n = sourceStream.Read(receiver, startIndex, bytesToRead);
+#if NETSTANDARD2_0
+                var n = sourceStream.Read(target, startIndex, bytesToRead);
+#else
+                var n = sourceStream.Read(target.AsSpan(startIndex, bytesToRead));
+#endif
                 if (n == 0)
                 {
                     break;
@@ -293,11 +294,6 @@ namespace Novell.Directory.Ldap.Asn1
             if (bytesRead == 0)
             {
                 return -1;
-            }
-
-            for (var i = start; i < start + bytesRead; i++)
-            {
-                target[i] = receiver[i];
             }
 
             return bytesRead;

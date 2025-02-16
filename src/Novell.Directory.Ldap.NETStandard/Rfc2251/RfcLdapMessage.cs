@@ -77,12 +77,12 @@ namespace Novell.Directory.Ldap.Rfc2251
             bool reference)
             : base(origContent, origContent.Length)
         {
-            set_Renamed(0, new RfcMessageId()); // MessageID has static counter
+            this[0] = new RfcMessageId(); // MessageID has static counter
 
             var req = (IRfcRequest)origContent[1];
             var newreq = req.DupRequest(dn, filter, reference);
             _op = (Asn1Object)newreq;
-            set_Renamed(1, (Asn1Object)newreq);
+            this[1] = (Asn1Object)newreq;
         }
 
         /// <summary> Create an RfcLdapMessage using the specified Ldap Request.</summary>
@@ -128,12 +128,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         }
 
         /// <summary> Will decode an RfcLdapMessage directly from an InputStream.</summary>
-        public RfcLdapMessage(IAsn1Decoder dec, Stream inRenamed, int len)
-            : base(dec, inRenamed, len)
+        public RfcLdapMessage(IAsn1Decoder dec, Stream input, int len)
+            : base(dec, input, len)
         {
             // Decode implicitly tagged protocol operation from an Asn1Tagged type
             // to its appropriate application type.
-            var protocolOp = (Asn1Tagged)get_Renamed(1);
+            var protocolOp = (Asn1Tagged)this[1];
             var protocolOpId = protocolOp.GetIdentifier();
             var content = ((Asn1OctetString)protocolOp.TaggedValue).ByteValue();
             var bais = new MemoryStream(content);
@@ -141,47 +141,47 @@ namespace Novell.Directory.Ldap.Rfc2251
             switch (protocolOpId.Tag)
             {
                 case LdapMessage.SearchResponse:
-                    set_Renamed(1, new RfcSearchResultEntry(dec, bais, content.Length));
+                    this[1] = new RfcSearchResultEntry(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.SearchResult:
-                    set_Renamed(1, new RfcSearchResultDone(dec, bais, content.Length));
+                    this[1] = new RfcSearchResultDone(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.SearchResultReference:
-                    set_Renamed(1, new RfcSearchResultReference(dec, bais, content.Length));
+                    this[1] = new RfcSearchResultReference(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.AddResponse:
-                    set_Renamed(1, new RfcAddResponse(dec, bais, content.Length));
+                    this[1] = new RfcAddResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.BindResponse:
-                    set_Renamed(1, new RfcBindResponse(dec, bais, content.Length));
+                    this[1] = new RfcBindResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.CompareResponse:
-                    set_Renamed(1, new RfcCompareResponse(dec, bais, content.Length));
+                    this[1] = new RfcCompareResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.DelResponse:
-                    set_Renamed(1, new RfcDelResponse(dec, bais, content.Length));
+                    this[1] = new RfcDelResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.ExtendedResponse:
-                    set_Renamed(1, new RfcExtendedResponse(dec, bais, content.Length));
+                    this[1] = new RfcExtendedResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.IntermediateResponse:
-                    set_Renamed(1, new RfcIntermediateResponse(dec, bais, content.Length));
+                    this[1] = new RfcIntermediateResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.ModifyResponse:
-                    set_Renamed(1, new RfcModifyResponse(dec, bais, content.Length));
+                    this[1] = new RfcModifyResponse(dec, bais, content.Length);
                     break;
 
                 case LdapMessage.ModifyRdnResponse:
-                    set_Renamed(1, new RfcModifyDnResponse(dec, bais, content.Length));
+                    this[1] = new RfcModifyDnResponse(dec, bais, content.Length);
                     break;
 
                 default:
@@ -190,23 +190,23 @@ namespace Novell.Directory.Ldap.Rfc2251
 
             // decode optional implicitly tagged controls from Asn1Tagged type to
             // to RFC 2251 types.
-            if (Size() > 2)
+            if (Count > 2)
             {
-                var controls = (Asn1Tagged)get_Renamed(2);
+                var controls = (Asn1Tagged)this[2];
 
                 // Asn1Identifier controlsId = protocolOp.getIdentifier();
                 // we could check to make sure we have controls here....
                 content = ((Asn1OctetString)controls.TaggedValue).ByteValue();
                 bais = new MemoryStream(content);
-                set_Renamed(2, new RfcControls(dec, bais, content.Length));
+                this[2] = new RfcControls(dec, bais, content.Length);
             }
         }
 
         /// <summary> Returns this RfcLdapMessage's messageID as an int.</summary>
-        public int MessageId => ((Asn1Integer)get_Renamed(0)).IntValue();
+        public int MessageId => ((Asn1Integer)this[0]).IntValue();
 
         /// <summary> Returns this RfcLdapMessage's message type.</summary>
-        public int Type => get_Renamed(1).GetIdentifier().Tag;
+        public int Type => this[1].GetIdentifier().Tag;
 
         /// <summary>
         ///     Returns the response associated with this RfcLdapMessage.
@@ -214,16 +214,16 @@ namespace Novell.Directory.Ldap.Rfc2251
         ///     all which extend RfcResponse. It can also be
         ///     RfcSearchResultEntry, or RfcSearchResultReference.
         /// </summary>
-        public Asn1Object Response => get_Renamed(1);
+        public Asn1Object Response => this[1];
 
         /// <summary> Returns the optional Controls for this RfcLdapMessage.</summary>
         public RfcControls Controls
         {
             get
             {
-                if (Size() > 2)
+                if (Count > 2)
                 {
-                    return (RfcControls)get_Renamed(2);
+                    return (RfcControls)this[2];
                 }
 
                 return null;
@@ -254,12 +254,12 @@ namespace Novell.Directory.Ldap.Rfc2251
         /// </summary>
         public IRfcRequest GetRequest()
         {
-            return (IRfcRequest)get_Renamed(1);
+            return (IRfcRequest)this[1];
         }
 
         public bool IsRequest()
         {
-            return get_Renamed(1) is IRfcRequest;
+            return this[1] is IRfcRequest;
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Novell.Directory.Ldap.Rfc2251
                 throw new LdapException("DUP_ERROR", LdapException.LocalError, null);
             }
 
-            var newMsg = new RfcLdapMessage(ToArray(), (IRfcRequest)get_Renamed(1), dn, filter, reference);
+            var newMsg = new RfcLdapMessage(ToArray(), (IRfcRequest)this[1], dn, filter, reference);
             return newMsg;
         }
     }
