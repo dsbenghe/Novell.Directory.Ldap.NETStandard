@@ -21,6 +21,7 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using Microsoft.Extensions.ObjectPool;
 using Novell.Directory.Ldap.Rfc2251;
 using Novell.Directory.Ldap.Sasl;
 using Novell.Directory.Ldap.Utilclass;
@@ -56,7 +57,7 @@ namespace Novell.Directory.Ldap
     ///     application may have more than one LdapConnection object, connected
     ///     to the same or different directory servers.
     /// </summary>
-    public partial class LdapConnection : ILdapConnection
+    public partial class LdapConnection : ILdapConnection, IResettable
     {
         /// <summary>
         ///     Used with search to specify that the scope of entries to search is to
@@ -2893,6 +2894,13 @@ namespace Novell.Directory.Ldap
             }
 
             return values[0];
+        }
+
+        /// <inheritdoc />
+        public bool TryReset()
+        {
+            Connection?.Reset();
+            return true;
         }
     }
 }
