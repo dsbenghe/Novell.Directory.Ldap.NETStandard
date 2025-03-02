@@ -19,9 +19,11 @@ namespace Novell.Directory.Ldap.NETStandard.FunctionalTests
         public ConnectWithClientCertificateTests()
         {
             _expectedAuthzId = "dn:cn=external-test,dc=example,dc=com";
+#pragma warning disable SYSLIB0057
             _x509Certificate2 = new X509Certificate2(
                 CertsTestHelper.GetCertificate("external-test.pfx"),
                 "password");
+#pragma warning restore SYSLIB0057
             _ldapConnectionOptions = new LdapConnectionOptions()
                 .ConfigureIpAddressFilter(ipAddress => ipAddress.AddressFamily == AddressFamily.InterNetwork)
                 .ConfigureRemoteCertificateValidationCallback((sender, certificate, chain, errors) => true)
