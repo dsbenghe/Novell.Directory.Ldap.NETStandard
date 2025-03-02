@@ -6,7 +6,7 @@
     <Summary>.NET LDAP client library</Summary>
     <VersionPrefix>4.0.0-beta6</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6;net7;net8</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net6;net7;net8;net9</TargetFrameworks>
     <Nullable>disable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>Novell.Directory.Ldap.NETStandard</AssemblyName>
@@ -56,6 +56,10 @@
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net8'">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net9'">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
   </ItemGroup>
 
   <ItemGroup>

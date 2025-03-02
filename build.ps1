@@ -12,8 +12,8 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Release',
     # stress tests params
-    [ValidateSet('net8', 'net6')]
-    [string]$Fx = 'net6',
+    [ValidateSet('net9', 'net8', 'net6')]
+    [string]$Fx = 'net8',
     [string]$ConcurrencyLevel = 20,
     [ValidateSet('off', 'tls', 'ssl')]
     [string]$TransportSecurity = 'off'
@@ -35,8 +35,9 @@ if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps
 }
 
 $script:SupportedNetVersions = @(
-    "net8"
-    "net6"
+    'net9'
+    'net8'
+    'net6'
 )
 
 task build {
@@ -49,7 +50,8 @@ task test-unit {
     foreach($netVersion in $SupportedNetVersions) {
         exec {
             dotnet test --configuration $Configuration --no-build `
-                test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj -f $netVersion
+                test/Novell.Directory.Ldap.NETStandard.UnitTests/Novell.Directory.Ldap.NETStandard.UnitTests.csproj -f $netVersion `
+                 -l "console;verbosity=normal"
         }
     }
 }
@@ -129,7 +131,8 @@ task test-stress configure-openldap, {
     exec {
         dotnet run --configuration $CONFIGURATION `
             --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj `
-            $ConcurrencyLevel 30 -f $Fx
+            $ConcurrencyLevel 30 -f $Fx `
+            -l "console;verbosity=normal"
     }
 }
 

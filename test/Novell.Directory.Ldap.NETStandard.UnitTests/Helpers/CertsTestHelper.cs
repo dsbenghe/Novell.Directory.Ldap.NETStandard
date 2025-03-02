@@ -4,6 +4,7 @@
 
 using System;
 using System.Reflection;
+using Xunit;
 
 namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
 {
@@ -20,7 +21,8 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests.Helpers
             }
 
             var certBytes = new byte[manifestResourceStream.Length];
-            manifestResourceStream.Read(certBytes, 0, certBytes.Length);
+            var retBytes = manifestResourceStream.Read(certBytes, 0, certBytes.Length);
+            Assert.Equal(retBytes, certBytes.Length);
 
             return certBytes;
         }

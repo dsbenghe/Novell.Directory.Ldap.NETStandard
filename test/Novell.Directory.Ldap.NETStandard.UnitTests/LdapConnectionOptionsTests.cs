@@ -10,15 +10,12 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests
 {
     public sealed class LdapConnectionOptionsTests : IDisposable
     {
-        private static readonly Random RandomGen = new Random();
-        private readonly X509Certificate2 _x509Certificate2;
-
-        public LdapConnectionOptionsTests()
-        {
-            _x509Certificate2 = new X509Certificate2(
-                CertsTestHelper.GetCertificate("external-test.pfx"),
-                "password");
-        }
+        private static readonly Random RandomGen = new ();
+#pragma warning disable SYSLIB0057
+        private readonly X509Certificate2 _x509Certificate2 = new (
+            CertsTestHelper.GetCertificate("external-test.pfx"),
+            "password");
+#pragma warning restore SYSLIB0057
 
         [Fact]
         public void New_instance_has_expected_defaults()
