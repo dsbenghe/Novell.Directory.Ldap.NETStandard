@@ -71,22 +71,24 @@ task configure-opendj {
 
 task internal-test-functional {
     foreach($netVersion in $SupportedNetVersions) {
+        Write-Build "Running functional tests on $netVersion platform" -Color Magenta
         exec {
             dotnet test --configuration $CONFIGURATION  --no-build `
-                test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj -f $netVersion
+                test/Novell.Directory.Ldap.NETStandard.FunctionalTests/Novell.Directory.Ldap.NETStandard.FunctionalTests.csproj -f $netVersion `
+                 -l "console;verbosity=normal"
         }
     }
 }
 
 task test-functional configure-opendj, configure-openldap, {
-    $env:TRANSPORT_SECURITY="OFF"
-    Invoke-Build internal-test-functional $BuildFile
+    $transportSecurityOptions = @("OFF", "SSL", "TLS")
 
-    $env:TRANSPORT_SECURITY="SSL"
-    Invoke-Build internal-test-functional $BuildFile
-
-    $env:TRANSPORT_SECURITY="TLS"
-    Invoke-Build internal-test-functional $BuildFile
+    foreach($transportSecurity in $transportSecurityOptions) {
+        $env:TRANSPORT_SECURITY=$transportSecurity
+        Write-Build "Running functional tests with security $($env:TRANSPORT_SECURITY)" -Color Magenta
+        
+        Invoke-Build internal-test-functional $BuildFile
+    }
 }
 
 task remove-opendj -After test-functional {
