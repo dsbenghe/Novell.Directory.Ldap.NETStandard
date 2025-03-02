@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>
-    LDAP client library - .NET Standard 2.0/2.1, - compatible .NET platforms: .NET >= NET6, .NET Framework &gt;= 4.6, Universal Windows Platform, Xamarin. Works with any LDAP server (including Microsoft Active Directory - AD)
+    LDAP client library - .NET Standard 2.0/2.1, - compatible .NET platforms: .NET >= NET6, NET8, NET9, .NET Framework &gt;= 4.6, Universal Windows Platform, Xamarin. Works with any LDAP server (including Microsoft Active Directory - AD)
     </Description>
     <Summary>.NET LDAP client library</Summary>
-    <VersionPrefix>4.0.0-beta6</VersionPrefix>
+    <VersionPrefix>4.0.0</VersionPrefix>
     <Authors>Novell;dsbenghe</Authors>
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6;net7;net8;net9</TargetFrameworks>
     <Nullable>disable</Nullable>
