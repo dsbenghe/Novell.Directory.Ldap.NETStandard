@@ -302,11 +302,11 @@ namespace Novell.Directory.Ldap
             {
                 if (_subTypes != null)
                 {
-                    for (var i = 0; i < _subTypes.Length; i++)
+                    foreach (var subType in _subTypes)
                     {
-                        if (_subTypes[i].StartsWith("lang-"))
+                        if (subType.StartsWith("lang-"))
                         {
-                            return _subTypes[i];
+                            return subType;
                         }
                     }
                 }
@@ -574,9 +574,9 @@ namespace Novell.Directory.Ldap
 
             if (_subTypes != null)
             {
-                for (var i = 0; i < _subTypes.Length; i++)
+                foreach (var subType in _subTypes)
                 {
-                    if (_subTypes[i].EqualsOrdinalCI(subtype))
+                    if (subType.EqualsOrdinalCI(subtype))
                     {
                         return true;
                     }
@@ -611,15 +611,16 @@ namespace Novell.Directory.Ldap
 
             for (var i = 0; i < subtypes.Length; i++)
             {
-                for (var j = 0; j < _subTypes.Length; j++)
+                foreach (var subType in _subTypes)
                 {
-                    if (_subTypes[j] == null)
+                    if (subtypes[i] == null)
                     {
                         throw new ArgumentException("subtype at array index " + i + " cannot be null");
                     }
 
-                    if (_subTypes[j].EqualsOrdinalCI(subtypes[i]))
+                    if (subType.EqualsOrdinalCI(subtypes[i]))
                     {
+                        // We need to check the next entry of subtypes
                         goto gotSubType;
                     }
                 }
@@ -713,7 +714,7 @@ gotSubType:;
         /// </returns>
         public int Size()
         {
-            return _values == null ? 0 : _values.Length;
+            return _values?.Length ?? 0;
         }
 
         /// <summary>

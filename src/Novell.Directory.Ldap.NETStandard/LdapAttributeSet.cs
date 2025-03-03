@@ -243,6 +243,7 @@ namespace Novell.Directory.Ldap
         public bool Add(LdapAttribute attribute)
         {
             var name = attribute.Name;
+#if NETSTANDARD2_0
             if (ContainsKey(name))
             {
                 return false;
@@ -250,6 +251,9 @@ namespace Novell.Directory.Ldap
 
             this[name] = attribute;
             return true;
+#else
+            return TryAdd(name, attribute);
+#endif
         }
 
         /// <summary>
