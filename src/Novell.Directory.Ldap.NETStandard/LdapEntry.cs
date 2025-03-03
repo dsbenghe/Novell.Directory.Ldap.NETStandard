@@ -24,6 +24,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace Novell.Directory.Ldap
@@ -136,6 +137,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     A LdapAttribute.
         /// </returns>
+        [return: NotNullIfNotNull("fallback")]
         public LdapAttribute? GetOrDefault(string attributeName, LdapAttribute? fallback = default)
         {
             return !Attrs.TryGetValue(attributeName, out var attribute) ? fallback : attribute;
@@ -150,6 +152,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string attribute value.
         /// </returns>
+        [return: NotNullIfNotNull("fallback")]
         public string? GetStringValueOrDefault(string attributeName, string? fallback = default)
         {
             return GetOrDefault(attributeName)?.StringValue ?? fallback;
@@ -164,6 +167,7 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The byte[] attribute value.
         /// </returns>
+        [return: NotNullIfNotNull("fallback")]
         public byte[]? GetBytesValueOrDefault(string attributeName, byte[]? fallback = default)
         {
             return GetOrDefault(attributeName)?.ByteValue ?? fallback;
