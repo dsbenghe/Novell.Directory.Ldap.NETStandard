@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 pool:
-  vmImage: ubuntu-20.04
+  vmImage: ubuntu-22.04
 
 variables:
   buildConfiguration: 'Release'
@@ -14,7 +14,7 @@ stages:
   jobs:
   - job: Linux_CI
     pool:
-      vmImage: ubuntu-20.04
+      vmImage: ubuntu-22.04
     steps:
     - task: PowerShell@2
       displayName: Build
@@ -59,7 +59,7 @@ stages:
   jobs:
   - template: stress-tests-matrix.yml
     parameters:
-      image: ['ubuntu-20.04']
+      image: ['ubuntu-22.04']
       concurrency_level: [10, 30]
       security: ['OFF', 'TLS', "SSL"]
       netfx: ['net8', 'net6']
