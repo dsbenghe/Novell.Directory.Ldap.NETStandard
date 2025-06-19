@@ -21,6 +21,8 @@
 * SOFTWARE.
 *******************************************************************************/
 
+using System.Threading.Tasks;
+
 namespace Novell.Directory.Ldap
 {
     /// <summary>
@@ -71,6 +73,6 @@ namespace Novell.Directory.Ldap
         ///     LdapReferralException An LdapreferralException is thrown
         ///     with appropriate fields set to give the reason for the failure.
         /// </exception>
-        LdapConnection Bind(string[] ldapurl, LdapConnection conn);
+        Task<LdapConnection> BindAsync(string[] ldapurl, LdapConnection conn);
     }
 }

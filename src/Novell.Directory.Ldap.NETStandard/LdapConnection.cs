@@ -2436,7 +2436,7 @@ namespace Novell.Directory.Ldap
                 // rh instanceof LdapBind
                 try
                 {
-                    rconn = ((ILdapBindHandler)rh).Bind(referrals, this);
+                    rconn = await ((ILdapBindHandler)rh).BindAsync(referrals, this);
                     if (rconn == null)
                     {
                         var rex = new LdapReferralException(ExceptionMessages.ReferralError);
