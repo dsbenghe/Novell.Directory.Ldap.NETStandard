@@ -1,7 +1,6 @@
 set -e # exit on error
 currentUser="$(whoami)"
-ldapUser="openldap"
-echo $currentUser
+echo "$currentUser"
 echo "slapd status"
 #sudo apt-get install apparmor-utils -y
 sudo service slapd stop
@@ -22,14 +21,14 @@ sudo certtool -s --load-privkey /tmp/ssl/private/ca_server.key --template test/c
 sudo certtool -p --sec-param low --outfile /tmp/ssl/private/ldap_server.key
 sudo certtool -c --load-privkey /tmp/ssl/private/ldap_server.key --load-ca-certificate /tmp/ssl/certs/ca_server.pem --load-ca-privkey /tmp/ssl/private/ca_server.key --template test/conf/cert_template.conf --outfile /tmp/ssl/certs/ldap_server.pem
 # # permissions
-sudo usermod -aG ssl-cert $ldapUser
-sudo chown $ldapUser:ssl-cert /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
+sudo usermod -aG ssl-cert "$currentUser"
+sudo chown "$currentUser":ssl-cert /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 sudo chmod 640 /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 # # end setup ssl
-sudo chown -R $ldapUser:$ldapUser -v -c ./test/conf
+sudo chown -R "$currentUser":"$currentUser" -v -c ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
-slapd -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
+slapd -u "$currentUser" -g "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
 # give openldap enough time to start
 sleep 5
 # test to see that is running
