@@ -6,6 +6,7 @@ sudo apt-get install apparmor-utils -y
 sudo aa-status
 sudo service slapd stop
 ls -la /etc/apparmor.d/
+cat /etc/apparmor.d/usr.sbin.slapd
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
     # apparmor doesnt seem to be active
