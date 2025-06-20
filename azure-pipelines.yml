@@ -4,29 +4,39 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 pool:
-  vmImage: ubuntu-20.04
+  vmImage: ubuntu-24.04
 
 variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: CI
+- stage: CI_Linux
+  dependsOn: []  
   jobs:
-  - job: Linux_CI
+  - job: CI
     pool:
-      vmImage: ubuntu-20.04
+      vmImage: ubuntu-24.04
     steps:
+    - template: build/templates/install-dotnet.yml
     - task: PowerShell@2
       displayName: Build
       inputs:
         filePath: 'build.ps1'
         arguments: 'build'
     - task: PowerShell@2
-      displayName: Test
+      displayName: TestUnit
       inputs:
         filePath: 'build.ps1'
-        arguments: 'test'
-  - job: Windows_CI 
+        arguments: 'test-unit'
+    - task: PowerShell@2
+      displayName: TestFunctional
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-functional'
+- stage: CI_Windows
+  dependsOn: []
+  jobs:        
+  - job: CI
     pool:
       vmImage: windows-2022
     steps:
@@ -40,26 +50,30 @@ stages:
       inputs:
         filePath: 'build.ps1'
         arguments: 'test-unit'
-  # Disable MacOS until NET6 is available in AzureDevOps
-  # - job: MacOS_CI
-  #   pool:
-  #     vmImage: macOS-10.15
-  #   steps:
-  #   - task: PowerShell@2
-  #     displayName: Build
-  #     inputs:
-  #       filePath: 'build.ps1'
-  #       arguments: 'build'
-  #   - task: PowerShell@2
-  #     displayName: TestUnit
-  #     inputs:
-  #       filePath: 'build.ps1'
-  #       arguments: 'test-unit'
+- stage: CI_MacOS
+  dependsOn: []
+  jobs:
+  - job: CI
+    pool:
+     vmImage: macOS-14
+    steps:
+    - template: build/templates/install-dotnet.yml
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: TestUnit
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-unit'
 - stage: StressTests
+  dependsOn: ['CI_Linux']
   jobs:
   - template: stress-tests-matrix.yml
     parameters:
-      image: ['ubuntu-20.04']
+      image: ['ubuntu-24.04']
       concurrency_level: [10, 30]
       security: ['OFF', 'TLS', "SSL"]
       netfx: ['net8', 'net6']

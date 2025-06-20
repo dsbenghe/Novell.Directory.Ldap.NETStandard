@@ -1,5 +1,12 @@
 # Changelog
 
+### 4.0.1
+* Remove net7 target as it is out of support for more than 1 year
+* Move the build and tests to run on Ubuntu 24.04 due to the obsolesce of Ubuntu 20.04
+* Add MacOS CI build back
+* Support async in ILdapBindHandler
+* Add helper extension methods SearchAsyncAsList for easier usage as wrappers of SearchAsync
+
 ### 4.0.0
 * Add explicit net9 as target
 * Various fixes

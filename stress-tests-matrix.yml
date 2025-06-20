@@ -8,6 +8,7 @@ jobs:
             pool:
               vmImage: ${{ image }}
             steps:
+              - template: build/templates/install-dotnet.yml
               - task: PowerShell@2
                 inputs:
                   filePath: 'build.ps1'
