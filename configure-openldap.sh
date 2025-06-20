@@ -23,12 +23,12 @@ sudo certtool -c --load-privkey /tmp/ssl/private/ldap_server.key --load-ca-certi
 # # permissions
 sudo usermod -aG ssl-cert "$currentUser"
 sudo chown "$currentUser":ssl-cert /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
-sudo chmod 640 /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
+sudo chmod 777 /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 # # end setup ssl
-sudo chown -R "$currentUser":"$currentUser" -v -c ./test/conf
+sudo chmod 777 -v -c ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
-slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
+slapd -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
 # give openldap enough time to start
 sleep 5
 # test to see that is running
