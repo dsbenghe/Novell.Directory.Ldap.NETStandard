@@ -20,6 +20,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		test\conf\setupData.ldif = test\conf\setupData.ldif
 		test\conf\slapd.conf = test\conf\slapd.conf
 		azure-pipelines.yml = azure-pipelines.yml
+		stress-tests-matrix.yml = stress-tests-matrix.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{6E28F0DF-400F-4A78-8DD0-B8D843F96010}"
