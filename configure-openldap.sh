@@ -7,8 +7,10 @@ sudo aa-status
 sudo service slapd stop
 ls -la /etc/apparmor.d/
 cat /etc/apparmor.d/usr.sbin.slapd
+echo "disable aa slapd"
 sudo ln -s /etc/apparmor.d/usr.sbin.slapd /etc/apparmor.d/disable/
 sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd
+echo "end disable aa slapd"
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
     # apparmor doesnt seem to be active
