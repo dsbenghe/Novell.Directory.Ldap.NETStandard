@@ -8,9 +8,6 @@ if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
     # apparmor doesnt seem to be active
     echo "Running under WSL"
-else
-#    # disable apparmor for slapd
-#    sudo aa-disable slapd
 fi
 # work folder for slapd
 mkdir /tmp/slapd
