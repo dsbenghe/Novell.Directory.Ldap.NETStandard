@@ -16,6 +16,10 @@ stages:
     pool:
       vmImage: ubuntu-24.04
     steps:
+    - task: UseDotNet@2
+      displayName: 'Install .NET 9'
+      inputs:
+        version: 9.0.x
     - task: PowerShell@2
       displayName: Build
       inputs:
