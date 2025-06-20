@@ -10,9 +10,10 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
-- stage: CI
+- stage: CI-Linux
+  dependsOn: []  
   jobs:
-  - job: Linux_CI
+  - job: CI
     pool:
       vmImage: ubuntu-24.04
     steps:
@@ -38,6 +39,9 @@ stages:
       inputs:
         filePath: 'build.ps1'
         arguments: 'test'
+- stage: CI-Windows
+  dependsOn: []
+  jobs:        
   - job: Windows_CI 
     pool:
       vmImage: windows-2022
@@ -68,6 +72,7 @@ stages:
   #       filePath: 'build.ps1'
   #       arguments: 'test-unit'
 - stage: StressTests
+  dependsOn: ['CI-Linux']
   jobs:
   - template: stress-tests-matrix.yml
     parameters:
