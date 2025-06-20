@@ -5,8 +5,6 @@ echo "slapd status"
 sudo apt-get install apparmor-utils -y
 sudo aa-status
 sudo service slapd stop
-ls -la /etc/apparmor.d/
-cat /etc/apparmor.d/usr.sbin.slapd
 
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
@@ -15,6 +13,8 @@ if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
 else
     # disable apparmor for slapd
     # sudo aa-disable slapd
+    ls -la /etc/apparmor.d/
+    cat /etc/apparmor.d/usr.sbin.slapd
     echo "disable aa slapd"
     sudo ln -s /etc/apparmor.d/usr.sbin.slapd /etc/apparmor.d/disable/
     sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd
@@ -40,6 +40,7 @@ sudo chmod -R 777 -v -c ./test/conf
 ls -la ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
+# Access denied here is most likely due to apparmour
 slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
 # give openldap enough time to start
 sleep 5
