@@ -25,13 +25,13 @@ sudo usermod -aG ssl-cert $currentUser
 sudo chown $currentUser:ssl-cert /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 sudo chmod 640 /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server.pem /tmp/ssl/certs/ca_server.pem
 # # end setup ssl
-sudo chown -R $currentUser:$currentUser test/conf
+sudo chown -R $currentUser:$currentUser -v -c ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
-slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
+slapd -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
 # give openldap enough time to start
 sleep 5
 # test to see that is running
 echo "test slapd is running"
 ldapwhoami -H ldap://localhost:5389 -D "cn=admin,dc=example,dc=com" -w password 
-ldapadd -h localhost:5389 -D cn=admin,dc=example,dc=com -w password -f test/conf/setupData.ldif
+ldapadd -h localhost:5389 -D cn=admin,dc=example,dc=com -w password -f ./test/conf/setupData.ldif
