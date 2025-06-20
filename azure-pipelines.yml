@@ -8,7 +8,12 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
-
+  
+trigger:
+  batch: true
+  branches:
+    include:
+      - '*'
 stages:
 - stage: CI_Linux
   dependsOn: []  
