@@ -3,9 +3,9 @@ currentUser="$(whoami)"
 echo "$currentUser"
 echo "slapd status"
 sudo apt-get install apparmor-utils -y
-sudo apt upgrade apparmor
 sudo aa-status
 sudo service slapd stop
+ls -la /etc/apparmor.d/
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
     # apparmor doesnt seem to be active
