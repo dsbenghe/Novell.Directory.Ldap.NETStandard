@@ -40,7 +40,7 @@ sudo chmod -R 777 -v -c ./test/conf
 ls -la ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
-slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
+slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
 # give openldap enough time to start
 sleep 5
 # test to see that is running
