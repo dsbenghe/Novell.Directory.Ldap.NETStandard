@@ -24,10 +24,15 @@ stages:
         filePath: 'build.ps1'
         arguments: 'build'
     - task: PowerShell@2
-      displayName: Test
+      displayName: TestUnit
       inputs:
         filePath: 'build.ps1'
-        arguments: 'test'
+        arguments: 'test-unit'
+    - task: PowerShell@2
+      displayName: TestFunctional
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-functional'
 - stage: CI_Windows
   dependsOn: []
   jobs:        
