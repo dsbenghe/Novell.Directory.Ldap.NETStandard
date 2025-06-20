@@ -40,6 +40,12 @@ $script:SupportedNetVersions = @(
     'net6'
 )
 
+Enter-Build {
+    exec {
+        dotnet --info
+    }
+}
+
 task build {
     exec {
         dotnet build -c $Configuration
