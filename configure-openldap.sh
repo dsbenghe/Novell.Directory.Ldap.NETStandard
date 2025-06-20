@@ -2,7 +2,8 @@ set -e # exit on error
 currentUser="$(whoami)"
 echo "$currentUser"
 echo "slapd status"
-#sudo apt-get install apparmor-utils -y
+sudo apt-get install apparmor-utils -y
+sudo aa-status
 sudo service slapd stop
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
@@ -13,7 +14,7 @@ fi
 mkdir /tmp/slapd
 # start setup ssl
 # prepare folders
-mkdir -p /tmp/ssl/private
+mkdir -p /tmp/ssl/privatentainer
 mkdir -p /tmp/ssl/certs
 # generate certs/keys
 sudo certtool -p --outfile /tmp/ssl/private/ca_server.key
