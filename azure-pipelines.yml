@@ -42,7 +42,7 @@ stages:
 - stage: CI_Windows
   dependsOn: []
   jobs:        
-  - job: Windows_CI 
+  - job: CI
     pool:
       vmImage: windows-2022
     steps:
@@ -56,21 +56,23 @@ stages:
       inputs:
         filePath: 'build.ps1'
         arguments: 'test-unit'
-  # Disable MacOS until NET6 is available in AzureDevOps
-  # - job: MacOS_CI
-  #   pool:
-  #     vmImage: macOS-10.15
-  #   steps:
-  #   - task: PowerShell@2
-  #     displayName: Build
-  #     inputs:
-  #       filePath: 'build.ps1'
-  #       arguments: 'build'
-  #   - task: PowerShell@2
-  #     displayName: TestUnit
-  #     inputs:
-  #       filePath: 'build.ps1'
-  #       arguments: 'test-unit'
+- stage: CI_MacOS
+  dependsOn: []
+  jobs:
+  - job: CI
+    pool:
+     vmImage: macOS-14
+    steps:
+    - task: PowerShell@2
+      displayName: Build
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'build'
+    - task: PowerShell@2
+      displayName: TestUnit
+      inputs:
+        filePath: 'build.ps1'
+        arguments: 'test-unit'
 - stage: StressTests
   dependsOn: ['CI_Linux']
   jobs:
