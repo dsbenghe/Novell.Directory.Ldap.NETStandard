@@ -2,7 +2,7 @@ set -e # exit on error
 currentUser="$(whoami)"
 echo $currentUser
 echo "slapd status"
-sudo apt-get install apparmor-utils -y
+#sudo apt-get install apparmor-utils -y
 sudo service slapd stop
 if grep -qEi "(microsoft|WSL)" /proc/version &> /dev/null ;  then
     # running under WSL/WSL2
