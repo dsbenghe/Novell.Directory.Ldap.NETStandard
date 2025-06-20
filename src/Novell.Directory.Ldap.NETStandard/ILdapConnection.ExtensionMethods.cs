@@ -1,4 +1,6 @@
-﻿using System.Threading;
+using Novell.Directory.Ldap.Utilclass;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap
@@ -26,6 +28,26 @@ namespace Novell.Directory.Ldap
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Convenience method to avoid double await.
+        /// </summary>
+        public static async Task<List<LdapEntry>> SearchAsyncAsList(this ILdapConnection conn, string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            CancellationToken ct = default)
+        {
+            var lsr = await conn.SearchAsync(@base, scope, filter, attrs, typesOnly, ct);
+            return await lsr.ToListAsync(cancellationToken: ct);
+        }
+
+        /// <summary>
+        /// Convenience method to avoid double await.
+        /// </summary>
+        public static async Task<List<LdapEntry>> SearchAsyncAsList(this ILdapConnection conn, string @base, int scope, string filter, string[] attrs, bool typesOnly,
+            LdapSearchConstraints cons,  CancellationToken ct = default)
+        {
+            var lsr = await conn.SearchAsync(@base, scope, filter, attrs, typesOnly, cons, ct);
+            return await lsr.ToListAsync(cancellationToken: ct);
         }
     }
 }
