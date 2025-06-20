@@ -28,7 +28,7 @@ sudo chmod 777 -v -c /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server
 sudo chmod -R 777 -v -c ./test/conf
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
-slapd -f ./test2/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
+slapd -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 
 # give openldap enough time to start
 sleep 5
 # test to see that is running
