@@ -14,7 +14,6 @@ else
     # disable apparmor for slapd
     # sudo aa-disable slapd
     ls -la /etc/apparmor.d/
-    cat /etc/apparmor.d/usr.sbin.slapd
     echo "disable aa slapd"
     sudo ln -s /etc/apparmor.d/usr.sbin.slapd /etc/apparmor.d/disable/
     sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.slapd
