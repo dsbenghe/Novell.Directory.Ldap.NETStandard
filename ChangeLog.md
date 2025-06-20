@@ -1,6 +1,7 @@
 # Changelog
 
 ### 4.0.0
+* Remove net7 target as it is out of support for 1 year
 * Add explicit net9 as target
 * Various fixes
 * Various improvements
