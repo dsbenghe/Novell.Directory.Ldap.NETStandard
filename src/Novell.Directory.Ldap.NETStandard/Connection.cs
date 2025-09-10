@@ -118,7 +118,6 @@ namespace Novell.Directory.Ldap
         * if nonTLSBackup is null then startTLS has not been called,
         * or stopTLS has been called to end TLS protection
         */
-        private Socket _sock;
         private TcpClient _socket;
 
         // Stops the reader thread when a Message with the passed-in ID is read.
@@ -532,36 +531,42 @@ namespace Novell.Directory.Ldap
                         Host = host;
                         Port = port;
 
-                        if (!IPAddress.TryParse(host, out var ipAddress))
+                        IPAddress[] ipAddressesToConnect;
+                        if (IPAddress.TryParse(host, out var ipAddress))
                         {
+                            ipAddressesToConnect = new[] { ipAddress };
+                        }
+                        else
+                        {
+                            // Resolve IP addresses by host name
 #if NETSTANDARD2_0 || NETSTANDARD2_1
                             var ipAddresses = await Dns.GetHostAddressesAsync(host).ConfigureAwait(false);
 #else
                             var ipAddresses = await Dns.GetHostAddressesAsync(host, ct).ConfigureAwait(false);
 #endif
-                            ipAddress = ipAddresses
-                                .Where(x => _ldapConnectionOptions.IpAddressFilter(x))
-                                .FirstOrDefault(ip => ip.AddressFamily == AddressFamily.InterNetwork
-                                             || ip.AddressFamily == AddressFamily.InterNetworkV6);
+                            ipAddressesToConnect = ipAddresses
+                                .Where(ip => _ldapConnectionOptions.IpAddressFilter(ip) &&
+                                    (ip.AddressFamily == AddressFamily.InterNetwork ||
+                                    ip.AddressFamily == AddressFamily.InterNetworkV6))
+                                .ToArray();
 
-                            if (ipAddress == null)
+                            if (ipAddressesToConnect.Length == 0)
                             {
-                                throw new ArgumentException("No ip address found", nameof(ipAddress));
+                                throw new ArgumentException("No IP address found", nameof(ipAddress));
                             }
                         }
 
+                        _socket = new TcpClient();
                         if (_ldapConnectionOptions.Ssl)
                         {
-                            _sock = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.IP);
-                            var ipEndPoint = new IPEndPoint(ipAddress, port);
 #if NETSTANDARD2_0 || NETSTANDARD2_1
-                            await _sock.ConnectAsync(ipEndPoint).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+                            await _socket.ConnectAsync(ipAddressesToConnect, port).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 #else
-                            await _sock.ConnectAsync(ipEndPoint, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+                            await _socket.ConnectAsync(ipAddressesToConnect, port, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 #endif
 
                             var sslStream = new SslStream(
-                                new NetworkStream(_sock, true),
+                                _socket.GetStream(),
                                 false,
                                 RemoteCertificateValidationCallback,
                                 LocalCertificateSelectionCallback);
@@ -592,11 +597,10 @@ namespace Novell.Directory.Ldap
                         }
                         else
                         {
-                            _socket = new TcpClient(ipAddress.AddressFamily);
 #if NETSTANDARD2_0 || NETSTANDARD2_1
-                            await _socket.ConnectAsync(host, port).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+                            await _socket.ConnectAsync(ipAddressesToConnect, port).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 #else
-                            await _socket.ConnectAsync(host, port, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
+                            await _socket.ConnectAsync(ipAddressesToConnect, port, ct).TimeoutAfterAsync(ConnectionTimeout).ConfigureAwait(false);
 #endif
 
                             _inStream = _socket.GetStream();
@@ -610,14 +614,12 @@ namespace Novell.Directory.Ldap
                 }
                 catch (SocketException se)
                 {
-                    _sock = null;
                     _socket = null;
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] { host, port },
                         LdapException.ConnectError, null, se);
                 }
                 catch (IOException ioe)
                 {
-                    _sock = null;
                     _socket = null;
                     throw new LdapException(ExceptionMessages.ConnectionError, new object[] { host, port },
                         LdapException.ConnectError, null, ioe);
@@ -887,7 +889,7 @@ namespace Novell.Directory.Ldap
                 }
 
                 BindProperties = null;
-                if (_socket != null || _sock != null)
+                if (_socket != null)
                 {
                     // Just before closing the sockets, abort the reader thread
                     if (_reader != null && reason != "reader: thread stopping")
@@ -900,7 +902,6 @@ namespace Novell.Directory.Ldap
                     {
                         _inStream?.Dispose();
                         _outStream?.Dispose();
-                        _sock?.Dispose();
                         _socket?.Dispose();
                     }
                     catch (IOException)
@@ -909,7 +910,6 @@ namespace Novell.Directory.Ldap
                     }
 
                     _socket = null;
-                    _sock = null;
                     _inStream = null;
                     _outStream = null;
                 }
@@ -1078,8 +1078,6 @@ namespace Novell.Directory.Ldap
                 _outStream?.Dispose();
                 _inStream?.Dispose();
 
-                // this.sock.Shutdown(SocketShutdown.Both);
-                // this.sock.Close();
                 WaitForReader(null);
                 _socket = _nonTlsBackup;
                 _inStream = _socket.GetStream();
