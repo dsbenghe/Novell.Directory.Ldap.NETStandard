@@ -23,6 +23,7 @@
 
 using Novell.Directory.Ldap.Utilclass;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -50,6 +51,52 @@ namespace Novell.Directory.Ldap
         private readonly string[] _subTypes; // lang-ja of cn;lang-ja
         private byte[][] _values; // Array of byte[] attribute values
 
+        // Add() used to scan every accumulated value per added value (duplicate
+        // check) and grow _values by exactly one slot per value - both O(n^2) in
+        // the value count. Attributes with very large value sets (e.g. groups
+        // with 100K+ member DNs) took hours to build while parsing a search
+        // response. _values now grows geometrically and may carry spare
+        // capacity; _count is the real value count. Every reader outside Add()
+        // goes through Trim(), which restores the exact-length invariant the
+        // rest of the class relies on. _valueSet mirrors the content of _values
+        // for O(1) duplicate checks once the value count passes
+        // DedupSetThreshold (below it the original linear scan is cheaper).
+        // Like the rest of this class, none of this is thread-safe.
+        private int _count;
+        private HashSet<byte[]> _valueSet;
+        private const int DedupSetThreshold = 8;
+
+        private void Trim()
+        {
+            if (_values != null && _values.Length != _count)
+            {
+                Array.Resize(ref _values, _count);
+            }
+        }
+
+        private sealed class ByteArrayContentComparer : IEqualityComparer<byte[]>
+        {
+            public static readonly ByteArrayContentComparer Instance = new ByteArrayContentComparer();
+
+            public bool Equals(byte[] x, byte[] y) => x.AsSpan().SequenceEqual(y);
+
+            public int GetHashCode(byte[] obj)
+            {
+                // FNV-1a over the content; HashCode.AddBytes is not available on
+                // the netstandard2.0/2.1 targets.
+                unchecked
+                {
+                    var hash = 2166136261u;
+                    foreach (var b in obj)
+                    {
+                        hash = (hash ^ b) * 16777619u;
+                    }
+
+                    return (int)hash;
+                }
+            }
+        }
+
         /// <summary>
         ///     Constructs an attribute with copies of all values of the input
         ///     attribute.
@@ -74,9 +121,11 @@ namespace Novell.Directory.Ldap
             }
 
             // OK to just copy attributes, as the app only sees a deep copy of them
+            attr.Trim();
             if (attr._values != null)
             {
                 _values = (byte[][])attr._values.Clone();
+                _count = attr._count;
             }
         }
 
@@ -193,7 +242,14 @@ namespace Novell.Directory.Ldap
         ///     Note: All string values will be UTF-8 encoded. To decode use the
         ///     String constructor. Example: new String( byteArray, "UTF-8" );.
         /// </returns>
-        public ByteArrayView ByteValues => new ByteArrayView(_values);
+        public ByteArrayView ByteValues
+        {
+            get
+            {
+                Trim();
+                return new ByteArrayView(_values);
+            }
+        }
 
         /// <summary>
         ///     Returns an enumerable for the string values of an attribute.
@@ -201,7 +257,14 @@ namespace Novell.Directory.Ldap
         /// <returns>
         ///     The string values of an attribute.
         /// </returns>
-        public ByteArrayAsUtf8StringView StringValues => new ByteArrayAsUtf8StringView(_values);
+        public ByteArrayAsUtf8StringView StringValues
+        {
+            get
+            {
+                Trim();
+                return new ByteArrayAsUtf8StringView(_values);
+            }
+        }
 
         /// <summary>
         ///     Returns the values of the attribute as an array of bytes.
@@ -219,6 +282,7 @@ namespace Novell.Directory.Ldap
                     return Array.Empty<byte[]>();
                 }
 
+                Trim();
                 var size = _values.Length;
                 var bva = new byte[size][];
 
@@ -248,6 +312,7 @@ namespace Novell.Directory.Ldap
                     return Array.Empty<string>();
                 }
 
+                Trim();
                 var size = _values.Length;
                 var sva = new string[size];
                 for (var j = 0; j < size; j++)
@@ -333,6 +398,8 @@ namespace Novell.Directory.Ldap
             set
             {
                 _values = null;
+                _count = 0;
+                _valueSet = null;
                 try
                 {
                     Add(value.ToUtf8Bytes());
@@ -372,11 +439,17 @@ namespace Novell.Directory.Ldap
         {
             try
             {
+                Trim();
                 var newObj = (LdapAttribute)MemberwiseClone();
                 if (_values != null)
                 {
                     newObj._values = (byte[][])_values.Clone();
                 }
+
+                // MemberwiseClone copies the _valueSet reference; sharing it would
+                // let the clone's dedup state leak into this instance. Rebuilt
+                // lazily on the clone's next Add.
+                newObj._valueSet = null;
 
                 return newObj;
             }
@@ -669,6 +742,9 @@ gotSubType:;
                 throw new ArgumentException("Attribute value cannot be null");
             }
 
+            Trim();
+            _valueSet = null;
+
             for (var i = 0; i < _values.Length; i++)
             {
                 if (attrBytes.SequenceEqual(_values[i]))
@@ -677,12 +753,14 @@ gotSubType:;
                     {
                         // Optimize if first element of a single valued attr
                         _values = null;
+                        _count = 0;
                         return;
                     }
 
                     if (_values.Length == 1)
                     {
                         _values = null;
+                        _count = 0;
                     }
                     else
                     {
@@ -699,6 +777,7 @@ gotSubType:;
                         }
 
                         _values = tmp;
+                        _count = tmp.Length;
                     }
 
                     break;
@@ -714,7 +793,7 @@ gotSubType:;
         /// </returns>
         public int Size()
         {
-            return _values?.Length ?? 0;
+            return _count;
         }
 
         /// <summary>
@@ -731,21 +810,49 @@ gotSubType:;
             if (_values == null)
             {
                 _values = new byte[][] { bytes };
+                _count = 1;
+                return;
+            }
+
+            // Duplicate attribute values not allowed. Linear scan while the value
+            // count is small; hash-set lookup once it grows. Without this, adding
+            // n values costs O(n^2) comparisons — prohibitive when parsing entries
+            // with very large value sets (e.g. groups with 100K+ members).
+            if (_valueSet == null && _count >= DedupSetThreshold)
+            {
+                _valueSet = new HashSet<byte[]>(ByteArrayContentComparer.Instance);
+                for (var i = 0; i < _count; i++)
+                {
+                    _valueSet.Add(_values[i]);
+                }
+            }
+
+            if (_valueSet != null)
+            {
+                if (!_valueSet.Add(bytes))
+                {
+                    return; // Duplicate, don't add
+                }
             }
             else
             {
-                // Duplicate attribute values not allowed
-                for (var i = 0; i < _values.Length; i++)
+                for (var i = 0; i < _count; i++)
                 {
                     if (bytes.SequenceEqual(_values[i]))
                     {
                         return; // Duplicate, don't add
                     }
                 }
-
-                Array.Resize(ref _values, _values.Length + 1);
-                _values[_values.Length - 1] = bytes;
             }
+
+            // Grow geometrically instead of one slot per value; Trim() restores
+            // the exact-length invariant for every reader.
+            if (_count == _values.Length)
+            {
+                Array.Resize(ref _values, Math.Max(4, _values.Length * 2));
+            }
+
+            _values[_count++] = bytes;
         }
 
         /// <summary>
@@ -758,6 +865,7 @@ gotSubType:;
         {
             var result = new StringBuilder("LdapAttribute: ");
 
+            Trim();
             result.Append("{type='").Append(Name).Append('\'');
             if (_values != null)
             {

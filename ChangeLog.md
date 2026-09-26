@@ -1,6 +1,7 @@
 # Changelog
 
 ### 4.1.0
+* Fix O(n^2) LdapAttribute value accumulation (duplicate scan + per-value array resize); attributes with very large value sets (e.g. groups with 100K+ members) now parse in milliseconds instead of hours
 * Remove net7 target as it is out of support for more than 1 year
 * Move the build and tests to run on Ubuntu 24.04 due to the obsolesce of Ubuntu 20.04
 * Add MacOS CI build back
