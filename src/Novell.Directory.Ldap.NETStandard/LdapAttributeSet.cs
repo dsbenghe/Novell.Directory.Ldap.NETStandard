@@ -79,6 +79,25 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
+        ///     Gets the attribute matching the specified attrName, without throwing when it is absent.
+        ///     Mirrors <see cref="GetAttribute(string)"/> with the <c>TryGet</c> pattern; the name must
+        ///     match exactly, including any subtype specification (e.g. "cn;lang-en").
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to retrieve, with or without subtype specifications.
+        /// </param>
+        /// <param name="attribute">
+        ///     When this method returns <c>true</c>, the matching attribute; otherwise <c>null</c>.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if an attribute named <paramref name="attrName"/> exists; otherwise <c>false</c>.
+        /// </returns>
+        public bool TryGetAttribute(string attrName, out LdapAttribute attribute)
+        {
+            return TryGetValue(attrName, out attribute);
+        }
+
+        /// <summary>
         ///     Returns a single best-match attribute, or. <code>null</code> if no match is
         ///     available in the entry.
         ///     Ldap version 3 allows adding a subtype specification to an attribute

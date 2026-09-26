@@ -129,6 +129,24 @@ namespace Novell.Directory.Ldap
         }
 
         /// <summary>
+        ///     Gets the attribute matching the specified attrName, without throwing when it is absent.
+        ///     Counterpart of <see cref="Get(string)"/> following the <c>TryGet</c> pattern.
+        /// </summary>
+        /// <param name="attrName">
+        ///     The name of the attribute to return.
+        /// </param>
+        /// <param name="attribute">
+        ///     When this method returns <c>true</c>, the matching attribute; otherwise <c>null</c>.
+        /// </param>
+        /// <returns>
+        ///     <c>true</c> if the entry has an attribute named <paramref name="attrName"/>; otherwise <c>false</c>.
+        /// </returns>
+        public bool TryGet(string attrName, out LdapAttribute? attribute)
+        {
+            return Attrs.TryGetAttribute(attrName, out attribute);
+        }
+
+        /// <summary>
         ///     Returns the attribute matching the specified attrName or the fallback value if no attribute was found.
         /// </summary>
         /// <param name="attributeName">

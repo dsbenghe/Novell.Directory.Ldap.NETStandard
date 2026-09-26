@@ -43,6 +43,38 @@ public class LdapEntryTests
     }
 
     [Fact]
+    public void TryGet_when_exists_returns_true_and_attribute()
+    {
+        Assert.True(_ldapEntry.TryGet("givenName", out var attribute));
+        Assert.Equal("Lionel", attribute.StringValue);
+    }
+
+    [Fact]
+    public void TryGet_when_not_exists_returns_false_and_null()
+    {
+        Assert.False(_ldapEntry.TryGet("givenName_1", out var attribute));
+        Assert.Null(attribute);
+    }
+
+    [Fact]
+    public void TryGet_is_case_sensitive_like_Get()
+    {
+        // Dictionary-backed lookups use the exact key; document that TryGet does not relax this.
+        Assert.Equal(_ldapEntry.Contains("GIVENNAME"), _ldapEntry.TryGet("GIVENNAME", out _));
+    }
+
+    [Fact]
+    public void AttributeSet_TryGetAttribute_matches_entry_TryGet()
+    {
+        var set = _ldapEntry.GetAttributeSet();
+        Assert.True(set.TryGetAttribute("givenName", out var fromSet));
+        Assert.True(_ldapEntry.TryGet("givenName", out var fromEntry));
+        Assert.Same(fromSet, fromEntry);
+        Assert.False(set.TryGetAttribute("givenName_1", out var missing));
+        Assert.Null(missing);
+    }
+
+    [Fact]
     public void GetStringValueOrDefault_when_exists_returns_string_value()
     {
         Assert.Equal("Lionel", _ldapEntry.GetStringValueOrDefault("givenName"));
