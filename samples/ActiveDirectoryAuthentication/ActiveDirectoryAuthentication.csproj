@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Novell.Directory.Ldap.Samples.ActiveDirectoryAuthentication</RootNamespace>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Builds against the in-repo library so the sample always matches the current API.
+         Consumers copying this sample can replace it with:
+         <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="4.*" /> -->
+    <ProjectReference Include="..\..\src\Novell.Directory.Ldap.NETStandard\Novell.Directory.Ldap.NETStandard.csproj" />
+  </ItemGroup>
+
+</Project>
