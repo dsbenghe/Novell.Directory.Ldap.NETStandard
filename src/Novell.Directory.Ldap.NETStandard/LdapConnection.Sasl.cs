@@ -142,9 +142,27 @@ namespace Novell.Directory.Ldap
                 }
                 catch (Exception e)
                 {
+                    ReleaseSaslBindSemaphore();
                     throw new LdapException(e);
                 }
             }
+        }
+
+        /// <summary>
+        /// The bind semaphore is released when the final bind response is processed. If the
+        /// SASL client fails before that, nothing would release it and any further use of the
+        /// connection (including Disconnect) would block forever.
+        /// </summary>
+        private void ReleaseSaslBindSemaphore()
+        {
+            if (Connection == null || Connection.BindSemIdClear)
+            {
+                return;
+            }
+
+            var bindSemId = Connection.BindSemId;
+            Connection.ClearBindSemId();
+            Connection.FreeWriteSemaphore(bindSemId);
         }
 
         private async Task<byte[]> SendLdapSaslBindRequestAsync(byte[] toWrite, string mechanism, BindProperties bindProps, LdapConstraints constraints, CancellationToken ct = default)
