@@ -42,3 +42,21 @@ await using (var cn = new LdapConnection())
 Contributions and bugs reports are welcome.
 
 The library has some samples which are not included in the solution and are in the original state (see original_samples folder) - they may or may not compile on .NET Standard - but they should be compilable on .NET Standard with minimal work.
+
+## Escaping user input in filters
+
+Never concatenate untrusted input (user names, DNs read from the directory, GUIDs) straight into a
+search filter — a value such as `*)(uid=*` would change the meaning of the filter (LDAP injection).
+`LdapFilter` escapes assertion values according to RFC 4515:
+
+```cs
+// (&(objectClass=person)(sAMAccountName=j\2adoe)) — the '*' is escaped, the filter stays one assertion
+var filter = LdapFilter.Format("(&(objectClass=person)(sAMAccountName={0}))", userInput);
+
+// a DN read from memberOf already contains DN escapes ("\,"); it must be filter-escaped again
+var groupsFilter = LdapFilter.Format("(&(objectClass=group)(member={0}))", memberDn);
+
+// binary values, e.g. Active Directory objectGUID
+var byGuid = LdapFilter.Format("(objectGUID={0})", guid.ToByteArray());
+```
+
