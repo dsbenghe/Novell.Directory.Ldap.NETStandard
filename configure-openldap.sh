@@ -37,13 +37,38 @@ sudo chmod 777 -v -c /tmp/ssl/private/ldap_server.key /tmp/ssl/certs/ldap_server
 # # end setup ssl
 sudo chmod -R 777 -v -c ./test/conf
 ls -la ./test/conf
+# start setup kerberos (sasl gssapi tests)
+sudo tee /etc/krb5.conf > /dev/null << EOF
+[libdefaults]
+    default_realm = EXAMPLE.COM
+    rdns = false
+    dns_canonicalize_hostname = false
+    qualify_shortname = ""
+[realms]
+    EXAMPLE.COM = {
+        kdc = localhost
+        admin_server = localhost
+    }
+EOF
+sudo kdb5_util create -s -r EXAMPLE.COM -P password
+sudo krb5kdc
+sudo kadmin.local -q "addprinc -pw password gssapi-test"
+sudo kadmin.local -q "addprinc -randkey ldap/localhost"
+mkdir -p /tmp/krb5
+sudo kadmin.local -q "ktadd -k /tmp/krb5/ldap.keytab ldap/localhost"
+sudo chown "$currentUser" /tmp/krb5/ldap.keytab
+echo password | kinit gssapi-test
+klist
+# end setup kerberos
 echo "start slapd"
 # slapd -f test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" -d -1 &
 # Access denied here is most likely due to apparmour
-slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" & # -d -1
+KRB5_KTNAME=/tmp/krb5/ldap.keytab slapd -u "$currentUser" -f ./test/conf/slapd.conf -h "ldap://localhost:5389 ldaps://localhost:5636" & # -d -1
 # give openldap enough time to start
 sleep 5
 # test to see that is running
 echo "test slapd is running"
 ldapwhoami -H ldap://localhost:5389 -D "cn=admin,dc=example,dc=com" -w password 
+kvno ldap/localhost
+ldapwhoami -Y GSSAPI -N -H ldap://localhost:5389
 ldapadd -H ldap://localhost:5389 -D cn=admin,dc=example,dc=com -w password -f ./test/conf/setupData.ldif

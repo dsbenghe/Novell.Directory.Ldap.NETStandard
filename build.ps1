@@ -119,6 +119,7 @@ task configure-openldap {
         sudo DEBIAN_FRONTEND=noninteractive apt-get install `
           ldap-utils gnutls-bin ssl-cert slapd `
           sasl2-bin libsasl2-2 libsasl2-modules libsasl2-modules-ldap `
+          krb5-kdc krb5-admin-server krb5-user libsasl2-modules-gssapi-mit `
           -y
     }
     exec {

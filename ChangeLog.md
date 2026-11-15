@@ -2,6 +2,7 @@
 
 ### 4.1.0
 * Remove net9 target, add net10 target
+* Add SASL GSSAPI (Kerberos V5) mechanism - RFC 4752 - on .NET 8 and later
 * Fix SASL bind leaving the connection blocked when the SASL client fails before the bind completes
 * Fix O(n^2) LdapAttribute value accumulation (duplicate scan + per-value array resize); attributes with very large value sets (e.g. groups with 100K+ members) now parse in milliseconds instead of hours
 * Remove net7 target as it is out of support for more than 1 year
