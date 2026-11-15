@@ -1,5 +1,8 @@
 using Novell.Directory.Ldap.Utilclass;
 using System.Collections.Generic;
+#if NET10_0_OR_GREATER
+using System.Linq;
+#endif
 using System.Threading;
 using System.Threading.Tasks;
 

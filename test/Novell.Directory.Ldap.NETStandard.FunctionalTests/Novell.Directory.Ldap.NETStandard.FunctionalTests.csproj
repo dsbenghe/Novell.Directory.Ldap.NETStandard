@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6;net8;net9</TargetFrameworks>
+    <TargetFrameworks>net6.0;net8.0;net10.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <!-- SA0001: XML comment analysis is disabled due to project configuration -->
     <NoWarn>SA0001</NoWarn>
@@ -25,7 +25,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.1.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
     <PackageReference Include="xunit" Version="2.9.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
       <PrivateAssets>all</PrivateAssets>
