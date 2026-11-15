@@ -137,7 +137,7 @@ task test-stress configure-openldap, {
     exec {
         dotnet run --configuration $CONFIGURATION `
             --project test/Novell.Directory.Ldap.NETStandard.StressTests/Novell.Directory.Ldap.NETStandard.StressTests.csproj `
-            $ConcurrencyLevel 30 -f $Fx `
+            $ConcurrencyLevel 15 -f $Fx `
             -l "console;verbosity=normal"
     }
 }
