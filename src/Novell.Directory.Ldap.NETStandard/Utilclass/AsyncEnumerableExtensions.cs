@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 namespace Novell.Directory.Ldap.Utilclass
 {
+    #if !NET10_0_OR_GREATER
     public static class AsyncEnumerableExtensions
     {
         /// <summary>
@@ -20,4 +21,6 @@ namespace Novell.Directory.Ldap.Utilclass
             return list;
         }
     }
+
+    #endif
 }
