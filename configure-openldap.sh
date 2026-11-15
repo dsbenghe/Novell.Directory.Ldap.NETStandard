@@ -68,4 +68,6 @@ sleep 5
 # test to see that is running
 echo "test slapd is running"
 ldapwhoami -H ldap://localhost:5389 -D "cn=admin,dc=example,dc=com" -w password 
+kvno ldap/localhost
+ldapwhoami -Y GSSAPI -N -H ldap://localhost:5389
 ldapadd -H ldap://localhost:5389 -D cn=admin,dc=example,dc=com -w password -f ./test/conf/setupData.ldif
