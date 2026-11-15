@@ -25,3 +25,14 @@ objectClass: inetOrgPerson
 displayName: External User
 uid: userWithSpecialPasswordChars
 userPassword: password+;\"<>#,!./
+
+# gssapi-test user (kerberos principal gssapi-test@EXAMPLE.COM)
+dn: cn=gssapi-test,dc=example,dc=com
+cn: gssapi-test
+sn: gssapi-test
+objectClass: top
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+displayName: GSSAPI User
+uid: gssapi-test

@@ -27,8 +27,10 @@ namespace Novell.Directory.Ldap.Sasl
                     return new PlainClient(saslRequest);
                 case SaslConstants.Mechanism.External:
                     return new ExternalClient(saslRequest);
-
-                // case LdapConstants.SaslMechanism.GssApi:
+#if NET7_0_OR_GREATER
+                case SaslConstants.Mechanism.GssApi:
+                    return new GssApiClient(saslRequest);
+#endif
                 default:
                     return null;
             }
@@ -47,6 +49,9 @@ namespace Novell.Directory.Ldap.Sasl
                 case SaslConstants.Mechanism.DigestMd5:
                 case SaslConstants.Mechanism.Plain:
                 case SaslConstants.Mechanism.External:
+#if NET7_0_OR_GREATER
+                case SaslConstants.Mechanism.GssApi:
+#endif
                     return true;
                 default:
                     return false;

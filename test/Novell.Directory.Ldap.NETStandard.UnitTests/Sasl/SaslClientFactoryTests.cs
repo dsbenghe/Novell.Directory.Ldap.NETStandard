@@ -18,6 +18,25 @@ namespace Novell.Directory.Ldap.NETStandard.UnitTests.Sasl
             Assert.False(client.HasInitialResponse);
         }
 
+#if NET7_0_OR_GREATER
+        [Fact]
+        public void GssApi_CreatesGssApiClient()
+        {
+            var client = DefaultSaslClientFactory.CreateClient(new SaslGssApiRequest("dc1.example.com"));
+            Assert.NotNull(client);
+            Assert.IsType<GssApiClient>(client);
+            Assert.Equal(SaslConstants.Mechanism.GssApi, client.MechanismName);
+            Assert.True(client.HasInitialResponse);
+        }
+
+        [Fact]
+        public void LdapConnection_IsSaslMechanismSupported_GssApi_True()
+        {
+            var conn = new LdapConnection();
+            Assert.True(conn.IsSaslMechanismSupported(SaslConstants.Mechanism.GssApi));
+        }
+
+#endif
         [Fact]
         public void Unknown_ReturnsNull()
         {
