@@ -60,7 +60,7 @@ stages:
   jobs:
   - job: CI
     pool:
-     vmImage: macOS-14
+     vmImage: macOS-15
     steps:
     - template: build/templates/install-dotnet.yml
     - task: PowerShell@2
