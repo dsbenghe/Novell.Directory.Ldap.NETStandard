@@ -81,4 +81,4 @@ stages:
       image: ['ubuntu-24.04']
       concurrency_level: [10, 30]
       security: ['OFF', 'TLS', "SSL"]
-      netfx: ['net10', 'net8']
+      netfx: ['net10.0', 'net8.0']

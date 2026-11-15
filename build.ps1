@@ -12,8 +12,8 @@ param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = 'Release',
     # stress tests params
-    [ValidateSet('net10', 'net8', 'net6')]
-    [string]$Fx = 'net8',
+    [ValidateSet('net10.0', 'net8.0', 'net6.0')]
+    [string]$Fx = 'net10.0',
     [string]$ConcurrencyLevel = 20,
     [ValidateSet('off', 'tls', 'ssl')]
     [string]$TransportSecurity = 'off'
@@ -35,9 +35,9 @@ if ([System.IO.Path]::GetFileName($MyInvocation.ScriptName) -ne 'Invoke-Build.ps
 }
 
 $script:SupportedNetVersions = @(
-    'net10'
-    'net8'
-    'net6'
+    'net10.0'
+    'net8.0'
+    'net6.0'
 )
 
 Enter-Build {
