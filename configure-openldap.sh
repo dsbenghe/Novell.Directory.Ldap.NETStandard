@@ -43,6 +43,7 @@ sudo tee /etc/krb5.conf > /dev/null << EOF
     default_realm = EXAMPLE.COM
     rdns = false
     dns_canonicalize_hostname = false
+    qualify_shortname = ""
 [realms]
     EXAMPLE.COM = {
         kdc = localhost
